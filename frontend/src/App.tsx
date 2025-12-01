@@ -167,6 +167,10 @@ import { FieldMap } from '@/pages/FieldMap'
 import { PlotHistory } from '@/pages/PlotHistory'
 import { GermplasmPassport } from '@/pages/GermplasmPassport'
 import { SampleTracking } from '@/pages/SampleTracking'
+import { IrrigationPlanner } from '@/pages/IrrigationPlanner'
+import { PestMonitor } from '@/pages/PestMonitor'
+import { GrowthTracker } from '@/pages/GrowthTracker'
+import { HarvestLog } from '@/pages/HarvestLog'
 
 function App() {
   return (
@@ -2115,6 +2119,54 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <SampleTracking />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Irrigation Planner */}
+        <Route
+          path="/irrigation"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <IrrigationPlanner />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Pest Monitor */}
+        <Route
+          path="/pest-monitor"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PestMonitor />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Growth Tracker */}
+        <Route
+          path="/growth-tracker"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GrowthTracker />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Harvest Log */}
+        <Route
+          path="/harvest-log"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <HarvestLog />
               </Layout>
             </ProtectedRoute>
           }
