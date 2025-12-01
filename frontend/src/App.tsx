@@ -114,6 +114,9 @@ import { QuickGuide } from '@/pages/QuickGuide'
 import { Glossary } from '@/pages/Glossary'
 import { FAQ } from '@/pages/FAQ'
 import { KeyboardShortcuts } from '@/pages/KeyboardShortcuts'
+import { WhatsNew } from '@/pages/WhatsNew'
+import { Feedback } from '@/pages/Feedback'
+import { Tips } from '@/pages/Tips'
 
 function App() {
   return (
@@ -1426,6 +1429,42 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <KeyboardShortcuts />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* What's New */}
+        <Route
+          path="/whats-new"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WhatsNew />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Feedback */}
+        <Route
+          path="/feedback"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Feedback />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Tips & Tricks */}
+        <Route
+          path="/tips"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Tips />
               </Layout>
             </ProtectedRoute>
           }
