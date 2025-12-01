@@ -65,12 +65,18 @@ async def serverinfo():
         },
     }
 
-# Import routers (will be added later)
-# from app.api.v2 import core, phenotyping, genotyping, germplasm
-# app.include_router(core.router, prefix="/brapi/v2", tags=["Core"])
-# app.include_router(phenotyping.router, prefix="/brapi/v2", tags=["Phenotyping"])
-# app.include_router(genotyping.router, prefix="/brapi/v2", tags=["Genotyping"])
-# app.include_router(germplasm.router, prefix="/brapi/v2", tags=["Germplasm"])
+# Import routers
+from app.api import auth
+from app.api.v2.core import programs, locations, trials, studies
+
+# Auth routes
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+
+# BrAPI v2.1 Core routes
+app.include_router(programs.router, prefix="/brapi/v2", tags=["Core - Programs"])
+app.include_router(locations.router, prefix="/brapi/v2", tags=["Core - Locations"])
+app.include_router(trials.router, prefix="/brapi/v2", tags=["Core - Trials"])
+app.include_router(studies.router, prefix="/brapi/v2", tags=["Core - Studies"])
 
 if __name__ == "__main__":
     import uvicorn

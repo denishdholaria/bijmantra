@@ -1,92 +1,162 @@
-# 🌱 Bijmantra
+# Bijmantra - BrAPI v2.1 Plant Breeding PWA
 
-**BrAPI v2.1 Compliant Plant Breeding Progressive Web Application**
+A modern Progressive Web Application for plant breeding management, fully compliant with BrAPI v2.1 specification.
 
-> A modern, offline-capable plant breeding platform built on open standards.
+## Features
 
-[🚀 Quick Start](#quick-start) | [📖 Documentation](#documentation) | [💬 Community](#community) | [🤝 Contributing](#contributing)
+### ✅ Implemented Modules
 
----
+#### 1. **Programs Management**
+- List all breeding programs with pagination
+- Create new programs
+- View program details
+- Edit program information
+- Delete programs with confirmation
 
-## ✨ Features
+#### 2. **Trials Management**
+- List all trials with pagination
+- Create new trials linked to programs
+- View trial details
+- Edit trial information
+- Delete trials with confirmation
 
-- 🌾 **BrAPI v2.1 Compliant** - Full implementation of all 4 modules (Core, Phenotyping, Genotyping, Germplasm)
-- 📱 **Progressive Web App** - Works offline, installable on any device, mobile-first design
-- 🔄 **Federated Architecture** - Each organization owns their data, with optional federation
-- 🔐 **Secure** - JWT authentication, HTTPS, data sovereignty, RBAC
-- 🚀 **Modern Stack** - React + FastAPI + PostgreSQL + Podman
-- 🌍 **Open Source** - MIT License, community-driven
+#### 3. **Studies Management**
+- List all studies with pagination
+- Create new studies linked to trials and locations
+- View study details
+- Edit study information
+- Delete studies with confirmation
 
-## 🏗️ Architecture
+#### 4. **Locations Management**
+- List all locations with pagination
+- Create new locations with coordinates
+- View location details
+- Edit location information
+- Delete locations with confirmation
 
-```
-Frontend (React PWA)
-    ↓ HTTPS
-Caddy Reverse Proxy
-    ├─→ /brapi/* → FastAPI Backend
-    └─→ /* → React Static Files
-         ↓
-    PostgreSQL + PostGIS
-    Redis (Cache)
-    MinIO (Images)
-```
+#### 5. **Dashboard**
+- Overview statistics for all modules
+- Quick access to recent programs
+- Quick action buttons for creating new entities
 
-## 🚀 Quick Start
+### 🎨 UI Features
+
+- Modern gradient-based design
+- Smooth animations and transitions
+- Vertical collapsible sidebar navigation
+- Responsive layout for all screen sizes
+- Glassmorphism effects
+- Color-coded modules (Programs: Green, Trials: Purple, Studies: Blue, Locations: Orange)
+
+### 🔐 Authentication
+
+- JWT-based authentication
+- Login/Register pages
+- Protected routes
+- Token persistence
+
+## Tech Stack
+
+### Frontend
+- React 18 with TypeScript
+- Vite for build tooling
+- TailwindCSS for styling
+- React Router for navigation
+- TanStack Query for data fetching
+- React Hook Form for form management
+
+### Backend
+- FastAPI (Python)
+- PostgreSQL database
+- Redis for caching
+- MinIO for object storage
+- BrAPI v2.1 compliant endpoints
+
+## Getting Started
 
 ### Prerequisites
-
-- **Podman** 5+ (or Docker)
-- **Python** 3.11+
-- **Node.js** 18+
+- Docker and Podman
+- Node.js 18+
+- Python 3.11+
 
 ### Installation
 
-1.  **Clone the repository**
+1. Start the infrastructure services:
+```bash
+cd bijmantra
+podman compose up -d postgres redis minio
+```
 
-    ```bash
-    git clone https://github.com/denishdholaria/bijmantra.git
-    cd bijmantra
-    ```
+2. Start the backend:
+```bash
+cd backend
+./start_dev.sh
+```
 
-2.  **Configure Environment**
+3. Start the frontend:
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-    ```bash
-    cp .env.example .env
-    # Edit .env with your settings
-    ```
+4. Access the application:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
 
-3.  **Start Infrastructure**
+## Project Structure
 
-    ```bash
-    make dev
-    # Or: podman-compose up -d
-    ```
+```
+bijmantra/
+├── frontend/           # React frontend application
+│   ├── src/
+│   │   ├── components/ # Reusable UI components
+│   │   ├── pages/      # Page components
+│   │   ├── lib/        # Utilities and API client
+│   │   └── App.tsx     # Main application component
+│   └── package.json
+├── backend/            # FastAPI backend application
+│   ├── app/
+│   │   ├── api/        # API routes
+│   │   ├── models/     # Database models
+│   │   └── core/       # Core functionality
+│   └── requirements.txt
+└── docker-compose.yml  # Infrastructure services
+```
 
-4.  **Access Application**
-    - Frontend: http://localhost:5173
-    - Backend API: http://localhost:8000/docs
+## BrAPI Compliance
 
-## 📖 Documentation
+This application implements the following BrAPI v2.1 modules:
+- Core (Programs, Locations, Trials, Studies)
+- Authentication
+- Pagination
+- Metadata responses
 
-- [Discussion: Architecture & Business Model](docs/discussion/d1.md)
-- [Backend README](backend/README.md)
-- [Frontend README](frontend/README.md)
+## Development Status
 
-## 🤝 Contributing
+### Completed
+- ✅ Authentication system
+- ✅ Programs CRUD
+- ✅ Trials CRUD
+- ✅ Studies CRUD (List & Create)
+- ✅ Locations CRUD (List & Create)
+- ✅ Dashboard with statistics
+- ✅ Modern UI with animations
+- ✅ Responsive design
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+### In Progress
+- 🚧 Study detail/edit pages
+- 🚧 Location detail/edit pages
+- 🚧 Germplasm module
+- 🚧 Genotyping module
+- 🚧 Phenotyping module
 
-## 💬 Community
+## License
 
-- [GitHub Discussions](https://github.com/denishdholaria/bijmantra/discussions)
-- [Issues](https://github.com/denishdholaria/bijmantra/issues)
+MIT
 
-## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Developer: R.E.E.V.A.I. (Rural Empowerment through Emerging Value‑driven Agro‑Intelligence)
 
-Built with ❤️ for the plant breeding community.
-
-**Jay Shree Ganeshay Namo Namah!** 🙏
