@@ -155,6 +155,10 @@ import { PublicationTracker } from '@/pages/PublicationTracker'
 import { TrainingHub } from '@/pages/TrainingHub'
 import { VarietyRelease } from '@/pages/VarietyRelease'
 import { ComplianceTracker } from '@/pages/ComplianceTracker'
+import { GeneBank } from '@/pages/GeneBank'
+import { BreedingGoals } from '@/pages/BreedingGoals'
+import { MarketAnalysis } from '@/pages/MarketAnalysis'
+import { StakeholderPortal } from '@/pages/StakeholderPortal'
 
 function App() {
   return (
@@ -1959,6 +1963,54 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <ComplianceTracker />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Gene Bank */}
+        <Route
+          path="/genebank"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GeneBank />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Breeding Goals */}
+        <Route
+          path="/breeding-goals"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BreedingGoals />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Market Analysis */}
+        <Route
+          path="/market-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <MarketAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Stakeholder Portal */}
+        <Route
+          path="/stakeholders"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <StakeholderPortal />
               </Layout>
             </ProtectedRoute>
           }
