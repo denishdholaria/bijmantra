@@ -150,6 +150,11 @@ import { ProtocolLibrary } from '@/pages/ProtocolLibrary'
 import { ExperimentDesigner } from '@/pages/ExperimentDesigner'
 import { ResourceCalendar } from '@/pages/ResourceCalendar'
 import { EnvironmentMonitor } from '@/pages/EnvironmentMonitor'
+import { CostAnalysis } from '@/pages/CostAnalysis'
+import { PublicationTracker } from '@/pages/PublicationTracker'
+import { TrainingHub } from '@/pages/TrainingHub'
+import { VarietyRelease } from '@/pages/VarietyRelease'
+import { ComplianceTracker } from '@/pages/ComplianceTracker'
 
 function App() {
   return (
@@ -1894,6 +1899,66 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <EnvironmentMonitor />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Cost Analysis */}
+        <Route
+          path="/cost-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CostAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Publication Tracker */}
+        <Route
+          path="/publications"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PublicationTracker />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Training Hub */}
+        <Route
+          path="/training"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TrainingHub />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Variety Release */}
+        <Route
+          path="/variety-release"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <VarietyRelease />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Compliance Tracker */}
+        <Route
+          path="/compliance"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ComplianceTracker />
               </Layout>
             </ProtectedRoute>
           }

@@ -2,7 +2,7 @@
 
 **Started**: November 29, 2024  
 **Last Updated**: December 1, 2025  
-**Status**: ✅ Active Development - **149 Pages Complete**
+**Status**: ✅ Active Development - **154 Pages Complete**
 
 ---
 
@@ -16,11 +16,12 @@ Bijmantra is a divine gift to plant breeders worldwide - a comprehensive platfor
 
 | Metric | Count |
 |--------|-------|
-| **Total Pages** | 149 |
+| **Total Pages** | 154 |
 | **AI Phenotyping Tools** | 8 |
 | **Genomic Analysis Tools** | 16 |
 | **Breeding Tools** | 25+ |
 | **Collaboration Tools** | 8 |
+| **Management Tools** | 5 |
 | **BrAPI Endpoints** | 34/34 (100%) |
 | **Help & Documentation** | 13 pages |
 
@@ -88,6 +89,15 @@ Revolutionary AI-powered phenotyping that runs entirely in the browser:
 | Experiment Designer | `/experiment-designer` | Trial design generator |
 | Resource Calendar | `/resource-calendar` | Field ops, lab, equipment scheduling |
 | Environment Monitor | `/environment-monitor` | Real-time sensor data |
+
+### Program Management
+| Tool | Route | Description |
+|------|-------|-------------|
+| Cost Analysis | `/cost-analysis` | Budget tracking and expense analysis |
+| Publication Tracker | `/publications` | Research outputs and citations |
+| Training Hub | `/training` | Learning courses and certificates |
+| Variety Release | `/variety-release` | Release pipeline tracking |
+| Compliance Tracker | `/compliance` | Regulatory compliance monitoring |
 
 ---
 
@@ -264,11 +274,12 @@ This project is dedicated to:
 ---
 
 **Status**: 🟢 Active Development  
-**Total Pages**: 149 🎉  
+**Total Pages**: 154 🎉  
 **AI Tools**: 8 (Complete)
 **Genomic Tools**: 16 (Complete)
 **Breeding Tools**: 25+ (Complete)
 **Collaboration Tools**: 8 (Complete)
+**Management Tools**: 5 (Complete)
 **Help System**: 13 pages (Complete)
 
 ---
