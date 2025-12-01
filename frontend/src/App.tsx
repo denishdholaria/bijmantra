@@ -140,6 +140,8 @@ import { DoubledHaploid } from '@/pages/DoubledHaploid'
 import { PlantVision } from '@/pages/PlantVision'
 import { DiseaseAtlas } from '@/pages/DiseaseAtlas'
 import { FieldScanner } from '@/pages/FieldScanner'
+import { CropHealthDashboard } from '@/pages/CropHealthDashboard'
+import { YieldPredictor } from '@/pages/YieldPredictor'
 
 function App() {
   return (
@@ -1764,6 +1766,30 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <FieldScanner />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Crop Health Dashboard */}
+        <Route
+          path="/crop-health"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CropHealthDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Yield Predictor */}
+        <Route
+          path="/yield-predictor"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <YieldPredictor />
               </Layout>
             </ProtectedRoute>
           }

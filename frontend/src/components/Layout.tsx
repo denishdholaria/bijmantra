@@ -45,6 +45,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         { path: '/plant-vision', label: 'Plant Vision', icon: '🌿' },
         { path: '/field-scanner', label: 'Field Scanner', icon: '📱' },
         { path: '/disease-atlas', label: 'Disease Atlas', icon: '🦠' },
+        { path: '/crop-health', label: 'Crop Health', icon: '🌾' },
+        { path: '/yield-predictor', label: 'Yield Predictor', icon: '🎯' },
         { path: '/chrome-ai', label: 'Chrome AI', icon: '🌐' },
         { path: '/ai-settings', label: 'AI Settings', icon: '⚙️' },
       ],
