@@ -15,8 +15,11 @@ pip install -r requirements.txt
 # Run migrations
 alembic upgrade head
 
+# Seed database with initial data
+python -m app.db_seed
+
 # Start development server
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## API Documentation
@@ -76,6 +79,32 @@ app/
 ## Environment Variables
 
 See `.env.example` in the root directory.
+
+## Default Credentials
+
+After seeding the database:
+- **Email**: admin@bijmantra.org
+- **Password**: admin123
+
+⚠️ **Change these credentials in production!**
+
+## Quick Start with Make
+
+From the project root:
+
+```bash
+# Install dependencies
+make install
+
+# Start infrastructure (PostgreSQL, Redis, MinIO)
+make dev
+
+# Run migrations and seed
+cd backend && alembic upgrade head && python -m app.db_seed
+
+# Start backend
+make dev-backend
+```
 
 ## BrAPI Compliance
 

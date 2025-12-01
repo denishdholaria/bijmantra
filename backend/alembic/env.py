@@ -15,7 +15,9 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import all models here to ensure they are registered with Base
-# from app.models import core, phenotyping, genotyping, germplasm
+from app.models import (
+    Organization, User, Program, Location, Trial, Study, Person
+)
 
 # Alembic Config object
 config = context.config
