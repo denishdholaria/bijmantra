@@ -1,8 +1,17 @@
-# Bijmantra Frontend
+# 🌱 Bijmantra Frontend
 
-React Progressive Web Application for plant breeding data management.
+React Progressive Web Application for plant breeding data management with AI-powered phenotyping.
 
-## Setup
+## 📊 Current Stats
+
+| Metric | Count |
+|--------|-------|
+| **Total Pages** | 141 |
+| **AI Tools** | 8 |
+| **Genomic Tools** | 16 |
+| **Breeding Tools** | 25+ |
+
+## 🚀 Quick Start
 
 ```bash
 # Install dependencies
@@ -10,193 +19,143 @@ npm install
 
 # Start development server
 npm run dev
-```
 
-## Available Scripts
-
-```bash
-npm run dev       # Start development server
-npm run build     # Build for production
-npm run preview   # Preview production build
-npm run lint      # Run ESLint
-npm run format    # Format code with Prettier
-npm run test      # Run tests
-```
-
-## PWA Features
-
-- ✅ Offline-capable
-- ✅ Installable on mobile and desktop
-- ✅ Service worker for caching
-- ✅ IndexedDB for offline data storage
-- ✅ Background sync for offline submissions
-
-## Project Structure
-
-```
-src/
-├── api/                # BrAPI client
-│   ├── client.ts      # Base API client
-│   ├── core/          # Core module endpoints
-│   ├── phenotyping/   # Phenotyping endpoints
-│   ├── genotyping/    # Genotyping endpoints
-│   └── germplasm/     # Germplasm endpoints
-├── components/        # React components
-│   ├── ui/           # UI components
-│   ├── layout/       # Layout components
-│   ├── forms/        # Form components
-│   └── tables/       # Table components
-├── hooks/            # Custom React hooks
-├── lib/              # Utilities
-│   └── db.ts         # IndexedDB (Dexie.js)
-├── pages/            # Page components
-├── store/            # State management (Zustand)
-├── types/            # TypeScript types
-├── App.tsx           # Main App component
-└── main.tsx          # Entry point
-```
-
-## Tech Stack
-
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **Tailwind CSS** - Styling
-- **TanStack Query** - Server state management
-- **Zustand** - Local state management
-- **Dexie.js** - IndexedDB wrapper
-- **React Hook Form** - Form handling
-- **Zod** - Schema validation
-- **Recharts** - Data visualization
-- **Leaflet** - Maps
-
-## Building for Production
-
-```bash
+# Build for production
 npm run build
 ```
 
-The build output will be in the `dist/` directory.
+## 📁 Project Structure
 
-## PWA Installation
+```
+src/
+├── components/        # React components
+│   ├── ui/           # shadcn/ui components
+│   └── Layout.tsx    # Main layout with sidebar
+├── lib/              # Utilities & Services
+│   ├── api-client.ts # BrAPI client
+│   ├── chrome-ai.ts  # Chrome AI integration
+│   ├── plant-vision.ts # Computer vision engine
+│   └── db.ts         # IndexedDB (Dexie.js)
+├── pages/            # 141 page components
+│   ├── Dashboard.tsx
+│   ├── PlantVision.tsx
+│   ├── FieldScanner.tsx
+│   └── ...
+├── store/            # Zustand state management
+├── App.tsx           # Router configuration
+└── main.tsx          # Entry point
+```
 
-Users can install the app by:
-1. Opening the app in a browser
-2. Clicking the install prompt
-3. Or using the browser's "Install App" option
+## 🤖 AI Features
 
-## Offline Support
+### Plant Vision AI
+- **Disease Detection** - Identify plant diseases from images
+- **Growth Stage** - BBCH scale classification
+- **Stress Detection** - Drought, nutrient, heat stress
+- **Trait Measurement** - LAI, chlorophyll, canopy coverage
+- **Plant Counting** - Stand establishment analysis
 
-The app caches:
-- Static assets (JS, CSS, images)
-- BrAPI metadata (traits, methods, scales)
-- Recent observation data
-- Plant images
+### AI Tools
+| Tool | Path | Description |
+|------|------|-------------|
+| AI Assistant | `/ai-assistant` | Multi-provider chat (OpenAI, Anthropic, Google) |
+| Plant Vision | `/plant-vision` | Image-based plant analysis |
+| Field Scanner | `/field-scanner` | Real-time field scanning |
+| Disease Atlas | `/disease-atlas` | Disease reference guide |
+| Crop Health | `/crop-health` | Health monitoring dashboard |
+| Yield Predictor | `/yield-predictor` | AI yield prediction |
+| Chrome AI | `/chrome-ai` | Local Gemini Nano |
+| AI Settings | `/ai-settings` | Configure AI providers |
 
-Data collected offline is automatically synced when the connection is restored.
+## 🧬 Genomic Analysis Tools
 
+| Tool | Path | Description |
+|------|------|-------------|
+| Genetic Diversity | `/genetic-diversity` | Population diversity metrics |
+| Breeding Values | `/breeding-values` | BLUP/GBLUP estimation |
+| QTL Mapping | `/qtl-mapping` | Linkage mapping & GWAS |
+| Genomic Selection | `/genomic-selection` | GS model training |
+| MAS | `/marker-assisted-selection` | Foreground/background selection |
+| Haplotypes | `/haplotype-analysis` | Haplotype block analysis |
+| LD Analysis | `/linkage-disequilibrium` | LD decay & pruning |
+| Pop Genetics | `/population-genetics` | Structure & admixture |
+| Parentage | `/parentage-analysis` | Pedigree verification |
+| Correlations | `/genetic-correlation` | Trait correlations |
+| G×E | `/gxe-interaction` | AMMI & GGE biplot |
+| Stability | `/stability-analysis` | Stability parameters |
 
-## 🎯 Current Implementation Status
+## 🔬 Advanced Breeding
 
-### ✅ Completed Features
+| Tool | Path | Description |
+|------|------|-------------|
+| Molecular Breeding | `/molecular-breeding` | MABC, gene pyramiding |
+| Phenomics | `/phenomic-selection` | HTP & spectral indices |
+| Speed Breeding | `/speed-breeding` | Accelerated generation |
+| Doubled Haploid | `/doubled-haploid` | DH production |
 
-#### Authentication
-- Login page with JWT authentication
-- Protected routes with auth guard
-- Token storage in localStorage
-- Auto-redirect on logout
+## 🛠️ Tech Stack
 
-#### Dashboard
-- Overview cards for programs, trials, studies, locations
-- Recent programs list
-- Quick action buttons
-- Real-time data from backend
+- **React 18** + TypeScript
+- **Vite** - Build tool
+- **Tailwind CSS** + shadcn/ui
+- **TanStack Query** - Server state
+- **Zustand** - Local state
+- **Dexie.js** - IndexedDB
+- **React Hook Form** + Zod
+- **Recharts** - Visualization
 
-#### Programs Module
-- List all programs with pagination
-- Create new program form
-- View program details
-- BrAPI v2.1 compliant responses
+## 📱 PWA Features
 
-#### Infrastructure
-- API client with BrAPI support
-- Zustand store for authentication
-- TanStack Query for data fetching
-- Layout component with navigation
-- Protected route wrapper
-- Path aliases (@/ for src/)
+- ✅ Offline-capable with service worker
+- ✅ Installable on mobile/desktop
+- ✅ IndexedDB for offline data
+- ✅ Background sync
+- ✅ Camera access for scanning
 
-### 🚧 Coming Soon
+## 🔐 Authentication
 
-- Trials management UI
-- Studies management UI
-- Locations management with maps
-- Program edit functionality
-- Phenotyping data collection
-- Offline sync with IndexedDB
-- Image upload
-- Data visualization
-
-## 🔐 Default Credentials
-
-For development/testing:
+Default development credentials:
 - **Email**: admin@bijmantra.org
 - **Password**: admin123
 
-⚠️ Change these in production!
+⚠️ Change in production!
 
 ## 🔄 API Integration
-
-The frontend communicates with the FastAPI backend:
-- Base URL: `http://localhost:8000`
-- Proxy configured in `vite.config.ts`
-- All requests include JWT token in Authorization header
-- BrAPI v2.1 response format
-
-### Example API Call
 
 ```typescript
 import { apiClient } from '@/lib/api-client'
 
-// Login
-const { access_token } = await apiClient.login(email, password)
-
-// Get programs
-const response = await apiClient.getPrograms(page, pageSize)
-const programs = response.result.data
-
-// Create program
-await apiClient.createProgram({
-  programName: "My Program",
-  abbreviation: "MP",
-  objective: "Improve yield"
-})
+// BrAPI v2.1 compliant
+const programs = await apiClient.getPrograms()
+const germplasm = await apiClient.getGermplasm()
 ```
 
-## 📱 PWA Configuration
+## 🎨 UI Components
 
-Configured in `vite.config.ts`:
-- Auto-update service worker
-- Workbox for caching strategies
-- Network-first for API calls
-- Cache-first for static assets
-- Manifest for installation
+Using shadcn/ui with Tailwind:
+- Cards, Badges, Buttons
+- Forms with validation
+- Data tables with sorting
+- Charts and visualizations
+- Responsive sidebar navigation
 
-## 🎨 Styling Guide
+## 📋 Available Scripts
 
-Using Tailwind CSS utility classes:
-- Primary color: Green (`green-600`)
-- Spacing: Consistent 4px grid
-- Responsive: Mobile-first approach
-- Components: Clean, minimal design
+```bash
+npm run dev       # Development server
+npm run build     # Production build
+npm run preview   # Preview build
+npm run lint      # ESLint
+npm run format    # Prettier
+```
 
-## 🧪 Testing the Frontend
+## 🌐 Environment Variables
 
-1. Start backend: `make dev-backend`
-2. Start frontend: `npm run dev`
-3. Open: `http://localhost:5173`
-4. Login with default credentials
-5. Explore dashboard and programs
+```env
+VITE_API_URL=http://localhost:8000
+VITE_OPENAI_API_KEY=your-key
+VITE_ANTHROPIC_API_KEY=your-key
+```
 
 ---
 
