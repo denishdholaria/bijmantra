@@ -121,6 +121,22 @@ import { Changelog } from '@/pages/Changelog'
 import { Contact } from '@/pages/Contact'
 import { Privacy } from '@/pages/Privacy'
 import { Terms } from '@/pages/Terms'
+import { GeneticDiversity } from '@/pages/GeneticDiversity'
+import { BreedingValues } from '@/pages/BreedingValues'
+import { QTLMapping } from '@/pages/QTLMapping'
+import { GenomicSelection } from '@/pages/GenomicSelection'
+import { MarkerAssistedSelection } from '@/pages/MarkerAssistedSelection'
+import { HaplotypeAnalysis } from '@/pages/HaplotypeAnalysis'
+import { LinkageDisequilibrium } from '@/pages/LinkageDisequilibrium'
+import { PopulationGenetics } from '@/pages/PopulationGenetics'
+import { ParentageAnalysis } from '@/pages/ParentageAnalysis'
+import { GeneticCorrelation } from '@/pages/GeneticCorrelation'
+import { GxEInteraction } from '@/pages/GxEInteraction'
+import { StabilityAnalysis } from '@/pages/StabilityAnalysis'
+import { MolecularBreeding } from '@/pages/MolecularBreeding'
+import { PhenomicSelection } from '@/pages/PhenomicSelection'
+import { SpeedBreeding } from '@/pages/SpeedBreeding'
+import { DoubledHaploid } from '@/pages/DoubledHaploid'
 
 function App() {
   return (
@@ -1517,6 +1533,198 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Terms />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Genetic Diversity */}
+        <Route
+          path="/genetic-diversity"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GeneticDiversity />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Breeding Values */}
+        <Route
+          path="/breeding-values"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BreedingValues />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* QTL Mapping */}
+        <Route
+          path="/qtl-mapping"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <QTLMapping />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Genomic Selection */}
+        <Route
+          path="/genomic-selection"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GenomicSelection />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Marker-Assisted Selection */}
+        <Route
+          path="/marker-assisted-selection"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <MarkerAssistedSelection />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Haplotype Analysis */}
+        <Route
+          path="/haplotype-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <HaplotypeAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Linkage Disequilibrium */}
+        <Route
+          path="/linkage-disequilibrium"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <LinkageDisequilibrium />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Population Genetics */}
+        <Route
+          path="/population-genetics"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PopulationGenetics />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Parentage Analysis */}
+        <Route
+          path="/parentage-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ParentageAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Genetic Correlation */}
+        <Route
+          path="/genetic-correlation"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GeneticCorrelation />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* G×E Interaction */}
+        <Route
+          path="/gxe-interaction"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GxEInteraction />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Stability Analysis */}
+        <Route
+          path="/stability-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <StabilityAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Molecular Breeding */}
+        <Route
+          path="/molecular-breeding"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <MolecularBreeding />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phenomic Selection */}
+        <Route
+          path="/phenomic-selection"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PhenomicSelection />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Speed Breeding */}
+        <Route
+          path="/speed-breeding"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SpeedBreeding />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Doubled Haploid */}
+        <Route
+          path="/doubled-haploid"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DoubledHaploid />
               </Layout>
             </ProtectedRoute>
           }
