@@ -137,6 +137,7 @@ import { MolecularBreeding } from '@/pages/MolecularBreeding'
 import { PhenomicSelection } from '@/pages/PhenomicSelection'
 import { SpeedBreeding } from '@/pages/SpeedBreeding'
 import { DoubledHaploid } from '@/pages/DoubledHaploid'
+import { PlantVision } from '@/pages/PlantVision'
 
 function App() {
   return (
@@ -1725,6 +1726,18 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <DoubledHaploid />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Plant Vision AI */}
+        <Route
+          path="/plant-vision"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PlantVision />
               </Layout>
             </ProtectedRoute>
           }

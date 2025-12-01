@@ -42,6 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       icon: '🤖',
       items: [
         { path: '/ai-assistant', label: 'AI Assistant', icon: '💬' },
+        { path: '/plant-vision', label: 'Plant Vision', icon: '🌿' },
         { path: '/chrome-ai', label: 'Chrome AI', icon: '🌐' },
         { path: '/ai-settings', label: 'AI Settings', icon: '⚙️' },
       ],
