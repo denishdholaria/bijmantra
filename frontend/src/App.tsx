@@ -159,6 +159,10 @@ import { GeneBank } from '@/pages/GeneBank'
 import { BreedingGoals } from '@/pages/BreedingGoals'
 import { MarketAnalysis } from '@/pages/MarketAnalysis'
 import { StakeholderPortal } from '@/pages/StakeholderPortal'
+import { TrialComparison } from '@/pages/TrialComparison'
+import { DataVisualization } from '@/pages/DataVisualization'
+import { APIExplorer } from '@/pages/APIExplorer'
+import { BatchOperations } from '@/pages/BatchOperations'
 
 function App() {
   return (
@@ -2011,6 +2015,54 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <StakeholderPortal />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Trial Comparison */}
+        <Route
+          path="/trial-comparison"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TrialComparison />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Data Visualization */}
+        <Route
+          path="/visualization"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DataVisualization />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* API Explorer */}
+        <Route
+          path="/api-explorer"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <APIExplorer />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Batch Operations */}
+        <Route
+          path="/batch-operations"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BatchOperations />
               </Layout>
             </ProtectedRoute>
           }
