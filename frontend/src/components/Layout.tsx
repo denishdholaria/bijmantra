@@ -131,6 +131,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         { path: '/dataquality', label: 'Data Quality', icon: '✅' },
       ],
     },
+    {
+      title: 'Help',
+      icon: '❓',
+      items: [
+        { path: '/help', label: 'Help Center', icon: '📚' },
+        { path: '/quick-guide', label: 'Quick Start', icon: '🚀' },
+        { path: '/glossary', label: 'Glossary', icon: '📖' },
+        { path: '/faq', label: 'FAQ', icon: '❓' },
+        { path: '/keyboard-shortcuts', label: 'Shortcuts', icon: '⌨️' },
+      ],
+    },
   ]
 
   // Check if any item in a section is active
