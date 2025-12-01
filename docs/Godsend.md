@@ -2,7 +2,7 @@
 
 **Started**: November 29, 2024  
 **Last Updated**: December 1, 2025  
-**Status**: ✅ Active Development - **162 Pages Complete**
+**Status**: ✅ Active Development - **166 Pages Complete**
 
 ---
 
@@ -16,13 +16,13 @@ Bijmantra is a divine gift to plant breeders worldwide - a comprehensive platfor
 
 | Metric | Count |
 |--------|-------|
-| **Total Pages** | 162 |
+| **Total Pages** | 166 |
 | **AI Phenotyping Tools** | 8 |
 | **Genomic Analysis Tools** | 16 |
 | **Breeding Tools** | 25+ |
 | **Collaboration Tools** | 8 |
 | **Management Tools** | 9 |
-| **Developer Tools** | 4 |
+| **Developer Tools** | 8 |
 | **BrAPI Endpoints** | 34/34 (100%) |
 | **Help & Documentation** | 13 pages |
 
@@ -111,6 +111,10 @@ Revolutionary AI-powered phenotyping that runs entirely in the browser:
 | Data Visualization | `/visualization` | Interactive chart builder |
 | API Explorer | `/api-explorer` | Test BrAPI endpoints |
 | Batch Operations | `/batch-operations` | Bulk data operations |
+| Field Map | `/field-map` | Interactive field visualization |
+| Plot History | `/plot-history` | Historical plot data |
+| Germplasm Passport | `/germplasm-passport` | Detailed passport data |
+| Sample Tracking | `/sample-tracking` | Sample pipeline tracking |
 
 ---
 
@@ -287,13 +291,13 @@ This project is dedicated to:
 ---
 
 **Status**: 🟢 Active Development  
-**Total Pages**: 162 🎉  
+**Total Pages**: 166 🎉  
 **AI Tools**: 8 (Complete)
 **Genomic Tools**: 16 (Complete)
 **Breeding Tools**: 25+ (Complete)
 **Collaboration Tools**: 8 (Complete)
 **Management Tools**: 9 (Complete)
-**Developer Tools**: 4 (Complete)
+**Developer Tools**: 8 (Complete)
 **Help System**: 13 pages (Complete)
 
 ---

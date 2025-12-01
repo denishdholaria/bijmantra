@@ -163,6 +163,10 @@ import { TrialComparison } from '@/pages/TrialComparison'
 import { DataVisualization } from '@/pages/DataVisualization'
 import { APIExplorer } from '@/pages/APIExplorer'
 import { BatchOperations } from '@/pages/BatchOperations'
+import { FieldMap } from '@/pages/FieldMap'
+import { PlotHistory } from '@/pages/PlotHistory'
+import { GermplasmPassport } from '@/pages/GermplasmPassport'
+import { SampleTracking } from '@/pages/SampleTracking'
 
 function App() {
   return (
@@ -2063,6 +2067,54 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <BatchOperations />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Field Map */}
+        <Route
+          path="/field-map"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <FieldMap />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Plot History */}
+        <Route
+          path="/plot-history"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PlotHistory />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Germplasm Passport */}
+        <Route
+          path="/germplasm-passport"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GermplasmPassport />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Sample Tracking */}
+        <Route
+          path="/sample-tracking"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SampleTracking />
               </Layout>
             </ProtectedRoute>
           }
