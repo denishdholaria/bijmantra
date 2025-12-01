@@ -117,6 +117,7 @@ import { KeyboardShortcuts } from '@/pages/KeyboardShortcuts'
 import { WhatsNew } from '@/pages/WhatsNew'
 import { Feedback } from '@/pages/Feedback'
 import { Tips } from '@/pages/Tips'
+import { Changelog } from '@/pages/Changelog'
 
 function App() {
   return (
@@ -1465,6 +1466,18 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Tips />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Changelog */}
+        <Route
+          path="/changelog"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Changelog />
               </Layout>
             </ProtectedRoute>
           }

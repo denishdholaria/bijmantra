@@ -142,6 +142,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         { path: '/keyboard-shortcuts', label: 'Shortcuts', icon: '⌨️' },
         { path: '/whats-new', label: "What's New", icon: '🎉' },
         { path: '/tips', label: 'Tips & Tricks', icon: '💡' },
+        { path: '/changelog', label: 'Changelog', icon: '📝' },
         { path: '/feedback', label: 'Feedback', icon: '💬' },
       ],
     },
