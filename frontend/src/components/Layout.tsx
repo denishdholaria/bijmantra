@@ -143,6 +143,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         { path: '/whats-new', label: "What's New", icon: '🎉' },
         { path: '/tips', label: 'Tips & Tricks', icon: '💡' },
         { path: '/changelog', label: 'Changelog', icon: '📝' },
+        { path: '/contact', label: 'Contact', icon: '📧' },
+        { path: '/privacy', label: 'Privacy', icon: '🔒' },
         { path: '/feedback', label: 'Feedback', icon: '💬' },
       ],
     },

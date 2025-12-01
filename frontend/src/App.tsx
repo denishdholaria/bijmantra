@@ -118,6 +118,8 @@ import { WhatsNew } from '@/pages/WhatsNew'
 import { Feedback } from '@/pages/Feedback'
 import { Tips } from '@/pages/Tips'
 import { Changelog } from '@/pages/Changelog'
+import { Contact } from '@/pages/Contact'
+import { Privacy } from '@/pages/Privacy'
 
 function App() {
   return (
@@ -1478,6 +1480,30 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Changelog />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Contact */}
+        <Route
+          path="/contact"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Contact />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Privacy */}
+        <Route
+          path="/privacy"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Privacy />
               </Layout>
             </ProtectedRoute>
           }
