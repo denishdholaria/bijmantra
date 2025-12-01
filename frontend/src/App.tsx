@@ -142,6 +142,14 @@ import { DiseaseAtlas } from '@/pages/DiseaseAtlas'
 import { FieldScanner } from '@/pages/FieldScanner'
 import { CropHealthDashboard } from '@/pages/CropHealthDashboard'
 import { YieldPredictor } from '@/pages/YieldPredictor'
+import { CollaborationHub } from '@/pages/CollaborationHub'
+import { AdvancedReports } from '@/pages/AdvancedReports'
+import { DataSync } from '@/pages/DataSync'
+import { TeamManagement } from '@/pages/TeamManagement'
+import { ProtocolLibrary } from '@/pages/ProtocolLibrary'
+import { ExperimentDesigner } from '@/pages/ExperimentDesigner'
+import { ResourceCalendar } from '@/pages/ResourceCalendar'
+import { EnvironmentMonitor } from '@/pages/EnvironmentMonitor'
 
 function App() {
   return (
@@ -1790,6 +1798,102 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <YieldPredictor />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Collaboration Hub */}
+        <Route
+          path="/collaboration"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CollaborationHub />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Advanced Reports */}
+        <Route
+          path="/advanced-reports"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AdvancedReports />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Data Sync */}
+        <Route
+          path="/data-sync"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DataSync />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Team Management */}
+        <Route
+          path="/team-management"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TeamManagement />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protocol Library */}
+        <Route
+          path="/protocols"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ProtocolLibrary />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Experiment Designer */}
+        <Route
+          path="/experiment-designer"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ExperimentDesigner />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Resource Calendar */}
+        <Route
+          path="/resource-calendar"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ResourceCalendar />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Environment Monitor */}
+        <Route
+          path="/environment-monitor"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <EnvironmentMonitor />
               </Layout>
             </ProtectedRoute>
           }
