@@ -98,6 +98,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      title: 'Genomics',
+      icon: '🔬',
+      items: [
+        { path: '/genetic-diversity', label: 'Diversity', icon: '🌈' },
+        { path: '/breeding-values', label: 'Breeding Values', icon: '📊' },
+        { path: '/qtl-mapping', label: 'QTL Mapping', icon: '🎯' },
+        { path: '/genomic-selection', label: 'Genomic Selection', icon: '🧬' },
+        { path: '/marker-assisted-selection', label: 'MAS', icon: '🔖' },
+        { path: '/haplotype-analysis', label: 'Haplotypes', icon: '🔗' },
+        { path: '/linkage-disequilibrium', label: 'LD Analysis', icon: '📈' },
+        { path: '/population-genetics', label: 'Pop Genetics', icon: '👥' },
+        { path: '/parentage-analysis', label: 'Parentage', icon: '👨‍👩‍👧' },
+        { path: '/genetic-correlation', label: 'Correlations', icon: '🔄' },
+        { path: '/gxe-interaction', label: 'G×E', icon: '🌍' },
+        { path: '/stability-analysis', label: 'Stability', icon: '⚖️' },
+      ],
+    },
+    {
+      title: 'Advanced',
+      icon: '🚀',
+      items: [
+        { path: '/molecular-breeding', label: 'Molecular Breeding', icon: '🧪' },
+        { path: '/phenomic-selection', label: 'Phenomics', icon: '📷' },
+        { path: '/speed-breeding', label: 'Speed Breeding', icon: '⚡' },
+        { path: '/doubled-haploid', label: 'Doubled Haploid', icon: '🔬' },
+      ],
+    },
+    {
       title: 'Tools',
       icon: '🛠️',
       items: [
