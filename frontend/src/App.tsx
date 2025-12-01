@@ -120,6 +120,7 @@ import { Tips } from '@/pages/Tips'
 import { Changelog } from '@/pages/Changelog'
 import { Contact } from '@/pages/Contact'
 import { Privacy } from '@/pages/Privacy'
+import { Terms } from '@/pages/Terms'
 
 function App() {
   return (
@@ -1504,6 +1505,18 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Privacy />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Terms */}
+        <Route
+          path="/terms"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Terms />
               </Layout>
             </ProtectedRoute>
           }
