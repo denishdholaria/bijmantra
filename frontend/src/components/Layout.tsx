@@ -140,6 +140,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         { path: '/glossary', label: 'Glossary', icon: '📖' },
         { path: '/faq', label: 'FAQ', icon: '❓' },
         { path: '/keyboard-shortcuts', label: 'Shortcuts', icon: '⌨️' },
+        { path: '/whats-new', label: "What's New", icon: '🎉' },
+        { path: '/tips', label: 'Tips & Tricks', icon: '💡' },
+        { path: '/feedback', label: 'Feedback', icon: '💬' },
       ],
     },
   ]
