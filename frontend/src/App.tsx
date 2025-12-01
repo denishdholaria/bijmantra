@@ -138,6 +138,8 @@ import { PhenomicSelection } from '@/pages/PhenomicSelection'
 import { SpeedBreeding } from '@/pages/SpeedBreeding'
 import { DoubledHaploid } from '@/pages/DoubledHaploid'
 import { PlantVision } from '@/pages/PlantVision'
+import { DiseaseAtlas } from '@/pages/DiseaseAtlas'
+import { FieldScanner } from '@/pages/FieldScanner'
 
 function App() {
   return (
@@ -1738,6 +1740,30 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <PlantVision />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Disease Atlas */}
+        <Route
+          path="/disease-atlas"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DiseaseAtlas />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Field Scanner */}
+        <Route
+          path="/field-scanner"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <FieldScanner />
               </Layout>
             </ProtectedRoute>
           }
