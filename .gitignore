@@ -73,3 +73,6 @@ logs/
 tmp/
 temp/
 *.tmp
+
+# Development tracking
+AUTONOMOUS_PROGRESS.md
