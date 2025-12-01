@@ -145,6 +145,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         { path: '/changelog', label: 'Changelog', icon: '📝' },
         { path: '/contact', label: 'Contact', icon: '📧' },
         { path: '/privacy', label: 'Privacy', icon: '🔒' },
+        { path: '/terms', label: 'Terms', icon: '📜' },
         { path: '/feedback', label: 'Feedback', icon: '💬' },
       ],
     },
