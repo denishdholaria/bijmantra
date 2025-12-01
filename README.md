@@ -34,8 +34,13 @@ A comprehensive Progressive Web Application for plant breeding management, fully
 - **Speed Breeding** - Accelerated generation advancement
 - **Doubled Haploid** - DH production and management
 
-### 🤖 AI Integration
+### 🤖 AI Integration & Computer Vision
 - **AI Assistant** - Multi-provider support (OpenAI, Anthropic, Google, Mistral)
+- **Plant Vision AI** - Disease detection, growth stage, stress analysis
+- **Field Scanner** - Real-time field scanning with continuous mode
+- **Disease Atlas** - Comprehensive disease reference guide
+- **Crop Health Dashboard** - Monitor health across trials
+- **Yield Predictor** - AI-powered yield prediction with scenario analysis
 - **Chrome AI** - Local Gemini Nano integration
 - **Hybrid Mode** - Smart routing between local and cloud AI
 
@@ -56,10 +61,11 @@ A comprehensive Progressive Web Application for plant breeding management, fully
 
 | Metric | Count |
 |--------|-------|
-| **Total Pages** | 136 |
+| **Total Pages** | 141 |
 | **BrAPI Endpoints** | 34/34 (100%) |
 | **Breeding Tools** | 25+ |
 | **Genomic Tools** | 16 |
+| **AI Phenotyping** | 8 |
 
 ## 🎨 UI Features
 
