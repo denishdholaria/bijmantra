@@ -109,6 +109,11 @@ import { ChromeAI } from '@/pages/ChromeAI'
 import { About } from '@/pages/About'
 import { Profile } from '@/pages/Profile'
 import { NotFound } from '@/pages/NotFound'
+import { HelpCenter } from '@/pages/HelpCenter'
+import { QuickGuide } from '@/pages/QuickGuide'
+import { Glossary } from '@/pages/Glossary'
+import { FAQ } from '@/pages/FAQ'
+import { KeyboardShortcuts } from '@/pages/KeyboardShortcuts'
 
 function App() {
   return (
@@ -1361,6 +1366,66 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <About />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Help Center */}
+        <Route
+          path="/help"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <HelpCenter />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Quick Guide */}
+        <Route
+          path="/quick-guide"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <QuickGuide />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Glossary */}
+        <Route
+          path="/glossary"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Glossary />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* FAQ */}
+        <Route
+          path="/faq"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <FAQ />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Keyboard Shortcuts */}
+        <Route
+          path="/keyboard-shortcuts"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <KeyboardShortcuts />
               </Layout>
             </ProtectedRoute>
           }
