@@ -174,6 +174,23 @@ import { HarvestLog } from '@/pages/HarvestLog'
 import { DroneIntegration } from '@/pages/DroneIntegration'
 import { IoTSensors } from '@/pages/IoTSensors'
 import { BlockchainTraceability } from '@/pages/BlockchainTraceability'
+import { AnalyticsDashboard } from '@/pages/AnalyticsDashboard'
+import { WeatherForecast } from '@/pages/WeatherForecast'
+import { WorkflowAutomation } from '@/pages/WorkflowAutomation'
+import { DataExportTemplates } from '@/pages/DataExportTemplates'
+import { NotificationCenter } from '@/pages/NotificationCenter'
+import { LanguageSettings } from '@/pages/LanguageSettings'
+import { GeneticGainCalculator } from '@/pages/GeneticGainCalculator'
+import { TrialNetwork } from '@/pages/TrialNetwork'
+import { ParentSelection } from '@/pages/ParentSelection'
+import { OfflineMode } from '@/pages/OfflineMode'
+import { BreedingSimulator } from '@/pages/BreedingSimulator'
+import { DataDictionary } from '@/pages/DataDictionary'
+import { ActivityTimeline } from '@/pages/ActivityTimeline'
+import { GermplasmSearch } from '@/pages/GermplasmSearch'
+import { FieldPlanning } from '@/pages/FieldPlanning'
+import { QuickEntry } from '@/pages/QuickEntry'
+import { SystemHealth } from '@/pages/SystemHealth'
 
 function App() {
   return (
@@ -2206,6 +2223,210 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <BlockchainTraceability />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Analytics Dashboard */}
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AnalyticsDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Weather Forecast */}
+        <Route
+          path="/weather-forecast"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WeatherForecast />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Workflow Automation */}
+        <Route
+          path="/workflows"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WorkflowAutomation />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Data Export Templates */}
+        <Route
+          path="/export-templates"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DataExportTemplates />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Notification Center */}
+        <Route
+          path="/notification-center"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <NotificationCenter />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Language Settings */}
+        <Route
+          path="/languages"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <LanguageSettings />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Genetic Gain Calculator */}
+        <Route
+          path="/genetic-gain-calculator"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GeneticGainCalculator />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Trial Network */}
+        <Route
+          path="/trial-network"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TrialNetwork />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Parent Selection */}
+        <Route
+          path="/parent-selection"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ParentSelection />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Offline Mode */}
+        <Route
+          path="/offline"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <OfflineMode />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Breeding Simulator */}
+        <Route
+          path="/breeding-simulator"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BreedingSimulator />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Data Dictionary */}
+        <Route
+          path="/data-dictionary"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DataDictionary />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Activity Timeline */}
+        <Route
+          path="/activity"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ActivityTimeline />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Germplasm Search */}
+        <Route
+          path="/germplasm-search"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GermplasmSearch />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Field Planning */}
+        <Route
+          path="/field-planning"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <FieldPlanning />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Quick Entry */}
+        <Route
+          path="/quick-entry"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <QuickEntry />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* System Health */}
+        <Route
+          path="/system-health"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SystemHealth />
               </Layout>
             </ProtectedRoute>
           }
