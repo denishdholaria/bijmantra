@@ -191,6 +191,15 @@ import { GermplasmSearch } from '@/pages/GermplasmSearch'
 import { FieldPlanning } from '@/pages/FieldPlanning'
 import { QuickEntry } from '@/pages/QuickEntry'
 import { SystemHealth } from '@/pages/SystemHealth'
+import { CrossPrediction } from '@/pages/CrossPrediction'
+import { TrialSummary } from '@/pages/TrialSummary'
+import { SelectionDecision } from '@/pages/SelectionDecision'
+import { SeasonPlanning } from '@/pages/SeasonPlanning'
+import { DataValidation } from '@/pages/DataValidation'
+import { BreedingHistory } from '@/pages/BreedingHistory'
+import { ResourceAllocation } from '@/pages/ResourceAllocation'
+import { GeneticMap } from '@/pages/GeneticMap'
+import { PerformanceRanking } from '@/pages/PerformanceRanking'
 
 function App() {
   return (
@@ -2427,6 +2436,114 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <SystemHealth />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Cross Prediction */}
+        <Route
+          path="/cross-prediction"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CrossPrediction />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Trial Summary */}
+        <Route
+          path="/trial-summary"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TrialSummary />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Selection Decision */}
+        <Route
+          path="/selection-decision"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SelectionDecision />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Season Planning */}
+        <Route
+          path="/season-planning"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SeasonPlanning />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Data Validation */}
+        <Route
+          path="/data-validation"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DataValidation />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Breeding History */}
+        <Route
+          path="/breeding-history"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BreedingHistory />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Resource Allocation */}
+        <Route
+          path="/resource-allocation"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ResourceAllocation />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Genetic Map */}
+        <Route
+          path="/genetic-map"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GeneticMap />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Performance Ranking */}
+        <Route
+          path="/performance-ranking"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PerformanceRanking />
               </Layout>
             </ProtectedRoute>
           }
