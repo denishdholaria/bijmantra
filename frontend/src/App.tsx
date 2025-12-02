@@ -171,6 +171,9 @@ import { IrrigationPlanner } from '@/pages/IrrigationPlanner'
 import { PestMonitor } from '@/pages/PestMonitor'
 import { GrowthTracker } from '@/pages/GrowthTracker'
 import { HarvestLog } from '@/pages/HarvestLog'
+import { DroneIntegration } from '@/pages/DroneIntegration'
+import { IoTSensors } from '@/pages/IoTSensors'
+import { BlockchainTraceability } from '@/pages/BlockchainTraceability'
 
 function App() {
   return (
@@ -2167,6 +2170,42 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <HarvestLog />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Drone Integration */}
+        <Route
+          path="/drones"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DroneIntegration />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* IoT Sensors */}
+        <Route
+          path="/iot-sensors"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <IoTSensors />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Blockchain Traceability */}
+        <Route
+          path="/blockchain"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BlockchainTraceability />
               </Layout>
             </ProtectedRoute>
           }
