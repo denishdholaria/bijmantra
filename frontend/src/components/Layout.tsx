@@ -234,6 +234,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      title: 'WASM Engine',
+      icon: '🦀',
+      items: [
+        { path: '/wasm-genomics', label: 'WASM Genomics', icon: '⚡' },
+        { path: '/wasm-gblup', label: 'WASM GBLUP', icon: '📊' },
+        { path: '/wasm-popgen', label: 'Population Gen', icon: '👥' },
+        { path: '/wasm-ld', label: 'LD Analysis', icon: '🔗' },
+        { path: '/wasm-selection', label: 'Selection Index', icon: '🎯' },
+      ],
+    },
+    {
       title: 'Future Tech',
       icon: '🔮',
       items: [

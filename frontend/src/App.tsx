@@ -200,6 +200,11 @@ import { BreedingHistory } from '@/pages/BreedingHistory'
 import { ResourceAllocation } from '@/pages/ResourceAllocation'
 import { GeneticMap } from '@/pages/GeneticMap'
 import { PerformanceRanking } from '@/pages/PerformanceRanking'
+import { WasmGenomics } from '@/pages/WasmGenomics'
+import { WasmGBLUP } from '@/pages/WasmGBLUP'
+import { WasmPopGen } from '@/pages/WasmPopGen'
+import { WasmLDAnalysis } from '@/pages/WasmLDAnalysis'
+import { WasmSelectionIndex } from '@/pages/WasmSelectionIndex'
 
 function App() {
   return (
@@ -2544,6 +2549,66 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <PerformanceRanking />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WASM Genomics Engine */}
+        <Route
+          path="/wasm-genomics"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WasmGenomics />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WASM GBLUP Calculator */}
+        <Route
+          path="/wasm-gblup"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WasmGBLUP />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WASM Population Genetics */}
+        <Route
+          path="/wasm-popgen"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WasmPopGen />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WASM LD Analysis */}
+        <Route
+          path="/wasm-ld"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WasmLDAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WASM Selection Index */}
+        <Route
+          path="/wasm-selection"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WasmSelectionIndex />
               </Layout>
             </ProtectedRoute>
           }
