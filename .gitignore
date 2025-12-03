@@ -69,6 +69,10 @@ logs/
 *.tar.gz
 *.zip
 
+# Rust
+rust/target/
+rust/Cargo.lock
+
 # Temporary files
 tmp/
 temp/
