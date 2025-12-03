@@ -358,57 +358,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* Sidebar Footer - Fixed at bottom */}
-        <div className="flex-shrink-0 p-2 border-t border-gray-200 bg-white space-y-0.5">
-          <Link
-            to="/about"
-            onClick={closeMobileMenu}
-            className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
-            title={sidebarCollapsed ? 'About' : ''}
-          >
-            <span>ℹ️</span>
-            {!sidebarCollapsed && <span>About</span>}
-          </Link>
-          <Link
-            to="/notifications"
-            onClick={closeMobileMenu}
-            className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
-            title={sidebarCollapsed ? 'Notifications' : ''}
-          >
-            <span>🔔</span>
-            {!sidebarCollapsed && <span>Notifications</span>}
-          </Link>
-          <Link
-            to="/profile"
-            onClick={closeMobileMenu}
-            className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
-            title={sidebarCollapsed ? 'Profile' : ''}
-          >
-            <span>👤</span>
-            {!sidebarCollapsed && <span>Profile</span>}
-          </Link>
-          <Link
-            to="/settings"
-            onClick={closeMobileMenu}
-            className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
-            title={sidebarCollapsed ? 'Settings' : ''}
-          >
-            <span>⚙️</span>
-            {!sidebarCollapsed && <span>Settings</span>}
-          </Link>
+        {/* Sidebar Footer - Only Collapse button */}
+        <div className="flex-shrink-0 p-2 border-t border-gray-200 bg-white">
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md hidden lg:flex"
           >
             <span>{sidebarCollapsed ? '→' : '←'}</span>
             {!sidebarCollapsed && <span>Collapse</span>}
-          </button>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md"
-          >
-            <span>🚪</span>
-            {!sidebarCollapsed && <span>Logout</span>}
           </button>
         </div>
       </aside>
@@ -436,13 +393,53 @@ export function Layout({ children }: { children: React.ReactNode }) {
               {navSections.flatMap(s => s.items).find(item => location.pathname.startsWith(item.path))?.label || 'Bijmantra'}
             </h2>
           </div>
-          <div className="flex items-center gap-3 text-xs">
-            <span className="hidden sm:flex items-center gap-1.5 text-gray-600">
+          
+          {/* Right side - User actions */}
+          <div className="flex items-center gap-1">
+            <span className="hidden md:flex items-center gap-1.5 text-xs text-gray-600 mr-2">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
               Online
             </span>
-            <span className="text-gray-400 hidden sm:inline">|</span>
-            <span className="text-gray-600 font-medium">BrAPI v2.1</span>
+            <span className="text-gray-400 hidden md:inline mr-2">|</span>
+            <span className="text-xs text-gray-600 font-medium hidden md:inline mr-3">BrAPI v2.1</span>
+            
+            <Link
+              to="/about"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              title="About"
+            >
+              <span className="text-lg">ℹ️</span>
+            </Link>
+            <Link
+              to="/notifications"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors relative"
+              title="Notifications"
+            >
+              <span className="text-lg">🔔</span>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </Link>
+            <Link
+              to="/profile"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Profile"
+            >
+              <span className="text-lg">👤</span>
+            </Link>
+            <Link
+              to="/settings"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Settings"
+            >
+              <span className="text-lg">⚙️</span>
+            </Link>
+            <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
+            <button
+              onClick={handleLogout}
+              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              title="Logout"
+            >
+              <span className="text-lg">🚪</span>
+            </button>
           </div>
         </header>
 
