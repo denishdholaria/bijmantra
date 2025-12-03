@@ -212,7 +212,16 @@ Full implementation of BrAPI v2.1 specification:
 
 ## 📜 License
 
-MIT License - See [LICENSE](LICENSE) for details.
+**Bijmantra Open Source License with Attribution (BOSLA)**
+
+This software is open source with mandatory attribution requirements. You are free to use, modify, and distribute this software, but you MUST give visible credit to the creator.
+
+**Required Attribution:**
+```
+Powered by Bijmantra - Created by Denish Dholaria / R.E.E.V.A.i
+```
+
+See [LICENSE](LICENSE) for full details.
 
 ## 👨‍💻 Developer
 

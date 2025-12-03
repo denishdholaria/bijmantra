@@ -369,10 +369,13 @@ export function About() {
         </div>
         <div className="mt-6 space-y-1">
           <p className="text-xs text-muted-foreground">
-            © 2025 Bijmantra by R.E.E.V.A.i • Open Source • MIT License
+            © 2025 Bijmantra by R.E.E.V.A.i • Open Source with Attribution
           </p>
           <p className="text-xs text-muted-foreground">
             Supported by Solar Agrotech Private Limited
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            <Link to="/terms" className="text-green-600 hover:underline">BOSLA License</Link> - Free to use with required attribution
           </p>
         </div>
       </div>
