@@ -26,9 +26,9 @@ export function About() {
 
   const timeline = [
     { year: 'Age 12', event: 'First steps into genetics', desc: 'Learning plant breeding alongside father at the cotton research farm in Gujarat, India' },
-    { year: '2010s', event: 'BSc Biotechnology', desc: 'Monash University, Australia - Building the scientific foundation' },
-    { year: '2010s', event: 'MSc Plant Breeding & Biotechnology', desc: 'University of Adelaide - Specializing in crop improvement' },
-    { year: '2010s', event: 'Agricultural Science', desc: 'University of Melbourne - Broadening agricultural knowledge' },
+    { year: '2010', event: 'BSc Biotechnology', desc: 'Monash University, Australia - Building the scientific foundation' },
+    { year: '2012', event: 'MSc Plant Breeding & Biotechnology', desc: 'University of Adelaide - Specializing in crop improvement' },
+    { year: '2024', event: 'Agricultural Science', desc: 'University of Melbourne - Precision Agriculture, Agricultural Extension & Marketing' },
     { year: '2025', event: 'Bijmantra Born', desc: 'Combining decades of experience into an open-source platform for the world' },
   ]
 
@@ -121,17 +121,17 @@ export function About() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div className="p-3 bg-blue-50 rounded-lg">
               <span className="text-2xl">🎓</span>
-              <p className="font-semibold text-sm mt-1">BSc Biotechnology</p>
+              <p className="font-semibold text-sm mt-1">BSc Biotechnology (2010)</p>
               <p className="text-xs text-muted-foreground">Monash University</p>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
               <span className="text-2xl">🧬</span>
-              <p className="font-semibold text-sm mt-1">MSc Plant Breeding & Biotech</p>
+              <p className="font-semibold text-sm mt-1">MSc Plant Breeding & Biotech (2012)</p>
               <p className="text-xs text-muted-foreground">University of Adelaide</p>
             </div>
             <div className="p-3 bg-purple-50 rounded-lg">
               <span className="text-2xl">🌾</span>
-              <p className="font-semibold text-sm mt-1">Agricultural Science</p>
+              <p className="font-semibold text-sm mt-1">Agricultural Science (2024)</p>
               <p className="text-xs text-muted-foreground">University of Melbourne</p>
             </div>
           </div>
