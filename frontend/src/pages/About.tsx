@@ -14,7 +14,7 @@ export function About() {
     { icon: '📱', title: 'PWA Ready', desc: 'Works offline, installable on any device' },
     { icon: '🔬', title: 'Complete Breeding Tools', desc: 'Trial design, selection index, genetic gain' },
     { icon: '🧬', title: 'Genotyping Support', desc: 'Variants, samples, allele matrices' },
-    { icon: '📊', title: '107 Features', desc: 'Comprehensive breeding management' },
+    { icon: '📊', title: '200+ Features', desc: 'Comprehensive breeding management' },
   ]
 
   const modules = [
@@ -22,6 +22,14 @@ export function About() {
     { name: 'Germplasm', count: 8, color: 'bg-green-500' },
     { name: 'Phenotyping', count: 6, color: 'bg-purple-500' },
     { name: 'Genotyping', count: 12, color: 'bg-orange-500' },
+  ]
+
+  const timeline = [
+    { year: 'Age 12', event: 'First steps into genetics', desc: 'Learning plant breeding alongside father at the cotton research farm in Gujarat, India' },
+    { year: '2010s', event: 'BSc Biotechnology', desc: 'Monash University, Australia - Building the scientific foundation' },
+    { year: '2010s', event: 'MSc Plant Breeding & Biotechnology', desc: 'University of Adelaide - Specializing in crop improvement' },
+    { year: '2010s', event: 'Agricultural Science', desc: 'University of Melbourne - Broadening agricultural knowledge' },
+    { year: '2025', event: 'Bijmantra Born', desc: 'Combining decades of experience into an open-source platform for the world' },
   ]
 
   return (
@@ -44,10 +52,59 @@ export function About() {
         </div>
       </div>
 
-      {/* Author Card */}
+      {/* The Story Section */}
       <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
         <CardHeader className="text-center pb-2">
           <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
+            <span className="text-3xl">🌾</span>
+          </div>
+          <CardTitle className="text-2xl">A Story Rooted in the Fields</CardTitle>
+          <CardDescription className="text-base">From a cotton research farm to a global platform</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-white/70 rounded-xl p-6 max-w-3xl mx-auto">
+            <div className="prose prose-green max-w-none">
+              <p className="text-gray-700 leading-relaxed text-lg">
+                <span className="text-3xl float-left mr-3 mt-1">👦</span>
+                At the age of twelve, while most children were playing cricket, a young boy in Gujarat, India 
+                was walking through rows of cotton plants with his father, <span className="font-semibold text-emerald-700">Dr. T. L. Dholaria</span>, 
+                a PhD holder in Plant Breeding and Genetics. Those early mornings at the research farm weren't 
+                just father-son time — they were the first lessons in a lifelong journey of understanding how 
+                seeds carry the hopes of farmers and the future of food security.
+              </p>
+              
+              <p className="text-gray-700 leading-relaxed mt-4">
+                Watching his father develop new cotton hybrids, the boy learned that plant breeding isn't just 
+                science — it's an art of patience, observation, and deep respect for nature. Each cross made, 
+                each selection chosen, each trial planted was a step toward helping farmers grow better crops 
+                and build better lives.
+              </p>
+
+              <p className="text-gray-700 leading-relaxed mt-4">
+                That boy grew up to pursue his passion across three prestigious Australian universities — 
+                <span className="font-semibold"> Monash University</span> (BSc Biotechnology), 
+                <span className="font-semibold"> University of Adelaide</span> (MSc Plant Breeding & MSc Plant Biotechnology), 
+                and the <span className="font-semibold">University of Melbourne</span> (Agricultural Science). 
+                But the most valuable education always remained those early lessons from the cotton fields of Gujarat.
+              </p>
+
+              <div className="bg-emerald-50 rounded-lg p-4 mt-6 border-l-4 border-emerald-500">
+                <p className="text-emerald-800 italic">
+                  "The seeds we plant today determine the harvest our children will reap tomorrow. 
+                  Bijmantra is my contribution to ensuring that harvest is abundant, sustainable, 
+                  and accessible to all who tend the earth."
+                </p>
+                <p className="text-emerald-600 font-semibold mt-2">— Denish Dholaria, Creator of Bijmantra</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Author Card */}
+      <Card>
+        <CardHeader className="text-center pb-2">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
             <span className="text-3xl">👨‍💻</span>
           </div>
           <CardTitle className="text-2xl">Denish Dholaria</CardTitle>
@@ -61,19 +118,31 @@ export function About() {
             </p>
           </div>
           
-          <div className="bg-white/70 rounded-xl p-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <span className="text-2xl">🎓</span>
+              <p className="font-semibold text-sm mt-1">BSc Biotechnology</p>
+              <p className="text-xs text-muted-foreground">Monash University</p>
+            </div>
+            <div className="p-3 bg-green-50 rounded-lg">
+              <span className="text-2xl">🧬</span>
+              <p className="font-semibold text-sm mt-1">MSc Plant Breeding & Biotech</p>
+              <p className="text-xs text-muted-foreground">University of Adelaide</p>
+            </div>
+            <div className="p-3 bg-purple-50 rounded-lg">
+              <span className="text-2xl">🌾</span>
+              <p className="font-semibold text-sm mt-1">Agricultural Science</p>
+              <p className="text-xs text-muted-foreground">University of Melbourne</p>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 rounded-xl p-4 max-w-2xl mx-auto border border-amber-200">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">💚</span>
+              <span className="text-2xl">👨‍🔬</span>
               <div className="text-left">
-                <p className="text-gray-700 leading-relaxed">
-                  The name <span className="font-semibold text-emerald-600">"Reevai"</span> is inspired by 
-                  <span className="font-semibold text-emerald-600"> REEVA</span>, my daughter's name. 
-                  This project carries a deeply personal mission — to build climate-resilient technologies 
-                  and provide better solutions against climate change.
-                </p>
-                <p className="text-gray-700 leading-relaxed mt-3">
-                  My hope is to contribute to the betterment of our world and leave behind a better planet 
-                  for future generations, including Reeva and all children who will inherit this Earth.
+                <p className="font-semibold text-amber-800">Mentored by Dr. T. L. Dholaria</p>
+                <p className="text-sm text-amber-700">
+                  PhD in Plant Breeding and Genetics • Pioneer in Cotton Hybrid Development • Gujarat, India
                 </p>
               </div>
             </div>
@@ -93,6 +162,33 @@ export function About() {
         </CardContent>
       </Card>
 
+      {/* Journey Timeline */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🛤️</span> The Journey
+          </CardTitle>
+          <CardDescription>From cotton fields to code</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-green-200"></div>
+            <div className="space-y-6">
+              {timeline.map((item, i) => (
+                <div key={i} className="relative pl-12">
+                  <div className="absolute left-2 w-5 h-5 bg-green-500 rounded-full border-4 border-white shadow"></div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <Badge variant="outline" className="mb-2">{item.year}</Badge>
+                    <h4 className="font-semibold">{item.event}</h4>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Mission */}
       <Card>
         <CardHeader>
@@ -105,7 +201,8 @@ export function About() {
             Bijmantra aims to democratize plant breeding technology by providing a comprehensive, 
             open-source breeding information management system. We believe that modern breeding tools 
             should be accessible to researchers, farmers, and agricultural institutions worldwide — 
-            regardless of their resources.
+            regardless of their resources. Our hope is to contribute to the betterment of our world 
+            and leave behind a better planet for future generations — for all children who will inherit this Earth.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
             <div className="p-4 bg-green-50 rounded-lg text-center">
@@ -126,7 +223,6 @@ export function About() {
           </div>
         </CardContent>
       </Card>
-
 
       {/* Features Grid */}
       <Card>
@@ -208,6 +304,52 @@ export function About() {
         </CardContent>
       </Card>
 
+      {/* Acknowledgments */}
+      <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🙏</span> Acknowledgments
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-white/70 rounded-xl p-6">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-md">
+                <span className="text-2xl">☀️</span>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-amber-800">Solar Agrotech Private Limited</h3>
+                <p className="text-amber-600">Proud Sponsor & Resource Provider</p>
+              </div>
+            </div>
+            <p className="text-gray-700 leading-relaxed">
+              This application was built thanks to the generous support and resources provided by 
+              <span className="font-semibold text-amber-700"> Solar Agrotech Private Limited</span>. 
+              Their commitment to agricultural innovation and technology has made it possible to develop 
+              Bijmantra as an open-source platform for the global plant breeding community.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-white/70 rounded-lg">
+              <span className="text-2xl">👨‍🔬</span>
+              <h4 className="font-semibold mt-2">Dr. T. L. Dholaria</h4>
+              <p className="text-sm text-muted-foreground">
+                For the foundational knowledge in plant breeding and genetics, and for showing that 
+                science begins in the field, not just the laboratory.
+              </p>
+            </div>
+            <div className="p-4 bg-white/70 rounded-lg">
+              <span className="text-2xl">🌏</span>
+              <h4 className="font-semibold mt-2">Open Source Community</h4>
+              <p className="text-sm text-muted-foreground">
+                For the countless tools, libraries, and inspiration that make projects like this possible.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Footer CTA */}
       <div className="text-center py-8 space-y-4">
         <p className="text-muted-foreground">
@@ -225,9 +367,14 @@ export function About() {
             </Button>
           </Link>
         </div>
-        <p className="text-xs text-muted-foreground mt-6">
-          © 2025 Bijmantra by R.E.E.V.A.i • Open Source • MIT License
-        </p>
+        <div className="mt-6 space-y-1">
+          <p className="text-xs text-muted-foreground">
+            © 2025 Bijmantra by R.E.E.V.A.i • Open Source • MIT License
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Supported by Solar Agrotech Private Limited
+          </p>
+        </div>
       </div>
     </div>
   )
