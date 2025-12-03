@@ -22,7 +22,7 @@ interface Individual {
   accuracy?: number;
 }
 
-export default function WasmGBLUP() {
+function WasmGBLUP() {
   const { isReady, version } = useWasm();
   const { calculate: calcGRM, result: grmResult } = useGRM();
   const { calculate: calcGBLUP, result: gblupResult, isCalculating } = useGBLUP();
@@ -380,3 +380,6 @@ export default function WasmGBLUP() {
     </div>
   );
 }
+
+export default WasmGBLUP;
+export { WasmGBLUP };

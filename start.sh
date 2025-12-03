@@ -26,9 +26,9 @@ fi
 echo -e "${YELLOW}Using: $CONTAINER_CMD${NC}"
 echo ""
 
-# 1. Start PostgreSQL
-echo "📦 Starting PostgreSQL..."
-$CONTAINER_CMD compose up -d postgres
+# 1. Start Infrastructure Services
+echo "📦 Starting PostgreSQL, Redis, and Meilisearch..."
+$CONTAINER_CMD compose up -d postgres redis meilisearch
 sleep 3
 
 # Wait for PostgreSQL to be ready
@@ -76,12 +76,14 @@ echo -e "${GREEN}═════════════════════
 echo -e "${GREEN}  🌱 Bijmantra is running!${NC}"
 echo -e "${GREEN}════════════════════════════════════════════${NC}"
 echo ""
-echo "  Frontend:  http://localhost:5173"
-echo "  Backend:   http://localhost:8000"
-echo "  API Docs:  http://localhost:8000/docs"
+echo "  Frontend:     http://localhost:5173"
+echo "  Backend:      http://localhost:8000"
+echo "  API Docs:     http://localhost:8000/docs"
+echo "  Meilisearch:  http://localhost:7700"
 echo ""
 echo "  Login: admin@bijmantra.org / admin123"
 echo ""
+echo "  Press ⌘K to open Command Palette"
 echo "  Press Ctrl+C to stop all services"
 echo ""
 

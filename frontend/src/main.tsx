@@ -3,8 +3,22 @@ import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { initSentry } from '@/lib/sentry'
+import { initPostHog } from '@/lib/posthog'
+import { initWebGPU } from '@/lib/webgpu'
 import App from './App.tsx'
 import './index.css'
+
+// Initialize monitoring and analytics
+initSentry()
+initPostHog()
+
+// Initialize WebGPU for genomics acceleration (async, non-blocking)
+initWebGPU().then((capabilities) => {
+  if (capabilities.available) {
+    console.log('[Bijmantra] WebGPU available for genomics acceleration')
+  }
+})
 
 // Create React Query client
 const queryClient = new QueryClient({

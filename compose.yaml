@@ -59,6 +59,26 @@ services:
     networks:
       - bijmantra-network
 
+  # Meilisearch for instant search
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: bijmantra-meilisearch
+    environment:
+      MEILI_ENV: ${MEILI_ENV:-development}
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-}
+    volumes:
+      - meilisearch_data:/meili_data
+    ports:
+      - "${MEILISEARCH_PORT:-7700}:7700"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
   # FastAPI Backend (uncomment when ready)
   # backend:
   #   build:
@@ -108,6 +128,8 @@ volumes:
   redis_data:
     driver: local
   minio_data:
+    driver: local
+  meilisearch_data:
     driver: local
   # caddy_data:
   #   driver: local

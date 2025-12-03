@@ -1,20 +1,53 @@
 """
 Bijmantra - BrAPI v2.1 Plant Breeding Application
-FastAPI Backend
+FastAPI Backend with Real-time Collaboration
 """
 
+import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import sentry_sdk
 from app.core.config import settings
+
+# Initialize Sentry for error tracking
+SENTRY_DSN = os.getenv('SENTRY_DSN', '')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=0.1,
+        profiles_sample_rate=0.1,
+        environment=os.getenv('ENVIRONMENT', 'development'),
+    )
+
+# Lifespan for startup/shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    print("[Bijmantra] Starting up...")
+    
+    # Initialize Meilisearch
+    try:
+        from app.core.meilisearch import meilisearch_service
+        if meilisearch_service.connect():
+            meilisearch_service.setup_indexes()
+    except Exception as e:
+        print(f"[Meilisearch] Initialization skipped: {e}")
+    
+    yield
+    
+    # Shutdown
+    print("[Bijmantra] Shutting down...")
 
 # Create FastAPI app
 app = FastAPI(
     title="Bijmantra API",
-    description="BrAPI v2.1 compliant Plant Breeding Application",
+    description="BrAPI v2.1 compliant Plant Breeding Application with Real-time Collaboration",
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
+    lifespan=lifespan,
 )
 
 # CORS middleware
@@ -25,6 +58,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount Socket.IO
+try:
+    from app.core.socketio import socket_app
+    app.mount("/ws", socket_app)
+    print("[Socket.IO] Mounted at /ws")
+except Exception as e:
+    print(f"[Socket.IO] Not available: {e}")
 
 # Root endpoint
 @app.get("/")
@@ -68,9 +109,13 @@ async def serverinfo():
 # Import routers
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies
+from app.api.v2 import search
 
 # Auth routes
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+
+# Search routes
+app.include_router(search.router, prefix="/brapi/v2", tags=["Search"])
 
 # BrAPI v2.1 Core routes
 app.include_router(programs.router, prefix="/brapi/v2", tags=["Core - Programs"])

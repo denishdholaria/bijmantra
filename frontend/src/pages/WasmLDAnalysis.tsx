@@ -30,7 +30,7 @@ interface HWETest {
   inEquilibrium: boolean;
 }
 
-export default function WasmLDAnalysis() {
+function WasmLDAnalysis() {
   const { isReady, version } = useWasm();
   const { calculate: calcLD, result: ldResult, isCalculating: ldCalc } = useLD();
   const { calculate: calcHWE, result: hweResult, isCalculating: hweCalc } = useHWE();
@@ -506,3 +506,6 @@ export default function WasmLDAnalysis() {
     </div>
   );
 }
+
+export default WasmLDAnalysis;
+export { WasmLDAnalysis };

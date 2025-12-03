@@ -1,12 +1,20 @@
 /**
  * Main Layout Component with Vertical Sidebar
  * Organized with collapsible module sections
+ * Features: Command Palette (⌘K), Unified User Menu, Smart Navigation
  */
 
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuthStore } from '@/store/auth'
-import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { useKeyboardShortcuts } from '@/components/KeyboardShortcuts'
+import { CommandPalette } from '@/components/CommandPalette'
+import { UserMenu } from '@/components/UserMenu'
+import { usePinnedNav } from '@/hooks/usePinnedNav'
+import { RoleSwitcher, RoleIndicator } from '@/components/RoleSwitcher'
+import { ContextSidebar } from '@/components/ContextSidebar'
+import { ToastContainer } from '@/components/ToastContainer'
+import { PresenceIndicator } from '@/components/PresenceIndicator'
+import { SyncStatusIndicator, OfflineBanner } from '@/components/SyncStatusIndicator'
 
 interface NavSection {
   title: string
@@ -16,17 +24,24 @@ interface NavSection {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useKeyboardShortcuts()
-  const navigate = useNavigate()
   const location = useLocation()
-  const { logout } = useAuthStore()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [expandedSections, setExpandedSections] = useState<string[]>(['core', 'germplasm'])
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
+  const { pinnedItems, togglePin, isPinned } = usePinnedNav()
 
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+  // Global keyboard shortcut for Command Palette
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCommandPaletteOpen(true)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
@@ -316,6 +331,47 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Scrollable Navigation */}
         <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+          {/* Favorites/Pinned Section */}
+          {pinnedItems.length > 0 && !sidebarCollapsed && (
+            <div className="mb-3 pb-2 border-b border-gray-100">
+              <div className="px-2 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                <span>⭐</span> Favorites
+              </div>
+              {pinnedItems.map((pinnedPath) => {
+                const item = navSections.flatMap(s => s.items).find(i => i.path === pinnedPath)
+                if (!item) return null
+                const isItemActive = location.pathname.startsWith(item.path)
+                return (
+                  <Link
+                    key={`pinned-${item.path}`}
+                    to={item.path}
+                    onClick={closeMobileMenu}
+                    className={`flex items-center gap-2 px-2 py-1.5 rounded-md transition-all text-sm group
+                      ${isItemActive
+                        ? 'bg-green-500 text-white shadow-sm'
+                        : 'text-gray-600 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    <span className="text-base flex-shrink-0">{item.icon}</span>
+                    <span className="flex-1">{item.label}</span>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        togglePin(item.path)
+                      }}
+                      className={`opacity-0 group-hover:opacity-100 p-0.5 rounded transition-opacity ${isItemActive ? 'text-white/70 hover:text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                      title="Unpin"
+                    >
+                      ✕
+                    </button>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+
           {navSections.map((section) => {
             const isExpanded = expandedSections.includes(section.title.toLowerCase())
             const isActive = isSectionActive(section)
@@ -344,12 +400,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   <div className={`${sidebarCollapsed ? '' : 'ml-2 mt-1'} space-y-0.5`}>
                     {section.items.map((item) => {
                       const isItemActive = location.pathname.startsWith(item.path)
+                      const itemIsPinned = isPinned(item.path)
                       return (
                         <Link
                           key={item.path}
                           to={item.path}
                           onClick={closeMobileMenu}
-                          className={`flex items-center gap-2 px-2 py-1.5 rounded-md transition-all text-sm
+                          className={`flex items-center gap-2 px-2 py-1.5 rounded-md transition-all text-sm group
                             ${isItemActive
                               ? 'bg-green-500 text-white shadow-sm'
                               : 'text-gray-600 hover:bg-gray-100'
@@ -358,7 +415,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           title={sidebarCollapsed ? item.label : ''}
                         >
                           <span className="text-base flex-shrink-0">{item.icon}</span>
-                          {!sidebarCollapsed && <span>{item.label}</span>}
+                          {!sidebarCollapsed && (
+                            <>
+                              <span className="flex-1">{item.label}</span>
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  togglePin(item.path)
+                                }}
+                                className={`opacity-0 group-hover:opacity-100 p-0.5 rounded transition-opacity text-xs
+                                  ${itemIsPinned 
+                                    ? (isItemActive ? 'text-yellow-200' : 'text-yellow-500') 
+                                    : (isItemActive ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600')
+                                  }
+                                `}
+                                title={itemIsPinned ? 'Unpin from favorites' : 'Pin to favorites'}
+                              >
+                                {itemIsPinned ? '⭐' : '☆'}
+                              </button>
+                            </>
+                          )}
                         </Link>
                       )
                     })}
@@ -367,6 +444,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </div>
             )
           })}
+          
+          {/* Context-Aware Related Items */}
+          <ContextSidebar collapsed={sidebarCollapsed} />
         </nav>
 
         {/* Sidebar Footer - Only Collapse button */}
@@ -387,6 +467,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Top Bar */}
         <header className="h-14 bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40 flex items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-4">
+            {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
@@ -400,59 +481,64 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 )}
               </svg>
             </button>
-            <h2 className="text-base font-semibold text-gray-800">
+            
+            {/* Page title */}
+            <h2 className="text-base font-semibold text-gray-800 hidden sm:block">
               {navSections.flatMap(s => s.items).find(item => location.pathname.startsWith(item.path))?.label || 'Bijmantra'}
             </h2>
           </div>
+
+          {/* Center - Command Palette Trigger */}
+          <button
+            onClick={() => setCommandPaletteOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors border border-gray-200"
+          >
+            <span>🔍</span>
+            <span className="hidden md:inline">Search anything...</span>
+            <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-xs bg-white rounded border border-gray-300 font-mono">
+              ⌘K
+            </kbd>
+          </button>
           
-          {/* Right side - User actions */}
-          <div className="flex items-center gap-1">
-            <span className="hidden md:flex items-center gap-1.5 text-xs text-gray-600 mr-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              Online
-            </span>
-            <span className="text-gray-400 hidden md:inline mr-2">|</span>
-            <span className="text-xs text-gray-600 font-medium hidden md:inline mr-3">BrAPI v2.1</span>
+          {/* Right side - Simplified */}
+          <div className="flex items-center gap-2">
+            {/* Role indicator when not in 'all' mode */}
+            <RoleIndicator />
             
-            <Link
-              to="/about"
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              title="About"
-            >
-              <span className="text-lg">ℹ️</span>
-            </Link>
-            <Link
-              to="/notifications"
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors relative"
-              title="Notifications"
-            >
-              <span className="text-lg">🔔</span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </Link>
-            <Link
-              to="/profile"
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Profile"
-            >
-              <span className="text-lg">👤</span>
-            </Link>
-            <Link
-              to="/settings"
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Settings"
-            >
-              <span className="text-lg">⚙️</span>
-            </Link>
-            <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
+            {/* Role Switcher - hidden on mobile */}
+            <div className="hidden md:block">
+              <RoleSwitcher compact />
+            </div>
+            
+            {/* Online presence indicator */}
+            <div className="hidden lg:block">
+              <PresenceIndicator maxVisible={3} showCount={false} />
+            </div>
+            
+            {/* Sync status indicator */}
+            <div className="hidden sm:block">
+              <SyncStatusIndicator />
+            </div>
+            
+            {/* Mobile search button */}
             <button
-              onClick={handleLogout}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              title="Logout"
+              onClick={() => setCommandPaletteOpen(true)}
+              className="sm:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              aria-label="Search"
             >
-              <span className="text-lg">🚪</span>
+              <span className="text-lg">🔍</span>
             </button>
+            
+            {/* Unified User Menu */}
+            <UserMenu />
           </div>
         </header>
+        
+        {/* Command Palette */}
+        <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
+
+        {/* Offline Banner */}
+        <OfflineBanner />
 
         {/* Main Content */}
         <main className="p-4 lg:p-6 min-h-[calc(100vh-56px)]">{children}</main>
@@ -465,6 +551,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </footer>
       </div>
+      
+      {/* Global Toast Notifications */}
+      <ToastContainer />
     </div>
   )
 }

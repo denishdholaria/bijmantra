@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useWasm, useGRM, useDiversity, usePCA } from '@/wasm/hooks';
 
-export default function WasmGenomics() {
+function WasmGenomics() {
   const { isLoading, isReady, version, error: wasmError } = useWasm();
   const { calculate: calcGRM, result: grmResult, isCalculating: grmCalc } = useGRM();
   const { calculate: calcDiv, result: divResult, isCalculating: divCalc } = useDiversity();
@@ -434,3 +434,6 @@ export default function WasmGenomics() {
     </div>
   );
 }
+
+export default WasmGenomics;
+export { WasmGenomics };

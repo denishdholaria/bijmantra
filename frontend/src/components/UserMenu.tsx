@@ -1,0 +1,181 @@
+/**
+ * Unified User Menu Component
+ * Consolidates profile, notifications, settings, and logout into one dropdown
+ */
+
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '@/store/auth'
+import { useState } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+interface Notification {
+  id: string
+  title: string
+  time: string
+  read: boolean
+}
+
+export function UserMenu() {
+  const navigate = useNavigate()
+  const { user, logout } = useAuthStore()
+  // Mock notifications - in production, fetch from API
+  const [notifications] = useState<Notification[]>([
+    { id: '1', title: 'Trial data sync complete', time: '5m ago', read: false },
+    { id: '2', title: 'New observation submitted', time: '1h ago', read: false },
+    { id: '3', title: 'Weather alert for Field A', time: '2h ago', read: true },
+  ])
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
+  const userName = user?.full_name || 'User'
+  const userEmail = user?.email || 'user@bijmantra.com'
+
+  const getInitials = (name?: string) => {
+    if (!name) return 'U'
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="relative flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+          <Avatar className="h-8 w-8 border-2 border-green-500/20">
+            <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white text-sm font-medium">
+              {getInitials(userName)}
+            </AvatarFallback>
+          </Avatar>
+          {/* Notification badge */}
+          {unreadCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="w-72" sideOffset={8}>
+        {/* User Info Header */}
+        <div className="px-3 py-3 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+                {getInitials(userName)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate">{userName}</p>
+              <p className="text-sm text-gray-500 truncate">{userEmail}</p>
+            </div>
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+              Online
+            </span>
+            <span className="text-xs text-gray-500">BrAPI v2.1</span>
+          </div>
+        </div>
+
+        {/* Notifications Section */}
+        {unreadCount > 0 && (
+          <>
+            <DropdownMenuLabel className="flex items-center justify-between px-3 py-2">
+              <span className="text-xs font-medium text-gray-500 uppercase">Notifications</span>
+              <span className="text-xs text-green-600 hover:underline cursor-pointer" onClick={() => navigate('/notifications')}>
+                View all
+              </span>
+            </DropdownMenuLabel>
+            <div className="max-h-32 overflow-y-auto">
+              {notifications.filter(n => !n.read).slice(0, 3).map((notification) => (
+                <DropdownMenuItem
+                  key={notification.id}
+                  className="px-3 py-2 cursor-pointer"
+                  onClick={() => navigate('/notifications')}
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-700 truncate">{notification.title}</p>
+                      <p className="text-xs text-gray-400">{notification.time}</p>
+                    </div>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
+        {/* Quick Links */}
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+            <span className="mr-2">👤</span>
+            <span>Profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer">
+            <span className="mr-2">🔔</span>
+            <span>Notifications</span>
+            {unreadCount > 0 && (
+              <span className="ml-auto text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">
+                {unreadCount}
+              </span>
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+            <span className="mr-2">⚙️</span>
+            <span>Settings</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer">
+            <span className="mr-2">ℹ️</span>
+            <span>About Bijmantra</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        {/* Help & Support */}
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => navigate('/help')} className="cursor-pointer">
+            <span className="mr-2">❓</span>
+            <span>Help Center</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/keyboard-shortcuts')} className="cursor-pointer">
+            <span className="mr-2">⌨️</span>
+            <span>Keyboard Shortcuts</span>
+            <kbd className="ml-auto text-xs bg-gray-100 px-1.5 py-0.5 rounded">⌘K</kbd>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        {/* Logout */}
+        <DropdownMenuItem 
+          onClick={handleLogout} 
+          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+        >
+          <span className="mr-2">🚪</span>
+          <span>Sign out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}

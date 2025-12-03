@@ -27,7 +27,7 @@ interface Candidate {
   rank?: number;
 }
 
-export default function WasmSelectionIndex() {
+function WasmSelectionIndex() {
   const { isReady, version } = useWasm();
   const { calculate, result, isCalculating } = useSelectionIndex();
 
@@ -435,3 +435,6 @@ export default function WasmSelectionIndex() {
     </div>
   );
 }
+
+export default WasmSelectionIndex;
+export { WasmSelectionIndex };

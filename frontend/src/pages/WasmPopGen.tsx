@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useWasm, useDiversity, useFst, usePCA } from '@/wasm/hooks';
 
-export default function WasmPopGen() {
+function WasmPopGen() {
   const { isReady, version } = useWasm();
   const { calculate: calcDiv, result: divResult, isCalculating: divCalc } = useDiversity();
   const { calculate: calcFst, result: fstResult, isCalculating: fstCalc } = useFst();
@@ -433,3 +433,6 @@ export default function WasmPopGen() {
     </div>
   );
 }
+
+export default WasmPopGen;
+export { WasmPopGen };

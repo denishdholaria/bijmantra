@@ -134,3 +134,51 @@ select:focus {
     color: hsl(var(--foreground));
   }
 }
+
+/* Command Palette Styles */
+[cmdk-root] {
+  font-family: inherit;
+}
+
+[cmdk-input] {
+  font-size: 16px;
+  width: 100%;
+}
+
+[cmdk-item] {
+  cursor: pointer;
+  user-select: none;
+}
+
+[cmdk-item][data-selected="true"] {
+  @apply bg-green-50 text-green-700;
+}
+
+[cmdk-group-heading] {
+  @apply text-xs font-medium text-gray-500 uppercase tracking-wider px-2 py-1.5;
+}
+
+[cmdk-empty] {
+  @apply py-6 text-center text-gray-500;
+}
+
+/* Command palette animation */
+@keyframes commandPaletteIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+[cmdk-dialog] > div:last-child {
+  animation: commandPaletteIn 0.15s ease-out;
+}
+
+/* Keyboard shortcut styling */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}

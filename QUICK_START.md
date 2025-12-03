@@ -55,6 +55,7 @@ npm run dev
 | Backend API | http://localhost:8000 | FastAPI server |
 | API Docs | http://localhost:8000/docs | Swagger UI |
 | ReDoc | http://localhost:8000/redoc | Alternative docs |
+| Meilisearch | http://localhost:7700 | Instant search |
 | PostgreSQL | localhost:5432 | Database |
 | Redis | localhost:6379 | Cache |
 | MinIO Console | http://localhost:9001 | Object storage |
@@ -147,11 +148,11 @@ npm run format
 ```bash
 # Start all services
 make dev
-# or: podman-compose up -d
+# or: podman compose up -d
 
 # Stop all services
 make stop
-# or: podman-compose down
+# or: podman compose down
 
 # View logs
 make logs

@@ -39,7 +39,24 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
 
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: bijmantra-meilisearch
+    environment:
+      MEILI_ENV: development
+      MEILI_NO_ANALYTICS: true
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   postgres_data:
   redis_data:
   minio_data:
+  meilisearch_data:
