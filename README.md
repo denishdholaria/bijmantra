@@ -8,6 +8,19 @@ A comprehensive Progressive Web Application for plant breeding management, fully
 
 ---
 
+## 🚧 Development Status
+
+> **This project is currently in active development.** Many modules and pages are functional but require thorough testing and refinement. We welcome contributors who can help with testing, bug reports, and feedback.
+
+**How to Contribute:**
+- Test modules and report issues via [GitHub Issues](https://github.com/denishdholaria/bijmantra/issues)
+- Share feedback and suggestions
+- Submit pull requests for improvements
+
+📧 **Contact:** [DenishDholaria@gmail.com](mailto:DenishDholaria@gmail.com)
+
+---
+
 ## 🚫 Ethical Use Notice
 
 > **IMPORTANT: This software is PROHIBITED for use in developing Terminator seeds, Genetic Use Restriction Technologies (GURTs), or any technology that restricts farmers' rights to save and replant seeds.**
