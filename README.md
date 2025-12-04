@@ -4,6 +4,8 @@ A comprehensive Progressive Web Application for plant breeding management, fully
 
 **210+ Pages** | **BrAPI v2.1 Compliant** | **AI-Powered** | **WASM-Accelerated** | **Offline-First**
 
+![Bijmantra Dashboard](docs/images/Screenshot-2025-12-04.png)
+
 ---
 
 ## 🚫 Ethical Use Notice
@@ -177,6 +179,7 @@ See [ETHICAL_USE_POLICY.md](ETHICAL_USE_POLICY.md) for complete terms.
 - PWA with offline capability
 - Keyboard shortcuts
 - Real-time collaboration features
+
 
 ## 🔧 Tech Stack
 
