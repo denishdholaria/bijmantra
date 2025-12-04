@@ -4,6 +4,10 @@ mod statistics;
 mod matrix;
 mod population;
 
+// Fortran FFI layer (for native builds, not WASM)
+#[cfg(not(target_arch = "wasm32"))]
+pub mod fortran_ffi;
+
 use wasm_bindgen::prelude::*;
 
 // Initialize panic hook for better error messages

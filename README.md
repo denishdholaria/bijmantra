@@ -2,7 +2,19 @@
 
 A comprehensive Progressive Web Application for plant breeding management, fully compliant with BrAPI v2.1 specification. Built with modern technologies for efficient breeding program management.
 
-**205 Pages** | **BrAPI v2.1 Compliant** | **AI-Powered** | **WASM-Accelerated** | **Offline-First**
+**210+ Pages** | **BrAPI v2.1 Compliant** | **AI-Powered** | **WASM-Accelerated** | **Offline-First**
+
+---
+
+## 🚫 Ethical Use Notice
+
+> **IMPORTANT: This software is PROHIBITED for use in developing Terminator seeds, Genetic Use Restriction Technologies (GURTs), or any technology that restricts farmers' rights to save and replant seeds.**
+
+Bijmantra is built to empower plant breeders to serve humanity—not to restrict the fundamental reproductive nature of seeds. By using this software, you agree to the [Ethical Use Policy](ETHICAL_USE_POLICY.md).
+
+See [ETHICAL_USE_POLICY.md](ETHICAL_USE_POLICY.md) for complete terms.
+
+---
 
 ## 🚀 Features
 

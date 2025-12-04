@@ -109,7 +109,7 @@ async def serverinfo():
 # Import routers
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies
-from app.api.v2 import search
+from app.api.v2 import search, compute, audit, insights, vector, weather
 
 # Auth routes
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
@@ -122,6 +122,13 @@ app.include_router(programs.router, prefix="/brapi/v2", tags=["Core - Programs"]
 app.include_router(locations.router, prefix="/brapi/v2", tags=["Core - Locations"])
 app.include_router(trials.router, prefix="/brapi/v2", tags=["Core - Trials"])
 app.include_router(studies.router, prefix="/brapi/v2", tags=["Core - Studies"])
+
+# APEX Features - AI & Analytics
+app.include_router(compute.router, prefix="/api/v2", tags=["Compute Engine"])
+app.include_router(audit.router, prefix="/api/v2", tags=["Audit Trail"])
+app.include_router(insights.router, prefix="/api/v2", tags=["AI Insights"])
+app.include_router(vector.router, prefix="/api/v2", tags=["Vector Store"])
+app.include_router(weather.router, prefix="/api/v2", tags=["Weather Intelligence"])
 
 if __name__ == "__main__":
     import uvicorn

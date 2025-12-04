@@ -1,0 +1,33 @@
+# PostgreSQL with PostGIS + pgvector
+# For Bijmantra Plant Breeding Platform
+#
+# Build: podman build -t bijmantra-postgres -f Containerfile .
+# Run: podman run -d --name bijmantra-postgres -e POSTGRES_PASSWORD=secret bijmantra-postgres
+
+FROM postgis/postgis:16-3.4
+
+LABEL maintainer="Bijmantra Team"
+LABEL description="PostgreSQL with PostGIS and pgvector for plant breeding AI"
+
+# Install pgvector
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+        postgresql-server-dev-16 && \
+    git clone --branch v0.6.0 https://github.com/pgvector/pgvector.git /tmp/pgvector && \
+    cd /tmp/pgvector && \
+    make && \
+    make install && \
+    rm -rf /tmp/pgvector && \
+    apt-get remove -y build-essential git postgresql-server-dev-16 && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy initialization script
+COPY init-extensions.sql /docker-entrypoint-initdb.d/
+
+# Default environment
+ENV POSTGRES_DB=bijmantra_db
+ENV POSTGRES_USER=bijmantra_user

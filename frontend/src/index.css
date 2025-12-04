@@ -1,60 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   BIJMANTRA THEME SYSTEM
+   Comprehensive Light & Dark Mode Support
+   ============================================ */
+
 @layer base {
+  /* ========== LIGHT THEME ========== */
   :root {
+    /* Core colors */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
+    
+    /* Card & surfaces */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
+    
+    /* Popover & dropdowns - SOLID backgrounds for readability */
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+    
+    /* Primary (green for Bijmantra) */
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary */
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
+    
+    /* Muted */
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    
+    /* Accent */
+    --accent: 142 76% 96%;
+    --accent-foreground: 142 76% 36%;
+    
+    /* Destructive */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
+    
+    /* Borders & inputs */
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --ring: 142 76% 36%;
+    
+    /* Radius */
     --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
+    
+    /* Charts */
+    --chart-1: 142 76% 36%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    /* Glass effect - Light mode */
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    
+    /* Dropdown specific - SOLID for readability */
+    --dropdown-bg: 255, 255, 255;
+    --dropdown-hover: 249, 250, 251;
+    --dropdown-border: 229, 231, 235;
   }
+
+  /* ========== DARK THEME ========== */
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    /* Core colors */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    
+    /* Card & surfaces - slightly lighter than background */
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    
+    /* Popover & dropdowns - SOLID dark backgrounds */
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary (green) */
+    --primary: 142 76% 46%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary */
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* Muted */
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Accent */
+    --accent: 142 50% 20%;
+    --accent-foreground: 142 76% 70%;
+    
+    /* Destructive */
+    --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    
+    /* Borders & inputs */
+    --border: 217 33% 25%;
+    --input: 217 33% 20%;
+    --ring: 142 76% 46%;
+    
+    /* Charts - brighter for dark mode */
+    --chart-1: 142 76% 50%;
+    --chart-2: 173 70% 50%;
+    --chart-3: 197 60% 50%;
+    --chart-4: 43 90% 60%;
+    --chart-5: 27 95% 60%;
+    
+    /* Glass effect - Dark mode */
+    --glass-bg: rgba(30, 41, 59, 0.85);
+    --glass-border: rgba(71, 85, 105, 0.4);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    
+    /* Dropdown specific - SOLID dark for readability */
+    --dropdown-bg: 30, 41, 59;
+    --dropdown-hover: 51, 65, 85;
+    --dropdown-border: 71, 85, 105;
   }
 }
 
@@ -67,32 +137,36 @@
   }
 }
 
-/* Custom scrollbar */
+/* ============================================
+   SCROLLBAR - Light & Dark
+   ============================================ */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-gray-100 dark:bg-gray-800;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-gray-400 dark:bg-gray-500;
 }
 
-/* Input styling fix */
+/* ============================================
+   INPUT FIELDS - Light & Dark
+   ============================================ */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
 textarea,
 select {
-  @apply bg-white text-gray-900 placeholder-gray-400;
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-gray-700;
 }
 
 input[type="text"]:focus,
@@ -101,7 +175,7 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 select:focus {
-  @apply bg-white text-gray-900;
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ring-green-500 dark:ring-green-400 border-green-500 dark:border-green-400;
 }
 
 /* Animations */
@@ -135,7 +209,9 @@ select:focus {
   }
 }
 
-/* Command Palette Styles */
+/* ============================================
+   COMMAND PALETTE - Light & Dark
+   ============================================ */
 [cmdk-root] {
   font-family: inherit;
 }
@@ -143,23 +219,25 @@ select:focus {
 [cmdk-input] {
   font-size: 16px;
   width: 100%;
+  @apply bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500;
 }
 
 [cmdk-item] {
   cursor: pointer;
   user-select: none;
+  @apply text-gray-700 dark:text-gray-300;
 }
 
 [cmdk-item][data-selected="true"] {
-  @apply bg-green-50 text-green-700;
+  @apply bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300;
 }
 
 [cmdk-group-heading] {
-  @apply text-xs font-medium text-gray-500 uppercase tracking-wider px-2 py-1.5;
+  @apply text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 py-1.5;
 }
 
 [cmdk-empty] {
-  @apply py-6 text-center text-gray-500;
+  @apply py-6 text-center text-gray-500 dark:text-gray-400;
 }
 
 /* Command palette animation */
@@ -181,4 +259,158 @@ select:focus {
 /* Keyboard shortcut styling */
 kbd {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  @apply bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600;
+}
+
+/* ============================================
+   GLASSMORPHISM - Proper Light & Dark
+   NO transparency on dropdowns/popovers
+   ============================================ */
+
+/* Glass panels - for decorative elements only */
+.glass-panel {
+  @apply bg-white/80 dark:bg-slate-800/90 backdrop-blur-md border border-white/20 dark:border-slate-700/50;
+}
+
+/* SOLID backgrounds for dropdowns - NO glass effect */
+.dropdown-solid {
+  background-color: rgb(var(--dropdown-bg));
+  border-color: rgb(var(--dropdown-border));
+  @apply shadow-xl;
+}
+
+.dropdown-solid:hover {
+  background-color: rgb(var(--dropdown-hover));
+}
+
+/* ============================================
+   DROPDOWN & POPOVER OVERRIDES
+   Force solid backgrounds for readability
+   ============================================ */
+
+/* Radix UI Dropdown Menu */
+[data-radix-popper-content-wrapper] {
+  z-index: 100 !important;
+}
+
+[role="menu"],
+[role="listbox"],
+[data-radix-menu-content],
+[data-radix-dropdown-menu-content],
+[data-radix-select-content],
+[data-radix-popover-content] {
+  @apply bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-xl !important;
+  backdrop-filter: none !important;
+}
+
+[role="menuitem"],
+[role="option"],
+[data-radix-menu-item],
+[data-radix-dropdown-menu-item],
+[data-radix-select-item] {
+  @apply text-gray-700 dark:text-gray-200 !important;
+}
+
+[role="menuitem"]:hover,
+[role="option"]:hover,
+[role="menuitem"][data-highlighted],
+[role="option"][data-highlighted],
+[data-radix-menu-item]:hover,
+[data-radix-dropdown-menu-item]:hover,
+[data-radix-select-item]:hover {
+  @apply bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white !important;
+}
+
+/* ============================================
+   CARD & SURFACE STYLES
+   ============================================ */
+
+/* Solid cards - no transparency */
+.card-solid {
+  @apply bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700;
+}
+
+/* Elevated cards */
+.card-elevated {
+  @apply bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-lg;
+}
+
+/* ============================================
+   TEXT CONTRAST HELPERS
+   ============================================ */
+
+.text-primary-contrast {
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.text-secondary-contrast {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.text-muted-contrast {
+  @apply text-gray-500 dark:text-gray-500;
+}
+
+/* ============================================
+   BADGE & STATUS COLORS - Dark Mode Safe
+   ============================================ */
+
+.badge-success {
+  @apply bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800;
+}
+
+.badge-warning {
+  @apply bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800;
+}
+
+.badge-error {
+  @apply bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800;
+}
+
+.badge-info {
+  @apply bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800;
+}
+
+/* ============================================
+   BUTTON VARIANTS - Dark Mode
+   ============================================ */
+
+.btn-primary {
+  @apply bg-green-600 hover:bg-green-700 text-white dark:bg-green-600 dark:hover:bg-green-500;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-gray-200;
+}
+
+.btn-ghost {
+  @apply hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300;
+}
+
+/* ============================================
+   SIDEBAR & NAVIGATION - Dark Mode
+   ============================================ */
+
+.sidebar-bg {
+  @apply bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800;
+}
+
+.nav-item {
+  @apply text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800;
+}
+
+.nav-item-active {
+  @apply bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400;
+}
+
+/* ============================================
+   HEADER & FOOTER - Dark Mode
+   ============================================ */
+
+.header-bg {
+  @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800;
+}
+
+.footer-bg {
+  @apply bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800;
 }

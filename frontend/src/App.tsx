@@ -205,6 +205,8 @@ import { WasmGBLUP } from '@/pages/WasmGBLUP'
 import { WasmPopGen } from '@/pages/WasmPopGen'
 import { WasmLDAnalysis } from '@/pages/WasmLDAnalysis'
 import { WasmSelectionIndex } from '@/pages/WasmSelectionIndex'
+import InsightsDashboard from '@/pages/InsightsDashboard'
+import ApexAnalytics from '@/pages/ApexAnalytics'
 
 function App() {
   return (
@@ -2609,6 +2611,31 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <WasmSelectionIndex />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* APEX FEATURES */}
+        {/* AI Insights Dashboard */}
+        <Route
+          path="/insights"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <InsightsDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Apex Analytics */}
+        <Route
+          path="/apex-analytics"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ApexAnalytics />
               </Layout>
             </ProtectedRoute>
           }

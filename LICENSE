@@ -68,26 +68,53 @@ Supported by Solar Agrotech Private Limited
       to endorse or promote products derived from this Software without prior
       written permission.
 
-5. CONTRIBUTIONS
+5. ETHICAL USE RESTRICTIONS (MANDATORY - SEE ETHICAL_USE_POLICY.md)
+
+   The use of this Software is STRICTLY PROHIBITED for:
+   
+   a) GENETIC USE RESTRICTION TECHNOLOGIES (GURTs): Any breeding activity
+      involving the development, research, testing, or commercialization of
+      plant varieties incorporating technologies that render seeds sterile,
+      non-viable, or dependent on proprietary chemical inducers.
+   
+   b) TERMINATOR TECHNOLOGY: Any technology that produces sterile seeds,
+      preventing farmers from saving and replanting seeds from their harvest.
+   
+   c) TRAITOR TECHNOLOGY: Any technology requiring chemical application to
+      activate or maintain specific genetic traits in plants.
+   
+   d) SEED TERMINATION TECHNOLOGY: Any method that prevents seeds from being
+      saved, replanted, or used for subsequent generations of cultivation.
+   
+   e) Any activity that directly or indirectly supports, enables, or
+      contributes to the creation or deployment of the above technologies.
+   
+   This prohibition is ABSOLUTE and admits NO EXCEPTIONS. Violation results
+   in immediate and automatic termination of all license rights.
+   
+   For complete terms, see ETHICAL_USE_POLICY.md which is incorporated herein
+   by reference and has the same legal force as this license.
+
+6. CONTRIBUTIONS
 
    Any contributions submitted to this project shall be licensed under the
    same terms as this license, and contributors agree to the attribution
    requirements herein.
 
-6. NO WARRANTY
+7. NO WARRANTY
 
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
-7. LIMITATION OF LIABILITY
+8. LIMITATION OF LIABILITY
 
    IN NO EVENT SHALL THE CREATOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
 
-8. TERMINATION
+9. TERMINATION
 
    This license automatically terminates if You fail to comply with any of
    its terms, particularly the attribution requirements. Upon termination,
@@ -107,11 +134,19 @@ Supported by Solar Agrotech Private Limited
    - Give visible credit to Denish Dholaria / R.E.E.V.A.i
    - Keep this license and copyright notices
    - Include attribution in derivative works
+   - Comply with the Ethical Use Policy
 
 ❌ You CANNOT:
    - Remove attribution or copyright notices
    - Claim you created the original software
    - Use creator's name for endorsement without permission
+
+🚫 ABSOLUTELY PROHIBITED:
+   - Use for Terminator/GURT seed technologies
+   - Use for any seed termination technology
+   - Use for technologies that make seeds sterile
+   - Use for technologies requiring chemicals to activate traits
+   - Any breeding that restricts farmers' right to save seeds
 
 ================================================================================
 

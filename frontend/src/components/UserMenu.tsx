@@ -16,6 +16,7 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 interface Notification {
   id: string
@@ -57,7 +58,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+        <button className="relative flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
           <Avatar className="h-8 w-8 border-2 border-green-500/20">
             <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white text-sm font-medium">
               {getInitials(userName)}
@@ -65,16 +66,16 @@ export function UserMenu() {
           </Avatar>
           {/* Notification badge */}
           {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-72" sideOffset={8}>
+      <DropdownMenuContent align="end" className="w-72 bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700" sideOffset={8}>
         {/* User Info Header */}
-        <div className="px-3 py-3 border-b border-gray-100">
+        <div className="px-3 py-3 border-b border-gray-100 dark:border-slate-700">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
               <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white">
@@ -82,16 +83,16 @@ export function UserMenu() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-gray-900 truncate">{userName}</p>
-              <p className="text-sm text-gray-500 truncate">{userEmail}</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{userName}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{userEmail}</p>
             </div>
           </div>
           <div className="mt-2 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
               Online
             </span>
-            <span className="text-xs text-gray-500">BrAPI v2.1</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">BrAPI v2.1</span>
           </div>
         </div>
 
@@ -99,8 +100,8 @@ export function UserMenu() {
         {unreadCount > 0 && (
           <>
             <DropdownMenuLabel className="flex items-center justify-between px-3 py-2">
-              <span className="text-xs font-medium text-gray-500 uppercase">Notifications</span>
-              <span className="text-xs text-green-600 hover:underline cursor-pointer" onClick={() => navigate('/notifications')}>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Notifications</span>
+              <span className="text-xs text-green-600 dark:text-green-400 hover:underline cursor-pointer" onClick={() => navigate('/notifications')}>
                 View all
               </span>
             </DropdownMenuLabel>
@@ -108,14 +109,14 @@ export function UserMenu() {
               {notifications.filter(n => !n.read).slice(0, 3).map((notification) => (
                 <DropdownMenuItem
                   key={notification.id}
-                  className="px-3 py-2 cursor-pointer"
+                  className="px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700"
                   onClick={() => navigate('/notifications')}
                 >
                   <div className="flex items-start gap-2">
                     <span className="mt-0.5 w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-700 truncate">{notification.title}</p>
-                      <p className="text-xs text-gray-400">{notification.time}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-200 truncate">{notification.title}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">{notification.time}</p>
                     </div>
                   </div>
                 </DropdownMenuItem>
@@ -127,50 +128,58 @@ export function UserMenu() {
 
         {/* Quick Links */}
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
             <span className="mr-2">👤</span>
             <span>Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
             <span className="mr-2">🔔</span>
             <span>Notifications</span>
             {unreadCount > 0 && (
-              <span className="ml-auto text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">
+              <span className="ml-auto text-xs bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-full">
                 {unreadCount}
               </span>
             )}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
             <span className="mr-2">⚙️</span>
             <span>Settings</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
             <span className="mr-2">ℹ️</span>
             <span>About Bijmantra</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-gray-200 dark:bg-slate-700" />
+
+        {/* Theme Toggle */}
+        <div className="px-3 py-2">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">Theme</p>
+          <ThemeToggle />
+        </div>
+
+        <DropdownMenuSeparator className="bg-gray-200 dark:bg-slate-700" />
 
         {/* Help & Support */}
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate('/help')} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => navigate('/help')} className="cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
             <span className="mr-2">❓</span>
             <span>Help Center</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate('/keyboard-shortcuts')} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => navigate('/keyboard-shortcuts')} className="cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
             <span className="mr-2">⌨️</span>
             <span>Keyboard Shortcuts</span>
-            <kbd className="ml-auto text-xs bg-gray-100 px-1.5 py-0.5 rounded">⌘K</kbd>
+            <kbd className="ml-auto text-xs bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded">⌘K</kbd>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-gray-200 dark:bg-slate-700" />
 
         {/* Logout */}
         <DropdownMenuItem 
           onClick={handleLogout} 
-          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+          className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/30"
         >
           <span className="mr-2">🚪</span>
           <span>Sign out</span>

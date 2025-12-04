@@ -350,6 +350,49 @@ export function About() {
         </CardContent>
       </Card>
 
+      {/* Ethical Use Notice */}
+      <Card className="border-2 border-red-200 bg-gradient-to-br from-red-50 to-orange-50">
+        <CardHeader className="text-center pb-2">
+          <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
+            <span className="text-2xl">🚫</span>
+          </div>
+          <CardTitle className="text-xl text-red-800">Ethical Use Policy</CardTitle>
+          <CardDescription className="text-base text-red-700">Protecting Farmers' Rights & Seed Sovereignty</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-white/80 rounded-xl p-6">
+            <p className="text-gray-700 leading-relaxed font-medium text-center mb-4">
+              Bijmantra is <span className="text-red-600 font-bold">STRICTLY PROHIBITED</span> for use in developing:
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="p-3 bg-red-100 rounded-lg">
+                <span className="font-semibold text-red-800">🚫 Terminator Technology</span>
+                <p className="text-sm text-red-700 mt-1">Seeds engineered to be sterile</p>
+              </div>
+              <div className="p-3 bg-red-100 rounded-lg">
+                <span className="font-semibold text-red-800">🚫 GURTs</span>
+                <p className="text-sm text-red-700 mt-1">Genetic Use Restriction Technologies</p>
+              </div>
+              <div className="p-3 bg-red-100 rounded-lg">
+                <span className="font-semibold text-red-800">🚫 Traitor Technology</span>
+                <p className="text-sm text-red-700 mt-1">Chemical-dependent trait activation</p>
+              </div>
+              <div className="p-3 bg-red-100 rounded-lg">
+                <span className="font-semibold text-red-800">🚫 Seed Termination</span>
+                <p className="text-sm text-red-700 mt-1">Any tech preventing seed saving</p>
+              </div>
+            </div>
+            <p className="text-center mt-4 text-gray-600 italic">
+              "Seeds are the foundation of life. The ability of seeds to reproduce is a gift of nature 
+              that belongs to all humanity, not a feature to be engineered away for corporate profit."
+            </p>
+            <p className="text-center text-sm text-gray-500 mt-2">
+              — Denish Dholaria, Creator of Bijmantra
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Footer CTA */}
       <div className="text-center py-8 space-y-4">
         <p className="text-muted-foreground">

@@ -1,9 +1,13 @@
 version: "3.8"
 
 services:
-  # PostgreSQL with PostGIS extension
+  # PostgreSQL with PostGIS + pgvector extensions
+  # Custom build includes both spatial and vector capabilities
   postgres:
-    image: postgis/postgis:15-3.3
+    build:
+      context: ./docker/postgres
+      dockerfile: Containerfile
+    image: bijmantra-postgres:latest
     container_name: bijmantra-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-bijmantra_db}
