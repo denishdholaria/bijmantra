@@ -1,11 +1,14 @@
 /**
  * Smart Navigation System with Lucide Icons
  * Professional navigation for 210+ pages
+ * 
+ * Integrated with Parashakti Framework Division Registry
  */
 
 import { useState, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import { DivisionNavigation } from '@/framework/shell'
 import {
   Home, Search, BarChart3, Bell, FileText, Brain, Sprout, Wheat,
   FlaskConical, ClipboardList, MapPin, Calendar, Package, GitMerge,
@@ -16,6 +19,7 @@ import {
   Database, Book, MessageSquare, Share2, Settings, WifiOff,
   HelpCircle, Printer, ScanLine, Star, Clock, ChevronDown,
   TreeDeciduous, Thermometer, Filter, Shield, Workflow,
+  LayoutGrid,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -416,8 +420,19 @@ export function SmartNavigation({ collapsed = false, onNavigate }: SmartNavProps
         </div>
       )}
 
-      {/* Categories */}
-      <div className="flex-1 overflow-y-auto p-2">
+      {/* Main Navigation Area */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Parashakti Divisions */}
+        <DivisionNavigation collapsed={false} onNavigate={onNavigate} />
+        
+        {/* Separator */}
+        <div className="mx-3 my-2 border-t border-gray-200 dark:border-gray-700" />
+        
+        {/* Legacy Categories */}
+        <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          Quick Access
+        </div>
+        <div className="p-2">
         {smartNavCategories.map(category => {
           const CategoryIcon = category.icon
           return (
@@ -485,6 +500,7 @@ export function SmartNavigation({ collapsed = false, onNavigate }: SmartNavProps
             </div>
           )
         })}
+        </div>
       </div>
     </div>
   )

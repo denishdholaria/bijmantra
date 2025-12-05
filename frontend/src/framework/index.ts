@@ -12,6 +12,9 @@ export * from './registry';
 // Feature Flags
 export * from './features';
 
+// Shell Components
+export * from './shell';
+
 // Re-export commonly used types
 export type { Division, DivisionSection, DivisionStatus } from './registry/types';
 export type { FeatureFlag } from './features/types';
