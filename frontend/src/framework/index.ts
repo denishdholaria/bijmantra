@@ -15,6 +15,9 @@ export * from './features';
 // Shell Components
 export * from './shell';
 
+// Auth
+export * from './auth';
+
 // Re-export commonly used types
 export type { Division, DivisionSection, DivisionStatus } from './registry/types';
 export type { FeatureFlag } from './features/types';
