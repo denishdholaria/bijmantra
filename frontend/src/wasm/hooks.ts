@@ -1,9 +1,8 @@
 // React hooks for Bijmantra Genomics WASM module
 
 import { useState, useEffect, useCallback } from 'react';
-import { initWasm, getWasm, isWasmReady } from './index';
+import { initWasm, getWasm } from './index';
 import type {
-  AlleleFrequencies,
   GRMResult,
   BLUPResult,
   GBLUPResult,

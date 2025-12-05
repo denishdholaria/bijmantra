@@ -39,7 +39,7 @@ export function VoiceCommandProvider({
   const [lastCommand, setLastCommand] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<string | null>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Define voice commands
   const commands: VoiceCommand[] = [

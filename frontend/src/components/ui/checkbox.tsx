@@ -26,6 +26,7 @@ const Checkbox = React.forwardRef<
         strokeLinecap="round"
         strokeLinejoin="round"
         className="h-3 w-3"
+        aria-hidden="true"
       >
         <polyline points="20 6 9 17 4 12" />
       </svg>

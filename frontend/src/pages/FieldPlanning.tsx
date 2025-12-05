@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
@@ -31,8 +30,8 @@ interface PlotInfo {
 export function FieldPlanning() {
   const [selectedSeason, setSelectedSeason] = useState('2024-25')
   const [selectedField, setSelectedField] = useState('field-a')
-  const [gridRows, setGridRows] = useState(8)
-  const [gridCols, setGridCols] = useState(12)
+  const [gridRows, _setGridRows] = useState(8)
+  const [gridCols, _setGridCols] = useState(12)
   const [selectedPlot, setSelectedPlot] = useState<string | null>(null)
 
   const generatePlots = (): PlotInfo[] => {

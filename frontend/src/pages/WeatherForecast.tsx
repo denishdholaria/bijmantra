@@ -15,9 +15,7 @@ import {
   MapPin,
   Calendar,
   RefreshCw,
-  CloudSun,
-  Snowflake,
-  CloudLightning
+  CloudSun
 } from 'lucide-react'
 
 interface WeatherDay {
@@ -41,7 +39,7 @@ interface WeatherAlert {
 
 export function WeatherForecast() {
   const [selectedLocation, setSelectedLocation] = useState('field-a')
-  const [unit, setUnit] = useState<'celsius' | 'fahrenheit'>('celsius')
+  const [_unit, _setUnit] = useState<'celsius' | 'fahrenheit'>('celsius')
 
   const currentWeather = {
     temperature: 28,

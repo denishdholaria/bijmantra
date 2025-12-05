@@ -199,8 +199,8 @@ export function SeedLotManagement() {
 /* ============================================
    STAT CARD COMPONENT
    ============================================ */
-function StatCard({ label, value, color }: { label: string; value: string | number; color?: string }) {
-  const colorClasses = {
+function StatCard({ label, value, color }: { label: string; value: string | number; color?: 'green' | 'blue' | 'orange' }) {
+  const colorClasses: Record<string, string> = {
     green: 'text-green-600 dark:text-green-400',
     blue: 'text-blue-600 dark:text-blue-400',
     orange: 'text-orange-600 dark:text-orange-400',

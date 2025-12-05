@@ -393,15 +393,45 @@ export function About() {
         </CardContent>
       </Card>
 
+      {/* Vision Section */}
+      <Card className="border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 via-purple-50 to-slate-50">
+        <CardHeader className="text-center pb-2">
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
+            <span className="text-2xl">🌌</span>
+          </div>
+          <CardTitle className="text-xl text-indigo-800">Our Vision</CardTitle>
+          <CardDescription className="text-base text-indigo-600">10, 100, and 1000 Year Plans</CardDescription>
+        </CardHeader>
+        <CardContent className="text-center space-y-4">
+          <p className="text-gray-700 max-w-2xl mx-auto">
+            Bijmantra is built with a long-term perspective. We've documented our vision for the next decade, 
+            century, and millennium — from AI-powered breeding to interplanetary agriculture.
+          </p>
+          <p className="text-indigo-700 italic text-sm">
+            "The seed contains the entire tree. The code contains the entire future."
+          </p>
+          <Link to="/vision">
+            <Button className="bg-indigo-600 hover:bg-indigo-700">
+              <span className="mr-2">🔭</span> Explore Our Vision
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+
       {/* Footer CTA */}
       <div className="text-center py-8 space-y-4">
         <p className="text-muted-foreground">
           Built with 💚 for the global plant breeding community
         </p>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-4 flex-wrap">
           <Link to="/dashboard">
             <Button>
               <span className="mr-2">🏠</span> Go to Dashboard
+            </Button>
+          </Link>
+          <Link to="/vision">
+            <Button variant="outline" className="border-indigo-300 text-indigo-700 hover:bg-indigo-50">
+              <span className="mr-2">🌌</span> Our Vision
             </Button>
           </Link>
           <Link to="/help">
@@ -418,7 +448,7 @@ export function About() {
             Supported by Solar Agrotech Private Limited
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            <Link to="/terms" className="text-green-600 hover:underline">BOSLA License</Link> - Free to use with required attribution
+            <Link to="/terms" className="text-green-600 hover:underline">BSAL License</Link> - Free to use, pay to sell
           </p>
         </div>
       </div>

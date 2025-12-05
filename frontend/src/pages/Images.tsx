@@ -3,7 +3,7 @@
  * BrAPI v2.1 Phenotyping Module
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { apiClient } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
@@ -21,7 +21,6 @@ export function Images() {
   const [showUpload, setShowUpload] = useState(false)
   const [newImageName, setNewImageName] = useState('')
   const [newImageDesc, setNewImageDesc] = useState('')
-  const queryClient = useQueryClient()
   const pageSize = 20
 
   const { data, isLoading, error } = useQuery({

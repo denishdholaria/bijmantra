@@ -10,7 +10,11 @@ echo "=========================="
 echo ""
 
 # Check if podman is installed
-if ! command -v podman &> /dev/null; then
+if [ -x "/opt/podman/bin/podman" ]; then
+    PODMAN_CMD="/opt/podman/bin/podman"
+elif command -v podman &> /dev/null; then
+    PODMAN_CMD="podman"
+else
     echo "❌ Podman is not installed. Please install Podman first."
     echo "   Visit: https://podman.io/getting-started/installation"
     exit 1
@@ -97,15 +101,15 @@ fi
 
 # Build custom PostgreSQL image with PostGIS + pgvector
 echo "🔨 Building PostgreSQL image with PostGIS + pgvector..."
-podman-compose build postgres
+$PODMAN_CMD-compose build postgres
 
 # Start infrastructure
 echo "🚀 Starting infrastructure (PostgreSQL, Redis, MinIO, Meilisearch)..."
-podman-compose up -d postgres redis minio meilisearch
+$PODMAN_CMD-compose up -d postgres redis minio meilisearch
 
 echo "⏳ Waiting for PostgreSQL to be ready..."
 for i in {1..30}; do
-    if podman exec bijmantra-postgres pg_isready -U bijmantra_user -d bijmantra_db &> /dev/null; then
+    if $PODMAN_CMD exec bijmantra-postgres pg_isready -U bijmantra_user -d bijmantra_db &> /dev/null; then
         echo "✓ PostgreSQL is ready"
         break
     fi
@@ -114,7 +118,7 @@ done
 
 # Verify pgvector extension
 echo "🔍 Verifying pgvector extension..."
-podman exec bijmantra-postgres psql -U bijmantra_user -d bijmantra_db -c "SELECT extname, extversion FROM pg_extension WHERE extname IN ('vector', 'postgis');" 2>/dev/null || echo "   Extensions will be created on first migration"
+$PODMAN_CMD exec bijmantra-postgres psql -U bijmantra_user -d bijmantra_db -c "SELECT extname, extversion FROM pg_extension WHERE extname IN ('vector', 'postgis');" 2>/dev/null || echo "   Extensions will be created on first migration"
 
 # Backend setup
 echo ""

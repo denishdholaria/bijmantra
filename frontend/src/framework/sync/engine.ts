@@ -40,7 +40,7 @@ export class SyncEngine {
   private config: SyncConfig;
   private isOnline: boolean;
   private isSyncing: boolean = false;
-  private listeners: Set<(status: SyncStatus) => void> = new Set();
+  private _listeners: Set<(status: SyncStatus) => void> = new Set();
 
   constructor(config: Partial<SyncConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };

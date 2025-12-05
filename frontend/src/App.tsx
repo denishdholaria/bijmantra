@@ -107,6 +107,7 @@ import { AISettings } from '@/pages/AISettings'
 import { AIAssistant } from '@/pages/AIAssistant'
 import { ChromeAI } from '@/pages/ChromeAI'
 import { About } from '@/pages/About'
+import { Vision } from '@/pages/Vision'
 import { Profile } from '@/pages/Profile'
 import { NotFound } from '@/pages/NotFound'
 import { HelpCenter } from '@/pages/HelpCenter'
@@ -1459,6 +1460,18 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <About />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Vision */}
+        <Route
+          path="/vision"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Vision />
               </Layout>
             </ProtectedRoute>
           }

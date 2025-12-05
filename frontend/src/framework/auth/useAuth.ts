@@ -13,7 +13,7 @@ import { useDivisionRegistry } from '../registry';
  */
 export function useAuth() {
   const authStore = useAuthStore();
-  const { isEnabled } = useFeatureFlags();
+  const { isEnabled: _isEnabled } = useFeatureFlags();
   const { isDivisionAccessible } = useDivisionRegistry();
 
   /**

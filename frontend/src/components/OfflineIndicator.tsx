@@ -3,7 +3,6 @@
  * Shows network status and offline capabilities
  */
 import { useState, useEffect } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 
 export function OfflineIndicator() {

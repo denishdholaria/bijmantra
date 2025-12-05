@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   DollarSign, TrendingUp, TrendingDown, PieChart,
-  BarChart3, Download, Calendar, Filter, Calculator
+  BarChart3, Download, Calculator
 } from 'lucide-react'
 
 interface CostItem {
@@ -28,7 +28,7 @@ interface BudgetCategory {
 export function CostAnalysis() {
   const [activeTab, setActiveTab] = useState('overview')
   const [selectedPeriod, setSelectedPeriod] = useState('month')
-  const [selectedProject, setSelectedProject] = useState('all')
+  const [_selectedProject, _setSelectedProject] = useState('all')
 
   const budgetCategories: BudgetCategory[] = [
     { name: 'Labor', allocated: 50000, spent: 42500, color: 'bg-blue-500' },

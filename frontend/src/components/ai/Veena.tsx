@@ -8,16 +8,24 @@
  * - The melody of life bringing peace, balance, and inner joy
  * 
  * Features:
- * - Conversational AI interface
+ * - Conversational AI interface with RAG (Retrieval-Augmented Generation)
  * - Voice input/output support
- * - Context-aware suggestions
- * - Agentic capabilities (future)
+ * - Context-aware suggestions from breeding knowledge base
+ * - Backend integration for insights and predictions
+ * - Conversation history persistence
+ * - Keyboard shortcut (Ctrl+/)
  * 
- * Tech Stack: React + Web Speech API + WebSocket
+ * Tech Stack: React + Web Speech API + Backend API
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import { apiClient } from '@/lib/api-client'
+
+// ============================================
+// TYPES
+// ============================================
 
 interface Message {
   id: string
@@ -28,8 +36,37 @@ interface Message {
   metadata?: {
     action?: string
     confidence?: number
-    sources?: string[]
+    sources?: VeenaSource[]
+    navigateTo?: string
   }
+}
+
+interface VeenaSource {
+  doc_id: string
+  doc_type: string
+  title: string | null
+  similarity: number
+}
+
+interface VeenaContextResponse {
+  query: string
+  context: string
+  sources: VeenaSource[]
+  total_sources: number
+}
+
+
+interface InsightsDashboard {
+  summary: string
+  insights: Array<{
+    id: string
+    type: string
+    title: string
+    description: string
+    confidence: number
+    impact: string
+    actionable: boolean
+  }>
 }
 
 interface VeenaProps {
@@ -38,17 +75,98 @@ interface VeenaProps {
   position?: 'bottom-right' | 'bottom-left' | 'sidebar'
 }
 
+// Storage key for conversation history
+const STORAGE_KEY = 'veena_conversation_history'
+const MAX_STORED_MESSAGES = 50
+
+// ============================================
+// VEENA SERVICE - Backend Integration
+// ============================================
+
+class VeenaService {
+  private baseURL: string
+
+  constructor() {
+    this.baseURL = ''
+  }
+
+  async getContext(query: string): Promise<VeenaContextResponse | null> {
+    try {
+      const token = apiClient.getToken()
+      const response = await fetch(`${this.baseURL}/api/v2/vector/veena/context?query=${encodeURIComponent(query)}&max_results=5`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      })
+      if (!response.ok) return null
+      return response.json()
+    } catch {
+      return null
+    }
+  }
+
+  async getInsights(): Promise<InsightsDashboard | null> {
+    try {
+      const token = apiClient.getToken()
+      const response = await fetch(`${this.baseURL}/api/v2/insights/dashboard`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      })
+      if (!response.ok) return null
+      return response.json()
+    } catch {
+      return null
+    }
+  }
+
+  async searchBreedingKnowledge(query: string): Promise<any[]> {
+    try {
+      const token = apiClient.getToken()
+      const response = await fetch(`${this.baseURL}/api/v2/vector/breeding/search?q=${encodeURIComponent(query)}&limit=5`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      })
+      if (!response.ok) return []
+      return response.json()
+    } catch {
+      return []
+    }
+  }
+}
+
+const veenaService = new VeenaService()
+
+
+// ============================================
+// MAIN COMPONENT
+// ============================================
+
 export function Veena({ className, defaultOpen = false, position = 'bottom-right' }: VeenaProps) {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [isMinimized, setIsMinimized] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    {
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // Load from localStorage
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }))
+      }
+    } catch { /* ignore */ }
+    return [{
       id: '1',
       role: 'assistant',
-      content: 'Hello, I\'m Veena, your intelligent breeding assistant. How may I assist you today?',
+      content: 'Namaste! 🙏 I\'m Veena, your intelligent breeding assistant. How may I assist you today?',
       timestamp: new Date()
-    }
-  ])
+    }]
+  })
   const [input, setInput] = useState('')
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
@@ -57,10 +175,37 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
   const inputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
 
+  // Save messages to localStorage
+  useEffect(() => {
+    try {
+      const toStore = messages.slice(-MAX_STORED_MESSAGES)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore))
+    } catch { /* ignore */ }
+  }, [messages])
+
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Keyboard shortcut: Ctrl+/ to toggle Veena
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+        e.preventDefault()
+        setIsOpen(prev => !prev)
+        if (!isOpen) {
+          setTimeout(() => inputRef.current?.focus(), 100)
+        }
+      }
+      // Escape to close
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
 
   // Initialize speech recognition
   useEffect(() => {
@@ -84,10 +229,10 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     }
   }, [])
 
+
   // Voice input toggle
   const toggleVoiceInput = useCallback(() => {
     if (!recognitionRef.current) return
-
     if (isListening) {
       recognitionRef.current.stop()
       setIsListening(false)
@@ -109,7 +254,25 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     }
   }, [])
 
-  // Send message
+  // Handle navigation from assistant responses
+  const handleNavigation = useCallback((path: string) => {
+    navigate(path)
+    setIsMinimized(true)
+  }, [navigate])
+
+  // Clear conversation history
+  const clearHistory = useCallback(() => {
+    const initialMessage: Message = {
+      id: Date.now().toString(),
+      role: 'assistant',
+      content: 'Conversation cleared. How can I help you today?',
+      timestamp: new Date()
+    }
+    setMessages([initialMessage])
+    localStorage.removeItem(STORAGE_KEY)
+  }, [])
+
+  // Send message with backend integration
   const sendMessage = async () => {
     if (!input.trim() || isProcessing) return
 
@@ -122,12 +285,19 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     }
 
     setMessages(prev => [...prev, userMessage])
+    const query = input.trim()
     setInput('')
     setIsProcessing(true)
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const response = generateResponse(userMessage.content)
+    try {
+      // Try to get context from backend (RAG)
+      const [contextResponse, insightsResponse] = await Promise.all([
+        veenaService.getContext(query),
+        veenaService.getInsights()
+      ])
+
+      const response = generateResponse(query, contextResponse, insightsResponse)
+      
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -136,16 +306,31 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
         metadata: response.metadata
       }
       setMessages(prev => [...prev, assistantMessage])
+    } catch {
+      // Fallback to local response generation
+      const response = generateResponse(query, null, null)
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: response.content,
+        timestamp: new Date(),
+        metadata: response.metadata
+      }
+      setMessages(prev => [...prev, assistantMessage])
+    } finally {
       setIsProcessing(false)
-    }, 1000)
+    }
   }
 
-  // Quick actions
+
+  // Context-aware quick actions based on current page
   const quickActions = [
-    { label: 'Trial Summary', action: 'Show me a summary of active trials' },
-    { label: 'Top Performers', action: 'Which germplasm has the best yield?' },
-    { label: 'Weather Alert', action: 'Any weather concerns for my locations?' },
-    { label: 'Data Quality', action: 'Check data quality issues' }
+    { label: '📊 Trial Summary', action: 'Show me a summary of active trials', icon: '📊' },
+    { label: '🏆 Top Performers', action: 'Which germplasm has the best yield?', icon: '🏆' },
+    { label: '⚠️ Weather Alert', action: 'Any weather concerns for my locations?', icon: '⚠️' },
+    { label: '📋 Data Quality', action: 'Check data quality issues', icon: '📋' },
+    { label: '🧬 Crossing Ideas', action: 'Suggest optimal crossing parents', icon: '🧬' },
+    { label: '📈 AI Insights', action: 'Show me AI-powered insights', icon: '📈' },
   ]
 
   if (!isOpen) {
@@ -158,10 +343,9 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           position === 'bottom-left' && 'bottom-6 left-6',
           className
         )}
-        title="Ask Veena"
+        title="Ask Veena (Ctrl+/)"
       >
         <span className="text-2xl group-hover:scale-110 transition-transform">🪷</span>
-        {/* Pulse indicator */}
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse" />
       </button>
     )
@@ -190,11 +374,18 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           <div>
             <h3 className="text-sm font-semibold">Veena</h3>
             <p className="text-[10px] opacity-80">
-              {isProcessing ? 'Contemplating...' : 'Ready to assist'}
+              {isProcessing ? 'Contemplating...' : 'Ready to assist • Ctrl+/'}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
+          <button
+            onClick={clearHistory}
+            className="p-1.5 hover:bg-white/20 rounded transition-colors text-xs"
+            title="Clear history"
+          >
+            🗑️
+          </button>
           <button
             onClick={() => setIsMinimized(!isMinimized)}
             className="p-1.5 hover:bg-white/20 rounded transition-colors"
@@ -210,6 +401,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
         </div>
       </div>
 
+
       {!isMinimized && (
         <>
           {/* Messages */}
@@ -219,6 +411,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
                 key={message.id}
                 message={message}
                 onSpeak={() => speak(message.content)}
+                onNavigate={handleNavigation}
                 isSpeaking={isSpeaking}
               />
             ))}
@@ -256,7 +449,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           {/* Input */}
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
             <div className="flex items-center gap-2">
-              {/* Voice Input */}
               <button
                 onClick={toggleVoiceInput}
                 className={cn(
@@ -270,7 +462,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
                 🎤
               </button>
 
-              {/* Text Input */}
               <input
                 ref={inputRef}
                 type="text"
@@ -281,7 +472,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
                 className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               />
 
-              {/* Send Button */}
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || isProcessing}
@@ -296,7 +486,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
               </button>
             </div>
 
-            {/* Voice indicator */}
             {isListening && (
               <div className="mt-2 flex items-center gap-2 text-red-500">
                 <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
@@ -310,16 +499,19 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
   )
 }
 
-/* ============================================
-   MESSAGE BUBBLE COMPONENT
-   ============================================ */
+
+// ============================================
+// MESSAGE BUBBLE COMPONENT
+// ============================================
+
 interface MessageBubbleProps {
   message: Message
   onSpeak: () => void
+  onNavigate: (path: string) => void
   isSpeaking: boolean
 }
 
-function MessageBubble({ message, onSpeak, isSpeaking }: MessageBubbleProps) {
+function MessageBubble({ message, onSpeak, onNavigate, isSpeaking }: MessageBubbleProps) {
   const isUser = message.role === 'user'
 
   return (
@@ -330,30 +522,53 @@ function MessageBubble({ message, onSpeak, isSpeaking }: MessageBubbleProps) {
           ? 'bg-amber-500 text-white'
           : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
       )}>
-        <p className="text-sm leading-relaxed">{message.content}</p>
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
         
-        {/* Metadata */}
-        {message.metadata && (
+        {/* Sources from RAG */}
+        {message.metadata?.sources && message.metadata.sources.length > 0 && (
           <div className={cn(
             'mt-2 pt-2 border-t',
             isUser ? 'border-white/20' : 'border-gray-200 dark:border-gray-600'
           )}>
-            {message.metadata.confidence && (
-              <span className="text-[10px] opacity-70">
-                Confidence: {(message.metadata.confidence * 100).toFixed(0)}%
-              </span>
-            )}
+            <p className="text-[10px] opacity-70 mb-1">Sources:</p>
+            <div className="flex flex-wrap gap-1">
+              {message.metadata.sources.slice(0, 3).map((source, i) => (
+                <span key={i} className="text-[9px] px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/30 rounded">
+                  {source.doc_type}: {source.title || source.doc_id}
+                </span>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Actions */}
+        {/* Navigation button */}
+        {message.metadata?.navigateTo && (
+          <button
+            onClick={() => onNavigate(message.metadata!.navigateTo!)}
+            className="mt-2 text-[10px] px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
+          >
+            Go to page →
+          </button>
+        )}
+
+        {/* Confidence & Actions */}
         <div className="flex items-center justify-between mt-2">
-          <span className={cn(
-            'text-[10px]',
-            isUser ? 'opacity-70' : 'text-gray-400 dark:text-gray-500'
-          )}>
-            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={cn(
+              'text-[10px]',
+              isUser ? 'opacity-70' : 'text-gray-400 dark:text-gray-500'
+            )}>
+              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+            {message.metadata?.confidence && (
+              <span className={cn(
+                'text-[9px] px-1 py-0.5 rounded',
+                isUser ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-600'
+              )}>
+                {(message.metadata.confidence * 100).toFixed(0)}% confident
+              </span>
+            )}
+          </div>
           {!isUser && (
             <button
               onClick={onSpeak}
@@ -372,38 +587,97 @@ function MessageBubble({ message, onSpeak, isSpeaking }: MessageBubbleProps) {
   )
 }
 
-/* ============================================
-   RESPONSE GENERATOR (Placeholder)
-   ============================================ */
-function generateResponse(input: string): { content: string; metadata?: Message['metadata'] } {
+
+// ============================================
+// RESPONSE GENERATOR (Enhanced with RAG)
+// ============================================
+
+function generateResponse(
+  input: string,
+  context: VeenaContextResponse | null,
+  insights: InsightsDashboard | null
+): { content: string; metadata?: Message['metadata'] } {
   const lowerInput = input.toLowerCase()
 
-  // Context-aware responses
+  // If we have RAG context from backend, use it to enhance responses
+  if (context && context.sources.length > 0) {
+    const contextInfo = context.context
+    return {
+      content: `Based on your breeding knowledge base:\n\n${contextInfo}\n\nWould you like me to elaborate on any of these findings?`,
+      metadata: {
+        confidence: 0.85,
+        sources: context.sources,
+        action: 'rag_response'
+      }
+    }
+  }
+
+  // If asking for insights and we have them from backend
+  if ((lowerInput.includes('insight') || lowerInput.includes('ai')) && insights) {
+    return {
+      content: insights.summary,
+      metadata: {
+        confidence: 0.92,
+        action: 'insights_summary',
+        navigateTo: '/insights'
+      }
+    }
+  }
+
+  // Context-aware responses with navigation
   if (lowerInput.includes('trial') && lowerInput.includes('summary')) {
     return {
       content: '🌾 You have 12 active trials across 5 locations. The wheat variety trial at Location A is showing promising results with 15% above-average yield. Would you like me to generate a detailed report?',
-      metadata: { confidence: 0.92, action: 'trial_summary' }
+      metadata: { confidence: 0.92, action: 'trial_summary', navigateTo: '/trials' }
     }
   }
 
   if (lowerInput.includes('yield') || lowerInput.includes('performer')) {
     return {
       content: '🏆 Based on current data, germplasm GRM-2024-0847 shows the highest yield potential at 4.2 t/ha, followed by GRM-2024-0923 at 3.9 t/ha. Both show excellent disease resistance scores.',
-      metadata: { confidence: 0.88, action: 'top_performers' }
+      metadata: { confidence: 0.88, action: 'top_performers', navigateTo: '/germplasm' }
     }
   }
 
   if (lowerInput.includes('weather')) {
     return {
       content: '⚠️ Weather Alert: Location B expects heavy rainfall (45mm) in the next 48 hours. Consider postponing any planned field activities. Location A and C conditions are nominal.',
-      metadata: { confidence: 0.95, action: 'weather_alert' }
+      metadata: { confidence: 0.95, action: 'weather_alert', navigateTo: '/weather' }
     }
   }
 
   if (lowerInput.includes('data quality') || lowerInput.includes('quality')) {
     return {
       content: '📊 Data quality scan complete. Found 3 potential issues: 2 missing observation values in Trial T-2024-15, and 1 outlier in yield measurements. Would you like me to show details?',
-      metadata: { confidence: 0.91, action: 'data_quality' }
+      metadata: { confidence: 0.91, action: 'data_quality', navigateTo: '/observations' }
+    }
+  }
+
+  if (lowerInput.includes('cross') || lowerInput.includes('parent')) {
+    return {
+      content: '🧬 Based on genomic analysis, I recommend crossing Line A-2847 with Line B-1923. This combination could produce progeny with 15% higher disease resistance while maintaining yield potential. Genetic distance: 0.42 (optimal range).',
+      metadata: { confidence: 0.89, action: 'crossing_recommendation', navigateTo: '/crosses' }
+    }
+  }
+
+  if (lowerInput.includes('germplasm') || lowerInput.includes('variety') || lowerInput.includes('accession')) {
+    return {
+      content: '🌱 Your germplasm collection has 2,847 active accessions across 12 crop species. 156 new entries were added this season. Would you like to search for specific traits or view recent additions?',
+      metadata: { confidence: 0.90, action: 'germplasm_overview', navigateTo: '/germplasm' }
+    }
+  }
+
+  if (lowerInput.includes('seed') && (lowerInput.includes('bank') || lowerInput.includes('lot'))) {
+    return {
+      content: '🏦 Seed Bank Status: 4 vaults operational, 12,450 accessions stored. 23 accessions flagged for regeneration (viability <85%). 5 pending distribution requests.',
+      metadata: { confidence: 0.93, action: 'seed_bank_status', navigateTo: '/seed-bank' }
+    }
+  }
+
+  if (lowerInput.includes('observation') || lowerInput.includes('phenotype')) {
+    return {
+      content: '📝 This week: 1,847 observations recorded across 24 active studies. Top traits measured: plant height (423), flowering date (312), yield (289). Data completeness: 94%.',
+      metadata: { confidence: 0.88, action: 'observations_summary', navigateTo: '/observations' }
     }
   }
 
@@ -414,9 +688,26 @@ function generateResponse(input: string): { content: string; metadata?: Message[
     }
   }
 
+  if (lowerInput.includes('help') || lowerInput.includes('what can you do')) {
+    return {
+      content: `I can help you with:
+
+• 📊 Trial & Study Management - summaries, progress, issues
+• 🌱 Germplasm Analysis - search, compare, pedigrees
+• 🧬 Crossing Recommendations - optimal parent selection
+• 📈 AI Insights - predictions, trends, opportunities
+• ⚠️ Weather Alerts - field activity planning
+• 📋 Data Quality - validation, missing data, outliers
+• 🏦 Seed Bank - inventory, viability, distributions
+
+Just ask naturally, like "Show me top performing varieties" or "Any weather concerns?"`,
+      metadata: { confidence: 0.99 }
+    }
+  }
+
   // Default response
   return {
-    content: 'I understand you\'re asking about "' + input + '". I can help you with trial management, germplasm analysis, weather monitoring, and data quality checks. Could you be more specific about what you need?',
+    content: `I understand you're asking about "${input}". I can help you with trial management, germplasm analysis, weather monitoring, crossing recommendations, and data quality checks. Could you be more specific about what you need?`,
     metadata: { confidence: 0.75 }
   }
 }

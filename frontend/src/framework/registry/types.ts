@@ -7,7 +7,7 @@
  */
 
 import { ComponentType, LazyExoticComponent } from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 /**
  * Division status indicates the maturity level
@@ -15,7 +15,19 @@ import { LucideIcon } from 'lucide-react';
 export type DivisionStatus = 'active' | 'beta' | 'planned' | 'visionary';
 
 /**
+ * A navigation item within a section
+ */
+export interface DivisionNavItem {
+  id: string;
+  name: string;
+  route: string;
+  icon?: string;
+  isAbsolute?: boolean;
+}
+
+/**
  * A section within a division (for sub-navigation)
+ * Can contain either direct items or nested subgroups
  */
 export interface DivisionSection {
   id: string;
@@ -23,6 +35,10 @@ export interface DivisionSection {
   route: string;
   icon?: string;
   description?: string;
+  /** If true, route is absolute (e.g., '/programs'), otherwise relative to division route */
+  isAbsolute?: boolean;
+  /** Nested items within this section (for subgrouping) */
+  items?: DivisionNavItem[];
 }
 
 /**

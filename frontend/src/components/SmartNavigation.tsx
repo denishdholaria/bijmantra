@@ -16,10 +16,9 @@ import {
   TestTube2, Dna, Camera, Grid3X3, Map as MapIcon, Activity,
   LineChart, SlidersHorizontal, CheckCircle2, Users, Layers, Zap,
   Cpu, Globe, Sun, Sparkles, RefreshCw, Wrench, Upload, Archive,
-  Database, Book, MessageSquare, Share2, Settings, WifiOff,
-  HelpCircle, Printer, ScanLine, Star, Clock, ChevronDown,
-  TreeDeciduous, Thermometer, Filter, Shield, Workflow,
-  LayoutGrid,
+  Database, Book, MessageSquare, Settings, WifiOff,
+  HelpCircle, Printer, ScanLine, Star, ChevronDown,
+  TreeDeciduous, Thermometer, Shield,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -265,16 +264,8 @@ interface SmartNavProps {
 
 export function SmartNavigation({ collapsed = false, onNavigate }: SmartNavProps) {
   const location = useLocation()
-  const { favorites, toggleFavorite, isFavorite, recentPages } = useSmartNav()
-  const [expandedCategory, setExpandedCategory] = useState<string | null>('home')
+  const { favorites } = useSmartNav()
   const [searchQuery, setSearchQuery] = useState('')
-
-  useEffect(() => {
-    const currentCat = smartNavCategories.find(cat =>
-      cat.items.some(item => location.pathname.startsWith(item.path))
-    )
-    if (currentCat) setExpandedCategory(currentCat.id)
-  }, [location.pathname])
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return []
@@ -292,12 +283,7 @@ export function SmartNavigation({ collapsed = false, onNavigate }: SmartNavProps
       .filter(Boolean) as NavItem[]
   }, [favorites])
 
-  const recentItems = useMemo(() => {
-    return recentPages
-      .slice(0, 5)
-      .map(path => allNavItems.find(item => item.path === path))
-      .filter(Boolean) as NavItem[]
-  }, [recentPages])
+
 
   if (collapsed) {
     return (
@@ -390,117 +376,10 @@ export function SmartNavigation({ collapsed = false, onNavigate }: SmartNavProps
         </div>
       )}
 
-      {/* Recent */}
-      {recentItems.length > 0 && !searchQuery && (
-        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
-            <Clock className="w-3 h-3" /> Recent
-          </div>
-          <div className="space-y-0.5">
-            {recentItems.map(item => {
-              const IconComponent = item.icon
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={onNavigate}
-                  className={cn(
-                    'flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors',
-                    location.pathname === item.path
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                  )}
-                >
-                  <IconComponent className="w-4 h-4 text-gray-500" />
-                  <span className="truncate">{item.label}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
       {/* Main Navigation Area */}
       <div className="flex-1 overflow-y-auto">
-        {/* Parashakti Divisions */}
+        {/* Parashakti Labs */}
         <DivisionNavigation collapsed={false} onNavigate={onNavigate} />
-        
-        {/* Separator */}
-        <div className="mx-3 my-2 border-t border-gray-200 dark:border-gray-700" />
-        
-        {/* Legacy Categories */}
-        <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-          Quick Access
-        </div>
-        <div className="p-2">
-        {smartNavCategories.map(category => {
-          const CategoryIcon = category.icon
-          return (
-            <div key={category.id} className="mb-1">
-              <button
-                onClick={() => setExpandedCategory(
-                  expandedCategory === category.id ? null : category.id
-                )}
-                className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left',
-                  expandedCategory === category.id
-                    ? `bg-gradient-to-r ${category.color} text-white shadow-md`
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                )}
-              >
-                <CategoryIcon className="w-5 h-5" />
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm">{category.title}</div>
-                  {expandedCategory !== category.id && (
-                    <div className="text-xs opacity-70 truncate">{category.description}</div>
-                  )}
-                </div>
-                <ChevronDown className={cn(
-                  'w-4 h-4 transition-transform',
-                  expandedCategory === category.id ? 'rotate-180' : ''
-                )} />
-              </button>
-
-              {expandedCategory === category.id && (
-                <div className="mt-1 ml-3 pl-3 border-l-2 border-gray-200 dark:border-gray-700 space-y-0.5">
-                  {category.items.map(item => {
-                    const ItemIcon = item.icon
-                    return (
-                      <div key={item.path} className="flex items-center group">
-                        <Link
-                          to={item.path}
-                          onClick={onNavigate}
-                          className={cn(
-                            'flex-1 flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors',
-                            location.pathname === item.path
-                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium'
-                              : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
-                          )}
-                        >
-                          <ItemIcon className="w-4 h-4" />
-                          <span className="truncate">{item.label}</span>
-                        </Link>
-                        <button
-                          onClick={() => toggleFavorite(item.path)}
-                          className={cn(
-                            'p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity',
-                            isFavorite(item.path)
-                              ? 'text-yellow-500'
-                              : 'text-gray-400 hover:text-yellow-500'
-                          )}
-                          title={isFavorite(item.path) ? 'Remove from favorites' : 'Add to favorites'}
-                        >
-                          <Star className={cn('w-3 h-3', isFavorite(item.path) && 'fill-current')} />
-                        </button>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          )
-        })}
-        </div>
       </div>
     </div>
   )

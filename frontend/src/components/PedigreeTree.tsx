@@ -6,8 +6,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { apiClient } from '@/lib/api-client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface PedigreeTreeProps {
@@ -15,14 +14,7 @@ interface PedigreeTreeProps {
   depth?: number
 }
 
-interface PedigreeNode {
-  germplasmDbId: string
-  germplasmName: string
-  parent1?: PedigreeNode
-  parent2?: PedigreeNode
-}
-
-export function PedigreeTree({ germplasmDbId, depth = 2 }: PedigreeTreeProps) {
+export function PedigreeTree({ germplasmDbId, depth: _depth = 2 }: PedigreeTreeProps) {
   const { data, isLoading, error } = useQuery({
     queryKey: ['pedigree', germplasmDbId],
     queryFn: () => apiClient.getPedigree(germplasmDbId),

@@ -10,7 +10,7 @@
 
 Bijmantra is built on the foundational belief that plant breeding should serve humanity's collective interest in food security, agricultural sustainability, and farmer autonomy. This Ethical Use Policy establishes binding restrictions on the use of this software to ensure it is never employed in ways that undermine these principles.
 
-The Creator, Denish Dholaria / R.E.E.V.A.i, hereby establishes this policy as an integral and inseparable component of the Bijmantra Open Source License with Attribution (BOSLA).
+The Creator, Denish Dholaria / R.E.E.V.A.i, hereby establishes this policy as an integral and inseparable component of the Bijmantra Source Available License (BSAL).
 
 ---
 

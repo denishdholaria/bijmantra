@@ -1,5 +1,5 @@
-Bijmantra Open Source License with Attribution (BOSLA)
-Version 1.0
+Bijmantra Source Available License (BSAL)
+Version 2.0
 
 Copyright (c) 2025 Denish Dholaria / R.E.E.V.A.i
 Supported by Solar Agrotech Private Limited
@@ -18,139 +18,295 @@ Supported by Solar Agrotech Private Limited
    
    "You" refers to any individual or organization using, copying, modifying,
    or distributing the Software.
-
-2. GRANT OF LICENSE
-
-   Subject to the terms of this license, the Creator hereby grants You a
-   worldwide, royalty-free, non-exclusive license to:
    
-   a) Use the Software for any purpose, including commercial applications
-   b) Copy and distribute the Software
-   c) Modify the Software and create derivative works
-   d) Merge the Software with other software
-   e) Publish and sublicense the Software
-
-3. ATTRIBUTION REQUIREMENTS (MANDATORY)
-
-   Any use, distribution, or derivative work of this Software MUST include
-   clear and visible attribution to the Creator. This attribution must:
+   "Commercial Use" means any use of the Software where the Software itself,
+   or access to the Software, is sold, licensed for a fee, or bundled with
+   products or services sold for profit.
    
-   a) VISIBLE CREDIT: Display the following credit in a reasonably prominent
-      location within any application, website, or service that uses this
-      Software:
+   "Internal Use" means use of the Software within an organization for that
+   organization's own operations, regardless of whether the organization is
+   for-profit or non-profit.
+
+================================================================================
+                         SECTION 1: FREE USE GRANT
+================================================================================
+
+Subject to the terms of this license, the Creator grants You a worldwide,
+royalty-free, non-exclusive license to use, copy, modify, and distribute
+the Software for the following purposes WITHOUT payment or permission:
+
+   a) PERSONAL USE: Individual use for learning, research, or personal projects
+   
+   b) EDUCATIONAL USE: Use by students, teachers, and educational institutions
+      for teaching, learning, coursework, and academic research
+   
+   c) RESEARCH USE: Use by universities, research institutions, and scientists
+      for non-commercial research and publication
+   
+   d) NON-PROFIT USE: Use by registered non-profit organizations, NGOs, and
+      charitable foundations for their mission-related activities
+   
+   e) GOVERNMENT USE: Use by government agencies, public agricultural
+      departments, and publicly-funded breeding programs
+   
+   f) INTERNAL ORGANIZATIONAL USE: Any organization (including for-profit
+      companies) may deploy and use the Software internally for their own
+      breeding operations, data management, and research — provided they
+      do not sell the Software or access to it
+   
+   g) FARMER COOPERATIVES: Use by farmer cooperatives, farmer producer
+      organizations, and agricultural collectives — even if they charge
+      nominal membership fees to their members
+   
+   h) CONSULTING SERVICES: Consultants may deploy the Software for clients
+      and charge for their expertise, training, customization, and support
+      services — provided they do not charge for the Software itself
+   
+   i) DEVELOPMENT AND TESTING: Use for developing, testing, and evaluating
+      the Software, including by commercial entities considering adoption
+
+================================================================================
+                    SECTION 2: COMMERCIAL LICENSE REQUIRED
+================================================================================
+
+A Commercial License from the Creator is REQUIRED for the following uses:
+
+   a) SELLING THE SOFTWARE: Selling, licensing for a fee, or otherwise
+      commercially distributing the Software or any derivative work
+   
+   b) SAAS/HOSTED SERVICES: Offering the Software as a paid hosted service,
+      cloud service, or software-as-a-service where users pay for access
+   
+   c) BUNDLING FOR SALE: Including the Software as part of a commercial
+      product, platform, or service that is sold to customers
+   
+   d) WHITE-LABELING: Rebranding the Software and selling it under a
+      different name
+   
+   e) OEM LICENSING: Licensing the Software to third parties for inclusion
+      in their commercial products
+
+If You are unsure whether Your use requires a Commercial License, contact
+the Creator at denishdholaria@gmail.com for clarification.
+
+================================================================================
+                      SECTION 3: COMMERCIAL LICENSE TERMS
+================================================================================
+
+3.1 EVALUATION PERIOD
+
+   Commercial entities may evaluate the Software for up to ninety (90) days
+   without a Commercial License. After the evaluation period, You must either:
+   
+   (a) Cease Commercial Use, or
+   (b) Obtain a Commercial License from the Creator
+
+3.2 COMMERCIAL LICENSE FEES
+
+   Commercial License fees are based on revenue derived from the Software:
+   
+   (a) SAAS/HOSTED SERVICES: 10% of gross subscription revenue attributable
+       to the Software
+   
+   (b) SOFTWARE SALES: 15% of gross revenue from sales of the Software or
+       derivative works
+   
+   (c) BUNDLED PRODUCTS: Negotiated on a case-by-case basis
+   
+   (d) MINIMUM ANNUAL FEE: $1,000 USD per year (or equivalent in local
+       currency), regardless of revenue
+
+3.3 STARTUP GRACE PERIOD
+
+   Startups with less than $100,000 USD in annual revenue may use the
+   Software commercially for up to two (2) years without payment. After
+   the grace period, or upon exceeding the revenue threshold, standard
+   Commercial License terms apply.
+
+3.4 DISCOUNTS
+
+   (a) DEVELOPING COUNTRIES: Organizations headquartered in countries
+       classified as "Low Income" or "Lower Middle Income" by the World
+       Bank receive a 50% discount on Commercial License fees
+   
+   (b) PUBLIC BREEDING PROGRAMS: Government-funded and CGIAR breeding
+       programs are exempt from Commercial License requirements
+
+3.5 HOW TO OBTAIN A COMMERCIAL LICENSE
+
+   Contact the Creator:
+   
+   Email: denishdholaria@gmail.com
+   Subject: "Bijmantra Commercial License Inquiry"
+   
+   Include: Your organization name, intended use, and estimated revenue
+
+================================================================================
+                    SECTION 4: ATTRIBUTION REQUIREMENTS
+================================================================================
+
+All use of the Software, whether free or commercial, MUST include clear
+and visible attribution to the Creator:
+
+   a) VISIBLE CREDIT: Display the following in a reasonably prominent
+      location within any application or service using the Software:
       
       "Powered by Bijmantra - Created by Denish Dholaria / R.E.E.V.A.i"
       
       OR
       
-      "Built with Bijmantra (https://github.com/denishdholaria/bijmantra)"
+      "Built with Bijmantra (bijmantra.com)"
    
-   b) DOCUMENTATION: Include attribution in any documentation, README files,
-      or about pages of derivative works.
+   b) DOCUMENTATION: Include attribution in README files, documentation,
+      and about pages of any deployment or derivative work
    
    c) SOURCE CODE: Retain all copyright notices, this license file, and
-      attribution comments in the source code.
+      attribution comments in the source code
    
-   d) ACADEMIC/RESEARCH USE: If used in academic papers, research, or
-      publications, cite the Software appropriately:
+   d) ACADEMIC USE: If used in academic papers or publications, cite:
       
       Dholaria, D. (2025). Bijmantra: Plant Breeding Information Management
       System. R.E.E.V.A.i. https://github.com/denishdholaria/bijmantra
 
-4. RESTRICTIONS
+================================================================================
+                 SECTION 5: ETHICAL USE RESTRICTIONS (ABSOLUTE)
+================================================================================
 
-   a) You may NOT remove, alter, or obscure any attribution, copyright
-      notices, or license information from the Software.
-   
-   b) You may NOT claim that You created the original Software.
-   
-   c) You may NOT use the name "Bijmantra", "R.E.E.V.A.i", or "Denish Dholaria"
-      to endorse or promote products derived from this Software without prior
-      written permission.
+The use of this Software is STRICTLY PROHIBITED for:
 
-5. ETHICAL USE RESTRICTIONS (MANDATORY - SEE ETHICAL_USE_POLICY.md)
-
-   The use of this Software is STRICTLY PROHIBITED for:
-   
    a) GENETIC USE RESTRICTION TECHNOLOGIES (GURTs): Any breeding activity
-      involving the development, research, testing, or commercialization of
-      plant varieties incorporating technologies that render seeds sterile,
-      non-viable, or dependent on proprietary chemical inducers.
+      involving technologies that render seeds sterile, non-viable, or
+      dependent on proprietary chemical inducers
    
    b) TERMINATOR TECHNOLOGY: Any technology that produces sterile seeds,
-      preventing farmers from saving and replanting seeds from their harvest.
+      preventing farmers from saving and replanting seeds
    
-   c) TRAITOR TECHNOLOGY: Any technology requiring chemical application to
-      activate or maintain specific genetic traits in plants.
+   c) TRAITOR TECHNOLOGY: Any technology requiring chemical application
+      to activate or maintain genetic traits in plants
    
-   d) SEED TERMINATION TECHNOLOGY: Any method that prevents seeds from being
-      saved, replanted, or used for subsequent generations of cultivation.
-   
-   e) Any activity that directly or indirectly supports, enables, or
-      contributes to the creation or deployment of the above technologies.
-   
-   This prohibition is ABSOLUTE and admits NO EXCEPTIONS. Violation results
-   in immediate and automatic termination of all license rights.
-   
-   For complete terms, see ETHICAL_USE_POLICY.md which is incorporated herein
-   by reference and has the same legal force as this license.
+   d) SEED TERMINATION: Any method that prevents seeds from being saved,
+      replanted, or used for subsequent generations
 
-6. CONTRIBUTIONS
+This prohibition is ABSOLUTE and admits NO EXCEPTIONS. Violation results
+in immediate and automatic termination of all license rights, including
+any Commercial License.
 
-   Any contributions submitted to this project shall be licensed under the
-   same terms as this license, and contributors agree to the attribution
-   requirements herein.
-
-7. NO WARRANTY
-
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-
-8. LIMITATION OF LIABILITY
-
-   IN NO EVENT SHALL THE CREATOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
-
-9. TERMINATION
-
-   This license automatically terminates if You fail to comply with any of
-   its terms, particularly the attribution requirements. Upon termination,
-   You must cease all use and distribution of the Software.
+For complete ethical use terms, see ETHICAL_USE_POLICY.md which is
+incorporated herein by reference.
 
 ================================================================================
-                                   SUMMARY
+                         SECTION 6: RESTRICTIONS
 ================================================================================
 
-✅ You CAN:
-   - Use for personal, commercial, or educational purposes
-   - Modify and create derivative works
-   - Distribute copies
-   - Use in proprietary software
+   a) You may NOT remove, alter, or obscure any attribution, copyright
+      notices, or license information from the Software
+   
+   b) You may NOT claim that You created the original Software
+   
+   c) You may NOT use the names "Bijmantra", "R.E.E.V.A.i", or
+      "Denish Dholaria" to endorse products without written permission
+   
+   d) You may NOT sublicense the Software under different terms that
+      would permit Commercial Use without a Commercial License
 
-⚠️ You MUST:
-   - Give visible credit to Denish Dholaria / R.E.E.V.A.i
-   - Keep this license and copyright notices
-   - Include attribution in derivative works
-   - Comply with the Ethical Use Policy
+================================================================================
+                           SECTION 7: CONTRIBUTIONS
+================================================================================
 
-❌ You CANNOT:
-   - Remove attribution or copyright notices
-   - Claim you created the original software
-   - Use creator's name for endorsement without permission
+Contributions to this project are welcome and appreciated. By submitting
+contributions, You agree that:
+
+   a) Your contributions are licensed under the same terms as this license
+   b) You have the right to submit the contributions
+   c) The Creator may use Your contributions in commercial offerings
+
+================================================================================
+                            SECTION 8: NO WARRANTY
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+================================================================================
+                      SECTION 9: LIMITATION OF LIABILITY
+================================================================================
+
+IN NO EVENT SHALL THE CREATOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+================================================================================
+                           SECTION 10: TERMINATION
+================================================================================
+
+   a) This license automatically terminates if You fail to comply with
+      any of its terms
+   
+   b) Violation of the Ethical Use Restrictions (Section 5) results in
+      immediate termination with no cure period
+   
+   c) For other violations, You have thirty (30) days to cure the breach
+      after receiving written notice from the Creator
+   
+   d) Upon termination, You must cease all use and distribution of the
+      Software
+
+================================================================================
+                          SECTION 11: GENERAL
+================================================================================
+
+   a) SEVERABILITY: If any provision is held invalid, the remaining
+      provisions continue in full force
+   
+   b) ENTIRE AGREEMENT: This license constitutes the entire agreement
+      regarding the Software
+   
+   c) AMENDMENTS: The Creator may publish updated versions of this license;
+      You may choose to use the Software under any version that was in
+      effect when You obtained the Software
+   
+   d) GOVERNING LAW: This license shall be governed by applicable laws
+
+================================================================================
+                                 SUMMARY
+================================================================================
+
+✅ FREE USE (No payment, no permission needed):
+   • Personal, educational, and research use
+   • Non-profit and government use
+   • Internal use by any organization (including companies)
+   • Farmer cooperatives
+   • Consulting services (selling expertise, not software)
+   • Self-hosted deployments
+
+💰 COMMERCIAL LICENSE REQUIRED (Contact Creator):
+   • Selling the software or derivatives
+   • Offering as paid SaaS/hosted service
+   • White-labeling or OEM licensing
+   • Bundling with commercial products
+
+📋 COMMERCIAL TERMS:
+   • 90-day free evaluation
+   • 10-15% of revenue, $1,000/year minimum
+   • 2-year grace period for startups (< $100K revenue)
+   • 50% discount for developing countries
+   • Public breeding programs exempt
+
+⚠️ ALWAYS REQUIRED:
+   • Attribution to Denish Dholaria / R.E.E.V.A.i
+   • Retain license and copyright notices
 
 🚫 ABSOLUTELY PROHIBITED:
-   - Use for Terminator/GURT seed technologies
-   - Use for any seed termination technology
-   - Use for technologies that make seeds sterile
-   - Use for technologies requiring chemicals to activate traits
-   - Any breeding that restricts farmers' right to save seeds
+   • Terminator/GURT seed technologies
+   • Any seed termination technology
+   • Removing attribution
 
 ================================================================================
 
-For questions about this license, contact: denishdholaria@gmail.com
+For questions: denishdholaria@gmail.com
 
 "The seeds we plant today determine the harvest our children will reap tomorrow."
-                                                    - Denish Dholaria
+                                                    — Denish Dholaria
+

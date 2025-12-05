@@ -31,7 +31,7 @@ export function FieldScanner() {
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const scanIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const scanIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Start camera
   const startCamera = async () => {

@@ -38,7 +38,7 @@ const germplasmOptions = [
 export function CrossingPlanner() {
   const [crosses, setCrosses] = useState<PlannedCross[]>(sampleCrosses)
   const [showForm, setShowForm] = useState(false)
-  const [newCross, setNewCross] = useState({ female: '', male: '', objective: '', priority: 'medium' as const, targetDate: '', expectedProgeny: 50 })
+  const [newCross, setNewCross] = useState<{ female: string; male: string; objective: string; priority: 'high' | 'medium' | 'low'; targetDate: string; expectedProgeny: number }>({ female: '', male: '', objective: '', priority: 'medium', targetDate: '', expectedProgeny: 50 })
 
   const addCross = () => {
     if (!newCross.female || !newCross.male) {
@@ -138,7 +138,7 @@ export function CrossingPlanner() {
               </div>
               <div className="space-y-2">
                 <Label>Priority</Label>
-                <Select value={newCross.priority} onValueChange={(v: 'high' | 'medium' | 'low') => setNewCross({ ...newCross, priority: v })}>
+                <Select value={newCross.priority} onValueChange={(v) => setNewCross({ ...newCross, priority: v as 'high' | 'medium' | 'low' })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="high">High</SelectItem>

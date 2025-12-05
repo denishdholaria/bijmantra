@@ -12,111 +12,111 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 
-// Lazy load pages for code splitting
+// Lazy load pages for code splitting - using named exports
 // Breeding Operations
-const Programs = lazy(() => import('@/pages/Programs'));
-const ProgramDetail = lazy(() => import('@/pages/ProgramDetail'));
-const ProgramForm = lazy(() => import('@/pages/ProgramForm'));
-const Trials = lazy(() => import('@/pages/Trials'));
-const TrialDetail = lazy(() => import('@/pages/TrialDetail'));
-const TrialForm = lazy(() => import('@/pages/TrialForm'));
-const Studies = lazy(() => import('@/pages/Studies'));
-const StudyDetail = lazy(() => import('@/pages/StudyDetail'));
-const StudyForm = lazy(() => import('@/pages/StudyForm'));
-const Locations = lazy(() => import('@/pages/Locations'));
-const LocationDetail = lazy(() => import('@/pages/LocationDetail'));
-const LocationForm = lazy(() => import('@/pages/LocationForm'));
-const Seasons = lazy(() => import('@/pages/Seasons'));
-const BreedingPipeline = lazy(() => import('@/pages/BreedingPipeline'));
-const BreedingGoals = lazy(() => import('@/pages/BreedingGoals'));
-const BreedingHistory = lazy(() => import('@/pages/BreedingHistory'));
+const Programs = lazy(() => import('@/pages/Programs').then(m => ({ default: m.Programs })));
+const ProgramDetail = lazy(() => import('@/pages/ProgramDetail').then(m => ({ default: m.ProgramDetail })));
+const ProgramForm = lazy(() => import('@/pages/ProgramForm').then(m => ({ default: m.ProgramForm })));
+const Trials = lazy(() => import('@/pages/Trials').then(m => ({ default: m.Trials })));
+const TrialDetail = lazy(() => import('@/pages/TrialDetail').then(m => ({ default: m.TrialDetail })));
+const TrialForm = lazy(() => import('@/pages/TrialForm').then(m => ({ default: m.TrialForm })));
+const Studies = lazy(() => import('@/pages/Studies').then(m => ({ default: m.Studies })));
+const StudyDetail = lazy(() => import('@/pages/StudyDetail').then(m => ({ default: m.StudyDetail })));
+const StudyForm = lazy(() => import('@/pages/StudyForm').then(m => ({ default: m.StudyForm })));
+const Locations = lazy(() => import('@/pages/Locations').then(m => ({ default: m.Locations })));
+const LocationDetail = lazy(() => import('@/pages/LocationDetail').then(m => ({ default: m.LocationDetail })));
+const LocationForm = lazy(() => import('@/pages/LocationForm').then(m => ({ default: m.LocationForm })));
+const Seasons = lazy(() => import('@/pages/Seasons').then(m => ({ default: m.Seasons })));
+const BreedingPipeline = lazy(() => import('@/pages/BreedingPipeline').then(m => ({ default: m.BreedingPipeline })));
+const BreedingGoals = lazy(() => import('@/pages/BreedingGoals').then(m => ({ default: m.BreedingGoals })));
+const BreedingHistory = lazy(() => import('@/pages/BreedingHistory').then(m => ({ default: m.BreedingHistory })));
 
 // Germplasm & Crosses
-const Germplasm = lazy(() => import('@/pages/Germplasm'));
-const GermplasmDetail = lazy(() => import('@/pages/GermplasmDetail'));
-const GermplasmForm = lazy(() => import('@/pages/GermplasmForm'));
-const GermplasmSearch = lazy(() => import('@/pages/GermplasmSearch'));
-const SeedLots = lazy(() => import('@/pages/SeedLots'));
-const SeedLotDetail = lazy(() => import('@/pages/SeedLotDetail'));
-const Crosses = lazy(() => import('@/pages/Crosses'));
-const CrossDetail = lazy(() => import('@/pages/CrossDetail'));
-const CrossingPlanner = lazy(() => import('@/pages/CrossingPlanner'));
-const PlannedCrosses = lazy(() => import('@/pages/PlannedCrosses'));
-const Progeny = lazy(() => import('@/pages/Progeny'));
-const PedigreeViewer = lazy(() => import('@/pages/PedigreeViewer'));
+const Germplasm = lazy(() => import('@/pages/Germplasm').then(m => ({ default: m.Germplasm })));
+const GermplasmDetail = lazy(() => import('@/pages/GermplasmDetail').then(m => ({ default: m.GermplasmDetail })));
+const GermplasmForm = lazy(() => import('@/pages/GermplasmForm').then(m => ({ default: m.GermplasmForm })));
+const GermplasmSearch = lazy(() => import('@/pages/GermplasmSearch').then(m => ({ default: m.GermplasmSearch })));
+const SeedLots = lazy(() => import('@/pages/SeedLots').then(m => ({ default: m.SeedLots })));
+const SeedLotDetail = lazy(() => import('@/pages/SeedLotDetail').then(m => ({ default: m.SeedLotDetail })));
+const Crosses = lazy(() => import('@/pages/Crosses').then(m => ({ default: m.Crosses })));
+const CrossDetail = lazy(() => import('@/pages/CrossDetail').then(m => ({ default: m.CrossDetail })));
+const CrossingPlanner = lazy(() => import('@/pages/CrossingPlanner').then(m => ({ default: m.CrossingPlanner })));
+const PlannedCrosses = lazy(() => import('@/pages/PlannedCrosses').then(m => ({ default: m.PlannedCrosses })));
+const Progeny = lazy(() => import('@/pages/Progeny').then(m => ({ default: m.Progeny })));
+const PedigreeViewer = lazy(() => import('@/pages/PedigreeViewer').then(m => ({ default: m.PedigreeViewer })));
 
 // Selection & Prediction
-const SelectionIndex = lazy(() => import('@/pages/SelectionIndex'));
-const SelectionDecision = lazy(() => import('@/pages/SelectionDecision'));
-const ParentSelection = lazy(() => import('@/pages/ParentSelection'));
-const CrossPrediction = lazy(() => import('@/pages/CrossPrediction'));
-const PerformanceRanking = lazy(() => import('@/pages/PerformanceRanking'));
-const GeneticGain = lazy(() => import('@/pages/GeneticGain'));
-const GeneticGainCalculator = lazy(() => import('@/pages/GeneticGainCalculator'));
+const SelectionIndex = lazy(() => import('@/pages/SelectionIndex').then(m => ({ default: m.SelectionIndex })));
+const SelectionDecision = lazy(() => import('@/pages/SelectionDecision').then(m => ({ default: m.SelectionDecision })));
+const ParentSelection = lazy(() => import('@/pages/ParentSelection').then(m => ({ default: m.ParentSelection })));
+const CrossPrediction = lazy(() => import('@/pages/CrossPrediction').then(m => ({ default: m.CrossPrediction })));
+const PerformanceRanking = lazy(() => import('@/pages/PerformanceRanking').then(m => ({ default: m.PerformanceRanking })));
+const GeneticGain = lazy(() => import('@/pages/GeneticGain').then(m => ({ default: m.GeneticGain })));
+const GeneticGainCalculator = lazy(() => import('@/pages/GeneticGainCalculator').then(m => ({ default: m.GeneticGainCalculator })));
 
 // Genetics & Genomics
-const GeneticDiversity = lazy(() => import('@/pages/GeneticDiversity'));
-const PopulationGenetics = lazy(() => import('@/pages/PopulationGenetics'));
-const LinkageDisequilibrium = lazy(() => import('@/pages/LinkageDisequilibrium'));
-const HaplotypeAnalysis = lazy(() => import('@/pages/HaplotypeAnalysis'));
-const BreedingValues = lazy(() => import('@/pages/BreedingValues'));
-const GenomicSelection = lazy(() => import('@/pages/GenomicSelection'));
-const GeneticCorrelation = lazy(() => import('@/pages/GeneticCorrelation'));
-const QTLMapping = lazy(() => import('@/pages/QTLMapping'));
-const MarkerAssistedSelection = lazy(() => import('@/pages/MarkerAssistedSelection'));
-const ParentageAnalysis = lazy(() => import('@/pages/ParentageAnalysis'));
-const GxEInteraction = lazy(() => import('@/pages/GxEInteraction'));
-const StabilityAnalysis = lazy(() => import('@/pages/StabilityAnalysis'));
-const GeneticMap = lazy(() => import('@/pages/GeneticMap'));
+const GeneticDiversity = lazy(() => import('@/pages/GeneticDiversity').then(m => ({ default: m.GeneticDiversity })));
+const PopulationGenetics = lazy(() => import('@/pages/PopulationGenetics').then(m => ({ default: m.PopulationGenetics })));
+const LinkageDisequilibrium = lazy(() => import('@/pages/LinkageDisequilibrium').then(m => ({ default: m.LinkageDisequilibrium })));
+const HaplotypeAnalysis = lazy(() => import('@/pages/HaplotypeAnalysis').then(m => ({ default: m.HaplotypeAnalysis })));
+const BreedingValues = lazy(() => import('@/pages/BreedingValues').then(m => ({ default: m.BreedingValues })));
+const GenomicSelection = lazy(() => import('@/pages/GenomicSelection').then(m => ({ default: m.GenomicSelection })));
+const GeneticCorrelation = lazy(() => import('@/pages/GeneticCorrelation').then(m => ({ default: m.GeneticCorrelation })));
+const QTLMapping = lazy(() => import('@/pages/QTLMapping').then(m => ({ default: m.QTLMapping })));
+const MarkerAssistedSelection = lazy(() => import('@/pages/MarkerAssistedSelection').then(m => ({ default: m.MarkerAssistedSelection })));
+const ParentageAnalysis = lazy(() => import('@/pages/ParentageAnalysis').then(m => ({ default: m.ParentageAnalysis })));
+const GxEInteraction = lazy(() => import('@/pages/GxEInteraction').then(m => ({ default: m.GxEInteraction })));
+const StabilityAnalysis = lazy(() => import('@/pages/StabilityAnalysis').then(m => ({ default: m.StabilityAnalysis })));
+const GeneticMap = lazy(() => import('@/pages/GeneticMap').then(m => ({ default: m.GeneticMap })));
 
 // Molecular Biology
-const MolecularBreeding = lazy(() => import('@/pages/MolecularBreeding'));
-const DoubledHaploid = lazy(() => import('@/pages/DoubledHaploid'));
-const SpeedBreeding = lazy(() => import('@/pages/SpeedBreeding'));
+const MolecularBreeding = lazy(() => import('@/pages/MolecularBreeding').then(m => ({ default: m.MolecularBreeding })));
+const DoubledHaploid = lazy(() => import('@/pages/DoubledHaploid').then(m => ({ default: m.DoubledHaploid })));
+const SpeedBreeding = lazy(() => import('@/pages/SpeedBreeding').then(m => ({ default: m.SpeedBreeding })));
 
 // Phenotyping
-const Traits = lazy(() => import('@/pages/Traits'));
-const TraitDetail = lazy(() => import('@/pages/TraitDetail'));
-const Observations = lazy(() => import('@/pages/Observations'));
-const ObservationUnits = lazy(() => import('@/pages/ObservationUnits'));
-const DataCollect = lazy(() => import('@/pages/DataCollect'));
-const Images = lazy(() => import('@/pages/Images'));
-const Events = lazy(() => import('@/pages/Events'));
+const Traits = lazy(() => import('@/pages/Traits').then(m => ({ default: m.Traits })));
+const TraitDetail = lazy(() => import('@/pages/TraitDetail').then(m => ({ default: m.TraitDetail })));
+const Observations = lazy(() => import('@/pages/Observations').then(m => ({ default: m.Observations })));
+const ObservationUnits = lazy(() => import('@/pages/ObservationUnits').then(m => ({ default: m.ObservationUnits })));
+const DataCollect = lazy(() => import('@/pages/DataCollect').then(m => ({ default: m.DataCollect })));
+const Images = lazy(() => import('@/pages/Images').then(m => ({ default: m.Images })));
+const Events = lazy(() => import('@/pages/Events').then(m => ({ default: m.Events })));
 
 // Genotyping
-const Samples = lazy(() => import('@/pages/Samples'));
-const SampleDetail = lazy(() => import('@/pages/SampleDetail'));
-const Variants = lazy(() => import('@/pages/Variants'));
-const VariantSets = lazy(() => import('@/pages/VariantSets'));
-const AlleleMatrix = lazy(() => import('@/pages/AlleleMatrix'));
-const Plates = lazy(() => import('@/pages/Plates'));
-const GenomeMaps = lazy(() => import('@/pages/GenomeMaps'));
+const Samples = lazy(() => import('@/pages/Samples').then(m => ({ default: m.Samples })));
+const SampleDetail = lazy(() => import('@/pages/SampleDetail').then(m => ({ default: m.SampleDetail })));
+const Variants = lazy(() => import('@/pages/Variants').then(m => ({ default: m.Variants })));
+const VariantSets = lazy(() => import('@/pages/VariantSets').then(m => ({ default: m.VariantSets })));
+const AlleleMatrix = lazy(() => import('@/pages/AlleleMatrix').then(m => ({ default: m.AlleleMatrix })));
+const Plates = lazy(() => import('@/pages/Plates').then(m => ({ default: m.Plates })));
+const GenomeMaps = lazy(() => import('@/pages/GenomeMaps').then(m => ({ default: m.GenomeMaps })));
 
 // Field Operations
-const FieldLayout = lazy(() => import('@/pages/FieldLayout'));
-const FieldBook = lazy(() => import('@/pages/FieldBook'));
-const FieldMap = lazy(() => import('@/pages/FieldMap'));
-const FieldPlanning = lazy(() => import('@/pages/FieldPlanning'));
-const TrialDesign = lazy(() => import('@/pages/TrialDesign'));
-const SeasonPlanning = lazy(() => import('@/pages/SeasonPlanning'));
-const NurseryManagement = lazy(() => import('@/pages/NurseryManagement'));
-const HarvestPlanner = lazy(() => import('@/pages/HarvestPlanner'));
-const HarvestLog = lazy(() => import('@/pages/HarvestLog'));
-const SeedInventory = lazy(() => import('@/pages/SeedInventory'));
+const FieldLayout = lazy(() => import('@/pages/FieldLayout').then(m => ({ default: m.FieldLayout })));
+const FieldBook = lazy(() => import('@/pages/FieldBook').then(m => ({ default: m.FieldBook })));
+const FieldMap = lazy(() => import('@/pages/FieldMap').then(m => ({ default: m.FieldMap })));
+const FieldPlanning = lazy(() => import('@/pages/FieldPlanning').then(m => ({ default: m.FieldPlanning })));
+const TrialDesign = lazy(() => import('@/pages/TrialDesign').then(m => ({ default: m.TrialDesign })));
+const SeasonPlanning = lazy(() => import('@/pages/SeasonPlanning').then(m => ({ default: m.SeasonPlanning })));
+const NurseryManagement = lazy(() => import('@/pages/NurseryManagement').then(m => ({ default: m.NurseryManagement })));
+const HarvestPlanner = lazy(() => import('@/pages/HarvestPlanner').then(m => ({ default: m.HarvestPlanner })));
+const HarvestLog = lazy(() => import('@/pages/HarvestLog').then(m => ({ default: m.HarvestLog })));
+const SeedInventory = lazy(() => import('@/pages/SeedInventory').then(m => ({ default: m.SeedInventory })));
 
 // Analysis & Simulation
-const BreedingSimulator = lazy(() => import('@/pages/BreedingSimulator'));
-const TrialComparison = lazy(() => import('@/pages/TrialComparison'));
-const TrialNetwork = lazy(() => import('@/pages/TrialNetwork'));
-const Statistics = lazy(() => import('@/pages/Statistics'));
-const DataVisualization = lazy(() => import('@/pages/DataVisualization'));
+const BreedingSimulator = lazy(() => import('@/pages/BreedingSimulator').then(m => ({ default: m.BreedingSimulator })));
+const TrialComparison = lazy(() => import('@/pages/TrialComparison').then(m => ({ default: m.TrialComparison })));
+const TrialNetwork = lazy(() => import('@/pages/TrialNetwork').then(m => ({ default: m.TrialNetwork })));
+const Statistics = lazy(() => import('@/pages/Statistics').then(m => ({ default: m.Statistics })));
+const DataVisualization = lazy(() => import('@/pages/DataVisualization').then(m => ({ default: m.DataVisualization })));
 
 // WASM Tools
-const WasmGenomics = lazy(() => import('@/pages/WasmGenomics'));
-const WasmGBLUP = lazy(() => import('@/pages/WasmGBLUP'));
-const WasmPopGen = lazy(() => import('@/pages/WasmPopGen'));
-const WasmLDAnalysis = lazy(() => import('@/pages/WasmLDAnalysis'));
-const WasmSelectionIndex = lazy(() => import('@/pages/WasmSelectionIndex'));
+const WasmGenomics = lazy(() => import('@/pages/WasmGenomics').then(m => ({ default: m.WasmGenomics })));
+const WasmGBLUP = lazy(() => import('@/pages/WasmGBLUP').then(m => ({ default: m.WasmGBLUP })));
+const WasmPopGen = lazy(() => import('@/pages/WasmPopGen').then(m => ({ default: m.WasmPopGen })));
+const WasmLDAnalysis = lazy(() => import('@/pages/WasmLDAnalysis').then(m => ({ default: m.WasmLDAnalysis })));
+const WasmSelectionIndex = lazy(() => import('@/pages/WasmSelectionIndex').then(m => ({ default: m.WasmSelectionIndex })));
 
 /**
  * Plant Sciences Division Routes

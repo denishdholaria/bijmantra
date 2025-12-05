@@ -1,392 +1,361 @@
 # Bijmantra Architecture
 
-## Aerospace-Grade Plant Breeding Platform
+**Last Updated**: December 5, 2025
 
-This document describes the architectural decisions and technical stack of Bijmantra, designed for aerospace-grade precision and reproducibility in plant breeding computations.
-
-## Vision
-
-> "Build a great future-ready Framework which can house any new development and customisation one can think of"
-
-Bijmantra is designed as a Human-AI Centric (HMI) platform that combines:
-
-- **High-precision numerical computing** using Fortran
-- **Memory-safe orchestration** using Rust
-- **Modern web interface** with React
-- **AI-first interaction** with Veena assistant
-- **Voice-enabled operations** for field use
-
-## Architecture Overview
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           USER INTERFACE LAYER                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │  React UI   │  │   Veena     │  │   Voice     │  │   Mobile    │        │
-│  │  (Web)      │  │  AI 🪷      │  │  Commands   │  │  (Capacitor)│        │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                           APPLICATION LAYER                                  │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │  FastAPI    │  │  WebSocket  │  │  GraphQL    │  │  BrAPI      │        │
-│  │  REST API   │  │  Real-time  │  │  (Future)   │  │  Compliance │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                           COMPUTE LAYER                                      │
-│  ┌───────────────────────────────────────────────────────────────────┐      │
-│  │                    HYBRID COMPUTE ENGINE                           │      │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐          │      │
-│  │  │ Fortran  │  │   Rust   │  │   WASM   │  │  WebGPU  │          │      │
-│  │  │   HPC    │  │   FFI    │  │ Browser  │  │   GPU    │          │      │
-│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘          │      │
-│  │       │              │             │             │                │      │
-│  │       └──────────────┴─────────────┴─────────────┘                │      │
-│  │                           │                                        │      │
-│  │  ┌────────────────────────┴────────────────────────┐              │      │
-│  │  │              BLAS / LAPACK / MKL                 │              │      │
-│  │  └─────────────────────────────────────────────────┘              │      │
-│  └───────────────────────────────────────────────────────────────────┘      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                           DATA LAYER                                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │ PostgreSQL  │  │   Redis     │  │ Meilisearch │  │  IndexedDB  │        │
-│  │ + pgvector  │  │   Cache     │  │   Search    │  │   Offline   │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                           AI/ML LAYER                                        │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   ONNX      │  │   WebNN     │  │  TensorFlow │  │   Custom    │        │
-│  │  Runtime    │  │  Browser AI │  │   Serving   │  │   Models    │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-## Compute Architecture
-
-### Why Fortran?
-
-| Aspect              | Fortran       | Python/NumPy       | Rust      | JavaScript |
-| ------------------- | ------------- | ------------------ | --------- | ---------- |
-| Numerical Precision | ⭐⭐⭐⭐⭐    | ⭐⭐⭐             | ⭐⭐⭐⭐  | ⭐⭐       |
-| BLAS/LAPACK         | Native        | Wrapper            | FFI       | N/A        |
-| Scientific Heritage | 60+ years     | 20 years           | 5 years   | N/A        |
-| Reproducibility     | Deterministic | Platform-dependent | Good      | Poor       |
-| Performance         | Optimal       | Good               | Excellent | Poor       |
-
-### Hybrid Compute Strategy
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    COMPUTE DECISION TREE                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Is it a numerical hotspot?                                      │
-│       │                                                          │
-│       ├── YES → Use Fortran                                      │
-│       │         • BLUP/GBLUP solvers                            │
-│       │         • REML variance estimation                       │
-│       │         • PCA/SVD decomposition                          │
-│       │         • Kinship matrix computation                     │
-│       │         • LD analysis                                    │
-│       │                                                          │
-│       └── NO → Is it browser-based?                              │
-│                    │                                             │
-│                    ├── YES → Use Rust/WASM                       │
-│                    │         • Client-side computations          │
-│                    │         • Offline calculations              │
-│                    │         • Real-time visualizations          │
-│                    │                                             │
-│                    └── NO → Is it GPU-intensive?                 │
-│                                 │                                │
-│                                 ├── YES → Use WebGPU             │
-│                                 │         • Matrix operations    │
-│                                 │         • Parallel processing  │
-│                                 │                                │
-│                                 └── NO → Use Python/TypeScript   │
-│                                           • Business logic       │
-│                                           • API orchestration    │
-│                                           • ML inference         │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Fortran Modules
-
-| Module                   | Purpose                   | Key Algorithms            |
-| ------------------------ | ------------------------- | ------------------------- |
-| `blup_solver.f90`        | Breeding value estimation | BLUP, GBLUP, MME solver   |
-| `reml_engine.f90`        | Variance components       | AI-REML, EM-REML          |
-| `kinship.f90`            | Relationship matrices     | VanRaden, Yang, Dominance |
-| `pca_svd.f90`            | Dimensionality reduction  | Truncated SVD, PCA        |
-| `ld_analysis.f90`        | Linkage disequilibrium    | r², D', LD decay          |
-| `gxe_analysis.f90`       | G×E interaction           | AMMI, GGE biplot          |
-| `stability_analysis.f90` | Yield stability           | Finlay-Wilkinson, AMMI    |
-| `selection_index.f90`    | Multi-trait selection     | Smith-Hazel, BLUP index   |
-
-### Rust FFI Layer
-
-Rust provides memory-safe wrappers around Fortran:
-
-```rust
-// Safe wrapper for GBLUP computation
-pub fn gblup(
-    genotypes: &[f64],
-    phenotypes: &[f64],
-    heritability: f64,
-    n: usize,
-    m: usize,
-) -> ComputeResult<Vec<f64>> {
-    // Validate dimensions
-    // Call Fortran via FFI
-    // Return safe Result type
-}
-```
-
-## User Interface
-
-### Design Principles
-
-Key principles:
-
-- **Clean, professional interface**
-- **Data-dense panels** for information display
-- **Status indicators** for system health
-- **Light and Dark themes**
-- **Smooth animations** for feedback
-
-### Component System
-
-```
-components/
-├── ModuleInfoMark.tsx      # i-mark for tech transparency
-├── ThemeToggle.tsx         # Light/Dark theme switcher
-├── ai/
-│   ├── Veena.tsx           # AI assistant (named after musical instrument of Goddess of Knowledge, Saraswati's Veena)
-│   ├── VeenaWelcome.tsx    # Cultural introduction screen
-│   └── VoiceCommand.tsx    # Voice control
-├── collaboration/
-│   ├── RealtimePresence.tsx    # Live cursor & user presence
-│   └── CollaborativeEditor.tsx # Real-time editing
-├── visualizations/
-│   ├── GeneticGainChart.tsx    # Genetic gain over time
-│   ├── HeritabilityGauge.tsx   # Visual heritability indicators
-│   ├── SelectionResponseChart.tsx
-│   └── CorrelationHeatmap.tsx  # Trait correlations
-└── ...
-```
-
-### Module Info Marks (i-marks)
-
-Every page/module displays technical information:
-
-- Description of functionality
-- Tech stack used
-- Data source
-- Compute engine
-- API endpoint
-- Architecture decision rationale
-
-## AI Integration
-
-### Veena AI Assistant 🪷
-
-Named after the sacred instrument of Goddess Saraswati, symbolizing the harmony of knowledge and creativity.
-
-Human-AI centric interface features:
-
-- Conversational AI for breeding queries
-- Voice input/output support (Web Speech API)
-- Context-aware suggestions with RAG
-- Cultural welcome experience for new users
-- Quick action buttons for common tasks
-- Predictive analytics and insights
-
-### Voice Commands
-
-Hands-free operation for field use:
-
-- Wake word: "Hey Veena" or "Hey Bijmantra"
-- Navigation commands
-- Data entry
-- Search queries
-
-### Vector Database (pgvector)
-
-Semantic search and RAG for intelligent responses:
-
-- 384-dimensional embeddings (MiniLM model)
-- Cosine similarity search
-- Germplasm semantic search
-- Protocol and document retrieval
-- Similar variety discovery
-
-### AI-Powered Insights
-
-Predictive analytics dashboard:
-
-- Yield predictions with confidence intervals
-- Crossing recommendations based on genomic data
-- Data quality alerts
-- Genetic gain opportunities
-- Weather impact analysis
-
-## Data Architecture
-
-### Primary Storage (PostgreSQL + pgvector)
-
-- Breeding program data
-- Germplasm records
-- Trial observations
-- User management
-- Vector embeddings for semantic search
-- PostGIS for spatial data
-
-### Cache Layer (Redis)
-
-- Session management
-- Real-time metrics
-- Computed aggregations
-
-### Search Engine (Meilisearch)
-
-- Full-text search
-- Faceted filtering
-- Typo tolerance
-
-### Vector Store (pgvector)
-
-- Semantic search embeddings
-- RAG context retrieval
-- Similar variety discovery
-- Document similarity
-
-### Offline Storage (IndexedDB)
-
-- CRDT-based sync
-- Conflict resolution
-- Background sync queue
-- Vector clock for ordering
-
-## Commercial Module
-
-### Seed Lot Management
-
-For seed companies:
-
-- Lot tracking and traceability
-- Quality testing data
-- Certification workflow
-- Inventory management
-- Customizable fields
-
-## Feature Roadmap
-
-### Phase 1: Foundation ✅ Complete
-
-- [x] Modern UI with Light/Dark themes
-- [x] Veena AI assistant with cultural welcome
-- [x] Voice commands (Hey Veena)
-- [x] Fortran HPC compute layer
-- [x] Commercial seed lot module
-- [x] BrAPI v2.1 compliance
-
-### Phase 2: AI & Analytics ✅ Complete
-
-- [x] Vector database (pgvector) for semantic search
-- [x] AI-powered insights dashboard
-- [x] Predictive analytics (yield, crossing)
-- [x] Real-time collaboration
-- [x] Advanced visualization suite
-- [x] Enterprise audit trail
-- [x] Enhanced offline sync (CRDT)
-
-### Phase 3: Advanced AI 🔄 In Progress
-
-- [ ] AI video processing for phenotyping
-- [ ] Drone integration
-- [ ] IoT sensor support
-- [ ] Computer vision for disease detection
-
-### Phase 4: Enterprise
-
-- [ ] Multi-tenant architecture
-- [ ] Custom module builder
-- [ ] White-label support
-- [ ] Enterprise SSO
-
-## Tech Stack Summary
-
-| Layer      | Technology                    | Purpose                   |
-| ---------- | ----------------------------- | ------------------------- |
-| Frontend   | React + TypeScript            | UI framework              |
-| Styling    | Tailwind CSS                  | Utility-first CSS         |
-| State      | Zustand + TanStack Query      | State management          |
-| Backend    | FastAPI (Python)              | REST API                  |
-| Database   | PostgreSQL + PostGIS          | Primary storage + spatial |
-| Vector DB  | pgvector                      | Semantic search & RAG     |
-| Cache      | Redis                         | Caching layer             |
-| Search     | Meilisearch                   | Full-text search          |
-| Compute    | Fortran + Rust + WASM         | Numerical computing       |
-| AI         | Veena + sentence-transformers | AI assistant + embeddings |
-| Mobile     | Capacitor                     | Native apps               |
-| Real-time  | Socket.io                     | WebSocket + collaboration |
-| Offline    | CRDT + IndexedDB              | Offline sync              |
-| Containers | Podman                        | Rootless containers       |
-
-## Architectural Decisions
-
-### Decision 1: Fortran for Numerical Computing
-
-**Context**: Plant breeding requires precise, reproducible numerical computations.
-
-**Decision**: Use Fortran for compute hotspots (BLUP, REML, kinship).
-
-**Rationale**:
-
-- 60+ years of scientific computing heritage
-- Native BLAS/LAPACK integration
-- Deterministic floating-point operations
-- Aerospace-grade precision
-
-### Decision 2: Rust FFI Layer
-
-**Context**: Need memory safety around Fortran calls.
-
-**Decision**: Wrap Fortran in Rust using C ABI.
-
-**Rationale**:
-
-- Memory safety guarantees
-- Modern tooling and ecosystem
-- Excellent FFI support
-- Can compile to WASM for browser
-
-### Decision 3: Professional UI Design
-
-**Context**: Users need data-dense, professional interface.
-
-**Decision**: Clean design with Light and Dark themes.
-
-**Rationale**:
-
-- Reduces eye strain for long sessions
-- Professional appearance
-- Clear status indicators
-- Information density
-
-### Decision 4: Module Info Marks
-
-**Context**: Transparency about technical implementation.
-
-**Decision**: Every page shows i-mark with tech details.
-
-**Rationale**:
-
-- Builds trust with technical users
-- Documents architecture in-app
-- Helps debugging and support
-- Educational value
+Bijmantra is an aerospace-grade plant breeding platform built on the **Parashakti Framework**, combining high-precision numerical computing with modern web technologies.
 
 ---
 
-_Bijmantra - Aerospace-Grade Precision for Plant Breeding_
+## Vision
+
+> "Build tools that solve real problems, not encyclopedias that document everything."
+
+- **100% Open Source** — No proprietary dependencies
+- **PWA-First** — Offline-capable, installable, field-ready
+- **Modular Architecture** — Modules that evolve independently
+- **Multi-Engine Compute** — Python, Rust/WASM, Fortran
+- **AI-First** — Veena assistant with RAG and voice
+
+---
+
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      USER INTERFACE LAYER                        │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐    │
+│  │ React PWA │  │ Veena AI  │  │  Voice    │  │  Mobile   │    │
+│  │   (Web)   │  │    🪷     │  │ Commands  │  │(Capacitor)│    │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘    │
+├─────────────────────────────────────────────────────────────────┤
+│                      APPLICATION LAYER                           │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐    │
+│  │  FastAPI  │  │ WebSocket │  │  BrAPI    │  │   Auth    │    │
+│  │  REST API │  │ Real-time │  │   v2.1    │  │   JWT     │    │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘    │
+├─────────────────────────────────────────────────────────────────┤
+│                       COMPUTE LAYER                              │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │              HYBRID COMPUTE ENGINE                       │    │
+│  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐        │    │
+│  │  │Fortran │  │  Rust  │  │  WASM  │  │ WebGPU │        │    │
+│  │  │  HPC   │  │  FFI   │  │Browser │  │  GPU   │        │    │
+│  │  └────────┘  └────────┘  └────────┘  └────────┘        │    │
+│  │              BLAS / LAPACK / MKL                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+├─────────────────────────────────────────────────────────────────┤
+│                        DATA LAYER                                │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐    │
+│  │PostgreSQL │  │   Redis   │  │Meilisearch│  │ IndexedDB │    │
+│  │+ pgvector │  │   Cache   │  │  Search   │  │  Offline  │    │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Tech Stack
+
+### Frontend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 18+ | UI framework |
+| TypeScript | 5+ | Type safety |
+| Vite | 5+ | Build tool |
+| Tailwind CSS | 3+ | Styling |
+| shadcn/ui | Latest | Components |
+| TanStack Query | 5+ | Server state |
+| Zustand | 4+ | Client state |
+| Dexie.js | Latest | IndexedDB |
+| Workbox | 7+ | Service worker |
+
+### Backend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Python | 3.11+ | Main language |
+| FastAPI | 0.110+ | REST API |
+| SQLAlchemy | 2.0+ | ORM |
+| Pydantic | 2+ | Validation |
+| asyncpg | Latest | Async PostgreSQL |
+
+### Database & Storage
+| Technology | Purpose |
+|------------|---------|
+| PostgreSQL 16+ | Primary database |
+| PostGIS 3.4+ | Spatial data |
+| pgvector 0.6+ | Vector embeddings |
+| Redis 7+ | Caching |
+| MinIO | Object storage |
+| Meilisearch | Full-text search |
+
+### Compute Engines
+| Engine | Use Case |
+|--------|----------|
+| Fortran | BLUP, GBLUP, REML, kinship matrices |
+| Rust/WASM | Browser genomics, matrices |
+| Python | API, ML inference |
+
+### Infrastructure
+| Technology | Purpose |
+|------------|---------|
+| Podman | Rootless containers |
+| Caddy | Reverse proxy, auto HTTPS |
+
+---
+
+## Compute Architecture
+
+### Why Fortran for Numerical Computing?
+
+| Aspect | Fortran | Python/NumPy | Rust |
+|--------|---------|--------------|------|
+| Numerical Precision | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| BLAS/LAPACK | Native | Wrapper | FFI |
+| Scientific Heritage | 60+ years | 20 years | 5 years |
+| Reproducibility | Deterministic | Platform-dependent | Good |
+
+### Fortran Modules
+| Module | Purpose |
+|--------|---------|
+| `blup_solver.f90` | BLUP, GBLUP, MME solver |
+| `reml_engine.f90` | AI-REML, EM-REML |
+| `kinship.f90` | VanRaden, Yang matrices |
+| `pca_svd.f90` | Truncated SVD, PCA |
+| `ld_analysis.f90` | r², D', LD decay |
+| `gxe_analysis.f90` | AMMI, GGE biplot |
+
+### WASM Genomics Engine
+```
+┌─────────────────────────────────────────────┐
+│         Rust/WebAssembly Engine             │
+├─────────────────────────────────────────────┤
+│  Genomics        │  Matrix Operations       │
+│  - Allele Freq   │  - GRM (VanRaden)        │
+│  - LD (r², D')   │  - A-Matrix (Pedigree)   │
+│  - HWE Test      │  - IBS Matrix            │
+├──────────────────┼──────────────────────────┤
+│  Statistics      │  Population Genetics     │
+│  - BLUP/GBLUP    │  - Diversity Metrics     │
+│  - Selection     │  - Fst, PCA              │
+│  - Heritability  │  - AMMI (G×E)            │
+└─────────────────────────────────────────────┘
+Performance: ~100x faster │ Memory Safe │ Browser Native
+```
+
+---
+
+## Project Structure
+
+```
+bijmantra/
+├── frontend/src/
+│   ├── framework/           # Parashakti core
+│   │   ├── registry/        # Module registry
+│   │   └── shell/           # Navigation, layout
+│   ├── components/          # Shared components
+│   ├── pages/               # 210+ page components
+│   ├── lib/                 # Utilities, API client
+│   └── store/               # Zustand stores
+├── backend/app/
+│   ├── api/v2/              # BrAPI v2.1 endpoints
+│   ├── core/                # Auth, config, database
+│   ├── models/              # SQLAlchemy models
+│   └── schemas/             # Pydantic schemas
+├── fortran/                 # HPC compute modules
+├── rust/                    # WASM modules
+└── docs/                    # Documentation
+```
+
+---
+
+## Offline Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│          Service Worker (Workbox)           │
+├─────────────────────────────────────────────┤
+│  Static Assets    → Cache First             │
+│  BrAPI Metadata   → Stale While Revalidate  │
+│  Observation Data → Network First + Queue   │
+│  Plant Images     → Cache First (7 days)    │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│           IndexedDB (Dexie.js)              │
+├─────────────────────────────────────────────┤
+│  observations (pending sync)                │
+│  traits (cached metadata)                   │
+│  studies, germplasm (cached data)           │
+│  sync_queue (CRDT operations)               │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## AI/ML Integration
+
+### Current Status
+
+| Component | UI | Backend | Status |
+|-----------|:--:|:-------:|--------|
+| Veena AI Assistant 🪷 | ✅ | ⚠️ | Chat UI done, RAG needs real embeddings |
+| Plant Vision | ✅ | ❌ | UI done, needs TensorFlow.js models |
+| Field Scanner | ✅ | ❌ | UI done, needs CV models |
+| Yield Predictor | ✅ | ❌ | UI done, needs ML backend |
+| Crop Health | ✅ | ⚠️ | UI done, needs data pipeline |
+| WASM Genomics | ✅ | ❌ | UI done, needs Rust compilation |
+| pgvector | - | ✅ | Migration exists, ready |
+
+### Veena AI Assistant 🪷
+Named after Goddess Saraswati's sacred instrument:
+- Natural language queries for breeding data
+- Voice commands ("Hey Veena")
+- RAG-powered responses (pgvector)
+- 384-dimensional embeddings (MiniLM)
+
+### AI/ML Roadmap
+
+#### Phase 1: Foundation (Priority: HIGH)
+| Task | Description | Effort |
+|------|-------------|--------|
+| Embedding Service | Generate real embeddings for germplasm, protocols | 2-3 days |
+| Vector Search API | `/api/v2/vector/search` with pgvector | 1-2 days |
+| Veena RAG Backend | Connect chat to vector search | 2-3 days |
+
+#### Phase 2: Genomic Selection (Priority: HIGH)
+| Task | Description | Effort |
+|------|-------------|--------|
+| GBLUP Backend | Python implementation with NumPy/SciPy | 3-5 days |
+| Cross Prediction | Predict progeny performance from parents | 3-5 days |
+| Breeding Values API | `/api/v2/breeding-values` endpoint | 2-3 days |
+
+#### Phase 3: Computer Vision (Priority: MEDIUM)
+| Task | Description | Effort |
+|------|-------------|--------|
+| Disease Detection Model | Train/integrate TensorFlow.js model | 1-2 weeks |
+| Growth Stage Classifier | BBCH scale classification | 1 week |
+| Plant Vision Backend | Model serving infrastructure | 3-5 days |
+
+#### Phase 4: MCP Integration (Priority: HIGH)
+Enable LLMs (ChatGPT, Claude) to query BrAPI data directly.
+
+```python
+# Example: BrAPI + Model Context Protocol
+from fastmcp import FastMCP
+
+mcp = FastMCP("BrAPI MCP Server")
+
+@mcp.tool()
+def get_trial_info(trial_id: str) -> dict:
+    """Retrieve trial information from BrAPI."""
+    url = f"https://server/brapi/v2/trials/{trial_id}"
+    return requests.get(url).json()
+
+@mcp.tool()
+def search_germplasm(query: str) -> list:
+    """Semantic search for germplasm."""
+    # Uses pgvector for similarity search
+    return vector_search(query, doc_type="germplasm")
+
+@mcp.tool()
+def predict_cross(parent1: str, parent2: str) -> dict:
+    """Predict progeny performance for a cross."""
+    return cross_prediction_model.predict(parent1, parent2)
+```
+
+**Why MCP matters**: Users can ask ChatGPT "What's the yield of trial T-2024-15?" and get real data.
+
+#### Phase 5: Advanced Analytics (Priority: LOW)
+| Task | Description |
+|------|-------------|
+| GWAS Pipeline | MLM, FarmCPU integration |
+| G×E Analysis | AMMI, GGE biplot |
+| Multi-omics | Transcriptomics, metabolomics support |
+
+### Enhanced BrAPI for AI/ML
+
+Future BrAPI improvements for ML-readiness:
+
+```json
+// Enhanced Observation with ML metadata
+{
+  "observationDbId": "obs12345",
+  "value": 172.3,
+  "valueUnit": "cm",
+  "dataQuality": {
+    "qualityFlag": "PASS",
+    "confidenceScore": 0.95
+  },
+  "sensorMetadata": {
+    "sensorType": "Drone RGB Camera",
+    "flightHeightMeters": 15.0
+  },
+  "mlHints": {
+    "featureImportanceRank": 3,
+    "encodingRecommended": "numeric"
+  }
+}
+```
+
+### AI Tools Summary
+
+| Tool | Route | Purpose |
+|------|-------|---------|
+| Plant Vision | `/plant-vision` | Disease, growth stage, stress |
+| Field Scanner | `/field-scanner` | Real-time camera capture |
+| Disease Atlas | `/disease-atlas` | Reference database |
+| Crop Health | `/crop-health` | Trial monitoring |
+| Yield Predictor | `/yield-predictor` | AI predictions |
+| WASM Genomics | `/wasm-genomics` | Browser-side compute |
+| WASM GBLUP | `/wasm-gblup` | Genomic BLUP |
+| WASM PopGen | `/wasm-popgen` | Diversity, Fst, PCA |
+| Insights | `/insights` | AI recommendations |
+
+---
+
+## Security
+
+- JWT tokens (24h access, 7d refresh)
+- RBAC with module-level permissions
+- Multi-tenant isolation via organization_id
+- Row-level security in PostgreSQL
+- HTTPS only (Caddy auto-TLS)
+
+---
+
+## BrAPI v2.1 Compliance
+
+### Modules Implemented
+- **Core**: Programs, Trials, Studies, Locations, People, Lists, Seasons
+- **Germplasm**: Germplasm, Seed Lots, Crosses, Pedigree, Attributes
+- **Phenotyping**: Observations, Variables, Traits, Scales, Methods, Images
+- **Genotyping**: Samples, Variants, Calls, Allele Matrix, Plates, Maps
+
+**Status**: 34/34 endpoints (100%)
+
+---
+
+## Development
+
+### Quick Start
+```bash
+make dev              # Start infrastructure
+make dev-backend      # http://localhost:8000
+make dev-frontend     # http://localhost:5173
+```
+
+### Testing
+```bash
+cd frontend && npm run test:run   # Frontend tests
+cd backend && pytest              # Backend tests
+```
+
+---
+
+## Resources
+
+- [Parashakti Specification](framework/PARASHAKTI_SPECIFICATION.md)
+- [BrAPI Specification](https://brapi.org)
+- [FastAPI Documentation](https://fastapi.tiangolo.com)
+- [React Documentation](https://react.dev)

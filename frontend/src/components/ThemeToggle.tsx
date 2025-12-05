@@ -11,10 +11,11 @@ type Theme = 'light' | 'dark'
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('bijmantra-theme') as Theme
+      const stored = localStorage.getItem('bijmantra-theme')
       // Handle legacy 'nasa' theme by converting to 'dark'
       if (stored === 'nasa') return 'dark'
-      return stored || 'light'
+      if (stored === 'light' || stored === 'dark') return stored
+      return 'light'
     }
     return 'light'
   })
@@ -61,17 +62,22 @@ export function ThemeToggle() {
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('bijmantra-theme') as Theme
+      const stored = localStorage.getItem('bijmantra-theme')
       if (stored === 'nasa') return 'dark'
-      return stored || 'light'
+      if (stored === 'light' || stored === 'dark') return stored
+      return 'light'
     }
     return 'light'
   })
 
   useEffect(() => {
     const handleStorage = () => {
-      const stored = localStorage.getItem('bijmantra-theme') as Theme
-      if (stored) setTheme(stored === 'nasa' ? 'dark' : stored)
+      const stored = localStorage.getItem('bijmantra-theme')
+      if (stored === 'nasa') {
+        setTheme('dark')
+      } else if (stored === 'light' || stored === 'dark') {
+        setTheme(stored)
+      }
     }
     
     window.addEventListener('storage', handleStorage)

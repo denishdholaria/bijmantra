@@ -1,149 +1,121 @@
 # Bijmantra - Priority TODO
 
-> Last updated: 2025-12-05 (Phase 8 Complete)
-
-## 🔴 Immediate (This Week)
-
-- [x] Commit all new documentation to git ✅
-  - `docs/framework/PARASHAKTI_SPECIFICATION.md`
-  - `docs/confidential/idea-organised.md`
-  - Updated `.kiro/steering/bijmantra-development.md`
-
-- [ ] Review and test existing Plant Sciences functionality
-  - Current modules need testing before restructuring
+> **Single Source of Truth** for what needs to be built  
+> Last updated: December 5, 2025
 
 ---
 
-## 🟠 Phase 1: Framework Foundation (Week 1-2)
+## 🔴 HIGH PRIORITY: AI/ML Backend
 
-- [x] Create `frontend/src/framework/` folder structure ✅
-  - [x] `registry/` — Division registry types and definitions ✅
-  - [x] `shell/` — App shell components (DivisionNavigation) ✅
-  - [x] `auth/` — Authentication provider (useAuth, ProtectedRoute) ✅
-  - [x] `features/` — Feature flag system ✅
+The UI is built. These need backend implementation.
 
-- [x] Create `backend/app/core/` structure ✅
-  - [x] `events.py` — Event bus for inter-division communication ✅
-  - [x] `features.py` — Feature flag service ✅
+### 1. Veena RAG (2-3 days each)
+- [ ] **Embedding Service** — Generate real embeddings for germplasm, protocols
+  - Use sentence-transformers (MiniLM, 384-dim)
+  - Store in pgvector (migration exists)
+- [ ] **Vector Search API** — `/api/v2/vector/search`
+  - Semantic search across germplasm, documents
+- [ ] **Veena Chat Backend** — Connect to vector search
+  - RAG pipeline: query → embed → search → context → response
 
-- [x] Implement Division Registry ✅
-  - [x] Define Division interface ✅
-  - [x] Register all 9 divisions ✅
-  - [x] Integrate navigation with SmartNavigation ✅
+### 2. Genomic Selection (3-5 days each)
+- [ ] **GBLUP Backend** — Python with NumPy/SciPy
+  - Kinship matrix calculation
+  - Mixed model equations solver
+- [ ] **Cross Prediction** — Predict progeny performance
+  - Parent combination scoring
+  - Expected genetic gain
+- [ ] **Breeding Values API** — `/api/v2/breeding-values`
 
----
+### 3. MCP Integration (HIGH IMPACT)
+Enable ChatGPT/Claude to query BrAPI data directly.
 
-## 🟡 Phase 2: Restructure Plant Sciences (Week 3-4)
+```python
+# backend/app/mcp/server.py
+from fastmcp import FastMCP
 
-- [x] Create `frontend/src/divisions/plant-sciences/` ✅
-  - [x] Define routes.tsx with 80+ routes organized by subsection ✅
-  - [x] Add Suspense loading fallback ✅
-  - [ ] Gradually migrate pages (existing routes still work)
+mcp = FastMCP("BrAPI MCP Server")
 
-- [x] Create routing utilities ✅
-  - [x] `createDivisionRoutes` helper ✅
-  - [x] `createProtectedRoute` helper ✅
-  - [x] `createLazyRoute` helper ✅
+@mcp.tool()
+def get_trial_info(trial_id: str) -> dict:
+    """Retrieve trial from BrAPI."""
+    return brapi_client.get_trial(trial_id)
 
-- [x] Create `backend/app/modules/plant_sciences/` ✅
-  - [x] breeding/ — dashboard, pipeline, genetic gain ✅
-  - [x] genomics/ — diversity, GRM, GEBV, LD ✅
-  - [x] phenotyping/ — dashboard, data quality ✅
-  - [x] genotyping/ — dashboard, marker summary ✅
-
-- [ ] Implement lazy loading for division routes (gradual migration)
-
----
-
-## 🟢 Phase 3: Core Services (Week 5-6) ✅ COMPLETE
-
-- [x] Implement Event Bus (backend) ✅
-- [x] Implement Permission middleware (RBAC) ✅
-- [x] Create Integration Adapter base class ✅
-- [x] Add first integration adapter (BrAPI) ✅
-- [x] Add Integration Hub API routes ✅
+@mcp.tool()
+def search_germplasm(query: str) -> list:
+    """Semantic search for germplasm."""
+    return vector_search(query, doc_type="germplasm")
+```
 
 ---
 
-## 🔵 Phase 4: Offline Sync (Week 7-8) ✅ COMPLETE
+## 🟠 MEDIUM PRIORITY: Computer Vision
 
-- [x] Set up Dexie.js with proper schema ✅
-- [x] Implement sync engine ✅
-- [x] Add pending operations queue ✅
-- [x] Create sync hooks (useSync, useOfflineData, useSyncStatus) ✅
-- [x] Update service worker caching strategies ✅
+### Plant Vision Models (1-2 weeks)
+- [ ] **Disease Detection** — TensorFlow.js model
+  - Rice blast, bacterial blight, rust
+  - Train or use pre-trained model
+- [ ] **Growth Stage Classifier** — BBCH scale
+- [ ] **Model Serving** — `/api/v2/vision/analyze`
 
----
-
-## ⚪ Phase 5: Seed Bank Division (Week 9+) ✅ COMPLETE
-
-- [x] Create Seed Bank division (Division 2) ✅
-  - [x] Frontend structure with 8 pages ✅
-    - Dashboard, Accessions, AccessionDetail, VaultManagement
-    - Conservation, GermplasmExchange, ViabilityTesting, RegenerationPlanning
-  - [x] Backend module (models, schemas, router) ✅
-  - [x] Full REST API with CRUD operations ✅
-  - [x] IndexedDB schema for offline support ✅
-  - [x] Enhanced service worker caching ✅
+### WASM Compilation (1 week)
+- [ ] **Compile Rust to WASM** — `rust/` → `frontend/public/wasm/`
+  - GRM calculation
+  - LD analysis
+  - PCA
 
 ---
 
-## 🟣 Phase 6: Polish & Integration ✅ COMPLETE
+## 🟡 LOW PRIORITY: Advanced Analytics
 
-- [x] Connect Seed Bank frontend to backend API ✅
-- [x] Add database migrations for Seed Bank tables ✅
-- [x] Implement real data fetching with demo fallback ✅
-- [x] Add form components (AccessionForm, VaultForm) ✅
-- [x] Add offline sync hooks (useOfflineVaults, useOfflineAccessions) ✅
-- [x] Update README to reflect Parashakti framework ✅
+- [ ] GWAS Pipeline (MLM, FarmCPU)
+- [ ] G×E Analysis (AMMI, GGE biplot)
+- [ ] Multi-omics support
 
 ---
 
-## 🌍 Phase 7: Earth Systems Division ✅ COMPLETE
+## ✅ COMPLETED
 
-- [x] Create Earth Systems division (Division 3) ✅
-  - [x] Dashboard with weather overview and alerts ✅
-  - [x] WeatherForecast - 7-day agricultural forecast ✅
-  - [x] ClimateAnalysis - long-term trends ✅
-  - [x] FieldMap - GIS field visualization ✅
-  - [x] SoilData - soil analysis and nutrients ✅
-  - [x] GrowingDegrees - GDD tracking ✅
-  - [x] DroughtMonitor - water stress monitoring ✅
+### Dec 5, 2025
+- [x] Navigation redesign (Divisions → Modules)
+- [x] Plant Sciences with 9 subgroups
+- [x] Quick Access removed
+- [x] Documentation consolidated
+- [x] 0 TypeScript errors
+- [x] 48 tests passing
 
----
-
-## 📚 Phase 8: Knowledge Division ✅ COMPLETE
-
-- [x] Create Knowledge division (Division 9) ✅
-  - [x] Dashboard with learning paths and quick tips ✅
-  - [x] Documentation - technical guides with sidebar nav ✅
-  - [x] Tutorials - step-by-step learning guides ✅
-  - [x] Glossary - searchable plant breeding terminology ✅
-  - [x] FAQ - expandable Q&A ✅
-  - [x] Community - contribution guide and resources ✅
+### Previously
+- [x] 210+ pages built
+- [x] BrAPI v2.1 100% (34/34 endpoints)
+- [x] Veena AI UI
+- [x] WASM tool UIs
+- [x] Plant Vision UI
+- [x] pgvector migration
+- [x] Offline sync (Dexie.js)
+- [x] PWA with Workbox
 
 ---
 
-## 📋 Ongoing
+## 🚫 NOT Building (Integrate Instead)
 
-- [ ] Testing — All modules need thorough testing
-- [ ] Documentation — Keep specs updated as we build
-- [ ] README — Update to reflect Parashakti framework (remove BrAPI focus)
-
----
-
-## 🚫 NOT Now (Defer)
-
-- Microservices split — Not needed until scale demands
-- Full ERP — Integrate with ERPNext instead
-- Agrochemical database — Just log inputs, link to external DBs
-- Sun-Earth Systems — Visionary, foundation only
-- Space Research — Visionary, foundation only
+| Don't Build | Integrate With |
+|-------------|----------------|
+| Full ERP | ERPNext |
+| Agrochemical DB | External registries |
+| Bioinformatics tools | NCBI, EMBL, Ensembl |
+| Weather service | OpenWeather API |
 
 ---
 
-## 📚 Reference Documents
+## 📚 Documentation Map
 
-- `docs/framework/PARASHAKTI_SPECIFICATION.md` — Full technical spec
-- `docs/confidential/idea-organised.md` — Vision and division structure
-- `.kiro/steering/bijmantra-development.md` — Development guidelines
+| File | Purpose |
+|------|---------|
+| `README.md` | Project overview |
+| `PROJECT_STATUS.md` | Current status |
+| `docs/ARCHITECTURE.md` | **Technical reference + AI/ML roadmap** |
+| `docs/Godsend.md` | Feature tracking |
+| `docs/TROUBLESHOOTING.md` | Common issues |
+| `docs/framework/PARASHAKTI_SPECIFICATION.md` | Framework spec |
+
+> **Note**: AI/ML roadmap is in `docs/ARCHITECTURE.md` — that's the single source of truth for technical decisions.

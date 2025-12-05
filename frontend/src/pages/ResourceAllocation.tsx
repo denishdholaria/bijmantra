@@ -9,8 +9,6 @@ import {
   DollarSign,
   Users,
   MapPin,
-  Beaker,
-  Calendar,
   TrendingUp,
   Settings,
   Download
@@ -25,7 +23,7 @@ interface ResourceCategory {
 }
 
 export function ResourceAllocation() {
-  const [selectedYear, setSelectedYear] = useState('2025')
+  const [_selectedYear, _setSelectedYear] = useState('2025')
 
   const budgetCategories: ResourceCategory[] = [
     { name: 'Field Operations', allocated: 150000, used: 98000, unit: '$', status: 'on-track' },

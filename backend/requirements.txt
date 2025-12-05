@@ -23,3 +23,4 @@ sentry-sdk[fastapi]>=1.38.0
 # Vector Store & Embeddings
 pgvector>=0.2.4
 sentence-transformers>=2.2.0
+greenlet>=3.0.0

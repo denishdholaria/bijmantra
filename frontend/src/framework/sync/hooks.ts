@@ -111,7 +111,7 @@ export function useOfflineData<T extends { id: string }>(
       _syncStatus: 'pending',
       _createdAt: now,
       _updatedAt: now,
-    } as T;
+    } as unknown as T;
 
     await table.add(newItem);
     await syncEngine.queueChange(entityType, id, 'create', newItem as any);

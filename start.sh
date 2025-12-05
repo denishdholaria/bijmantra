@@ -14,7 +14,9 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Check for podman or docker
-if command -v podman &> /dev/null; then
+if [ -x "/opt/podman/bin/podman" ]; then
+    CONTAINER_CMD="/opt/podman/bin/podman"
+elif command -v podman &> /dev/null; then
     CONTAINER_CMD="podman"
 elif command -v docker &> /dev/null; then
     CONTAINER_CMD="docker"
@@ -29,12 +31,12 @@ echo ""
 # 1. Build PostgreSQL image if needed (includes PostGIS + pgvector)
 if ! $CONTAINER_CMD image exists bijmantra-postgres:latest 2>/dev/null; then
     echo "🔨 Building PostgreSQL image with PostGIS + pgvector..."
-    $CONTAINER_CMD compose build postgres
+    $CONTAINER_CMD-compose build postgres
 fi
 
 # 2. Start Infrastructure Services
 echo "📦 Starting PostgreSQL, Redis, and Meilisearch..."
-$CONTAINER_CMD compose up -d postgres redis meilisearch
+$CONTAINER_CMD-compose up -d postgres redis meilisearch
 sleep 3
 
 # Wait for PostgreSQL to be ready
@@ -106,7 +108,7 @@ cleanup() {
     echo "🛑 Stopping Bijmantra..."
     kill $BACKEND_PID 2>/dev/null || true
     kill $FRONTEND_PID 2>/dev/null || true
-    $CONTAINER_CMD compose down
+    $CONTAINER_CMD-compose down
     echo "👋 Goodbye!"
     exit 0
 }

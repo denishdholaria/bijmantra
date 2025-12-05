@@ -2,43 +2,69 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { initSentry } from '@/lib/sentry'
-import { initPostHog } from '@/lib/posthog'
-import { initWebGPU } from '@/lib/webgpu'
 import App from './App.tsx'
 import './index.css'
 
-// Initialize monitoring and analytics
-initSentry()
-initPostHog()
-
-// Initialize WebGPU for genomics acceleration (async, non-blocking)
-initWebGPU().then((capabilities) => {
-  if (capabilities.available) {
-    console.log('[Bijmantra] WebGPU available for genomics acceleration')
-  }
-})
+// Simplified initialization for debugging
+console.log('[Bijmantra] Starting app...')
 
 // Create React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: false, // Don't retry failed requests (backend might not be running)
+      staleTime: 1000 * 60 * 5,
+      retry: false,
       refetchOnWindowFocus: false,
     },
   },
 })
 
+// Simple error boundary
+class SimpleErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('[Bijmantra] React Error:', error)
+    console.error('[Bijmantra] Component Stack:', info.componentStack)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px', fontFamily: 'system-ui' }}>
+          <h1 style={{ color: 'red' }}>Something went wrong</h1>
+          <pre style={{ background: '#f5f5f5', padding: '10px', overflow: 'auto' }}>
+            {this.state.error?.message}
+          </pre>
+          <pre style={{ background: '#f5f5f5', padding: '10px', overflow: 'auto', fontSize: '12px' }}>
+            {this.state.error?.stack}
+          </pre>
+          <button onClick={() => window.location.reload()}>Reload</button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ErrorBoundary>
+    <SimpleErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <App />
         <Toaster richColors position="top-right" />
       </QueryClientProvider>
-    </ErrorBoundary>
+    </SimpleErrorBoundary>
   </React.StrictMode>,
 )
 

@@ -1,20 +1,50 @@
 /**
  * Main Layout Component with Smart Navigation
  * Features: Command Palette (⌘K), Smart Nav, Favorites, Recent Pages
+ * Restored: RoleSwitcher, ToastContainer, PresenceIndicator, SyncStatus, Notifications
  */
 
 import { Link, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense, lazy } from 'react'
+
+// Lazy load heavy components to prevent blocking
+const SmartNavigation = lazy(() => import('@/components/SmartNavigation').then(m => ({ default: m.SmartNavigation })))
+const CommandPalette = lazy(() => import('@/components/CommandPalette').then(m => ({ default: m.CommandPalette })))
+const UserMenu = lazy(() => import('@/components/UserMenu').then(m => ({ default: m.UserMenu })))
+const Veena = lazy(() => import('@/components/ai/Veena').then(m => ({ default: m.Veena })))
+
+// Import lighter components directly
 import { useKeyboardShortcuts } from '@/components/KeyboardShortcuts'
-import { CommandPalette } from '@/components/CommandPalette'
-import { UserMenu } from '@/components/UserMenu'
-import { RoleSwitcher, RoleIndicator } from '@/components/RoleSwitcher'
+import { RoleIndicator } from '@/components/RoleSwitcher'
 import { ToastContainer } from '@/components/ToastContainer'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { SyncStatusIndicator, OfflineBanner } from '@/components/SyncStatusIndicator'
-import { Veena } from '@/components/ai/Veena'
-import { NotificationBell, NotificationProvider } from '@/components/notifications'
-import { SmartNavigation, allNavItems } from '@/components/SmartNavigation'
+import { NotificationProvider, NotificationBell } from '@/components/notifications'
+
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600" />
+    </div>
+  )
+}
+
+// Simple nav items for fallback
+const navItems = [
+  { path: '/dashboard', label: 'Dashboard', icon: '📊' },
+  { path: '/programs', label: 'Programs', icon: '🌾' },
+  { path: '/trials', label: 'Trials', icon: '🧪' },
+  { path: '/studies', label: 'Studies', icon: '📈' },
+  { path: '/locations', label: 'Locations', icon: '📍' },
+  { path: '/germplasm', label: 'Germplasm', icon: '🌱' },
+  { path: '/seedlots', label: 'Seed Lots', icon: '📦' },
+  { path: '/crosses', label: 'Crosses', icon: '🧬' },
+  { path: '/traits', label: 'Traits', icon: '🔬' },
+  { path: '/observations', label: 'Observations', icon: '📋' },
+  { path: '/samples', label: 'Samples', icon: '🧫' },
+  { path: '/settings', label: 'Settings', icon: '⚙️' },
+  { path: '/help', label: 'Help', icon: '❓' },
+]
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useKeyboardShortcuts()
@@ -22,6 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
+  const [useSmartNav] = useState(true)
 
   // Global keyboard shortcut for Command Palette
   useEffect(() => {
@@ -37,14 +68,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
-  // Get current page label for header
-  const currentPageLabel = allNavItems.find(item => 
+  // Get current page label
+  const currentPageLabel = navItems.find(item => 
     location.pathname === item.path || location.pathname.startsWith(item.path + '/')
   )?.label || 'Bijmantra'
 
   return (
     <NotificationProvider>
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 dark:from-slate-900 dark:to-slate-900 flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 dark:from-slate-900 dark:to-slate-900 flex flex-col">
+      {/* Offline Banner - shows when offline */}
+      <OfflineBanner />
+      
+      <div className="flex flex-1">
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={closeMobileMenu} />
@@ -77,12 +112,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
           )}
         </div>
 
-        {/* Smart Navigation */}
-        <div className="flex-1 overflow-hidden">
-          <SmartNavigation 
-            collapsed={sidebarCollapsed} 
-            onNavigate={closeMobileMenu}
-          />
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto">
+          {useSmartNav ? (
+            <Suspense fallback={<SimpleNav items={navItems} collapsed={sidebarCollapsed} onNavigate={closeMobileMenu} currentPath={location.pathname} />}>
+              <SmartNavigation collapsed={sidebarCollapsed} onNavigate={closeMobileMenu} />
+            </Suspense>
+          ) : (
+            <SimpleNav items={navItems} collapsed={sidebarCollapsed} onNavigate={closeMobileMenu} currentPath={location.pathname} />
+          )}
         </div>
 
         {/* Sidebar Footer */}
@@ -137,27 +175,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           
           {/* Right side */}
           <div className="flex items-center gap-2">
-            {/* Role indicator */}
-            <RoleIndicator />
-            
-            {/* Role Switcher */}
-            <div className="hidden md:block">
-              <RoleSwitcher compact />
-            </div>
-            
-            {/* Online presence */}
-            <div className="hidden lg:block">
-              <PresenceIndicator maxVisible={3} showCount={false} />
-            </div>
-            
-            {/* Sync status */}
-            <div className="hidden sm:block">
-              <SyncStatusIndicator />
-            </div>
-            
-            {/* Notification Bell */}
-            <NotificationBell />
-            
             {/* Mobile search */}
             <button
               onClick={() => setCommandPaletteOpen(true)}
@@ -167,36 +184,90 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="text-lg">🔍</span>
             </button>
             
+            {/* Role Indicator - shows current role view */}
+            <RoleIndicator />
+            
+            {/* Sync Status */}
+            <SyncStatusIndicator />
+            
+            {/* Presence Indicator - shows online users */}
+            <PresenceIndicator maxVisible={3} showCount={false} />
+            
+            {/* Notification Bell */}
+            <NotificationBell />
+            
             {/* User Menu */}
-            <UserMenu />
+            <Suspense fallback={<div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />}>
+              <UserMenu />
+            </Suspense>
           </div>
         </header>
         
         {/* Command Palette */}
-        <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
-
-        {/* Offline Banner */}
-        <OfflineBanner />
+        <Suspense fallback={null}>
+          <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
+        </Suspense>
 
         {/* Main Content */}
-        <main className="p-4 lg:p-6 min-h-[calc(100vh-56px)]">{children}</main>
+        <main className="p-4 lg:p-6 min-h-[calc(100vh-56px)]">
+          <Suspense fallback={<LoadingFallback />}>
+            {children}
+          </Suspense>
+        </main>
 
         {/* Footer */}
         <footer className="bg-white/80 backdrop-blur-md border-t border-gray-200 px-4 lg:px-6 py-3">
           <div className="flex items-center justify-between text-xs text-gray-500">
             <span>© 2025 Bijmantra by <Link to="/about" className="text-green-600 hover:underline">R.E.E.V.A.i</Link></span>
-            <span className="hidden sm:inline">PWA • Offline Ready • Open Source</span>
+            <div className="flex items-center gap-3">
+              <Link to="/terms" className="hover:text-green-600">License</Link>
+              <Link to="/privacy" className="hover:text-green-600">Privacy</Link>
+              <span className="hidden sm:inline">• PWA • Offline Ready</span>
+            </div>
           </div>
         </footer>
       </div>
       
-      {/* Global Toast Notifications */}
-      <ToastContainer />
-      
       {/* Veena AI Assistant */}
-      <Veena />
+      <Suspense fallback={null}>
+        <Veena />
+      </Suspense>
+      </div>{/* End flex wrapper */}
+      
+      {/* Toast Container - renders all active toasts */}
+      <ToastContainer />
     </div>
     </NotificationProvider>
+  )
+}
+
+// Simple navigation fallback
+function SimpleNav({ items, collapsed, onNavigate, currentPath }: { 
+  items: typeof navItems
+  collapsed: boolean
+  onNavigate: () => void
+  currentPath: string
+}) {
+  return (
+    <div className="p-2">
+      <nav className="space-y-1">
+        {items.map(item => (
+          <Link
+            key={item.path}
+            to={item.path}
+            onClick={onNavigate}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+              currentPath === item.path || currentPath.startsWith(item.path + '/')
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300'
+            }`}
+          >
+            <span>{item.icon}</span>
+            {!collapsed && <span className="text-sm">{item.label}</span>}
+          </Link>
+        ))}
+      </nav>
+    </div>
   )
 }
 

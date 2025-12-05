@@ -8,10 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
-  Link2, BarChart3, Grid3X3, Filter, Download, 
+  Link2, Grid3X3,
   Dna, TrendingDown, Sparkles, AlertTriangle
 } from 'lucide-react';
-import { useWasm, useLD, useHWE } from '@/wasm/hooks';
+import { useWasm } from '@/wasm/hooks';
 
 interface MarkerPair {
   marker1: string;
@@ -32,8 +32,9 @@ interface HWETest {
 
 function WasmLDAnalysis() {
   const { isReady, version } = useWasm();
-  const { calculate: calcLD, result: ldResult, isCalculating: ldCalc } = useLD();
-  const { calculate: calcHWE, result: hweResult, isCalculating: hweCalc } = useHWE();
+  // LD and HWE hooks - will be used when WASM module is ready
+  const _ldHook = { calculate: () => {}, result: null, isCalculating: false };
+  const _hweHook = { calculate: () => {}, result: null, isCalculating: false };
 
   const [nSamples, setNSamples] = useState(200);
   const [nMarkers, setNMarkers] = useState(50);

@@ -23,7 +23,7 @@ interface ScanResult {
     id: string
     name: string
     details?: Record<string, string>
-  }
+  } | null
 }
 
 // Mock lookup function - replace with actual API call
@@ -51,7 +51,7 @@ export function BarcodeScanner() {
   const [isScanning, setIsScanning] = useState(false)
   const [manualCode, setManualCode] = useState('')
   const [scanHistory, setScanHistory] = useState<ScanResult[]>([])
-  const [lastResult, setLastResult] = useState<ScanResult | null>(null)
+  const [lastResult, setLastResult] = useState<ScanResult | undefined>(undefined)
   const [selectedCamera, setSelectedCamera] = useState<string>('')
   const [cameras, setCameras] = useState<{ id: string; label: string }[]>([])
   const [scanMode, setScanMode] = useState<'qr' | 'barcode' | 'all'>('all')
@@ -113,7 +113,7 @@ export function BarcodeScanner() {
     }
 
     try {
-      const scanner = new Html5Qrcode(scannerContainerId, { formatsToSupport: getFormats() })
+      const scanner = new Html5Qrcode(scannerContainerId, { formatsToSupport: getFormats(), verbose: false })
       scannerRef.current = scanner
 
       await scanner.start(

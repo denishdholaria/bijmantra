@@ -1,16 +1,39 @@
-"use client"
+/**
+ * Sonner Toast Component
+ * Adapted for Vite/React (not Next.js)
+ * Supports dark mode via CSS class on document
+ */
 
-import { useTheme } from "next-themes"
+import * as React from "react"
 import { Toaster as Sonner } from "sonner"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
+
+  React.useEffect(() => {
+    // Check for dark class on document (Tailwind dark mode)
+    const checkTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      setTheme(isDark ? 'dark' : 'light')
+    }
+    
+    checkTheme()
+    
+    // Watch for class changes on document
+    const observer = new MutationObserver(checkTheme)
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    })
+    
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={theme}
       className="toaster group"
       toastOptions={{
         classNames: {

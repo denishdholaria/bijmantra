@@ -47,6 +47,9 @@ dist-ssr/
 *~
 .DS_Store
 
+# Kiro AI steering (local only)
+.kiro/
+
 # Testing
 .coverage
 .pytest_cache/

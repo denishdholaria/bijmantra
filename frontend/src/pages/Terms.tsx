@@ -1,220 +1,257 @@
 /**
  * Terms of Service Page
- * Terms and conditions for using Bijmantra
+ * Bijmantra Source Available License (BSAL) v2.0
  */
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 export function Terms() {
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold">Terms of Service</h1>
-          <p className="text-muted-foreground mt-1">Last updated: December 1, 2025</p>
+          <h1 className="text-2xl lg:text-3xl font-bold">License & Terms</h1>
+          <p className="text-muted-foreground mt-1">Bijmantra Source Available License (BSAL) v2.0</p>
         </div>
         <Link to="/privacy">
           <Button variant="outline">🔒 Privacy Policy</Button>
         </Link>
       </div>
 
-      {/* Summary */}
-      <Card className="border-blue-200 bg-blue-50">
+      {/* Summary Card */}
+      <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
         <CardContent className="pt-6">
-          <div className="flex items-start gap-4">
-            <span className="text-3xl">📜</span>
-            <div>
-              <h3 className="font-semibold text-blue-800">Open Source Software</h3>
-              <p className="text-sm text-blue-700 mt-1">
-                Bijmantra is open-source software. You are free to use, modify, and distribute it 
-                according to the license terms. These terms apply to the hosted version and services.
-              </p>
-            </div>
+          <div className="text-center mb-4">
+            <span className="text-4xl">📜</span>
+            <h2 className="text-xl font-bold text-green-800 mt-2">Free to Use, Pay to Sell</h2>
+            <p className="text-green-700 mt-1">
+              Bijmantra is free for everyone to use. Commercial license required only if you sell it.
+            </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Acceptance */}
+      {/* Quick Summary */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <Card className="border-green-200">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <span>✅</span> Free Use
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm space-y-1">
+            <p>• Personal & educational use</p>
+            <p>• Research & non-profit</p>
+            <p>• Internal organizational use</p>
+            <p>• Self-hosted deployments</p>
+            <p>• Farmer cooperatives</p>
+            <p>• Consulting services</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-amber-200">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <span>💰</span> Commercial License
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm space-y-1">
+            <p>• Selling the software</p>
+            <p>• Paid SaaS/hosted service</p>
+            <p>• White-labeling for resale</p>
+            <p>• Bundling with products</p>
+            <p className="text-amber-700 font-medium pt-2">Contact for pricing</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-red-200">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <span>🚫</span> Prohibited
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm space-y-1">
+            <p>• Terminator technology</p>
+            <p>• GURT seed technologies</p>
+            <p>• Seed termination tech</p>
+            <p>• Removing attribution</p>
+            <p className="text-red-700 font-medium pt-2">Zero tolerance</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Free Use Details */}
       <Card>
         <CardHeader>
-          <CardTitle>1. Acceptance of Terms</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <span>✅</span> Section 1: Free Use Grant
+          </CardTitle>
+          <CardDescription>No payment or permission required for these uses</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p>
-            By accessing or using Bijmantra, you agree to be bound by these Terms of Service. 
-            If you do not agree to these terms, please do not use the application.
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              { icon: '👤', title: 'Personal Use', desc: 'Learning, research, personal projects' },
+              { icon: '🎓', title: 'Educational Use', desc: 'Students, teachers, universities, coursework' },
+              { icon: '🔬', title: 'Research Use', desc: 'Academic research and publications' },
+              { icon: '💚', title: 'Non-Profit Use', desc: 'NGOs, charities, foundations' },
+              { icon: '🏛️', title: 'Government Use', desc: 'Public agencies, agricultural departments' },
+              { icon: '🏢', title: 'Internal Use', desc: 'Any organization for their own operations' },
+              { icon: '🌾', title: 'Farmer Cooperatives', desc: 'Even with nominal membership fees' },
+              { icon: '👨‍💼', title: 'Consulting', desc: 'Charge for expertise, not the software' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                <span className="text-xl">{item.icon}</span>
+                <div>
+                  <h4 className="font-semibold text-green-800">{item.title}</h4>
+                  <p className="text-sm text-green-700">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Commercial License */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>💰</span> Section 2: Commercial License
+          </CardTitle>
+          <CardDescription>Required if you sell the software or offer it as a paid service</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+            <h4 className="font-semibold text-amber-800 mb-2">When is a Commercial License Required?</h4>
+            <ul className="space-y-2 text-sm text-amber-700">
+              <li>• <strong>Selling the software</strong> — Rebranding and selling Bijmantra</li>
+              <li>• <strong>SaaS/Hosted Service</strong> — Offering paid access to Bijmantra</li>
+              <li>• <strong>White-labeling</strong> — Reselling under a different name</li>
+              <li>• <strong>Bundling</strong> — Including in commercial products for sale</li>
+            </ul>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-slate-50 rounded-lg">
+              <h4 className="font-semibold mb-2">Commercial Terms</h4>
+              <ul className="text-sm space-y-1">
+                <li>• 90-day free evaluation period</li>
+                <li>• 10% of SaaS subscription revenue</li>
+                <li>• 15% of software sales revenue</li>
+                <li>• $1,000 USD minimum annual fee</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-lg">
+              <h4 className="font-semibold mb-2">Special Programs</h4>
+              <ul className="text-sm space-y-1">
+                <li>• <strong>Startups</strong>: 2-year grace period (&lt;$100K revenue)</li>
+                <li>• <strong>Developing countries</strong>: 50% discount</li>
+                <li>• <strong>Public breeding</strong>: Exempt (free)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-center pt-2">
+            <a href="mailto:denishdholaria@gmail.com?subject=Bijmantra Commercial License Inquiry">
+              <Button>
+                <span className="mr-2">📧</span> Contact for Commercial License
+              </Button>
+            </a>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Attribution */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>📝</span> Section 3: Attribution Requirements
+          </CardTitle>
+          <CardDescription>Required for all use (free and commercial)</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm">
+            All deployments must include visible attribution to the creator:
           </p>
-          <p>
-            We may update these terms from time to time. Continued use of the application after 
-            changes constitutes acceptance of the new terms.
+          <div className="bg-slate-100 rounded-lg p-4 font-mono text-sm">
+            "Powered by Bijmantra - Created by Denish Dholaria / R.E.E.V.A.i"
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Attribution must appear in the application UI, documentation, and source code.
+            Academic use must include proper citation.
           </p>
         </CardContent>
       </Card>
 
-      {/* License */}
+      {/* Ethical Restrictions */}
+      <Card className="border-2 border-red-200 bg-gradient-to-br from-red-50 to-orange-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-red-800">
+            <span>🚫</span> Section 4: Ethical Use Restrictions
+          </CardTitle>
+          <CardDescription className="text-red-700">Absolute prohibition — no exceptions</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-red-800">
+            The use of Bijmantra is <strong>STRICTLY PROHIBITED</strong> for:
+          </p>
+          <div className="grid md:grid-cols-2 gap-3">
+            {[
+              { title: 'Terminator Technology', desc: 'Seeds engineered to be sterile' },
+              { title: 'GURTs', desc: 'Genetic Use Restriction Technologies' },
+              { title: 'Traitor Technology', desc: 'Chemical-dependent trait activation' },
+              { title: 'Seed Termination', desc: 'Any tech preventing seed saving' },
+            ].map((item, i) => (
+              <div key={i} className="p-3 bg-red-100 rounded-lg border border-red-200">
+                <h4 className="font-semibold text-red-800">{item.title}</h4>
+                <p className="text-sm text-red-700">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="bg-white/70 rounded-lg p-4 text-center">
+            <p className="text-red-800 italic">
+              "Seeds are the foundation of life. The ability of seeds to reproduce is a gift of nature 
+              that belongs to all humanity, not a feature to be engineered away for corporate profit."
+            </p>
+            <p className="text-red-600 font-semibold mt-2">— Denish Dholaria</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* No Warranty */}
       <Card>
         <CardHeader>
-          <CardTitle>2. License</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <span>⚠️</span> Section 5: Disclaimer & Liability
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
-          <p>
-            Bijmantra is released under an open-source license. You are granted a non-exclusive, 
-            worldwide, royalty-free license to:
+          <p className="uppercase font-medium text-muted-foreground">
+            THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
           </p>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Use the software for any purpose</li>
-            <li>Study how the software works and modify it</li>
-            <li>Redistribute copies of the software</li>
-            <li>Distribute modified versions</li>
+          <p>
+            The creator is not liable for any damages arising from use of the software.
+            You are responsible for your own data backups and compliance with applicable laws.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Termination */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🔚</span> Section 6: Termination
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <ul className="space-y-2">
+            <li>• License terminates automatically if you violate any terms</li>
+            <li>• Ethical violations (Section 4) result in <strong>immediate termination</strong> with no cure period</li>
+            <li>• Other violations have a 30-day cure period after written notice</li>
+            <li>• Upon termination, you must cease all use and distribution</li>
           </ul>
-          <p>
-            The full license text is available in the project repository on GitHub.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Use of Service */}
-      <Card>
-        <CardHeader>
-          <CardTitle>3. Use of Service</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p>You agree to use Bijmantra only for lawful purposes and in accordance with these terms. You agree not to:</p>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Use the service in any way that violates applicable laws or regulations</li>
-            <li>Attempt to gain unauthorized access to any part of the service</li>
-            <li>Interfere with or disrupt the service or servers</li>
-            <li>Use the service to transmit malware or harmful code</li>
-            <li>Impersonate any person or entity</li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      {/* Your Data */}
-      <Card>
-        <CardHeader>
-          <CardTitle>4. Your Data</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p>
-            You retain all rights to your data. Bijmantra does not claim ownership of any data 
-            you input into the system.
-          </p>
-          <p>
-            You are responsible for:
-          </p>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Maintaining backups of your data</li>
-            <li>Ensuring you have the right to use and store the data</li>
-            <li>Complying with any applicable data protection regulations</li>
-            <li>Securing your account credentials</li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      {/* AI Services */}
-      <Card>
-        <CardHeader>
-          <CardTitle>5. AI Services</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p>
-            Bijmantra integrates with third-party AI services. When using these features:
-          </p>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>You are responsible for providing your own API keys</li>
-            <li>Usage is subject to the terms of the respective AI provider</li>
-            <li>AI responses are provided "as is" without warranty</li>
-            <li>You should verify AI-generated recommendations before acting on them</li>
-          </ul>
-          <p className="mt-3">
-            Chrome Built-in AI (Gemini Nano) runs locally and is subject to Google's terms for 
-            Chrome and its built-in features.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Disclaimer */}
-      <Card>
-        <CardHeader>
-          <CardTitle>6. Disclaimer of Warranties</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p className="uppercase font-medium">
-            THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, 
-            EITHER EXPRESS OR IMPLIED.
-          </p>
-          <p>
-            We do not warrant that:
-          </p>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>The service will be uninterrupted or error-free</li>
-            <li>Defects will be corrected</li>
-            <li>The service is free of viruses or harmful components</li>
-            <li>The results obtained from using the service will be accurate or reliable</li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      {/* Limitation of Liability */}
-      <Card>
-        <CardHeader>
-          <CardTitle>7. Limitation of Liability</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p>
-            To the maximum extent permitted by law, in no event shall the developers or contributors 
-            be liable for any indirect, incidental, special, consequential, or punitive damages, 
-            including but not limited to:
-          </p>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Loss of profits, data, or goodwill</li>
-            <li>Service interruption or computer damage</li>
-            <li>Cost of substitute services</li>
-            <li>Any damages arising from your use of the service</li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      {/* Indemnification */}
-      <Card>
-        <CardHeader>
-          <CardTitle>8. Indemnification</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
-          <p>
-            You agree to indemnify and hold harmless the developers, contributors, and affiliates 
-            from any claims, damages, losses, or expenses arising from your use of the service 
-            or violation of these terms.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Governing Law */}
-      <Card>
-        <CardHeader>
-          <CardTitle>9. Governing Law</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
-          <p>
-            These terms shall be governed by and construed in accordance with applicable laws, 
-            without regard to conflict of law principles.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Changes */}
-      <Card>
-        <CardHeader>
-          <CardTitle>10. Changes to Terms</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
-          <p>
-            We reserve the right to modify these terms at any time. Changes will be posted on 
-            this page with an updated revision date. Your continued use of the service after 
-            changes constitutes acceptance of the modified terms.
-          </p>
         </CardContent>
       </Card>
 
@@ -225,18 +262,33 @@ export function Terms() {
             <div className="flex items-center gap-4">
               <span className="text-3xl">❓</span>
               <div>
-                <h3 className="font-semibold text-green-800">Questions about these terms?</h3>
+                <h3 className="font-semibold text-green-800">Questions about licensing?</h3>
                 <p className="text-sm text-green-700">
-                  Contact us if you have any questions
+                  Contact us for clarification or commercial inquiries
                 </p>
               </div>
             </div>
-            <Link to="/contact">
+            <a href="mailto:denishdholaria@gmail.com">
               <Button>Contact Us</Button>
-            </Link>
+            </a>
           </div>
         </CardContent>
       </Card>
+
+      {/* Footer */}
+      <div className="text-center py-4 space-y-2">
+        <p className="text-xs text-muted-foreground">
+          Bijmantra Source Available License (BSAL) v2.0 • December 2025
+        </p>
+        <p className="text-xs text-muted-foreground">
+          © 2025 Denish Dholaria / R.E.E.V.A.i • Supported by Solar Agrotech Private Limited
+        </p>
+        <div className="flex items-center justify-center gap-2 pt-2">
+          <Badge variant="outline">Source Available</Badge>
+          <Badge variant="outline">Free for Non-Commercial</Badge>
+          <Badge variant="outline">Ethical Use Required</Badge>
+        </div>
+      </div>
     </div>
   )
 }

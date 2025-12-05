@@ -5,8 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
-  Layers, Play, Pause, CheckCircle, Clock, AlertCircle,
-  Upload, Download, Trash2, RefreshCw
+  Layers, CheckCircle, Clock, AlertCircle,
+  RefreshCw
 } from 'lucide-react'
 
 interface BatchJob {
@@ -20,7 +20,7 @@ interface BatchJob {
 }
 
 export function BatchOperations() {
-  const [activeTab, setActiveTab] = useState('jobs')
+  const [_activeTab, _setActiveTab] = useState('jobs')
 
   const jobs: BatchJob[] = [
     { id: '1', name: 'Import Germplasm Data', type: 'import', status: 'running', progress: 65, items: 500, startedAt: '10 min ago' },
