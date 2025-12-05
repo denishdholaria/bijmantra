@@ -36,7 +36,7 @@ Every module must pass this test:
 |---|----------|--------|-------------|
 | 1 | Plant Sciences | Active | Breeding, genomics, crop sciences |
 | 2 | Seed Bank | Active | Genetic resources, conservation |
-| 3 | Earth Systems | Beta | Climate, weather, GIS |
+| 3 | Earth Systems | Active | Climate, weather, GIS |
 | 4 | Sun-Earth Systems | Visionary | Solar radiation, magnetic field |
 | 5 | Sensor Networks | Conceptual | IoT, environmental monitoring |
 | 6 | Commercial | Planned | Traceability, licensing, ERP integration |
