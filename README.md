@@ -52,9 +52,25 @@ Bijmantra is built on the Parashakti Framework — a modular architecture where 
 
 ---
 
+## 📜 License: BSAL v2.0
+
+**Bijmantra Source Available License** — Free to Use, Pay to Sell
+
+| Use Case | Cost |
+|----------|------|
+| Personal, educational, research | **Free** |
+| Non-profit, government | **Free** |
+| Internal organizational use | **Free** |
+| Self-hosted deployments | **Free** |
+| Farmer cooperatives | **Free** |
+| Selling the software | **Commercial license required** |
+| Paid SaaS/hosted service | **Commercial license required** |
+
+See [LICENSE](LICENSE) and [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md) for details.
+
 ## 🚫 Ethical Use Notice
 
-> **IMPORTANT:** This software is PROHIBITED for use in developing Terminator seeds, GURTs, or any technology that restricts farmers' rights to save and replant seeds.
+> **ABSOLUTE PROHIBITION:** This software may NOT be used for Terminator seeds, GURTs, or any technology that restricts farmers' rights to save and replant seeds.
 
 See [ETHICAL_USE_POLICY.md](ETHICAL_USE_POLICY.md) for complete terms.
 
@@ -206,14 +222,9 @@ We welcome contributors!
 
 ## 📜 License
 
-**Bijmantra Open Source License with Attribution (BOSLA)**
+**Bijmantra Source Available License (BSAL) v2.0** — Free to Use, Pay to Sell
 
-**Required Attribution:**
-```
-Powered by Bijmantra - Created by Denish Dholaria / R.E.E.V.A.i
-```
-
-See [LICENSE](LICENSE) for full details.
+See [LICENSE](LICENSE) and [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md) for full details.
 
 ---
 
