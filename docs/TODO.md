@@ -35,16 +35,21 @@
 
 ## 🟡 Phase 2: Restructure Plant Sciences (Week 3-4)
 
-- [ ] Create `frontend/src/divisions/plant-sciences/`
-  - [ ] Move existing pages into division structure
-  - [ ] Organize by subsection (breeding, genomics, molecular, etc.)
-  - [ ] Update imports and routes
+- [x] Create `frontend/src/divisions/plant-sciences/` ✅
+  - [x] Define routes.tsx with 80+ routes organized by subsection ✅
+  - [x] Add Suspense loading fallback ✅
+  - [ ] Gradually migrate pages (existing routes still work)
+
+- [x] Create routing utilities ✅
+  - [x] `createDivisionRoutes` helper ✅
+  - [x] `createProtectedRoute` helper ✅
+  - [x] `createLazyRoute` helper ✅
 
 - [ ] Create `backend/app/modules/plant_sciences/`
   - [ ] Reorganize existing API routes
   - [ ] Group by subsection
 
-- [ ] Implement lazy loading for division routes
+- [ ] Implement lazy loading for division routes (gradual migration)
 
 ---
 
