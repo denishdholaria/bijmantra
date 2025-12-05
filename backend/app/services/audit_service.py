@@ -70,7 +70,7 @@ class AuditLog(Base):
     description = Column(String, nullable=True)
     old_values = Column(JSON, nullable=True)
     new_values = Column(JSON, nullable=True)
-    metadata = Column(JSON, nullable=True)
+    extra_data = Column(JSON, nullable=True)  # renamed from 'metadata' (reserved)
     
     # Context
     ip_address = Column(String, nullable=True)
@@ -181,7 +181,7 @@ class AuditService:
             description=entry.description,
             old_values=entry.old_values,
             new_values=entry.new_values,
-            metadata=entry.metadata,
+            extra_data=entry.metadata,
             ip_address=entry.ip_address,
             user_agent=entry.user_agent,
             request_id=entry.request_id,

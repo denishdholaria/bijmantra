@@ -9,19 +9,9 @@ FROM postgis/postgis:16-3.4
 LABEL maintainer="Bijmantra Team"
 LABEL description="PostgreSQL with PostGIS and pgvector for plant breeding AI"
 
-# Install pgvector
+# Install pgvector from apt (simpler than building from source)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        git \
-        postgresql-server-dev-16 && \
-    git clone --branch v0.6.0 https://github.com/pgvector/pgvector.git /tmp/pgvector && \
-    cd /tmp/pgvector && \
-    make && \
-    make install && \
-    rm -rf /tmp/pgvector && \
-    apt-get remove -y build-essential git postgresql-server-dev-16 && \
-    apt-get autoremove -y && \
+    apt-get install -y --no-install-recommends postgresql-16-pgvector && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

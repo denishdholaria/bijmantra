@@ -10,7 +10,7 @@ from datetime import datetime
 import uuid
 
 from app.core.database import get_db
-from app.core.auth import get_current_user
+from app.api.deps import get_current_user
 from .models import Vault, Accession, ViabilityTest, RegenerationTask, GermplasmExchange
 from .schemas import (
     VaultCreate, VaultUpdate, VaultResponse,

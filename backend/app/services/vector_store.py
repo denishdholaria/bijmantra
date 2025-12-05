@@ -67,7 +67,7 @@ class VectorDocument(Base):
     content_hash = Column(String, index=True)  # For deduplication
     
     # Metadata
-    metadata = Column(Text, nullable=True)  # JSON string
+    doc_metadata = Column(Text, nullable=True)  # JSON string (renamed from 'metadata' - reserved)
     source_id = Column(String, index=True, nullable=True)  # Reference to source entity
     source_type = Column(String, index=True, nullable=True)
     
@@ -257,7 +257,7 @@ class VectorStoreService:
                 doc_type=existing_doc.doc_type,
                 title=existing_doc.title,
                 content=existing_doc.content,
-                metadata=json.loads(existing_doc.metadata) if existing_doc.metadata else None,
+                metadata=json.loads(existing_doc.doc_metadata) if existing_doc.doc_metadata else None,
                 source_id=existing_doc.source_id,
                 source_type=existing_doc.source_type,
                 created_at=existing_doc.created_at
@@ -266,15 +266,15 @@ class VectorStoreService:
         # Insert document
         await self.db.execute(text("""
             INSERT INTO vector_documents 
-            (doc_id, doc_type, title, content, content_hash, metadata, source_id, source_type, embedding, created_at, updated_at)
-            VALUES (:doc_id, :doc_type, :title, :content, :content_hash, :metadata, :source_id, :source_type, :embedding, :created_at, :updated_at)
+            (doc_id, doc_type, title, content, content_hash, doc_metadata, source_id, source_type, embedding, created_at, updated_at)
+            VALUES (:doc_id, :doc_type, :title, :content, :content_hash, :doc_metadata, :source_id, :source_type, :embedding, :created_at, :updated_at)
         """), {
             "doc_id": doc_id,
             "doc_type": doc.doc_type,
             "title": doc.title,
             "content": doc.content,
             "content_hash": content_hash,
-            "metadata": json.dumps(doc.metadata) if doc.metadata else None,
+            "doc_metadata": json.dumps(doc.metadata) if doc.metadata else None,
             "source_id": doc.source_id,
             "source_type": doc.source_type,
             "embedding": str(embedding),  # pgvector accepts string representation
@@ -319,7 +319,7 @@ class VectorStoreService:
         # Cosine similarity search
         result = await self.db.execute(text(f"""
             SELECT 
-                doc_id, doc_type, title, content, metadata, source_id, source_type,
+                doc_id, doc_type, title, content, doc_metadata, source_id, source_type,
                 1 - (embedding <=> :embedding::vector) as similarity
             FROM vector_documents
             WHERE 1 - (embedding <=> :embedding::vector) >= :min_similarity
@@ -336,7 +336,7 @@ class VectorStoreService:
                 doc_type=row.doc_type,
                 title=row.title,
                 content=row.content,
-                metadata=json.loads(row.metadata) if row.metadata else None,
+                metadata=json.loads(row.doc_metadata) if row.doc_metadata else None,
                 similarity=float(row.similarity),
                 source_id=row.source_id,
                 source_type=row.source_type
@@ -368,7 +368,7 @@ class VectorStoreService:
         # Find similar documents
         result = await self.db.execute(text(f"""
             SELECT 
-                doc_id, doc_type, title, content, metadata, source_id, source_type,
+                doc_id, doc_type, title, content, doc_metadata, source_id, source_type,
                 1 - (embedding <=> (SELECT embedding FROM vector_documents WHERE doc_id = :doc_id)) as similarity
             FROM vector_documents
             WHERE doc_id != :doc_id
@@ -389,7 +389,7 @@ class VectorStoreService:
                 doc_type=r.doc_type,
                 title=r.title,
                 content=r.content,
-                metadata=json.loads(r.metadata) if r.metadata else None,
+                metadata=json.loads(r.doc_metadata) if r.doc_metadata else None,
                 similarity=float(r.similarity),
                 source_id=r.source_id,
                 source_type=r.source_type
