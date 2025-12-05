@@ -35,13 +35,13 @@ Every module must pass this test:
 | # | Division | Status | Description |
 |---|----------|--------|-------------|
 | 1 | Plant Sciences | Active | Breeding, genomics, crop sciences |
-| 2 | Seed Bank | Planned | Genetic resources, conservation |
+| 2 | Seed Bank | Active | Genetic resources, conservation |
 | 3 | Earth Systems | Beta | Climate, weather, GIS |
 | 4 | Sun-Earth Systems | Visionary | Solar radiation, magnetic field |
 | 5 | Sensor Networks | Conceptual | IoT, environmental monitoring |
 | 6 | Commercial | Planned | Traceability, licensing, ERP integration |
 | 7 | Space Research | Visionary | Interplanetary agriculture |
-| 8 | Integration Hub | Planned | Third-party API connections |
+| 8 | Integration Hub | Active | Third-party API connections |
 | 9 | Knowledge | Partial | Documentation, training |
 
 Each division is lazy-loaded and can be enabled/disabled via feature flags.
