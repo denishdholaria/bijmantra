@@ -21,6 +21,9 @@ export * from './auth';
 // Routing Utilities
 export * from './routing';
 
+// Offline Sync
+export * from './sync';
+
 // Re-export commonly used types
 export type { Division, DivisionSection, DivisionStatus } from './registry/types';
 export type { FeatureFlag } from './features/types';
