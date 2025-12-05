@@ -19,7 +19,7 @@
 - [x] Create `frontend/src/framework/` folder structure ✅
   - [x] `registry/` — Division registry types and definitions ✅
   - [x] `shell/` — App shell components (DivisionNavigation) ✅
-  - [ ] `auth/` — Authentication provider
+  - [x] `auth/` — Authentication provider (useAuth, ProtectedRoute) ✅
   - [x] `features/` — Feature flag system ✅
 
 - [x] Create `backend/app/core/` structure ✅
@@ -50,7 +50,7 @@
 
 ## 🟢 Phase 3: Core Services (Week 5-6)
 
-- [ ] Implement Event Bus (backend)
+- [x] Implement Event Bus (backend) ✅
 - [ ] Implement Permission middleware
 - [ ] Create Integration Adapter base class
 - [ ] Add first integration adapter (BrAPI export)
