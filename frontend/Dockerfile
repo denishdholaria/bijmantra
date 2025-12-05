@@ -5,13 +5,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with increased memory
+RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
 
-# Build the app
+# Build with increased memory limit
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
 # Production stage
