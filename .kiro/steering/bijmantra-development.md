@@ -42,7 +42,7 @@ Every module must pass this test:
 | 6 | Commercial | Planned | Traceability, licensing, ERP integration |
 | 7 | Space Research | Visionary | Interplanetary agriculture |
 | 8 | Integration Hub | Active | Third-party API connections |
-| 9 | Knowledge | Partial | Documentation, training |
+| 9 | Knowledge | Active | Documentation, training |
 
 Each division is lazy-loaded and can be enabled/disabled via feature flags.
 
