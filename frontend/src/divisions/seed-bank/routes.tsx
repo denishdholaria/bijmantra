@@ -11,6 +11,7 @@ import { RouteObject } from 'react-router-dom';
 const SeedBankDashboard = lazy(() => import('./pages/Dashboard'));
 const VaultManagement = lazy(() => import('./pages/VaultManagement'));
 const Accessions = lazy(() => import('./pages/Accessions'));
+const AccessionNew = lazy(() => import('./pages/AccessionNew'));
 const AccessionDetail = lazy(() => import('./pages/AccessionDetail'));
 const Conservation = lazy(() => import('./pages/Conservation'));
 const GermplasmExchange = lazy(() => import('./pages/GermplasmExchange'));
@@ -25,6 +26,7 @@ export const seedBankRoutes: RouteObject[] = [
   { path: 'dashboard', element: <SeedBankDashboard /> },
   { path: 'vault', element: <VaultManagement /> },
   { path: 'accessions', element: <Accessions /> },
+  { path: 'accessions/new', element: <AccessionNew /> },
   { path: 'accessions/:id', element: <AccessionDetail /> },
   { path: 'conservation', element: <Conservation /> },
   { path: 'exchange', element: <GermplasmExchange /> },
