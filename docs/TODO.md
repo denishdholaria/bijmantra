@@ -45,9 +45,11 @@
   - [x] `createProtectedRoute` helper ✅
   - [x] `createLazyRoute` helper ✅
 
-- [ ] Create `backend/app/modules/plant_sciences/`
-  - [ ] Reorganize existing API routes
-  - [ ] Group by subsection
+- [x] Create `backend/app/modules/plant_sciences/` ✅
+  - [x] breeding/ — dashboard, pipeline, genetic gain ✅
+  - [x] genomics/ — diversity, GRM, GEBV, LD ✅
+  - [x] phenotyping/ — dashboard, data quality ✅
+  - [x] genotyping/ — dashboard, marker summary ✅
 
 - [ ] Implement lazy loading for division routes (gradual migration)
 
@@ -57,8 +59,9 @@
 
 - [x] Implement Event Bus (backend) ✅
 - [ ] Implement Permission middleware
-- [ ] Create Integration Adapter base class
-- [ ] Add first integration adapter (BrAPI export)
+- [x] Create Integration Adapter base class ✅
+- [x] Add first integration adapter (BrAPI) ✅
+- [x] Add Integration Hub API routes ✅
 
 ---
 
