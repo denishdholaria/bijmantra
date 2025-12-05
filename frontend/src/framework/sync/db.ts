@@ -98,6 +98,82 @@ export interface OfflineTrait extends SyncableEntity {
   organizationId: string;
 }
 
+// Seed Bank entities
+export interface OfflineAccession extends SyncableEntity {
+  accessionNumber: string;
+  genus: string;
+  species: string;
+  subspecies?: string;
+  commonName?: string;
+  origin: string;
+  collectionDate?: string;
+  collectionSite?: string;
+  latitude?: number;
+  longitude?: number;
+  altitude?: number;
+  vaultId: string;
+  seedCount: number;
+  viability: number;
+  status: 'active' | 'depleted' | 'regenerating';
+  acquisitionType?: string;
+  donorInstitution?: string;
+  mls: boolean;
+  pedigree?: string;
+  notes?: string;
+  organizationId: string;
+}
+
+export interface OfflineVault extends SyncableEntity {
+  name: string;
+  type: 'base' | 'active' | 'cryo';
+  temperature: number;
+  humidity: number;
+  capacity: number;
+  used: number;
+  status: 'optimal' | 'warning' | 'critical';
+  lastInspection?: string;
+  organizationId: string;
+}
+
+export interface OfflineViabilityTest extends SyncableEntity {
+  batchNumber: string;
+  accessionId: string;
+  testDate: string;
+  seedsTested: number;
+  germinated: number;
+  germinationRate: number;
+  status: 'scheduled' | 'in-progress' | 'completed';
+  technicianId?: string;
+  notes?: string;
+  organizationId: string;
+}
+
+export interface OfflineRegenerationTask extends SyncableEntity {
+  accessionId: string;
+  reason: 'low-viability' | 'low-quantity' | 'scheduled';
+  priority: 'high' | 'medium' | 'low';
+  targetQuantity: number;
+  plannedSeason: string;
+  status: 'planned' | 'in-progress' | 'harvested' | 'completed';
+  locationId?: string;
+  harvestedQuantity?: number;
+  completedDate?: string;
+  organizationId: string;
+}
+
+export interface OfflineGermplasmExchange extends SyncableEntity {
+  requestNumber: string;
+  type: 'incoming' | 'outgoing';
+  institutionId: string;
+  institutionName: string;
+  accessionIds: string[];
+  status: 'pending' | 'approved' | 'shipped' | 'received' | 'rejected';
+  requestDate: string;
+  smta: boolean;
+  notes?: string;
+  organizationId: string;
+}
+
 export interface UserPreference {
   key: string;
   value: unknown;
@@ -107,13 +183,20 @@ export interface UserPreference {
  * Bijmantra Offline Database
  */
 export class BijmantraDB extends Dexie {
-  // Core entities
+  // Core entities (Plant Sciences)
   programs!: Table<OfflineProgram, string>;
   trials!: Table<OfflineTrial, string>;
   studies!: Table<OfflineStudy, string>;
   germplasm!: Table<OfflineGermplasm, string>;
   observations!: Table<OfflineObservation, string>;
   traits!: Table<OfflineTrait, string>;
+  
+  // Seed Bank entities
+  accessions!: Table<OfflineAccession, string>;
+  vaults!: Table<OfflineVault, string>;
+  viabilityTests!: Table<OfflineViabilityTest, string>;
+  regenerationTasks!: Table<OfflineRegenerationTask, string>;
+  germplasmExchanges!: Table<OfflineGermplasmExchange, string>;
   
   // Sync management
   pendingSync!: Table<PendingSyncOperation, number>;
@@ -125,7 +208,7 @@ export class BijmantraDB extends Dexie {
   constructor() {
     super('bijmantra');
     
-    this.version(1).stores({
+    this.version(2).stores({
       // Core entities with sync tracking
       programs: 'id, organizationId, _syncStatus, _updatedAt',
       trials: 'id, programId, organizationId, _syncStatus, _updatedAt',
@@ -133,6 +216,13 @@ export class BijmantraDB extends Dexie {
       germplasm: 'id, organizationId, accessionNumber, _syncStatus, _updatedAt',
       observations: 'id, observationUnitId, traitId, organizationId, _syncStatus, _updatedAt, observedAt',
       traits: 'id, organizationId, _syncStatus, _updatedAt',
+      
+      // Seed Bank entities
+      accessions: 'id, accessionNumber, vaultId, organizationId, genus, species, origin, status, _syncStatus, _updatedAt',
+      vaults: 'id, organizationId, type, status, _syncStatus, _updatedAt',
+      viabilityTests: 'id, accessionId, batchNumber, organizationId, status, testDate, _syncStatus, _updatedAt',
+      regenerationTasks: 'id, accessionId, organizationId, priority, status, plannedSeason, _syncStatus, _updatedAt',
+      germplasmExchanges: 'id, requestNumber, organizationId, type, status, institutionId, _syncStatus, _updatedAt',
       
       // Sync management
       pendingSync: '++id, entityType, entityId, operation, createdAt',
@@ -151,12 +241,20 @@ export const db = new BijmantraDB();
  * Clear all offline data (use with caution)
  */
 export async function clearAllData(): Promise<void> {
+  // Plant Sciences
   await db.programs.clear();
   await db.trials.clear();
   await db.studies.clear();
   await db.germplasm.clear();
   await db.observations.clear();
   await db.traits.clear();
+  // Seed Bank
+  await db.accessions.clear();
+  await db.vaults.clear();
+  await db.viabilityTests.clear();
+  await db.regenerationTasks.clear();
+  await db.germplasmExchanges.clear();
+  // Sync
   await db.pendingSync.clear();
   await db.syncLog.clear();
 }

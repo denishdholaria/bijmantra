@@ -64,23 +64,84 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,wasm}'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB for WASM files
         runtimeCaching: [
+          // API calls - Network First with fallback
           {
-            urlPattern: /^https:\/\/api\..*/i,
+            urlPattern: /^https?:\/\/.*\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
               expiration: {
-                maxEntries: 100,
+                maxEntries: 200,
                 maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+              networkTimeoutSeconds: 10,
+            },
+          },
+          // BrAPI endpoints - Network First
+          {
+            urlPattern: /^https?:\/\/.*\/brapi\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'brapi-cache',
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+              networkTimeoutSeconds: 10,
+            },
+          },
+          // Seed Bank specific endpoints - Stale While Revalidate for faster offline access
+          {
+            urlPattern: /^https?:\/\/.*\/(accessions|vaults|viability|regeneration|exchange).*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'seed-bank-cache',
+              expiration: {
+                maxEntries: 1000,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
               },
               cacheableResponse: {
                 statuses: [0, 200],
               },
             },
           },
+          // Static assets - Cache First
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+          // Fonts - Cache First
+          {
+            urlPattern: /\.(?:woff|woff2|ttf|otf|eot)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+            },
+          },
         ],
+      },
+      devOptions: {
+        enabled: false, // Enable for testing SW in dev
       },
     }),
   ],

@@ -111,6 +111,9 @@ from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies
 from app.api.v2 import search, compute, audit, insights, vector, weather
 
+# Division modules
+from app.modules.seed_bank import router as seed_bank_router
+
 # Auth routes
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 
@@ -129,6 +132,9 @@ app.include_router(audit.router, prefix="/api/v2", tags=["Audit Trail"])
 app.include_router(insights.router, prefix="/api/v2", tags=["AI Insights"])
 app.include_router(vector.router, prefix="/api/v2", tags=["Vector Store"])
 app.include_router(weather.router, prefix="/api/v2", tags=["Weather Intelligence"])
+
+# Division modules
+app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])
 
 if __name__ == "__main__":
     import uvicorn
