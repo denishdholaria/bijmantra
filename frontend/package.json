@@ -58,7 +58,8 @@
     "y-indexeddb": "^9.0.12",
     "yjs": "^13.6.27",
     "zod": "^3.22.4",
-    "zustand": "^4.5.0"
+    "zustand": "^4.5.0",
+    "serve": "^14.2.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
