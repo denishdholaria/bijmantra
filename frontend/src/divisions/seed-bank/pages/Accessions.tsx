@@ -11,19 +11,27 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { apiClient } from '@/lib/api-client';
 
 interface Accession {
   id: string;
-  accessionNumber: string;
+  accession_number: string;
   genus: string;
   species: string;
-  commonName: string;
+  common_name: string;
   origin: string;
-  collectionDate: string;
-  vault: string;
-  seedCount: number;
+  collection_date: string;
+  vault_id: string;
+  seed_count: number;
   viability: number;
   status: 'active' | 'depleted' | 'regenerating';
+}
+
+interface AccessionResponse {
+  data: Accession[];
+  total: number;
+  page: number;
+  page_size: number;
 }
 
 export function Accessions() {
@@ -32,18 +40,25 @@ export function Accessions() {
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<AccessionResponse>({
     queryKey: ['seed-bank', 'accessions', page, search],
-    queryFn: async () => ({
-      data: [
-        { id: '1', accessionNumber: 'ACC-2024-0001', genus: 'Triticum', species: 'aestivum', commonName: 'Bread Wheat', origin: 'India', collectionDate: '2024-03-15', vault: 'Base A', seedCount: 5000, viability: 98, status: 'active' },
-        { id: '2', accessionNumber: 'ACC-2024-0002', genus: 'Oryza', species: 'sativa', commonName: 'Rice', origin: 'Thailand', collectionDate: '2024-02-20', vault: 'Base A', seedCount: 8000, viability: 95, status: 'active' },
-        { id: '3', accessionNumber: 'ACC-2023-0456', genus: 'Zea', species: 'mays', commonName: 'Maize', origin: 'Mexico', collectionDate: '2023-08-10', vault: 'Active', seedCount: 200, viability: 72, status: 'regenerating' },
-        { id: '4', accessionNumber: 'ACC-2022-0789', genus: 'Glycine', species: 'max', commonName: 'Soybean', origin: 'China', collectionDate: '2022-05-05', vault: 'Base B', seedCount: 3500, viability: 91, status: 'active' },
-        { id: '5', accessionNumber: 'ACC-2021-0234', genus: 'Solanum', species: 'lycopersicum', commonName: 'Tomato', origin: 'Peru', collectionDate: '2021-11-22', vault: 'Cryo', seedCount: 1000, viability: 99, status: 'active' },
-      ] as Accession[],
-      pagination: { currentPage: 0, totalPages: 5, totalCount: 100 },
-    }),
+    queryFn: async () => {
+      try {
+        return await apiClient.getAccessions(page, pageSize, search || undefined);
+      } catch {
+        // Fallback demo data
+        return {
+          data: [
+            { id: '1', accession_number: 'ACC-2024-0001', genus: 'Triticum', species: 'aestivum', common_name: 'Bread Wheat', origin: 'India', collection_date: '2024-03-15', vault_id: 'V001', seed_count: 5000, viability: 98, status: 'active' },
+            { id: '2', accession_number: 'ACC-2024-0002', genus: 'Oryza', species: 'sativa', common_name: 'Rice', origin: 'Thailand', collection_date: '2024-02-20', vault_id: 'V001', seed_count: 8000, viability: 95, status: 'active' },
+            { id: '3', accession_number: 'ACC-2023-0456', genus: 'Zea', species: 'mays', common_name: 'Maize', origin: 'Mexico', collection_date: '2023-08-10', vault_id: 'V003', seed_count: 200, viability: 72, status: 'regenerating' },
+          ] as Accession[],
+          total: 100,
+          page: 0,
+          page_size: 20,
+        };
+      }
+    },
   });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -68,7 +83,7 @@ export function Accessions() {
   };
 
   const accessions = data?.data || [];
-  const pagination = data?.pagination;
+  const totalPages = data ? Math.ceil(data.total / data.page_size) : 0;
 
   return (
     <div className="space-y-4 lg:space-y-6">
@@ -146,16 +161,16 @@ export function Accessions() {
                       <tr key={acc.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3">
                           <Link to={`/seed-bank/accessions/${acc.id}`} className="font-medium text-green-600 hover:underline">
-                            {acc.accessionNumber}
+                            {acc.accession_number}
                           </Link>
                         </td>
                         <td className="px-4 py-3 text-sm italic text-gray-700">
                           {acc.genus} {acc.species}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{acc.commonName}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{acc.common_name}</td>
                         <td className="px-4 py-3 text-sm text-gray-600">{acc.origin}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{acc.vault}</td>
-                        <td className="px-4 py-3 text-sm text-right font-mono">{acc.seedCount.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{acc.vault_id}</td>
+                        <td className="px-4 py-3 text-sm text-right font-mono">{acc.seed_count.toLocaleString()}</td>
                         <td className={`px-4 py-3 text-sm text-right font-medium ${getViabilityColor(acc.viability)}`}>
                           {acc.viability}%
                         </td>
@@ -176,16 +191,16 @@ export function Accessions() {
               </div>
 
               {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
+              {totalPages > 1 && (
                 <div className="px-4 py-3 border-t flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    Page {pagination.currentPage + 1} of {pagination.totalPages} ({pagination.totalCount} accessions)
+                    Page {page + 1} of {totalPages} ({data?.total || 0} accessions)
                   </span>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => setPage(p => p - 1)} disabled={page === 0}>
                       Previous
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setPage(p => p + 1)} disabled={page >= pagination.totalPages - 1}>
+                    <Button variant="outline" size="sm" onClick={() => setPage(p => p + 1)} disabled={page >= totalPages - 1}>
                       Next
                     </Button>
                   </div>

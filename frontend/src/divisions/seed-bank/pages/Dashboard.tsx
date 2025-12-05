@@ -8,27 +8,31 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { apiClient } from '@/lib/api-client';
 
 interface DashboardStats {
-  totalAccessions: number;
-  activeVaults: number;
-  pendingViability: number;
-  scheduledRegeneration: number;
-  recentExchanges: number;
-  criticalAlerts: number;
+  total_accessions: number;
+  active_vaults: number;
+  pending_viability: number;
+  scheduled_regeneration: number;
 }
 
 export function Dashboard() {
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ['seed-bank', 'dashboard-stats'],
-    queryFn: async () => ({
-      totalAccessions: 12450,
-      activeVaults: 8,
-      pendingViability: 234,
-      scheduledRegeneration: 45,
-      recentExchanges: 12,
-      criticalAlerts: 3,
-    }),
+    queryFn: async () => {
+      try {
+        return await apiClient.getSeedBankStats();
+      } catch {
+        // Fallback to demo data if API unavailable
+        return {
+          total_accessions: 12450,
+          active_vaults: 8,
+          pending_viability: 234,
+          scheduled_regeneration: 45,
+        };
+      }
+    },
   });
 
   const quickActions = [
@@ -59,12 +63,10 @@ export function Dashboard() {
           ))
         ) : (
           <>
-            <StatCard label="Total Accessions" value={stats?.totalAccessions || 0} icon="🌾" />
-            <StatCard label="Active Vaults" value={stats?.activeVaults || 0} icon="🏛️" />
-            <StatCard label="Pending Viability" value={stats?.pendingViability || 0} icon="⏳" />
-            <StatCard label="Regeneration Queue" value={stats?.scheduledRegeneration || 0} icon="🔄" />
-            <StatCard label="Recent Exchanges" value={stats?.recentExchanges || 0} icon="🤝" />
-            <StatCard label="Critical Alerts" value={stats?.criticalAlerts || 0} icon="⚠️" alert />
+            <StatCard label="Total Accessions" value={stats?.total_accessions || 0} icon="🌾" />
+            <StatCard label="Active Vaults" value={stats?.active_vaults || 0} icon="🏛️" />
+            <StatCard label="Pending Viability" value={stats?.pending_viability || 0} icon="⏳" />
+            <StatCard label="Regeneration Queue" value={stats?.scheduled_regeneration || 0} icon="🔄" />
           </>
         )}
       </div>
