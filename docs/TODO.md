@@ -22,9 +22,9 @@
   - [ ] `auth/` — Authentication provider
   - [x] `features/` — Feature flag system ✅
 
-- [ ] Create `backend/app/core/` structure
-  - [ ] `events/` — Event bus for inter-division communication
-  - [ ] `features/` — Feature flag service
+- [x] Create `backend/app/core/` structure ✅
+  - [x] `events.py` — Event bus for inter-division communication ✅
+  - [x] `features.py` — Feature flag service ✅
 
 - [x] Implement Division Registry ✅
   - [x] Define Division interface ✅
