@@ -83,3 +83,7 @@ temp/
 
 # Development tracking
 confidential/
+
+# Reference/backup folders
+proqrt-reference.bak/
+VibeVoice/
