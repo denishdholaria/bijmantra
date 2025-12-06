@@ -109,7 +109,7 @@ async def serverinfo():
 # Import routers
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies
-from app.api.v2 import search, compute, audit, insights, vector, weather
+from app.api.v2 import search, compute, audit, insights, vector, weather, chat
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -132,6 +132,7 @@ app.include_router(audit.router, prefix="/api/v2", tags=["Audit Trail"])
 app.include_router(insights.router, prefix="/api/v2", tags=["AI Insights"])
 app.include_router(vector.router, prefix="/api/v2", tags=["Vector Store"])
 app.include_router(weather.router, prefix="/api/v2", tags=["Weather Intelligence"])
+app.include_router(chat.router, prefix="/api/v2", tags=["Veena AI Chat"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])
