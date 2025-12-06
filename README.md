@@ -2,17 +2,18 @@
 
 A comprehensive Progressive Web Application for agricultural science, plant breeding, and future space-based research. Built on the **Parashakti Framework** — a modular, offline-first architecture designed to scale from individual researchers to global institutions.
 
-**210+ Pages** | **11 Modules** | **Offline-First PWA** | **Multi-Engine Compute** | **BrAPI v2.1 100%**
+**230+ Pages** | **380 API Endpoints** | **11 Modules** | **Offline-First PWA** | **Multi-Engine Compute** | **BrAPI v2.1 100%**
 
 ![Bijmantra Dashboard](docs/images/Screenshot-2025-12-04.png)
 
 ---
 
-## ✅ Current Status (December 5, 2025)
+## ✅ Current Status (December 6, 2025)
 
 | Metric | Status |
 |--------|--------|
-| Pages | 210+ complete |
+| Pages | 230+ complete |
+| API Endpoints | 380 |
 | BrAPI Endpoints | 34/34 (100%) |
 | TypeScript | 0 errors |
 | Tests | 48 passing |
@@ -33,7 +34,7 @@ Bijmantra is built on the Parashakti Framework — a modular architecture where 
 | 3 | **Earth Systems** | Beta | Climate, weather, GIS |
 | 4 | **Sun-Earth Systems** | Visionary | Solar radiation, magnetic field |
 | 5 | **Sensor Networks** | Planned | IoT, environmental monitoring |
-| 6 | **Commercial** | Planned | Traceability, licensing, ERP integration |
+| 6 | **Commercial** | Active | Traceability, licensing, dispatch, processing |
 | 7 | **Space Research** | Visionary | Interplanetary agriculture |
 | 8 | **Tools** | Active | Utilities, reports, AI assistant |
 | 9 | **Settings** | Active | Configuration, users, admin |
@@ -94,6 +95,14 @@ See [ETHICAL_USE_POLICY.md](ETHICAL_USE_POLICY.md) for complete terms.
 - **Field Ops** — Layout, map, design, planning, harvest, nursery
 - **Analysis** — Statistics, visualization, comparison, simulator
 - **AI & Compute** — WASM tools, plant vision, yield predictor
+
+### Seed Operations Module (NEW)
+- **Lab Testing** — Sample registration, testing workflow, certificates
+- **Processing** — 10-stage batch processing, quality checks, yield tracking
+- **Inventory** — Seed lots, warehouse management, stock alerts
+- **Dispatch** — Order workflow, firm/dealer management, shipping
+- **Traceability** — Chain of custody, QR codes, lineage tracking
+- **Licensing** — Variety protection, license agreements, royalties
 
 ### 🦀 WASM Genomics Engine
 | Tool | Description |
@@ -183,8 +192,9 @@ make dev-frontend   # http://localhost:5173
 bijmantra/
 ├── frontend/src/
 │   ├── framework/           # Parashakti core (shell, registry)
+│   ├── divisions/           # Module-specific pages (seed-operations, earth-systems, etc.)
 │   ├── components/          # Shared components
-│   ├── pages/               # 210+ page components
+│   ├── pages/               # 230+ page components
 │   └── lib/                 # Utilities, API client
 ├── backend/app/
 │   ├── api/v2/              # BrAPI v2.1 endpoints

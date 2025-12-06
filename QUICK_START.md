@@ -51,10 +51,11 @@ npm run dev
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Frontend | http://localhost:5173 | React PWA |
-| Backend API | http://localhost:8000 | FastAPI server |
+| Frontend | http://localhost:5173 | React PWA (230+ pages) |
+| Backend API | http://localhost:8000 | FastAPI server (380 endpoints) |
 | API Docs | http://localhost:8000/docs | Swagger UI |
 | ReDoc | http://localhost:8000/redoc | Alternative docs |
+| BrAPI | http://localhost:8000/brapi/v2 | BrAPI v2.1 (100%) |
 | Meilisearch | http://localhost:7700 | Instant search |
 | PostgreSQL | localhost:5432 | Database |
 | Redis | localhost:6379 | Cache |
@@ -276,19 +277,25 @@ npm install
 
 ## 🎯 What's Implemented
 
-### Backend ✅
+### Backend ✅ (380 API Endpoints)
 - Authentication (JWT)
-- BrAPI Core endpoints:
-  - Programs (full CRUD)
-  - Locations (full CRUD with PostGIS)
-  - Trials (full CRUD)
-  - Studies (full CRUD)
+- BrAPI v2.1 (34/34 endpoints - 100%)
+- Plant Sciences (breeding, genomics, phenotyping)
+- Seed Operations (dispatch, processing, quality)
+- Commercial (traceability, licensing)
+- Advanced Analytics (GWAS, G×E, selection index)
+- AI/ML (Veena RAG, voice, vector search)
 - Multi-tenancy (organization-based)
 - Database migrations
 - API documentation
 
-### Frontend 🚧
-- Coming soon!
+### Frontend ✅ (230+ Pages)
+- Complete Plant Sciences module
+- Complete Seed Operations module (18 pages)
+- Earth Systems module
+- Integration Hub
+- Veena AI Assistant with voice
+- WASM Genomics tools
 
 ---
 
