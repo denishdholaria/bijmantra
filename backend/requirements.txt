@@ -24,3 +24,6 @@ sentry-sdk[fastapi]>=1.38.0
 pgvector>=0.2.4
 sentence-transformers>=2.2.0
 greenlet>=3.0.0
+
+# MCP (Model Context Protocol)
+mcp>=1.0.0
