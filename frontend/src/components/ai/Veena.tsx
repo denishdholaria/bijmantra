@@ -1,5 +1,5 @@
 /**
- * Veena - AI Assistant for Bijmantra
+ * Veena - AI Assistant for Bijmantra with VibeVoice TTS
  * 
  * Named after the sacred instrument of Goddess Saraswati, symbolizing:
  * - The harmony of knowledge and creativity
@@ -9,13 +9,14 @@
  * 
  * Features:
  * - Conversational AI interface with RAG (Retrieval-Augmented Generation)
- * - Voice input/output support
+ * - Voice input (Web Speech API) and output (VibeVoice TTS)
+ * - Natural language speech synthesis via Microsoft VibeVoice
  * - Context-aware suggestions from breeding knowledge base
  * - Backend integration for insights and predictions
  * - Conversation history persistence
  * - Keyboard shortcut (Ctrl+/)
  * 
- * Tech Stack: React + Web Speech API + Backend API
+ * Tech Stack: React + Web Speech API + VibeVoice TTS + Backend API
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react'
@@ -48,13 +49,13 @@ interface VeenaSource {
   similarity: number
 }
 
+
 interface VeenaContextResponse {
   query: string
   context: string
   sources: VeenaSource[]
   total_sources: number
 }
-
 
 interface InsightsDashboard {
   summary: string
@@ -69,6 +70,12 @@ interface InsightsDashboard {
   }>
 }
 
+interface VoiceStatus {
+  available: boolean
+  voices: string[]
+  defaultVoice: string | null
+}
+
 interface VeenaProps {
   className?: string
   defaultOpen?: boolean
@@ -78,6 +85,107 @@ interface VeenaProps {
 // Storage key for conversation history
 const STORAGE_KEY = 'veena_conversation_history'
 const MAX_STORED_MESSAGES = 50
+
+// ============================================
+// VIBEVOICE SERVICE - TTS Integration
+// ============================================
+
+class VibeVoiceService {
+  private baseURL: string
+  private audioContext: AudioContext | null = null
+  private currentSource: AudioBufferSourceNode | null = null
+
+  constructor() {
+    this.baseURL = ''
+  }
+
+  async checkHealth(): Promise<VoiceStatus> {
+    try {
+      const token = apiClient.getToken()
+      const response = await fetch(`${this.baseURL}/api/v2/voice/health`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      })
+      if (!response.ok) return { available: false, voices: [], defaultVoice: null }
+      const data = await response.json()
+      
+      // Check if any server-side TTS is available (VibeVoice or Edge TTS)
+      const vibevoiceAvailable = data.vibevoice?.available || false
+      const edgeTtsAvailable = data.edge_tts?.available || false
+      const voices = vibevoiceAvailable 
+        ? data.vibevoice.voices 
+        : (edgeTtsAvailable ? data.edge_tts.voices : [])
+      const defaultVoice = vibevoiceAvailable
+        ? data.vibevoice.default_voice
+        : (edgeTtsAvailable ? data.edge_tts.default_voice : null)
+      
+      return {
+        available: vibevoiceAvailable || edgeTtsAvailable,
+        voices,
+        defaultVoice
+      }
+    } catch {
+      return { available: false, voices: [], defaultVoice: null }
+    }
+  }
+
+  async synthesize(text: string, voice?: string): Promise<ArrayBuffer | null> {
+    try {
+      const token = apiClient.getToken()
+      const response = await fetch(`${this.baseURL}/api/v2/voice/synthesize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ text, voice, format: 'wav' })
+      })
+      if (!response.ok) return null
+      return response.arrayBuffer()
+    } catch {
+      return null
+    }
+  }
+
+  async playAudio(audioData: ArrayBuffer, onStart?: () => void, onEnd?: () => void): Promise<void> {
+    // Stop any currently playing audio
+    this.stop()
+
+    try {
+      // Create blob and use Audio element (works with MP3 from Edge TTS)
+      const blob = new Blob([audioData], { type: 'audio/mpeg' })
+      const url = URL.createObjectURL(blob)
+      const audio = new Audio(url)
+      
+      audio.onplay = () => onStart?.()
+      audio.onended = () => {
+        URL.revokeObjectURL(url)
+        onEnd?.()
+      }
+      audio.onerror = () => {
+        URL.revokeObjectURL(url)
+        console.error('Audio playback error')
+        onEnd?.()
+      }
+      
+      await audio.play()
+    } catch (e) {
+      console.error('Audio playback error:', e)
+      onEnd?.()
+    }
+  }
+
+  stop(): void {
+    if (this.currentSource) {
+      try {
+        this.currentSource.stop()
+      } catch { /* ignore */ }
+      this.currentSource = null
+    }
+  }
+}
+
+const vibeVoiceService = new VibeVoiceService()
+
 
 // ============================================
 // VEENA SERVICE - Backend Integration
@@ -122,26 +230,9 @@ class VeenaService {
       return null
     }
   }
-
-  async searchBreedingKnowledge(query: string): Promise<any[]> {
-    try {
-      const token = apiClient.getToken()
-      const response = await fetch(`${this.baseURL}/api/v2/vector/breeding/search?q=${encodeURIComponent(query)}&limit=5`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        }
-      })
-      if (!response.ok) return []
-      return response.json()
-    } catch {
-      return []
-    }
-  }
 }
 
 const veenaService = new VeenaService()
-
 
 // ============================================
 // MAIN COMPONENT
@@ -152,12 +243,11 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [isMinimized, setIsMinimized] = useState(false)
   const [messages, setMessages] = useState<Message[]>(() => {
-    // Load from localStorage
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
-        return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }))
+        return parsed.map((m: Message) => ({ ...m, timestamp: new Date(m.timestamp) }))
       }
     } catch { /* ignore */ }
     return [{
@@ -171,9 +261,29 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [voiceEnabled, setVoiceEnabled] = useState(false)
+  const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>({ available: false, voices: [], defaultVoice: null })
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null)
+  const [showVoiceSelector, setShowVoiceSelector] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
+
+  // Check VibeVoice availability on mount (with graceful fallback)
+  useEffect(() => {
+    vibeVoiceService.checkHealth().then(status => {
+      setVoiceStatus(status)
+      if (status.available) {
+        console.log('[Veena] TTS available with voices:', status.voices)
+        // Set default voice
+        if (status.defaultVoice && !selectedVoice) {
+          setSelectedVoice(status.defaultVoice)
+        }
+      } else {
+        console.log('[Veena] Using browser Web Speech API (server TTS not available)')
+      }
+    })
+  }, [])
 
   // Save messages to localStorage
   useEffect(() => {
@@ -183,10 +293,19 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     } catch { /* ignore */ }
   }, [messages])
 
+  // Close voice selector when clicking outside
+  useEffect(() => {
+    if (!showVoiceSelector) return
+    const handleClick = () => setShowVoiceSelector(false)
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [showVoiceSelector])
+
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
 
   // Keyboard shortcut: Ctrl+/ to toggle Veena
   useEffect(() => {
@@ -198,7 +317,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           setTimeout(() => inputRef.current?.focus(), 100)
         }
       }
-      // Escape to close
       if (e.key === 'Escape' && isOpen) {
         setIsOpen(false)
       }
@@ -229,7 +347,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     }
   }, [])
 
-
   // Voice input toggle
   const toggleVoiceInput = useCallback(() => {
     if (!recognitionRef.current) return
@@ -242,8 +359,32 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     }
   }, [isListening])
 
-  // Text-to-speech
-  const speak = useCallback((text: string) => {
+  // Text-to-speech with Edge TTS/VibeVoice or fallback to Web Speech API
+  const speak = useCallback(async (text: string) => {
+    if (isSpeaking) {
+      vibeVoiceService.stop()
+      speechSynthesis.cancel()
+      setIsSpeaking(false)
+      return
+    }
+
+    // Try server-side TTS first if available (Edge TTS or VibeVoice)
+    if (voiceStatus.available && voiceEnabled) {
+      setIsSpeaking(true)
+      const voice = selectedVoice || voiceStatus.defaultVoice || undefined
+      const audioData = await vibeVoiceService.synthesize(text, voice)
+      if (audioData) {
+        await vibeVoiceService.playAudio(
+          audioData,
+          () => setIsSpeaking(true),
+          () => setIsSpeaking(false)
+        )
+        return
+      }
+      setIsSpeaking(false) // Reset if synthesis failed
+    }
+
+    // Fallback to Web Speech API
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text)
       utterance.rate = 1.0
@@ -252,7 +393,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
       utterance.onend = () => setIsSpeaking(false)
       speechSynthesis.speak(utterance)
     }
-  }, [])
+  }, [isSpeaking, voiceStatus, voiceEnabled, selectedVoice])
 
   // Handle navigation from assistant responses
   const handleNavigation = useCallback((path: string) => {
@@ -272,6 +413,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     localStorage.removeItem(STORAGE_KEY)
   }, [])
 
+
   // Send message with backend integration
   const sendMessage = async () => {
     if (!input.trim() || isProcessing) return
@@ -290,7 +432,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     setIsProcessing(true)
 
     try {
-      // Try to get context from backend (RAG)
       const [contextResponse, insightsResponse] = await Promise.all([
         veenaService.getContext(query),
         veenaService.getInsights()
@@ -306,8 +447,12 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
         metadata: response.metadata
       }
       setMessages(prev => [...prev, assistantMessage])
+
+      // Auto-speak response if voice is enabled
+      if (voiceEnabled && voiceStatus.available) {
+        speak(response.content)
+      }
     } catch {
-      // Fallback to local response generation
       const response = generateResponse(query, null, null)
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -322,8 +467,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     }
   }
 
-
-  // Context-aware quick actions based on current page
+  // Quick actions
   const quickActions = [
     { label: '📊 Trial Summary', action: 'Show me a summary of active trials', icon: '📊' },
     { label: '🏆 Top Performers', action: 'Which germplasm has the best yield?', icon: '🏆' },
@@ -351,6 +495,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     )
   }
 
+
   return (
     <div
       className={cn(
@@ -374,11 +519,55 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           <div>
             <h3 className="text-sm font-semibold">Veena</h3>
             <p className="text-[10px] opacity-80">
-              {isProcessing ? 'Contemplating...' : 'Ready to assist • Ctrl+/'}
+              {isProcessing ? 'Contemplating...' : isSpeaking ? '🔊 Speaking...' : 'Ready to assist • Ctrl+/'}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 relative">
+          {/* Voice Toggle & Selector */}
+          <div className="relative">
+            <button
+              onClick={() => voiceStatus.available && setVoiceEnabled(!voiceEnabled)}
+              onContextMenu={(e) => {
+                e.preventDefault()
+                if (voiceStatus.available) setShowVoiceSelector(!showVoiceSelector)
+              }}
+              className={cn(
+                'p-1.5 rounded transition-colors text-xs',
+                voiceEnabled ? 'bg-white/30' : 'hover:bg-white/20',
+                !voiceStatus.available && 'opacity-50 cursor-not-allowed'
+              )}
+              title={voiceStatus.available ? `${voiceEnabled ? 'Disable' : 'Enable'} voice (right-click to select voice)` : 'Voice unavailable'}
+              disabled={!voiceStatus.available}
+            >
+              {voiceEnabled ? '🔊' : '🔇'}
+            </button>
+            {/* Voice Selector Dropdown */}
+            {showVoiceSelector && voiceStatus.available && (
+              <div className="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Select Voice</span>
+                </div>
+                {voiceStatus.voices.map((voice) => (
+                  <button
+                    key={voice}
+                    onClick={() => {
+                      setSelectedVoice(voice)
+                      setShowVoiceSelector(false)
+                      if (!voiceEnabled) setVoiceEnabled(true)
+                    }}
+                    className={cn(
+                      'w-full px-3 py-2 text-left text-xs hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
+                      selectedVoice === voice && 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
+                    )}
+                  >
+                    {voice.includes('Neural') ? voice.replace('Neural', '').replace('-', ' ') : voice}
+                    {selectedVoice === voice && ' ✓'}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button
             onClick={clearHistory}
             className="p-1.5 hover:bg-white/20 rounded transition-colors text-xs"
@@ -400,7 +589,6 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           </button>
         </div>
       </div>
-
 
       {!isMinimized && (
         <>
@@ -427,6 +615,7 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
             )}
             <div ref={messagesEndRef} />
           </div>
+
 
           {/* Quick Actions */}
           <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
@@ -574,11 +763,11 @@ function MessageBubble({ message, onSpeak, onNavigate, isSpeaking }: MessageBubb
               onClick={onSpeak}
               className={cn(
                 'p-1 rounded opacity-50 hover:opacity-100 transition-opacity text-gray-500 dark:text-gray-400',
-                isSpeaking && 'animate-pulse'
+                isSpeaking && 'animate-pulse text-amber-500'
               )}
-              title="Read aloud"
+              title={isSpeaking ? 'Stop speaking' : 'Read aloud'}
             >
-              🔊
+              {isSpeaking ? '⏹️' : '🔊'}
             </button>
           )}
         </div>
@@ -599,11 +788,10 @@ function generateResponse(
 ): { content: string; metadata?: Message['metadata'] } {
   const lowerInput = input.toLowerCase()
 
-  // If we have RAG context from backend, use it to enhance responses
+  // If we have RAG context from backend, use it
   if (context && context.sources.length > 0) {
-    const contextInfo = context.context
     return {
-      content: `Based on your breeding knowledge base:\n\n${contextInfo}\n\nWould you like me to elaborate on any of these findings?`,
+      content: `Based on your breeding knowledge base:\n\n${context.context}\n\nWould you like me to elaborate on any of these findings?`,
       metadata: {
         confidence: 0.85,
         sources: context.sources,
@@ -612,19 +800,15 @@ function generateResponse(
     }
   }
 
-  // If asking for insights and we have them from backend
+  // If asking for insights
   if ((lowerInput.includes('insight') || lowerInput.includes('ai')) && insights) {
     return {
       content: insights.summary,
-      metadata: {
-        confidence: 0.92,
-        action: 'insights_summary',
-        navigateTo: '/insights'
-      }
+      metadata: { confidence: 0.92, action: 'insights_summary', navigateTo: '/insights' }
     }
   }
 
-  // Context-aware responses with navigation
+  // Context-aware responses
   if (lowerInput.includes('trial') && lowerInput.includes('summary')) {
     return {
       content: '🌾 You have 12 active trials across 5 locations. The wheat variety trial at Location A is showing promising results with 15% above-average yield. Would you like me to generate a detailed report?',
@@ -671,13 +855,6 @@ function generateResponse(
     return {
       content: '🏦 Seed Bank Status: 4 vaults operational, 12,450 accessions stored. 23 accessions flagged for regeneration (viability <85%). 5 pending distribution requests.',
       metadata: { confidence: 0.93, action: 'seed_bank_status', navigateTo: '/seed-bank' }
-    }
-  }
-
-  if (lowerInput.includes('observation') || lowerInput.includes('phenotype')) {
-    return {
-      content: '📝 This week: 1,847 observations recorded across 24 active studies. Top traits measured: plant height (423), flowering date (312), yield (289). Data completeness: 94%.',
-      metadata: { confidence: 0.88, action: 'observations_summary', navigateTo: '/observations' }
     }
   }
 

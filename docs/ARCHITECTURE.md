@@ -1,6 +1,6 @@
 # Bijmantra Architecture
 
-**Last Updated**: December 5, 2025
+**Last Updated**: December 6, 2025
 
 Bijmantra is an aerospace-grade plant breeding platform built on the **Parashakti Framework**, combining high-precision numerical computing with modern web technologies.
 
@@ -199,79 +199,68 @@ bijmantra/
 
 | Component | UI | Backend | Status |
 |-----------|:--:|:-------:|--------|
-| Veena AI Assistant 🪷 | ✅ | ⚠️ | Chat UI done, RAG needs real embeddings |
+| Veena AI Assistant 🪷 | ✅ | ✅ | Complete with RAG |
+| Veena Voice | ✅ | ✅ | VibeVoice + Edge TTS |
 | Plant Vision | ✅ | ❌ | UI done, needs TensorFlow.js models |
 | Field Scanner | ✅ | ❌ | UI done, needs CV models |
 | Yield Predictor | ✅ | ❌ | UI done, needs ML backend |
-| Crop Health | ✅ | ⚠️ | UI done, needs data pipeline |
 | WASM Genomics | ✅ | ❌ | UI done, needs Rust compilation |
-| pgvector | - | ✅ | Migration exists, ready |
+| pgvector | - | ✅ | Ready |
+| MCP Server | - | ✅ | ChatGPT/Claude integration |
 
 ### Veena AI Assistant 🪷
 Named after Goddess Saraswati's sacred instrument:
 - Natural language queries for breeding data
 - Voice commands ("Hey Veena")
 - RAG-powered responses (pgvector)
+- Multi-tier TTS (VibeVoice → Edge TTS → Web Speech)
+- 8 voice options (US/UK/India English + Hindi)
 - 384-dimensional embeddings (MiniLM)
 
 ### AI/ML Roadmap
 
-#### Phase 1: Foundation (Priority: HIGH)
-| Task | Description | Effort |
-|------|-------------|--------|
-| Embedding Service | Generate real embeddings for germplasm, protocols | 2-3 days |
-| Vector Search API | `/api/v2/vector/search` with pgvector | 1-2 days |
-| Veena RAG Backend | Connect chat to vector search | 2-3 days |
+#### ✅ Phase 1: Foundation — COMPLETE
+| Task | Status | Endpoint |
+|------|--------|----------|
+| Embedding Service | ✅ Done | `backend/app/services/vector_store.py` |
+| Vector Search API | ✅ Done | `/api/v2/vector/search` |
+| Veena RAG Backend | ✅ Done | `/api/v2/chat` |
+| Veena Voice | ✅ Done | `/api/v2/voice` |
 
-#### Phase 2: Genomic Selection (Priority: HIGH)
-| Task | Description | Effort |
-|------|-------------|--------|
-| GBLUP Backend | Python implementation with NumPy/SciPy | 3-5 days |
-| Cross Prediction | Predict progeny performance from parents | 3-5 days |
-| Breeding Values API | `/api/v2/breeding-values` endpoint | 2-3 days |
+#### ✅ Phase 2: Genomic Selection — COMPLETE
+| Task | Status | Endpoint |
+|------|--------|----------|
+| GBLUP Backend | ✅ Done | `/api/v2/breeding-value/gblup` |
+| BLUP Backend | ✅ Done | `/api/v2/breeding-value/blup` |
+| Cross Prediction | ✅ Done | `/api/v2/crosses` |
+| Breeding Values API | ✅ Done | `/api/v2/breeding-value` |
 
-#### Phase 3: Computer Vision (Priority: MEDIUM)
-| Task | Description | Effort |
-|------|-------------|--------|
-| Disease Detection Model | Train/integrate TensorFlow.js model | 1-2 weeks |
-| Growth Stage Classifier | BBCH scale classification | 1 week |
-| Plant Vision Backend | Model serving infrastructure | 3-5 days |
+#### 🔄 Phase 3: Computer Vision — IN PROGRESS
+| Task | Status | Notes |
+|------|--------|-------|
+| Disease Detection Model | ❌ Pending | TensorFlow.js model needed |
+| Growth Stage Classifier | ❌ Pending | BBCH scale |
+| Plant Vision Backend | ❌ Pending | Model serving |
 
-#### Phase 4: MCP Integration (Priority: HIGH)
-Enable LLMs (ChatGPT, Claude) to query BrAPI data directly.
+#### ✅ Phase 4: MCP Integration — COMPLETE
+| Task | Status | Location |
+|------|--------|----------|
+| MCP Server | ✅ Done | `backend/app/mcp/server.py` |
+| BrAPI Tools | ✅ Done | Trial, germplasm, cross prediction |
 
-```python
-# Example: BrAPI + Model Context Protocol
-from fastmcp import FastMCP
+#### ✅ Phase 5: Advanced Analytics — COMPLETE
+| Task | Status | Endpoint |
+|------|--------|----------|
+| GWAS Pipeline | ✅ Done | `/api/v2/gwas` |
+| G×E Analysis | ✅ Done | `/api/v2/gxe` |
+| Selection Index | ✅ Done | `/api/v2/selection` |
+| Genetic Gain | ✅ Done | `/api/v2/genetic-gain` |
+| Spatial Analysis | ✅ Done | `/api/v2/spatial` |
 
-mcp = FastMCP("BrAPI MCP Server")
-
-@mcp.tool()
-def get_trial_info(trial_id: str) -> dict:
-    """Retrieve trial information from BrAPI."""
-    url = f"https://server/brapi/v2/trials/{trial_id}"
-    return requests.get(url).json()
-
-@mcp.tool()
-def search_germplasm(query: str) -> list:
-    """Semantic search for germplasm."""
-    # Uses pgvector for similarity search
-    return vector_search(query, doc_type="germplasm")
-
-@mcp.tool()
-def predict_cross(parent1: str, parent2: str) -> dict:
-    """Predict progeny performance for a cross."""
-    return cross_prediction_model.predict(parent1, parent2)
-```
-
-**Why MCP matters**: Users can ask ChatGPT "What's the yield of trial T-2024-15?" and get real data.
-
-#### Phase 5: Advanced Analytics (Priority: LOW)
-| Task | Description |
-|------|-------------|
-| GWAS Pipeline | MLM, FarmCPU integration |
-| G×E Analysis | AMMI, GGE biplot |
-| Multi-omics | Transcriptomics, metabolomics support |
+#### 🔄 Phase 6: WASM Compilation — PENDING
+| Task | Status | Notes |
+|------|--------|-------|
+| Compile Rust to WASM | ❌ Pending | GRM, LD, PCA |
 
 ### Enhanced BrAPI for AI/ML
 

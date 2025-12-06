@@ -211,20 +211,44 @@ export const divisions: Division[] = [
     ],
   },
 
-  // Division 3: Earth Systems (Beta)
+  // Division 3: Earth Systems (Active)
   {
     id: 'earth-systems',
     name: 'Earth Systems',
     description: 'Climate patterns, weather intelligence, and GIS platform',
     icon: 'Globe',
-    route: '/weather',
+    route: '/earth-systems',
     component: lazy(() => import('@/divisions/earth-systems')),
     requiredPermissions: ['read:earth_systems'],
-    status: 'beta',
-    version: '0.5.0',
+    status: 'active',
+    version: '1.0.0',
     sections: [
-      { id: 'weather', name: 'Weather', route: '/weather', icon: 'Thermometer', isAbsolute: true },
-      { id: 'forecast', name: 'Forecast', route: '/weather-forecast', icon: 'CloudSun', isAbsolute: true },
+      {
+        id: 'weather-climate',
+        name: 'Weather & Climate',
+        route: '/earth-systems/weather',
+        icon: 'CloudSun',
+        isAbsolute: true,
+        items: [
+          { id: 'weather', name: 'Weather Forecast', route: '/earth-systems/weather', isAbsolute: true },
+          { id: 'climate', name: 'Climate Analysis', route: '/earth-systems/climate', isAbsolute: true },
+          { id: 'gdd', name: 'Growing Degrees', route: '/earth-systems/gdd', isAbsolute: true },
+          { id: 'drought', name: 'Drought Monitor', route: '/earth-systems/drought', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'field-env',
+        name: 'Field Environment',
+        route: '/earth-systems/soil',
+        icon: 'Leaf',
+        isAbsolute: true,
+        items: [
+          { id: 'soil', name: 'Soil Data', route: '/earth-systems/soil', isAbsolute: true },
+          { id: 'inputs', name: 'Input Log', route: '/earth-systems/inputs', isAbsolute: true },
+          { id: 'irrigation', name: 'Irrigation', route: '/earth-systems/irrigation', isAbsolute: true },
+          { id: 'map', name: 'Field Map', route: '/earth-systems/map', isAbsolute: true },
+        ],
+      },
     ],
   },
 
@@ -256,7 +280,93 @@ export const divisions: Division[] = [
     version: '0.0.1',
   },
 
-  // Division 6: Commercial (Planned)
+  // Division 6: Seed Operations (Active) - LIMS, Processing, Inventory, Dispatch
+  {
+    id: 'seed-operations',
+    name: 'Seed Operations',
+    description: 'Lab testing, processing, inventory & dispatch',
+    icon: 'Building2',
+    route: '/seed-operations',
+    component: lazy(() => import('@/divisions/seed-operations')),
+    requiredPermissions: ['read:seed_operations'],
+    status: 'active',
+    version: '1.0.0',
+    sections: [
+      {
+        id: 'lab-testing',
+        name: 'Lab Testing',
+        route: '/seed-operations/samples',
+        icon: 'FlaskConical',
+        isAbsolute: true,
+        items: [
+          { id: 'samples', name: 'Samples', route: '/seed-operations/samples', isAbsolute: true },
+          { id: 'testing', name: 'Tests', route: '/seed-operations/testing', isAbsolute: true },
+          { id: 'certificates', name: 'Certificates', route: '/seed-operations/certificates', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'processing',
+        name: 'Processing',
+        route: '/seed-operations/quality-gate',
+        icon: 'Shield',
+        isAbsolute: true,
+        items: [
+          { id: 'quality-gate', name: 'Quality Gate', route: '/seed-operations/quality-gate', isAbsolute: true },
+          { id: 'batches', name: 'Batches', route: '/seed-operations/batches', isAbsolute: true },
+          { id: 'stages', name: 'Stages', route: '/seed-operations/stages', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'inventory',
+        name: 'Inventory',
+        route: '/seed-operations/lots',
+        icon: 'Package',
+        isAbsolute: true,
+        items: [
+          { id: 'lots', name: 'Seed Lots', route: '/seed-operations/lots', isAbsolute: true },
+          { id: 'warehouse', name: 'Warehouse', route: '/seed-operations/warehouse', isAbsolute: true },
+          { id: 'alerts', name: 'Alerts', route: '/seed-operations/alerts', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'dispatch',
+        name: 'Dispatch',
+        route: '/seed-operations/dispatch',
+        icon: 'Truck',
+        isAbsolute: true,
+        items: [
+          { id: 'create-dispatch', name: 'Create Dispatch', route: '/seed-operations/dispatch', isAbsolute: true },
+          { id: 'history', name: 'History', route: '/seed-operations/dispatch-history', isAbsolute: true },
+          { id: 'firms', name: 'Firms', route: '/seed-operations/firms', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'traceability',
+        name: 'Traceability',
+        route: '/seed-operations/track',
+        icon: 'QrCode',
+        isAbsolute: true,
+        items: [
+          { id: 'track', name: 'Track Lot', route: '/seed-operations/track', isAbsolute: true },
+          { id: 'lineage', name: 'Lineage', route: '/seed-operations/lineage', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'licensing',
+        name: 'Licensing',
+        route: '/seed-operations/varieties',
+        icon: 'FileCheck',
+        isAbsolute: true,
+        items: [
+          { id: 'varieties', name: 'Varieties', route: '/seed-operations/varieties', isAbsolute: true },
+          { id: 'agreements', name: 'Agreements', route: '/seed-operations/agreements', isAbsolute: true },
+          { id: 'royalties', name: 'Royalties', route: '/seed-operations/royalties', isAbsolute: true },
+        ],
+      },
+    ],
+  },
+
+  // Division 6b: Commercial (Legacy - Planned)
   {
     id: 'commercial',
     name: 'Commercial',
@@ -287,6 +397,22 @@ export const divisions: Division[] = [
     featureFlag: 'SPACE_RESEARCH_ENABLED',
     status: 'visionary',
     version: '0.0.1',
+  },
+
+  // Division 8: Integration Hub (Active)
+  {
+    id: 'integrations',
+    name: 'Integrations',
+    description: 'External API connections and third-party services',
+    icon: 'Plug',
+    route: '/integrations',
+    component: lazy(() => import('@/divisions/integrations')),
+    requiredPermissions: ['read:integrations'],
+    status: 'active',
+    version: '1.0.0',
+    sections: [
+      { id: 'hub', name: 'Integration Hub', route: '/integrations', icon: 'Plug', isAbsolute: true },
+    ],
   },
 
   // Division 8: Tools & Utilities

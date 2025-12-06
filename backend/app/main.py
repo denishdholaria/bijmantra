@@ -34,10 +34,24 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"[Meilisearch] Initialization skipped: {e}")
     
+    # Start background task queue
+    try:
+        from app.services.task_queue import task_queue
+        await task_queue.start()
+    except Exception as e:
+        print(f"[TaskQueue] Initialization skipped: {e}")
+    
     yield
     
     # Shutdown
     print("[Bijmantra] Shutting down...")
+    
+    # Stop task queue
+    try:
+        from app.services.task_queue import task_queue
+        await task_queue.stop()
+    except Exception:
+        pass
 
 # Create FastAPI app
 app = FastAPI(
@@ -84,6 +98,30 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy"}
 
+# API Statistics
+@app.get("/api/stats")
+async def api_stats():
+    """API statistics and version info"""
+    return {
+        "name": "Bijmantra API",
+        "version": "0.1.0",
+        "brapi_version": "2.1",
+        "total_endpoints": 380,
+        "modules": [
+            "Authentication", "BrAPI Core", "Compute Engine", "AI Insights",
+            "Vector Store", "Weather", "Veena AI", "Cross Prediction",
+            "Integration Hub", "Event Bus", "Task Queue", "Field Environment",
+            "Voice", "G×E Analysis", "GWAS", "Bioinformatics", "Pedigree",
+            "Phenotype", "MAS", "Trial Design", "Seed Inventory", "Crop Calendar",
+            "Data Export", "Quality Control", "Germplasm Passport", "Trait Ontology",
+            "Nursery Management", "Seed Traceability", "Variety Licensing",
+            "Selection Index", "Genetic Gain", "Harvest Management",
+            "Spatial Analysis", "Breeding Value", "Disease Resistance", "Abiotic Stress",
+            "Dispatch Management", "Seed Processing"
+        ],
+        "status": "operational",
+    }
+
 # BrAPI v2.1 serverinfo endpoint
 @app.get("/brapi/v2/serverinfo")
 async def serverinfo():
@@ -109,7 +147,8 @@ async def serverinfo():
 # Import routers
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies
-from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses
+from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
+from app.api.v2 import dispatch, processing
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -134,6 +173,36 @@ app.include_router(vector.router, prefix="/api/v2", tags=["Vector Store"])
 app.include_router(weather.router, prefix="/api/v2", tags=["Weather Intelligence"])
 app.include_router(chat.router, prefix="/api/v2", tags=["Veena AI Chat"])
 app.include_router(crosses.router, prefix="/api/v2", tags=["Cross Prediction"])
+app.include_router(integrations.router, prefix="/api/v2", tags=["Integration Hub"])
+app.include_router(events.router, prefix="/api/v2", tags=["Event Bus"])
+app.include_router(tasks.router, prefix="/api/v2", tags=["Task Queue"])
+app.include_router(field_environment.router, prefix="/api/v2", tags=["Field Environment"])
+app.include_router(voice.router, prefix="/api/v2", tags=["Veena Voice"])
+app.include_router(gxe.router, prefix="/api/v2", tags=["G×E Analysis"])
+app.include_router(gwas.router, prefix="/api/v2", tags=["GWAS"])
+app.include_router(bioinformatics.router, prefix="/api/v2", tags=["Bioinformatics"])
+app.include_router(pedigree.router, prefix="/api/v2", tags=["Pedigree Analysis"])
+app.include_router(phenotype.router, prefix="/api/v2", tags=["Phenotype Analysis"])
+app.include_router(mas.router, prefix="/api/v2", tags=["Marker-Assisted Selection"])
+app.include_router(trial_design.router, prefix="/api/v2", tags=["Trial Design"])
+app.include_router(seed_inventory.router, prefix="/api/v2", tags=["Seed Inventory"])
+app.include_router(crop_calendar.router, prefix="/api/v2", tags=["Crop Calendar"])
+app.include_router(export.router, prefix="/api/v2", tags=["Data Export"])
+app.include_router(quality.router, prefix="/api/v2", tags=["Quality Control"])
+app.include_router(passport.router, prefix="/api/v2", tags=["Germplasm Passport"])
+app.include_router(ontology.router, prefix="/api/v2", tags=["Trait Ontology"])
+app.include_router(nursery.router, prefix="/api/v2", tags=["Nursery Management"])
+app.include_router(traceability.router, prefix="/api/v2", tags=["Seed Traceability"])
+app.include_router(licensing.router, prefix="/api/v2", tags=["Variety Licensing"])
+app.include_router(selection.router, prefix="/api/v2", tags=["Selection Index"])
+app.include_router(genetic_gain.router, prefix="/api/v2", tags=["Genetic Gain"])
+app.include_router(harvest.router, prefix="/api/v2", tags=["Harvest Management"])
+app.include_router(spatial.router, prefix="/api/v2", tags=["Spatial Analysis"])
+app.include_router(breeding_value.router, prefix="/api/v2", tags=["Breeding Value"])
+app.include_router(disease.router, prefix="/api/v2", tags=["Disease Resistance"])
+app.include_router(abiotic.router, prefix="/api/v2", tags=["Abiotic Stress"])
+app.include_router(dispatch.router, prefix="/api/v2", tags=["Dispatch Management"])
+app.include_router(processing.router, prefix="/api/v2", tags=["Seed Processing"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])

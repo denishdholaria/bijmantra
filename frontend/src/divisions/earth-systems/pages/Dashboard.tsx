@@ -42,8 +42,10 @@ export function Dashboard() {
     { label: 'Climate Trends', path: '/earth-systems/climate', icon: '📊' },
     { label: 'Field Map', path: '/earth-systems/map', icon: '🗺️' },
     { label: 'Soil Data', path: '/earth-systems/soil', icon: '🌱' },
+    { label: 'Input Log', path: '/earth-systems/inputs', icon: '🧪' },
+    { label: 'Irrigation', path: '/earth-systems/irrigation', icon: '💧' },
     { label: 'Growing Degrees', path: '/earth-systems/gdd', icon: '🌡️' },
-    { label: 'Drought Monitor', path: '/earth-systems/drought', icon: '💧' },
+    { label: 'Drought Monitor', path: '/earth-systems/drought', icon: '🏜️' },
   ];
 
   return (
@@ -117,7 +119,7 @@ export function Dashboard() {
           <CardTitle>Tools & Analysis</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {quickLinks.map((link) => (
               <Link
                 key={link.path}

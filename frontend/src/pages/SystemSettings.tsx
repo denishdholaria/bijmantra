@@ -2,7 +2,7 @@
  * System Settings Page
  * Admin configuration for the system
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -50,11 +50,12 @@ export function SystemSettings() {
       </div>
 
       <Tabs defaultValue="general">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="api">API</TabsTrigger>
           <TabsTrigger value="features">Features</TabsTrigger>
+          <TabsTrigger value="status">Status</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-6 mt-6">
@@ -250,7 +251,133 @@ export function SystemSettings() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="status" className="space-y-6 mt-6">
+          <SystemStatusPanel />
+        </TabsContent>
       </Tabs>
+    </div>
+  )
+}
+
+// System Status Panel Component
+function SystemStatusPanel() {
+  const [taskStats, setTaskStats] = useState<any>(null)
+  const [eventSubs, setEventSubs] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+  const fetchStatus = async () => {
+    setLoading(true)
+    try {
+      const [tasksRes, eventsRes] = await Promise.all([
+        fetch(`${API_BASE}/api/v2/tasks/stats`),
+        fetch(`${API_BASE}/api/v2/events/subscriptions`),
+      ])
+
+      if (tasksRes.ok) setTaskStats(await tasksRes.json())
+      if (eventsRes.ok) setEventSubs(await eventsRes.json())
+    } catch (error) {
+      console.error('Failed to fetch system status:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchStatus()
+    const interval = setInterval(fetchStatus, 10000) // Refresh every 10s
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            📋 Task Queue
+            <Button variant="ghost" size="sm" onClick={fetchStatus}>🔄</Button>
+          </CardTitle>
+          <CardDescription>Background task processing status</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading && !taskStats ? (
+            <p className="text-muted-foreground">Loading...</p>
+          ) : taskStats ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-2xl font-bold text-blue-700">{taskStats.pending || 0}</p>
+                <p className="text-sm text-blue-600">Pending</p>
+              </div>
+              <div className="p-3 bg-yellow-50 rounded-lg">
+                <p className="text-2xl font-bold text-yellow-700">{taskStats.running || 0}</p>
+                <p className="text-sm text-yellow-600">Running</p>
+              </div>
+              <div className="p-3 bg-green-50 rounded-lg">
+                <p className="text-2xl font-bold text-green-700">{taskStats.completed || 0}</p>
+                <p className="text-sm text-green-600">Completed</p>
+              </div>
+              <div className="p-3 bg-red-50 rounded-lg">
+                <p className="text-2xl font-bold text-red-700">{taskStats.failed || 0}</p>
+                <p className="text-sm text-red-600">Failed</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">Unable to connect to backend</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>📡 Event Bus</CardTitle>
+          <CardDescription>Inter-module communication subscriptions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading && !eventSubs ? (
+            <p className="text-muted-foreground">Loading...</p>
+          ) : eventSubs?.subscriptions ? (
+            Object.keys(eventSubs.subscriptions).length > 0 ? (
+              <div className="space-y-2">
+                {Object.entries(eventSubs.subscriptions).map(([event, modules]: [string, any]) => (
+                  <div key={event} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <code className="text-sm">{event}</code>
+                    <span className="text-xs text-muted-foreground">{modules.join(', ')}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No active subscriptions</p>
+            )
+          ) : (
+            <p className="text-muted-foreground">Unable to connect to backend</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>🔗 Service Health</CardTitle>
+          <CardDescription>Backend service connectivity</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-2 border rounded">
+              <span>API Server</span>
+              <span className={`px-2 py-1 rounded text-xs ${taskStats ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {taskStats ? '● Connected' : '○ Disconnected'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-2 border rounded">
+              <span>Task Queue Workers</span>
+              <span className="px-2 py-1 rounded text-xs bg-green-100 text-green-700">
+                {taskStats?.max_concurrent || 5} workers
+              </span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

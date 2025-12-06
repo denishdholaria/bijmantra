@@ -209,6 +209,41 @@ import { WasmSelectionIndex } from '@/pages/WasmSelectionIndex'
 import InsightsDashboard from '@/pages/InsightsDashboard'
 import ApexAnalytics from '@/pages/ApexAnalytics'
 
+// Earth Systems Division - lazy loaded
+import { lazy, Suspense } from 'react'
+const EarthSystemsDashboard = lazy(() => import('@/divisions/earth-systems/pages/Dashboard'))
+const EarthSystemsWeather = lazy(() => import('@/divisions/earth-systems/pages/WeatherForecast'))
+const EarthSystemsClimate = lazy(() => import('@/divisions/earth-systems/pages/ClimateAnalysis'))
+const EarthSystemsSoil = lazy(() => import('@/divisions/earth-systems/pages/SoilData'))
+const EarthSystemsInputs = lazy(() => import('@/divisions/earth-systems/pages/InputLog'))
+const EarthSystemsIrrigation = lazy(() => import('@/divisions/earth-systems/pages/Irrigation'))
+const EarthSystemsGDD = lazy(() => import('@/divisions/earth-systems/pages/GrowingDegrees'))
+const EarthSystemsDrought = lazy(() => import('@/divisions/earth-systems/pages/DroughtMonitor'))
+const EarthSystemsMap = lazy(() => import('@/divisions/earth-systems/pages/FieldMap'))
+
+// Integration Hub
+const IntegrationsHub = lazy(() => import('@/divisions/integrations/pages/Dashboard'))
+
+// Seed Operations Division - lazy loaded
+const SeedOpsDashboard = lazy(() => import('@/divisions/seed-operations/pages/Dashboard'))
+const SeedOpsLabSamples = lazy(() => import('@/divisions/seed-operations/pages/LabSamples'))
+const SeedOpsLabTesting = lazy(() => import('@/divisions/seed-operations/pages/LabTesting'))
+const SeedOpsCertificates = lazy(() => import('@/divisions/seed-operations/pages/Certificates'))
+const SeedOpsQualityGate = lazy(() => import('@/divisions/seed-operations/pages/QualityGate'))
+const SeedOpsBatches = lazy(() => import('@/divisions/seed-operations/pages/ProcessingBatches'))
+const SeedOpsStages = lazy(() => import('@/divisions/seed-operations/pages/ProcessingStages'))
+const SeedOpsLots = lazy(() => import('@/divisions/seed-operations/pages/SeedLots'))
+const SeedOpsWarehouse = lazy(() => import('@/divisions/seed-operations/pages/Warehouse'))
+const SeedOpsAlerts = lazy(() => import('@/divisions/seed-operations/pages/StockAlerts'))
+const SeedOpsDispatch = lazy(() => import('@/divisions/seed-operations/pages/CreateDispatch'))
+const SeedOpsDispatchHistory = lazy(() => import('@/divisions/seed-operations/pages/DispatchHistory'))
+const SeedOpsFirms = lazy(() => import('@/divisions/seed-operations/pages/Firms'))
+const SeedOpsTrack = lazy(() => import('@/divisions/seed-operations/pages/TrackLot'))
+const SeedOpsLineage = lazy(() => import('@/divisions/seed-operations/pages/Lineage'))
+const SeedOpsVarieties = lazy(() => import('@/divisions/seed-operations/pages/Varieties'))
+const SeedOpsAgreements = lazy(() => import('@/divisions/seed-operations/pages/Agreements'))
+const SeedOpsRoyalties = lazy(() => import('@/divisions/seed-operations/pages/Royalties'))
+
 function App() {
   return (
     <Router>
@@ -910,6 +945,163 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Weather />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Earth Systems Division routes */}
+        <Route
+          path="/earth-systems"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsDashboard />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/dashboard"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsDashboard />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/weather"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsWeather />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/climate"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsClimate />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/soil"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsSoil />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/inputs"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsInputs />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/irrigation"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsIrrigation />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/gdd"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsGDD />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/drought"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsDrought />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earth-systems/map"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <EarthSystemsMap />
+                </Suspense>
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Seed Operations Division routes */}
+        <Route path="/seed-operations" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/dashboard" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/samples" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsLabSamples /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/testing" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsLabTesting /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/certificates" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsCertificates /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/quality-gate" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsQualityGate /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/batches" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsBatches /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/stages" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsStages /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/lots" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsLots /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/warehouse" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsWarehouse /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/alerts" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsAlerts /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/dispatch" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsDispatch /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/dispatch-history" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsDispatchHistory /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/firms" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsFirms /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/track" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsTrack /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/lineage" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsLineage /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/varieties" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsVarieties /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/agreements" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsAgreements /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-operations/royalties" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsRoyalties /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Integration Hub routes */}
+        <Route
+          path="/integrations"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+                  <IntegrationsHub />
+                </Suspense>
               </Layout>
             </ProtectedRoute>
           }

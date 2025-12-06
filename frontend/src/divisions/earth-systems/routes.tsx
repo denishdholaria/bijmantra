@@ -15,6 +15,8 @@ const FieldMap = lazy(() => import('./pages/FieldMap'));
 const SoilData = lazy(() => import('./pages/SoilData'));
 const GrowingDegrees = lazy(() => import('./pages/GrowingDegrees'));
 const DroughtMonitor = lazy(() => import('./pages/DroughtMonitor'));
+const InputLog = lazy(() => import('./pages/InputLog'));
+const Irrigation = lazy(() => import('./pages/Irrigation'));
 
 /**
  * Earth Systems Division Routes
@@ -26,6 +28,8 @@ export const earthSystemsRoutes: RouteObject[] = [
   { path: 'climate', element: <ClimateAnalysis /> },
   { path: 'map', element: <FieldMap /> },
   { path: 'soil', element: <SoilData /> },
+  { path: 'inputs', element: <InputLog /> },
+  { path: 'irrigation', element: <Irrigation /> },
   { path: 'gdd', element: <GrowingDegrees /> },
   { path: 'drought', element: <DroughtMonitor /> },
 ];

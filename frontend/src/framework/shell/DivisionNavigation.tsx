@@ -48,6 +48,7 @@ const divisionColors: Record<string, string> = {
   'earth-systems': 'from-blue-500 to-cyan-500',
   'sun-earth-systems': 'from-orange-500 to-red-500',
   'sensor-networks': 'from-teal-500 to-green-500',
+  'seed-operations': 'from-blue-600 to-indigo-600',
   'commercial': 'from-indigo-500 to-purple-500',
   'space-research': 'from-violet-500 to-purple-500',
   'integrations': 'from-gray-500 to-slate-500',

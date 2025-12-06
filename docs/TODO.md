@@ -1,51 +1,64 @@
 # Bijmantra - Priority TODO
 
 > **Single Source of Truth** for what needs to be built  
-> Last updated: December 5, 2025
+> Last updated: December 6, 2025
 
 ---
 
-## 🔴 HIGH PRIORITY: AI/ML Backend
+## ✅ COMPLETED: LIMS & Seed Company Module
 
-The UI is built. These need backend implementation.
+> **Source**: ProQRT learnings — See `docs/confidential/IDEAS.md` for full plan
 
-### 1. Veena RAG (2-3 days each)
-- [ ] **Embedding Service** — Generate real embeddings for germplasm, protocols
-  - Use sentence-transformers (MiniLM, 384-dim)
-  - Store in pgvector (migration exists)
-- [ ] **Vector Search API** — `/api/v2/vector/search`
-  - Semantic search across germplasm, documents
-- [ ] **Veena Chat Backend** — Connect to vector search
-  - RAG pipeline: query → embed → search → context → response
+### Phase 1: Lab Sample Management ✅
+- [x] `frontend/src/divisions/seed-operations/pages/LabSamples.tsx`
+- [x] Sample registration form with dialog
+- [x] Sample list with status filters
+- [x] Connected to `/api/v2/quality/` API
 
-### 2. Genomic Selection (3-5 days each)
-- [ ] **GBLUP Backend** — Python with NumPy/SciPy
-  - Kinship matrix calculation
-  - Mixed model equations solver
-- [ ] **Cross Prediction** — Predict progeny performance
-  - Parent combination scoring
-  - Expected genetic gain
-- [ ] **Breeding Values API** — `/api/v2/breeding-values`
+### Phase 2: Lab Testing Workflow ✅
+- [x] `frontend/src/divisions/seed-operations/pages/LabTesting.tsx`
+- [x] Test entry forms (germination, purity, moisture, vigor)
+- [x] Results recording with pass/fail thresholds
+- [x] `frontend/src/divisions/seed-operations/pages/Certificates.tsx`
 
-### 3. MCP Integration (HIGH IMPACT)
-Enable ChatGPT/Claude to query BrAPI data directly.
+### Phase 3: Quality Gate Scanner ✅
+- [x] `frontend/src/divisions/seed-operations/pages/QualityGate.tsx`
+- [x] QR/barcode scanning (hardware scanner support)
+- [x] Real-time status display (green/red/orange)
+- [x] Decision recording (approve/reject)
 
-```python
-# backend/app/mcp/server.py
-from fastmcp import FastMCP
+### Phase 4: Dispatch Management ✅
+- [x] Backend: `/api/v2/dispatch/` endpoints (18 endpoints)
+- [x] `frontend/src/divisions/seed-operations/pages/CreateDispatch.tsx`
+- [x] `frontend/src/divisions/seed-operations/pages/DispatchHistory.tsx`
+- [x] `frontend/src/divisions/seed-operations/pages/Firms.tsx` - Dealer management
 
-mcp = FastMCP("BrAPI MCP Server")
+### Phase 5: Processing Batches ✅
+- [x] Backend: `/api/v2/processing/` endpoints (12 endpoints)
+- [x] `frontend/src/divisions/seed-operations/pages/ProcessingBatches.tsx`
+- [x] Stage workflow management
 
-@mcp.tool()
-def get_trial_info(trial_id: str) -> dict:
-    """Retrieve trial from BrAPI."""
-    return brapi_client.get_trial(trial_id)
+---
 
-@mcp.tool()
-def search_germplasm(query: str) -> list:
-    """Semantic search for germplasm."""
-    return vector_search(query, doc_type="germplasm")
-```
+## 🟡 MEDIUM PRIORITY: Frontend UI for New APIs
+
+The backend APIs are complete. These need frontend UI.
+
+### New API Modules (380 total endpoints)
+
+| Module | API Endpoints | UI Status | Priority |
+|--------|---------------|-----------|----------|
+| Seed Traceability | `/api/v2/traceability/` (16) | ✅ Connected | DONE |
+| Dispatch Management | `/api/v2/dispatch/` (18) | ✅ Connected | DONE |
+| Seed Processing | `/api/v2/processing/` (12) | ✅ Connected | DONE |
+| Variety Licensing | `/api/v2/licensing/` (17) | ⚠️ Placeholder | HIGH |
+| Selection Index | `/api/v2/selection/` (9) | ❌ Not started | MEDIUM |
+| Genetic Gain | `/api/v2/genetic-gain/` (9) | ❌ Not started | MEDIUM |
+| Harvest Management | `/api/v2/harvest/` (16) | ❌ Not started | MEDIUM |
+| Spatial Analysis | `/api/v2/spatial/` (11) | ❌ Not started | LOW |
+| Breeding Value | `/api/v2/breeding-value/` (8) | ❌ Not started | MEDIUM |
+| Disease Resistance | `/api/v2/disease/` (15) | ❌ Not started | HIGH |
+| Abiotic Stress | `/api/v2/abiotic/` (11) | ❌ Not started | HIGH |
 
 ---
 
@@ -53,46 +66,60 @@ def search_germplasm(query: str) -> list:
 
 ### Plant Vision Models (1-2 weeks)
 - [ ] **Disease Detection** — TensorFlow.js model
-  - Rice blast, bacterial blight, rust
-  - Train or use pre-trained model
 - [ ] **Growth Stage Classifier** — BBCH scale
 - [ ] **Model Serving** — `/api/v2/vision/analyze`
 
 ### WASM Compilation (1 week)
-- [ ] **Compile Rust to WASM** — `rust/` → `frontend/public/wasm/`
-  - GRM calculation
-  - LD analysis
-  - PCA
+- [ ] **Compile Rust to WASM** — GRM, LD, PCA
 
 ---
 
-## 🟡 LOW PRIORITY: Advanced Analytics
+## ✅ COMPLETED (Dec 6, 2025)
 
-- [ ] GWAS Pipeline (MLM, FarmCPU)
-- [ ] G×E Analysis (AMMI, GGE biplot)
-- [ ] Multi-omics support
+### Backend APIs - Commercial Division
+- [x] **Seed Traceability** — Chain of custody, QR codes, certifications
+- [x] **Variety Licensing** — PVP/PBR, license agreements, royalties
+
+### Backend APIs - Advanced Analytics
+- [x] **Selection Index** — Smith-Hazel, Desired Gains, Independent Culling, Tandem
+- [x] **Genetic Gain** — Progress tracking, projections, realized heritability
+- [x] **Breeding Value** — BLUP, GBLUP, cross prediction, candidate ranking
+- [x] **Spatial Analysis** — GIS, Moran's I, nearest neighbor, field mapping
+
+### Backend APIs - Stress Tolerance
+- [x] **Disease Resistance** — 8 diseases, 9 genes, gene pyramiding, screening
+- [x] **Abiotic Stress** — 8 stress types, 7 indices (SSI, STI, YSI, GMP, etc.)
+
+### Backend APIs - Operations
+- [x] **Harvest Management** — Planning, storage, dry weight calculation
+
+### Previously Completed
+- [x] **Veena RAG** — `/api/v2/chat`
+- [x] **Veena Voice** — `/api/v2/voice` (VibeVoice + Edge TTS)
+- [x] **GWAS Pipeline** — GLM, MLM, kinship, PCA
+- [x] **G×E Analysis** — AMMI, GGE, Finlay-Wilkinson
+- [x] **Bioinformatics** — Sequence analysis, primer design
+- [x] **Pedigree Analysis** — A-matrix, inbreeding, coancestry
+- [x] **Phenotype Analysis** — Heritability, genetic correlation
+- [x] **MAS** — Marker registration, MABC workflow
+- [x] **Trial Design** — RCBD, Alpha-Lattice, Augmented, Split-Plot
+- [x] **Nursery Management** — OYT/PYT/AYT/Elite stages
+- [x] **MCP Server** — ChatGPT/Claude integration
+- [x] **Integration Hub** — API management, event bus
+- [x] **210+ pages** — Frontend UI
+- [x] **BrAPI v2.1** — 34/34 endpoints (100%)
 
 ---
 
-## ✅ COMPLETED
+## 📊 Current Metrics
 
-### Dec 5, 2025
-- [x] Navigation redesign (Divisions → Modules)
-- [x] Plant Sciences with 9 subgroups
-- [x] Quick Access removed
-- [x] Documentation consolidated
-- [x] 0 TypeScript errors
-- [x] 48 tests passing
-
-### Previously
-- [x] 210+ pages built
-- [x] BrAPI v2.1 100% (34/34 endpoints)
-- [x] Veena AI UI
-- [x] WASM tool UIs
-- [x] Plant Vision UI
-- [x] pgvector migration
-- [x] Offline sync (Dexie.js)
-- [x] PWA with Workbox
+| Metric | Value |
+|--------|-------|
+| Total API Endpoints | 380 |
+| Frontend Pages | 230+ |
+| BrAPI Compliance | 100% |
+| TypeScript Errors | 0 |
+| Tests Passing | 48 |
 
 ---
 
@@ -113,9 +140,8 @@ def search_germplasm(query: str) -> list:
 |------|---------|
 | `README.md` | Project overview |
 | `PROJECT_STATUS.md` | Current status |
-| `docs/ARCHITECTURE.md` | **Technical reference + AI/ML roadmap** |
+| `docs/ARCHITECTURE.md` | Technical reference |
 | `docs/Godsend.md` | Feature tracking |
-| `docs/TROUBLESHOOTING.md` | Common issues |
-| `docs/framework/PARASHAKTI_SPECIFICATION.md` | Framework spec |
-
-> **Note**: AI/ML roadmap is in `docs/ARCHITECTURE.md` — that's the single source of truth for technical decisions.
+| `docs/TODO.md` | This file |
+| `docs/confidential/IDEAS.md` | **All ideas consolidated** |
+| `.kiro/steering/STATE.md` | AI agent state |
