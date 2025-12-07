@@ -8,6 +8,8 @@ A comprehensive Progressive Web Application for agricultural science, plant bree
 
 ---
 
+## This App is in Developmental Stage.
+
 ## ✅ Current Status (December 6, 2025)
 
 | Metric | Status |
@@ -17,7 +19,7 @@ A comprehensive Progressive Web Application for agricultural science, plant bree
 | BrAPI Endpoints | 34/34 (100%) |
 | TypeScript | 0 errors |
 | Tests | 48 passing |
-| Build | ✅ Production ready |
+| Build | Testing Pending |
 
 ---
 
