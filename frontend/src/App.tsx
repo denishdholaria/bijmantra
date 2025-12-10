@@ -77,6 +77,7 @@ import { Weather } from '@/pages/Weather'
 import { BarcodeScanner } from '@/pages/BarcodeScanner'
 import { UserManagement } from '@/pages/UserManagement'
 import { SystemSettings } from '@/pages/SystemSettings'
+import { ProgressTracker } from '@/pages/ProgressTracker'
 import { BackupRestore } from '@/pages/BackupRestore'
 import { DataQuality } from '@/pages/DataQuality'
 import { ServerInfo } from '@/pages/ServerInfo'
@@ -1177,6 +1178,18 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <SystemSettings />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Progress Tracker */}
+        <Route
+          path="/progress"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ProgressTracker />
               </Layout>
             </ProtectedRoute>
           }

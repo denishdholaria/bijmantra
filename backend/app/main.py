@@ -149,7 +149,7 @@ async def serverinfo():
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies, seasons
 from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
-from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus
+from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -233,6 +233,7 @@ app.include_router(forums.router, prefix="/api/v2", tags=["Community Forums"])
 app.include_router(solar.router, prefix="/api/v2", tags=["Sun-Earth Systems"])
 app.include_router(space.router, prefix="/api/v2", tags=["Space Research"])
 app.include_router(dus.router, prefix="/api/v2", tags=["DUS Testing"])
+app.include_router(progress.router, prefix="/api/v2", tags=["Progress Tracker"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])

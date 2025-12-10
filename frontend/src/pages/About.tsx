@@ -27,7 +27,7 @@ export function About() {
   const timeline = [
     { year: 'Age 12', event: 'First steps into genetics', desc: 'Learning plant breeding alongside father at the cotton research farm in Gujarat, India' },
     { year: '2010', event: 'BSc Biotechnology', desc: 'Monash University, Australia - Building the scientific foundation' },
-    { year: '2012', event: 'MSc Plant Breeding & Biotechnology', desc: 'University of Adelaide - Specializing in crop improvement' },
+    { year: '2012', event: 'MSc Plant Biotechnology', desc: 'University of Adelaide - Specializing in crop improvement' },
     { year: '2024', event: 'Agricultural Science', desc: 'University of Melbourne - Precision Agriculture, Agricultural Extension & Marketing' },
     { year: '2025', event: 'Bijmantra Born', desc: 'Combining decades of experience into an open-source platform for the world' },
   ]

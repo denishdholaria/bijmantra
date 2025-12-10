@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 import { SyncStatusPanel } from '@/components/sync'
 
 export function SystemSettings() {
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
   const [settings, setSettings] = useState({
     siteName: 'Bijmantra',
     siteDescription: 'Plant Breeding Management System',
@@ -51,13 +52,14 @@ export function SystemSettings() {
       </div>
 
       <Tabs defaultValue="general">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="api">API</TabsTrigger>
           <TabsTrigger value="features">Features</TabsTrigger>
           <TabsTrigger value="sync">Sync</TabsTrigger>
           <TabsTrigger value="status">Status</TabsTrigger>
+          <TabsTrigger value="dev">Dev</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-6 mt-6">
@@ -260,6 +262,44 @@ export function SystemSettings() {
 
         <TabsContent value="status" className="space-y-6 mt-6">
           <SystemStatusPanel />
+        </TabsContent>
+
+        <TabsContent value="dev" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Development Tools</CardTitle>
+              <CardDescription>Track development progress and project status</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div>
+                  <h3 className="font-medium">📊 Progress Tracker</h3>
+                  <p className="text-sm text-muted-foreground">View development progress, features, and roadmap</p>
+                </div>
+                <Button variant="outline" onClick={() => window.location.href = '/progress'}>
+                  Open →
+                </Button>
+              </div>
+              <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div>
+                  <h3 className="font-medium">📖 API Documentation</h3>
+                  <p className="text-sm text-muted-foreground">Interactive API docs (Swagger UI)</p>
+                </div>
+                <Button variant="outline" onClick={() => window.open(`${API_BASE}/docs`, '_blank')}>
+                  Open ↗
+                </Button>
+              </div>
+              <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div>
+                  <h3 className="font-medium">🔬 Server Info</h3>
+                  <p className="text-sm text-muted-foreground">Backend server details and health</p>
+                </div>
+                <Button variant="outline" onClick={() => window.location.href = '/server-info'}>
+                  Open →
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
