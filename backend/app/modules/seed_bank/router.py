@@ -3,11 +3,13 @@ Seed Bank Division - API Router
 """
 
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from datetime import datetime
 import uuid
+import io
 
 from app.core.database import get_db
 from app.api.deps import get_current_user
@@ -18,6 +20,13 @@ from .schemas import (
     ViabilityTestCreate, ViabilityTestUpdate, ViabilityTestResponse,
     RegenerationTaskCreate, RegenerationTaskResponse,
     ExchangeCreate, ExchangeResponse,
+)
+from .mcpd import (
+    export_to_mcpd_csv, export_to_mcpd_json,
+    parse_mcpd_csv, mcpd_to_accession_data, validate_mcpd_record,
+    get_biological_status_codes, get_acquisition_source_codes,
+    get_storage_type_codes, get_country_codes,
+    MCPDImportResult, BIOLOGICAL_STATUS_CODES, COUNTRY_CODES,
 )
 
 router = APIRouter(prefix="/seed-bank", tags=["Seed Bank"])
@@ -335,4 +344,273 @@ async def get_seed_bank_stats(
         "active_vaults": vault_count.scalar() or 0,
         "pending_viability": pending_tests.scalar() or 0,
         "scheduled_regeneration": regen_count.scalar() or 0,
+    }
+
+
+# ============ MCPD Import/Export ============
+
+@router.get("/mcpd/export/csv")
+async def export_accessions_mcpd_csv(
+    inst_code: str = Query("BIJ001", description="FAO WIEWS institute code"),
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(get_current_user),
+):
+    """
+    Export all accessions in MCPD v2.1 CSV format.
+    
+    This format is compatible with:
+    - GENESYS global portal
+    - GRIN-Global
+    - FAO WIEWS
+    - Other genebank systems
+    """
+    result = await db.execute(
+        select(Accession)
+        .where(Accession.organization_id == current_user.organization_id)
+        .options()  # Add eager loading if needed
+    )
+    accessions = result.scalars().all()
+    
+    csv_content = export_to_mcpd_csv(accessions, inst_code)
+    
+    filename = f"mcpd_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    
+    return StreamingResponse(
+        io.StringIO(csv_content),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
+@router.get("/mcpd/export/json")
+async def export_accessions_mcpd_json(
+    inst_code: str = Query("BIJ001", description="FAO WIEWS institute code"),
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(get_current_user),
+):
+    """
+    Export all accessions in MCPD v2.1 JSON format.
+    
+    Useful for API-based data exchange with other systems.
+    """
+    result = await db.execute(
+        select(Accession)
+        .where(Accession.organization_id == current_user.organization_id)
+    )
+    accessions = result.scalars().all()
+    
+    return {
+        "mcpd_version": "2.1",
+        "institute_code": inst_code,
+        "export_date": datetime.now().isoformat(),
+        "total_records": len(accessions),
+        "data": export_to_mcpd_json(accessions, inst_code),
+    }
+
+
+@router.post("/mcpd/import", response_model=MCPDImportResult)
+async def import_accessions_mcpd(
+    file: UploadFile = File(..., description="MCPD CSV file"),
+    skip_duplicates: bool = Query(True, description="Skip records with existing accession numbers"),
+    validate_only: bool = Query(False, description="Only validate, don't import"),
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(get_current_user),
+):
+    """
+    Import accessions from MCPD v2.1 CSV file.
+    
+    Supports files exported from:
+    - GENESYS
+    - GRIN-Global
+    - Other MCPD-compliant systems
+    
+    Set `validate_only=true` to check the file without importing.
+    """
+    # Read file content
+    content = await file.read()
+    try:
+        csv_content = content.decode("utf-8")
+    except UnicodeDecodeError:
+        csv_content = content.decode("latin-1")
+    
+    # Parse CSV
+    try:
+        records = parse_mcpd_csv(csv_content)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to parse CSV: {str(e)}")
+    
+    if not records:
+        raise HTTPException(status_code=400, detail="No records found in CSV file")
+    
+    # Get existing accession numbers
+    existing_result = await db.execute(
+        select(Accession.accession_number)
+        .where(Accession.organization_id == current_user.organization_id)
+    )
+    existing_numbers = {r[0] for r in existing_result.fetchall()}
+    
+    imported = 0
+    skipped = 0
+    errors = []
+    
+    for i, row in enumerate(records, start=2):  # Start at 2 (header is row 1)
+        # Validate record
+        validation_errors = validate_mcpd_record(row)
+        if validation_errors:
+            errors.append({
+                "row": i,
+                "accession_number": row.get("ACCENUMB"),
+                "errors": validation_errors,
+            })
+            continue
+        
+        accession_number = row.get("ACCENUMB")
+        
+        # Check for duplicates
+        if accession_number in existing_numbers:
+            if skip_duplicates:
+                skipped += 1
+                continue
+            else:
+                errors.append({
+                    "row": i,
+                    "accession_number": accession_number,
+                    "errors": ["Accession number already exists"],
+                })
+                continue
+        
+        if validate_only:
+            imported += 1
+            continue
+        
+        # Convert to accession data
+        accession_data = mcpd_to_accession_data(row)
+        
+        # Remove internal metadata fields
+        accession_data = {k: v for k, v in accession_data.items() if not k.startswith("_")}
+        
+        # Create accession
+        try:
+            db_accession = Accession(
+                **accession_data,
+                organization_id=current_user.organization_id,
+            )
+            db.add(db_accession)
+            imported += 1
+            existing_numbers.add(accession_number)  # Track for duplicates in same file
+        except Exception as e:
+            errors.append({
+                "row": i,
+                "accession_number": accession_number,
+                "errors": [str(e)],
+            })
+    
+    if not validate_only and imported > 0:
+        await db.commit()
+    
+    return MCPDImportResult(
+        total_records=len(records),
+        imported=imported,
+        skipped=skipped,
+        errors=errors,
+    )
+
+
+@router.get("/mcpd/template")
+async def get_mcpd_template():
+    """
+    Download an empty MCPD v2.1 CSV template with all fields.
+    
+    Use this template to prepare data for import.
+    """
+    fieldnames = [
+        "PUID", "INSTCODE", "ACCENUMB", "COLLNUMB", "OTHERNUMB",
+        "COLLCODE", "COLLNAME", "COLLINSTADDRESS", "COLLMISSID", "COLLDATE",
+        "GENUS", "SPECIES", "SPAUTHOR", "SUBTAXA", "SUBTAUTHOR", "CROPNAME",
+        "ACCENAME", "ACQDATE", "ORIGCTY",
+        "COLLSITE", "LATITUDE", "LONGITUDE", "COORDUNCERT", "COORDDATUM", "GEOREFMETH", "ELEVATION",
+        "BREDCODE", "BREDNAME", "ANCEST",
+        "DONORCODE", "DONORNAME", "DONORNUMB",
+        "SAMPSTAT", "COLLSRC",
+        "DUPLSITE", "DUPLINSTNAME",
+        "STORAGE", "MLSSTAT",
+        "REMARKS", "ACCEURL", "MCPDVERSION",
+    ]
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(fieldnames)
+    # Add example row
+    writer.writerow([
+        "", "BIJ001", "ACC-001", "", "",
+        "", "", "", "", "20240115",
+        "Oryza", "sativa", "L.", "indica", "", "Rice",
+        "IR64", "20240101", "IND",
+        "Punjab, India", "30.7333", "76.7794", "", "WGS84", "GPS", "250",
+        "", "", "IR8/TKM6",
+        "", "IRRI", "",
+        "500", "40",
+        "", "",
+        "13", "1",
+        "Example accession", "", "2.1",
+    ])
+    
+    return StreamingResponse(
+        io.StringIO(output.getvalue()),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=mcpd_template.csv"}
+    )
+
+
+# ============ MCPD Reference Data ============
+
+@router.get("/mcpd/codes/biological-status")
+async def get_mcpd_biological_status_codes():
+    """Get MCPD biological status codes (SAMPSTAT)"""
+    return {
+        "field": "SAMPSTAT",
+        "description": "Biological status of accession",
+        "codes": [
+            {"code": code, "description": desc}
+            for code, desc in BIOLOGICAL_STATUS_CODES.items()
+        ],
+    }
+
+
+@router.get("/mcpd/codes/acquisition-source")
+async def get_mcpd_acquisition_source_codes():
+    """Get MCPD acquisition source codes (COLLSRC)"""
+    return {
+        "field": "COLLSRC",
+        "description": "Collecting/acquisition source",
+        "codes": [
+            {"code": code, "description": desc}
+            for code, desc in get_acquisition_source_codes().items()
+        ],
+    }
+
+
+@router.get("/mcpd/codes/storage-type")
+async def get_mcpd_storage_type_codes():
+    """Get MCPD storage type codes (STORAGE)"""
+    return {
+        "field": "STORAGE",
+        "description": "Type of germplasm storage",
+        "codes": [
+            {"code": code, "description": desc}
+            for code, desc in get_storage_type_codes().items()
+        ],
+    }
+
+
+@router.get("/mcpd/codes/countries")
+async def get_mcpd_country_codes():
+    """Get ISO 3166-1 alpha-3 country codes for MCPD"""
+    return {
+        "field": "ORIGCTY",
+        "description": "Country of origin (ISO 3166-1 alpha-3)",
+        "codes": [
+            {"code": code, "name": name}
+            for code, name in sorted(COUNTRY_CODES.items(), key=lambda x: x[1])
+        ],
     }
