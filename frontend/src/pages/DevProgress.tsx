@@ -94,17 +94,74 @@ const STATUS_BADGES: Record<string, { variant: 'default' | 'secondary' | 'outlin
   backlog: { variant: 'outline', label: '📝 Backlog' },
 };
 
+// Fallback data when backend is unavailable
+const FALLBACK_DATA: ProgressData = {
+  summary: {
+    total_endpoints: 469,
+    total_pages: 252,
+    total_divisions: 11,
+    completed_features: 10,
+    in_progress_features: 0,
+    planned_features: 2,
+    divisions_complete: 11,
+    last_updated: '2025-12-10',
+  },
+  divisions: [
+    { id: 'div-1', name: 'Plant Sciences', status: 'completed', progress: 100, endpoints: 89, pages: 45 },
+    { id: 'div-2', name: 'Seed Bank', status: 'completed', progress: 100, endpoints: 31, pages: 9, notes: 'Production ready with MCPD' },
+    { id: 'div-3', name: 'Earth Systems', status: 'completed', progress: 100, endpoints: 28, pages: 12 },
+    { id: 'div-4', name: 'Sun-Earth Systems', status: 'completed', progress: 100, endpoints: 12, pages: 4 },
+    { id: 'div-5', name: 'Sensor Networks', status: 'completed', progress: 100, endpoints: 17, pages: 4 },
+    { id: 'div-6', name: 'Commercial', status: 'completed', progress: 95, endpoints: 95, pages: 18, notes: 'DUS Testing added' },
+    { id: 'div-7', name: 'Space Research', status: 'completed', progress: 100, endpoints: 12, pages: 4 },
+    { id: 'div-8', name: 'Integration Hub', status: 'completed', progress: 100, endpoints: 15, pages: 3 },
+    { id: 'div-9', name: 'Knowledge', status: 'completed', progress: 100, endpoints: 12, pages: 6 },
+    { id: 'div-10', name: 'Settings', status: 'completed', progress: 100, endpoints: 8, pages: 4 },
+    { id: 'div-11', name: 'Home', status: 'completed', progress: 100, endpoints: 5, pages: 3 },
+  ],
+  recent_features: [
+    { id: 'feat-dev-progress', name: 'Dev Progress', description: 'Development progress dashboard', status: 'completed', completed_date: '2025-12-10', endpoints: 11, tags: ['backend', 'frontend', 'meta'] },
+    { id: 'feat-dus', name: 'DUS Testing (UPOV)', description: 'Variety protection with 10 crop templates', status: 'completed', completed_date: '2025-12-10', endpoints: 17, tags: ['backend', 'commercial'] },
+    { id: 'feat-mcpd', name: 'MCPD v2.1 Import/Export', description: 'Genebank data exchange standard', status: 'completed', completed_date: '2025-12-10', endpoints: 8, tags: ['backend', 'seed-bank'] },
+    { id: 'feat-viz', name: 'Scientific Visualizations', description: 'PedigreeViewer, AMMIBiplot, KinshipNetwork', status: 'completed', completed_date: '2025-12-10', tags: ['frontend', 'charts'] },
+    { id: 'feat-space', name: 'Space Research Division', description: 'Space crops, radiation, life support', status: 'completed', completed_date: '2025-12-10', endpoints: 12, tags: ['backend', 'frontend'] },
+    { id: 'feat-solar', name: 'Sun-Earth Systems', description: 'Photoperiod, UV index, solar activity', status: 'completed', completed_date: '2025-12-10', endpoints: 12, tags: ['backend', 'frontend'] },
+    { id: 'feat-field-mode', name: 'Field Mode UI', description: 'WCAG AAA contrast, 48px touch targets', status: 'completed', completed_date: '2025-12-10', tags: ['frontend', 'accessibility'] },
+    { id: 'feat-dus-ui', name: 'DUS Testing Frontend', description: 'Trial management, character scoring UI', status: 'planned', priority: 'high', tags: ['frontend', 'commercial'] },
+    { id: 'feat-mcpd-ui', name: 'MCPD Import/Export UI', description: 'File upload, validation preview', status: 'planned', priority: 'high', tags: ['frontend', 'seed-bank'] },
+  ],
+  roadmap: [
+    { quarter: 'Q1 2025', title: 'Standards & Compliance', items: ['MIAPPE compliance', 'RTL language support', 'ORCID integration'], status: 'planned' },
+    { quarter: 'Q2 2025', title: 'Mobile & Offline', items: ['React Native mobile app', 'Enhanced offline sync', 'Barcode scanning'], status: 'planned' },
+    { quarter: 'Q3 2025', title: 'AI & Analytics', items: ['AI crop recommendations', 'Predictive analytics', 'Computer vision'], status: 'backlog' },
+    { quarter: 'Q4 2025', title: 'Enterprise Features', items: ['Multi-tenant SaaS', 'Advanced RBAC', 'Audit logging'], status: 'backlog' },
+  ],
+  api_stats: { brapi_endpoints: 34, custom_endpoints: 435, total_endpoints: 469 },
+  tech_stack: {
+    frontend: ['React 18', 'TypeScript 5', 'Tailwind CSS', 'shadcn/ui', 'TanStack Query', 'ECharts'],
+    backend: ['Python 3.11', 'FastAPI', 'SQLAlchemy 2.0', 'Pydantic 2'],
+    database: ['PostgreSQL 15', 'PostGIS', 'pgvector', 'Redis'],
+    compute: ['Python', 'Rust/WASM', 'Fortran'],
+  },
+};
+
 function DevProgress() {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const { data, isLoading, error } = useQuery<ProgressData>({
+  const { data, isLoading } = useQuery<ProgressData>({
     queryKey: ['progress'],
     queryFn: async () => {
       const response = await fetch(`${API_BASE}/api/v2/progress`);
       if (!response.ok) throw new Error('Failed to fetch progress data');
       return response.json();
     },
+    retry: 1,
+    staleTime: 60000, // Cache for 1 minute
   });
+
+  // Use fallback data if API fails
+  const progressData = data || FALLBACK_DATA;
+  const isUsingFallback = !data;
 
   if (isLoading) {
     return (
@@ -121,22 +178,19 @@ function DevProgress() {
     );
   }
 
-  if (error || !data) {
-    return (
-      <div className="p-6">
-        <Card>
-          <CardContent className="p-6 text-center text-muted-foreground">
-            Failed to load progress data. Please try again.
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const { summary, divisions, recent_features, roadmap, api_stats, tech_stack } = data;
+  const { summary, divisions, recent_features, roadmap, api_stats, tech_stack } = progressData;
 
   return (
     <div className="p-6 space-y-6">
+      {/* Fallback Notice */}
+      {isUsingFallback && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="p-3 text-center text-amber-700 text-sm">
+            ⚠️ Backend unavailable — showing cached data. Start the backend for live updates.
+          </CardContent>
+        </Card>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
