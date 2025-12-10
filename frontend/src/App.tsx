@@ -1,4 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useAuthStore } from '@/store/auth'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Login } from '@/pages/Login'
@@ -244,10 +246,24 @@ const SeedOpsVarieties = lazy(() => import('@/divisions/seed-operations/pages/Va
 const SeedOpsAgreements = lazy(() => import('@/divisions/seed-operations/pages/Agreements'))
 const SeedOpsRoyalties = lazy(() => import('@/divisions/seed-operations/pages/Royalties'))
 
-function App() {
+// Inner component that uses router hooks
+function AppRoutes() {
+  const navigate = useNavigate()
+  const { logout } = useAuthStore()
+
+  // Listen for unauthorized events (401 responses)
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout()
+      navigate('/login', { replace: true })
+    }
+    
+    window.addEventListener('auth:unauthorized', handleUnauthorized)
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized)
+  }, [logout, navigate])
+
   return (
-    <Router>
-      <Routes>
+    <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         
@@ -2852,6 +2868,13 @@ function App() {
         {/* 404 Not Found */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <AppRoutes />
     </Router>
   )
 }

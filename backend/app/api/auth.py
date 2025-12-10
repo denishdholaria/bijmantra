@@ -15,6 +15,8 @@ from app.core.config import settings
 from app.core.security import create_access_token
 from app.crud.core import user as user_crud
 from app.schemas.core import User, UserCreate
+from app.api.deps import get_current_user
+from app.models.core import User as UserModel
 
 router = APIRouter()
 
@@ -91,3 +93,13 @@ async def register(
     await db.commit()
     
     return user
+
+
+@router.get("/me", response_model=User)
+async def get_me(
+    current_user: UserModel = Depends(get_current_user)
+):
+    """
+    Get current authenticated user
+    """
+    return current_user

@@ -23,9 +23,10 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>
   logout: () => void
   clearError: () => void
+  validateToken: () => Promise<boolean>
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   token: apiClient.getToken(),
   isAuthenticated: !!apiClient.getToken(),
@@ -67,4 +68,22 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   clearError: () => set({ error: null }),
+
+  validateToken: async () => {
+    const token = get().token
+    if (!token) {
+      set({ isAuthenticated: false })
+      return false
+    }
+    
+    const isValid = await apiClient.validateToken()
+    if (!isValid) {
+      set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+      })
+    }
+    return isValid
+  },
 }))
