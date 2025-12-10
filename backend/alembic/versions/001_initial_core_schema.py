@@ -129,7 +129,8 @@ def upgrade() -> None:
     op.create_index(op.f('ix_locations_id'), 'locations', ['id'], unique=False)
     op.create_index(op.f('ix_locations_location_db_id'), 'locations', ['location_db_id'], unique=True)
     op.create_index(op.f('ix_locations_location_name'), 'locations', ['location_name'], unique=False)
-    op.create_index('idx_locations_coordinates', 'locations', ['coordinates'], unique=False, postgresql_using='gist')
+    # GeoAlchemy2 may auto-create this index, so use raw SQL with IF NOT EXISTS
+    op.execute('CREATE INDEX IF NOT EXISTS idx_locations_coordinates ON locations USING gist (coordinates)')
     
     # Create trials table
     op.create_table(

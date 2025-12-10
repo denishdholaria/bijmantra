@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '003_vector_store'
-down_revision = '002'  # Update this to your actual previous revision
+down_revision = '001'  # Fixed: was '002' which doesn't exist
 branch_labels = None
 depends_on = None
 

@@ -11,36 +11,31 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers
 revision = '004_seed_bank'
-down_revision = '003_add_vector_store'
+down_revision = '003_vector_store'
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
-    # Vault types enum
-    vault_type = postgresql.ENUM('base', 'active', 'cryo', name='vault_type')
-    vault_type.create(op.get_bind(), checkfirst=True)
+    # Create enum types using raw SQL to avoid duplicate creation issues
+    op.execute("DO $$ BEGIN CREATE TYPE vault_type AS ENUM ('base', 'active', 'cryo'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE vault_status AS ENUM ('optimal', 'warning', 'critical'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE accession_status AS ENUM ('active', 'depleted', 'regenerating'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE test_status AS ENUM ('scheduled', 'in-progress', 'completed'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE regeneration_priority AS ENUM ('high', 'medium', 'low'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE regeneration_status AS ENUM ('planned', 'in-progress', 'harvested', 'completed'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE exchange_type AS ENUM ('incoming', 'outgoing'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
+    op.execute("DO $$ BEGIN CREATE TYPE exchange_status AS ENUM ('pending', 'approved', 'shipped', 'received', 'rejected'); EXCEPTION WHEN duplicate_object THEN null; END $$;")
     
-    vault_status = postgresql.ENUM('optimal', 'warning', 'critical', name='vault_status')
-    vault_status.create(op.get_bind(), checkfirst=True)
-    
-    accession_status = postgresql.ENUM('active', 'depleted', 'regenerating', name='accession_status')
-    accession_status.create(op.get_bind(), checkfirst=True)
-    
-    test_status = postgresql.ENUM('scheduled', 'in-progress', 'completed', name='test_status')
-    test_status.create(op.get_bind(), checkfirst=True)
-    
-    regen_priority = postgresql.ENUM('high', 'medium', 'low', name='regeneration_priority')
-    regen_priority.create(op.get_bind(), checkfirst=True)
-    
-    regen_status = postgresql.ENUM('planned', 'in-progress', 'harvested', 'completed', name='regeneration_status')
-    regen_status.create(op.get_bind(), checkfirst=True)
-    
-    exchange_type = postgresql.ENUM('incoming', 'outgoing', name='exchange_type')
-    exchange_type.create(op.get_bind(), checkfirst=True)
-    
-    exchange_status = postgresql.ENUM('pending', 'approved', 'shipped', 'received', 'rejected', name='exchange_status')
-    exchange_status.create(op.get_bind(), checkfirst=True)
+    # Create enum references for use in tables (create_type=False prevents re-creation)
+    vault_type = postgresql.ENUM('base', 'active', 'cryo', name='vault_type', create_type=False)
+    vault_status = postgresql.ENUM('optimal', 'warning', 'critical', name='vault_status', create_type=False)
+    accession_status = postgresql.ENUM('active', 'depleted', 'regenerating', name='accession_status', create_type=False)
+    test_status = postgresql.ENUM('scheduled', 'in-progress', 'completed', name='test_status', create_type=False)
+    regen_priority = postgresql.ENUM('high', 'medium', 'low', name='regeneration_priority', create_type=False)
+    regen_status = postgresql.ENUM('planned', 'in-progress', 'harvested', 'completed', name='regeneration_status', create_type=False)
+    exchange_type = postgresql.ENUM('incoming', 'outgoing', name='exchange_type', create_type=False)
+    exchange_status = postgresql.ENUM('pending', 'approved', 'shipped', 'received', 'rejected', name='exchange_status', create_type=False)
 
     # Vaults table
     op.create_table(
@@ -48,12 +43,12 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column('organization_id', postgresql.UUID(as_uuid=True), nullable=False, index=True),
         sa.Column('name', sa.String(255), nullable=False),
-        sa.Column('type', sa.Enum('base', 'active', 'cryo', name='vault_type'), nullable=False),
+        sa.Column('type', vault_type, nullable=False),
         sa.Column('temperature', sa.Float, nullable=False),
         sa.Column('humidity', sa.Float, nullable=False),
         sa.Column('capacity', sa.Integer, nullable=False),
         sa.Column('used', sa.Integer, default=0),
-        sa.Column('status', sa.Enum('optimal', 'warning', 'critical', name='vault_status'), default='optimal'),
+        sa.Column('status', vault_status, default='optimal'),
         sa.Column('last_inspection', sa.DateTime),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.now()),
         sa.Column('updated_at', sa.DateTime, server_default=sa.func.now(), onupdate=sa.func.now()),
@@ -78,7 +73,7 @@ def upgrade() -> None:
         sa.Column('vault_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('seed_bank_vaults.id')),
         sa.Column('seed_count', sa.Integer, default=0),
         sa.Column('viability', sa.Float, default=100.0),
-        sa.Column('status', sa.Enum('active', 'depleted', 'regenerating', name='accession_status'), default='active', index=True),
+        sa.Column('status', accession_status, default='active', index=True),
         sa.Column('acquisition_type', sa.String(50)),
         sa.Column('donor_institution', sa.String(255)),
         sa.Column('mls', sa.Boolean, default=False),
@@ -99,7 +94,7 @@ def upgrade() -> None:
         sa.Column('seeds_tested', sa.Integer, nullable=False),
         sa.Column('germinated', sa.Integer, default=0),
         sa.Column('germination_rate', sa.Float, default=0.0),
-        sa.Column('status', sa.Enum('scheduled', 'in-progress', 'completed', name='test_status'), default='scheduled'),
+        sa.Column('status', test_status, default='scheduled'),
         sa.Column('technician_id', postgresql.UUID(as_uuid=True)),
         sa.Column('notes', sa.Text),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.now()),
@@ -113,10 +108,10 @@ def upgrade() -> None:
         sa.Column('organization_id', postgresql.UUID(as_uuid=True), nullable=False, index=True),
         sa.Column('accession_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('seed_bank_accessions.id'), nullable=False),
         sa.Column('reason', sa.String(50), nullable=False),
-        sa.Column('priority', sa.Enum('high', 'medium', 'low', name='regeneration_priority'), default='medium'),
+        sa.Column('priority', regen_priority, default='medium'),
         sa.Column('target_quantity', sa.Integer, nullable=False),
         sa.Column('planned_season', sa.String(50)),
-        sa.Column('status', sa.Enum('planned', 'in-progress', 'harvested', 'completed', name='regeneration_status'), default='planned'),
+        sa.Column('status', regen_status, default='planned'),
         sa.Column('location_id', postgresql.UUID(as_uuid=True)),
         sa.Column('harvested_quantity', sa.Integer),
         sa.Column('completed_date', sa.DateTime),
@@ -130,11 +125,11 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column('organization_id', postgresql.UUID(as_uuid=True), nullable=False, index=True),
         sa.Column('request_number', sa.String(50), nullable=False, unique=True),
-        sa.Column('type', sa.Enum('incoming', 'outgoing', name='exchange_type'), nullable=False),
+        sa.Column('type', exchange_type, nullable=False),
         sa.Column('institution_id', postgresql.UUID(as_uuid=True)),
         sa.Column('institution_name', sa.String(255), nullable=False),
         sa.Column('accession_ids', postgresql.ARRAY(postgresql.UUID(as_uuid=True))),
-        sa.Column('status', sa.Enum('pending', 'approved', 'shipped', 'received', 'rejected', name='exchange_status'), default='pending'),
+        sa.Column('status', exchange_status, default='pending'),
         sa.Column('request_date', sa.DateTime, nullable=False),
         sa.Column('smta', sa.Boolean, default=True),
         sa.Column('notes', sa.Text),
