@@ -257,12 +257,19 @@ MAIZE_TEMPLATE = CropTemplate(
     test_years=2,
 )
 
-# All crop templates
+# All crop templates (base crops)
 CROP_TEMPLATES: Dict[str, CropTemplate] = {
     "rice": RICE_TEMPLATE,
     "wheat": WHEAT_TEMPLATE,
     "maize": MAIZE_TEMPLATE,
 }
+
+# Import and add additional crop templates
+try:
+    from app.services.dus_crops import ADDITIONAL_CROP_TEMPLATES
+    CROP_TEMPLATES.update(ADDITIONAL_CROP_TEMPLATES)
+except ImportError:
+    pass  # Additional crops not available
 
 
 
