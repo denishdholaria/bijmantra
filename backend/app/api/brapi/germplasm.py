@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from app.core.database import get_db
-from app.api.deps import get_current_user, get_organization_id
+from app.api.deps import get_current_user, get_optional_user, get_organization_id
 
 router = APIRouter()
 
@@ -91,7 +91,7 @@ async def list_germplasm(
     species: Optional[str] = None,
     genus: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of germplasm"""
     _init_demo_data()
@@ -163,7 +163,7 @@ async def create_germplasm(
 async def get_germplasm(
     germplasmDbId: str,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get germplasm by ID"""
     _init_demo_data()

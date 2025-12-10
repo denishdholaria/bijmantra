@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -59,7 +59,7 @@ async def list_crosses(
     crossingProjectDbId: Optional[str] = None,
     crossType: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of crosses"""
     _init_demo_data()
@@ -107,7 +107,7 @@ async def create_cross(
 
 
 @router.get("/crosses/{crossDbId}")
-async def get_cross(crossDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_cross(crossDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get cross by ID"""
     _init_demo_data()
     if crossDbId not in _crosses_store:

@@ -308,6 +308,37 @@ class APIClient {
     })
   }
 
+  // Seasons
+  async getSeasons(page = 0, pageSize = 100, year?: number) {
+    const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
+    if (year) params.append('year', String(year))
+    return this.request<BrAPIListResponse<any>>(`/brapi/v2/seasons?${params}`)
+  }
+
+  async getSeason(seasonDbId: string) {
+    return this.request<BrAPIResponse<any>>(`/brapi/v2/seasons/${seasonDbId}`)
+  }
+
+  async createSeason(data: { seasonName: string; year?: number }) {
+    return this.request<BrAPIResponse<any>>('/brapi/v2/seasons', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async updateSeason(seasonDbId: string, data: { seasonName?: string; year?: number }) {
+    return this.request<BrAPIResponse<any>>(`/brapi/v2/seasons/${seasonDbId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async deleteSeason(seasonDbId: string) {
+    return this.request(`/brapi/v2/seasons/${seasonDbId}`, {
+      method: 'DELETE',
+    })
+  }
+
   async deleteLocation(locationDbId: string) {
     return this.request(`/brapi/v2/locations/${locationDbId}`, {
       method: 'DELETE',
@@ -535,18 +566,6 @@ class APIClient {
     return this.request<BrAPIResponse<any>>(`/brapi/v2/germplasm/${germplasmDbId}/progeny`)
   }
 
-  // Seasons (BrAPI Core)
-  async getSeasons(page = 0, pageSize = 100) {
-    return this.request<BrAPIListResponse<any>>(`/brapi/v2/seasons?page=${page}&pageSize=${pageSize}`)
-  }
-
-  async createSeason(data: any) {
-    return this.request<BrAPIResponse<any>>('/brapi/v2/seasons', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-  }
-
   // Events (BrAPI Phenotyping)
   async getEvents(studyDbId?: string, page = 0, pageSize = 100) {
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
@@ -598,12 +617,6 @@ class APIClient {
 
   async deleteList(listDbId: string) {
     return this.request(`/brapi/v2/lists/${listDbId}`, {
-      method: 'DELETE',
-    })
-  }
-
-  async deleteSeason(seasonDbId: string) {
-    return this.request(`/brapi/v2/seasons/${seasonDbId}`, {
       method: 'DELETE',
     })
   }

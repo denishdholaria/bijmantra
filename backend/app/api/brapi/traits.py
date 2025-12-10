@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -64,7 +64,7 @@ async def list_traits(
     traitClass: Optional[str] = None,
     observationVariableName: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of traits/observation variables"""
     _init_demo_data()
@@ -101,7 +101,7 @@ async def create_trait(trait: TraitCreate, db: AsyncSession = Depends(get_db), c
 
 
 @router.get("/traits/{observationVariableDbId}")
-async def get_trait(observationVariableDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_trait(observationVariableDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get trait by ID"""
     _init_demo_data()
     if observationVariableDbId not in _traits_store:

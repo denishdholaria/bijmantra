@@ -12,6 +12,7 @@ const SmartNavigation = lazy(() => import('@/components/SmartNavigation').then(m
 const CommandPalette = lazy(() => import('@/components/CommandPalette').then(m => ({ default: m.CommandPalette })))
 const UserMenu = lazy(() => import('@/components/UserMenu').then(m => ({ default: m.UserMenu })))
 const Veena = lazy(() => import('@/components/ai/Veena').then(m => ({ default: m.Veena })))
+const FieldModeToggle = lazy(() => import('@/components/FieldModeToggle').then(m => ({ default: m.FieldModeToggle })))
 
 // Import lighter components directly
 import { useKeyboardShortcuts } from '@/components/KeyboardShortcuts'
@@ -183,6 +184,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
             >
               <span className="text-lg">🔍</span>
             </button>
+            
+            {/* Field Mode Toggle - for outdoor use */}
+            <Suspense fallback={null}>
+              <FieldModeToggle showSettings={true} />
+            </Suspense>
             
             {/* Role Indicator - shows current role view */}
             <RoleIndicator />

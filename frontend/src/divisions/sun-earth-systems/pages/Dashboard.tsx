@@ -1,89 +1,168 @@
 /**
  * Sun-Earth Systems Dashboard
  *
- * Solar radiation, magnetic field monitoring, and space weather impacts on agriculture.
+ * Solar radiation, photoperiod, UV index, and space weather impacts on agriculture.
  */
 
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Sun, Clock, Shield, Activity, ArrowRight } from 'lucide-react';
+
+interface SolarConditions {
+  sunspot_number: number;
+  kp_index: number;
+  solar_wind_speed: number;
+  cycle_phase: string;
+}
 
 export function Dashboard() {
-  const concepts = [
-    { icon: '☀️', title: 'Solar Activity', description: 'Monitor solar cycles and their agricultural impacts' },
-    { icon: '🧲', title: 'Geomagnetic Field', description: 'Earth magnetic field variations and plant responses' },
-    { icon: '🌌', title: 'Cosmic Radiation', description: 'Galactic cosmic ray flux and mutation rates' },
-    { icon: '🌍', title: 'Ionosphere', description: 'Atmospheric electrical conditions affecting growth' },
+  const [conditions, setConditions] = useState<SolarConditions | null>(null);
+
+  useEffect(() => {
+    fetch('/api/v2/solar/current')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => data && setConditions(data.data))
+      .catch(() => setConditions({
+        sunspot_number: 142,
+        kp_index: 3.2,
+        solar_wind_speed: 385,
+        cycle_phase: 'Solar Maximum',
+      }));
+  }, []);
+
+  const modules = [
+    {
+      icon: Activity,
+      title: 'Solar Activity',
+      description: 'Real-time solar conditions and space weather',
+      route: '/sun-earth-systems/solar-activity',
+      color: 'bg-amber-100 text-amber-600',
+    },
+    {
+      icon: Clock,
+      title: 'Photoperiod',
+      description: 'Day length calculator for crop planning',
+      route: '/sun-earth-systems/photoperiod',
+      color: 'bg-blue-100 text-blue-600',
+    },
+    {
+      icon: Shield,
+      title: 'UV Index',
+      description: 'UV radiation levels and field work safety',
+      route: '/sun-earth-systems/uv-index',
+      color: 'bg-purple-100 text-purple-600',
+    },
   ];
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Sun-Earth Systems</h1>
-        <p className="text-gray-600 mt-1">Understanding cosmic influences on agriculture</p>
-        <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm">
-          🔮 Visionary Module
-        </div>
+        <p className="text-gray-600 mt-1">Solar radiation, photoperiod, and space weather for agriculture</p>
+        <Badge className="mt-2 bg-green-100 text-green-800">Active Module</Badge>
       </div>
 
-      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <span className="text-4xl">🌞</span>
+      {/* Current Conditions Summary */}
+      {conditions && (
+        <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Sun className="h-12 w-12 text-amber-500" />
+                <div>
+                  <h3 className="font-semibold text-lg text-amber-900">Current Solar Conditions</h3>
+                  <p className="text-amber-700">{conditions.cycle_phase} • Cycle 25</p>
+                </div>
+              </div>
+              <div className="flex gap-6 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-amber-800">{conditions.sunspot_number}</p>
+                  <p className="text-xs text-amber-600">Sunspots</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-amber-800">{conditions.kp_index}</p>
+                  <p className="text-xs text-amber-600">Kp Index</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-amber-800">{conditions.solar_wind_speed}</p>
+                  <p className="text-xs text-amber-600">km/s</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Module Cards */}
+      <div className="grid md:grid-cols-3 gap-4">
+        {modules.map((mod) => (
+          <Card key={mod.title} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className={`inline-flex p-3 rounded-lg ${mod.color} mb-4`}>
+                <mod.icon className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold text-lg">{mod.title}</h3>
+              <p className="text-sm text-gray-600 mt-1 mb-4">{mod.description}</p>
+              <Link to={mod.route}>
+                <Button variant="outline" size="sm" className="w-full">
+                  Open <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Agricultural Relevance */}
+      <Card>
+        <CardHeader>
+          <CardTitle>🌱 Agricultural Applications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-lg text-amber-900">Cosmic Agriculture Research</h3>
-              <p className="text-amber-700 mt-1">
-                This visionary division explores the relationship between solar activity, 
-                Earth's magnetic field, and agricultural outcomes — bridging ancient wisdom 
-                with modern heliobiology research.
-              </p>
+              <h4 className="font-medium mb-2">Photoperiod & Flowering</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• Short-day crops: Rice, Soybean, Cotton</li>
+                <li>• Long-day crops: Wheat, Barley, Spinach</li>
+                <li>• Day-neutral: Tomato, Corn, Cucumber</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Solar Radiation Effects</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• PAR drives photosynthesis rates</li>
+                <li>• UV-B affects secondary metabolites</li>
+                <li>• Solar cycles correlate with yields</li>
+              </ul>
             </div>
           </div>
         </CardContent>
       </Card>
 
+      {/* Research Areas */}
       <Card>
         <CardHeader>
-          <CardTitle>Research Areas</CardTitle>
+          <CardTitle>🔬 Research Areas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            {concepts.map((concept, i) => (
-              <div key={i} className="p-4 border rounded-lg hover:border-amber-300 transition-colors">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{concept.icon}</span>
-                  <div>
-                    <h4 className="font-medium">{concept.title}</h4>
-                    <p className="text-sm text-gray-600">{concept.description}</p>
-                  </div>
-                </div>
+          <div className="grid md:grid-cols-4 gap-4">
+            {[
+              { icon: '☀️', title: 'Solar Cycles', desc: '11-year activity patterns' },
+              { icon: '🧲', title: 'Geomagnetic', desc: 'Earth field variations' },
+              { icon: '🌌', title: 'Cosmic Rays', desc: 'Natural mutation source' },
+              { icon: '🌍', title: 'Ionosphere', desc: 'Atmospheric conditions' },
+            ].map((item) => (
+              <div key={item.title} className="p-4 border rounded-lg text-center">
+                <span className="text-3xl">{item.icon}</span>
+                <h4 className="font-medium mt-2">{item.title}</h4>
+                <p className="text-xs text-gray-500">{item.desc}</p>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>🎯 Future Capabilities</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2 text-gray-600">
-            <li className="flex items-center gap-2">
-              <span className="text-amber-500">○</span>
-              Real-time solar wind data integration
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-amber-500">○</span>
-              Geomagnetic storm alerts for field operations
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-amber-500">○</span>
-              Correlation analysis: solar cycles vs crop yields
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-amber-500">○</span>
-              Biodynamic calendar integration
-            </li>
-          </ul>
         </CardContent>
       </Card>
     </div>

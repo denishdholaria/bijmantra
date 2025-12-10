@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -66,7 +66,7 @@ async def list_samples(
     germplasmDbId: Optional[str] = None,
     studyDbId: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of samples"""
     _init_demo_data()
@@ -105,7 +105,7 @@ async def create_sample(sample: SampleCreate, db: AsyncSession = Depends(get_db)
 
 
 @router.get("/samples/{sampleDbId}")
-async def get_sample(sampleDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_sample(sampleDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get sample by ID"""
     _init_demo_data()
     if sampleDbId not in _samples_store:

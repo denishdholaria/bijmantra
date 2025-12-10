@@ -1,8 +1,8 @@
 /**
  * Variants Page - BrAPI Genotyping Module
- * Genetic variants (SNPs, InDels, etc.)
+ * Genetic variants (SNPs, InDels, etc.) with virtual scrolling for large datasets
  */
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
+import { VirtualDataGrid, Column } from '@/components/VirtualDataGrid'
 import { toast } from 'sonner'
 
 interface Variant {
@@ -31,116 +32,161 @@ interface Variant {
   updated?: string
 }
 
-// Mock data for demo
-const mockVariants: Variant[] = [
-  {
-    variantDbId: 'var001',
-    variantName: 'SNP_Chr1_12345',
-    variantType: 'SNP',
-    referenceName: 'Chr1',
-    start: 12345,
-    end: 12346,
-    referenceBases: 'A',
-    alternateBases: ['G'],
-    created: '2024-01-15',
-  },
-  {
-    variantDbId: 'var002',
-    variantName: 'SNP_Chr1_23456',
-    variantType: 'SNP',
-    referenceName: 'Chr1',
-    start: 23456,
-    end: 23457,
-    referenceBases: 'C',
-    alternateBases: ['T'],
-    created: '2024-01-15',
-  },
-  {
-    variantDbId: 'var003',
-    variantName: 'INDEL_Chr2_5678',
-    variantType: 'INDEL',
-    referenceName: 'Chr2',
-    start: 5678,
-    end: 5682,
-    referenceBases: 'ATCG',
-    alternateBases: ['A'],
-    created: '2024-01-16',
-  },
-  {
-    variantDbId: 'var004',
-    variantName: 'SNP_Chr3_78901',
-    variantType: 'SNP',
-    referenceName: 'Chr3',
-    start: 78901,
-    end: 78902,
-    referenceBases: 'G',
-    alternateBases: ['A', 'C'],
-    created: '2024-01-17',
-  },
-  {
-    variantDbId: 'var005',
-    variantName: 'MNP_Chr4_11111',
-    variantType: 'MNP',
-    referenceName: 'Chr4',
-    start: 11111,
-    end: 11114,
-    referenceBases: 'ATG',
-    alternateBases: ['GCA'],
-    created: '2024-01-18',
-  },
-]
+// Generate larger mock data for demo
+function generateMockVariants(count: number): Variant[] {
+  const types = ['SNP', 'INDEL', 'MNP', 'SV']
+  const bases = ['A', 'T', 'G', 'C']
+  
+  return Array.from({ length: count }, (_, i) => {
+    const chr = Math.floor(i / 500) + 1
+    const pos = (i % 500) * 1000 + Math.floor(Math.random() * 1000)
+    const type = types[Math.floor(Math.random() * types.length)]
+    const refBase = bases[Math.floor(Math.random() * bases.length)]
+    const altBase = bases.filter(b => b !== refBase)[Math.floor(Math.random() * 3)]
+    
+    return {
+      variantDbId: `var${String(i + 1).padStart(6, '0')}`,
+      variantName: `${type}_Chr${chr}_${pos}`,
+      variantType: type,
+      referenceName: `Chr${chr}`,
+      start: pos,
+      end: pos + (type === 'SNP' ? 1 : Math.floor(Math.random() * 10) + 1),
+      referenceBases: type === 'INDEL' ? refBase.repeat(Math.floor(Math.random() * 4) + 1) : refBase,
+      alternateBases: [altBase],
+      created: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0],
+    }
+  })
+}
 
 export function Variants() {
-  const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [chrFilter, setChrFilter] = useState<string>('all')
+  const [variantCount, setVariantCount] = useState<string>('1000')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
-  // Mock query - replace with actual API call
+  // Generate mock data
   const { data, isLoading } = useQuery({
-    queryKey: ['variants', search, typeFilter, chrFilter],
+    queryKey: ['variants', variantCount],
     queryFn: async () => {
-      await new Promise(r => setTimeout(r, 500))
-      let filtered = mockVariants
-      if (search) {
-        filtered = filtered.filter(v => 
-          v.variantName.toLowerCase().includes(search.toLowerCase())
-        )
-      }
-      if (typeFilter !== 'all') {
-        filtered = filtered.filter(v => v.variantType === typeFilter)
-      }
-      if (chrFilter !== 'all') {
-        filtered = filtered.filter(v => v.referenceName === chrFilter)
-      }
-      return { result: { data: filtered } }
+      await new Promise(r => setTimeout(r, 300))
+      return generateMockVariants(parseInt(variantCount))
     },
   })
 
-  const variants = data?.result?.data || []
-  const chromosomes = [...new Set(mockVariants.map(v => v.referenceName))]
+  const allVariants = data || []
+  
+  // Filter variants
+  const variants = useMemo(() => {
+    let filtered = allVariants
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(v => v.variantType === typeFilter)
+    }
+    if (chrFilter !== 'all') {
+      filtered = filtered.filter(v => v.referenceName === chrFilter)
+    }
+    return filtered
+  }, [allVariants, typeFilter, chrFilter])
+
+  const chromosomes = useMemo(() => 
+    [...new Set(allVariants.map(v => v.referenceName))].sort((a, b) => {
+      const numA = parseInt(a.replace('Chr', ''))
+      const numB = parseInt(b.replace('Chr', ''))
+      return numA - numB
+    }),
+    [allVariants]
+  )
 
   const getVariantTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
-      SNP: 'bg-blue-100 text-blue-800',
-      INDEL: 'bg-orange-100 text-orange-800',
-      MNP: 'bg-purple-100 text-purple-800',
-      SV: 'bg-red-100 text-red-800',
+      SNP: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      INDEL: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      MNP: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      SV: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
     }
     return colors[type] || 'bg-gray-100 text-gray-800'
   }
+
+  // Define columns for VirtualDataGrid
+  const columns: Column<Variant>[] = useMemo(() => [
+    {
+      id: 'variantName',
+      header: 'Variant Name',
+      accessor: (row) => (
+        <Link 
+          to={`/variants/${row.variantDbId}`}
+          className="font-semibold hover:text-primary hover:underline"
+        >
+          {row.variantName}
+        </Link>
+      ),
+      width: 200,
+      sortable: true,
+      sticky: true,
+    },
+    {
+      id: 'variantType',
+      header: 'Type',
+      accessor: (row) => (
+        <Badge className={getVariantTypeBadge(row.variantType)}>
+          {row.variantType}
+        </Badge>
+      ),
+      width: 100,
+      sortable: true,
+    },
+    {
+      id: 'referenceName',
+      header: 'Chromosome',
+      accessor: 'referenceName',
+      width: 100,
+      sortable: true,
+    },
+    {
+      id: 'position',
+      header: 'Position',
+      accessor: (row) => `${row.start.toLocaleString()}-${row.end.toLocaleString()}`,
+      width: 150,
+      align: 'right',
+      sortable: true,
+    },
+    {
+      id: 'change',
+      header: 'Change',
+      accessor: (row) => (
+        <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+          {row.referenceBases} → {row.alternateBases.join(', ')}
+        </span>
+      ),
+      width: 150,
+    },
+    {
+      id: 'created',
+      header: 'Created',
+      accessor: 'created',
+      width: 120,
+      sortable: true,
+    },
+  ], [])
 
   const handleCreate = () => {
     toast.success('Variant created (demo)')
     setIsCreateOpen(false)
   }
 
+  // Stats
+  const stats = useMemo(() => ({
+    total: allVariants.length,
+    snps: allVariants.filter(v => v.variantType === 'SNP').length,
+    indels: allVariants.filter(v => v.variantType === 'INDEL').length,
+    chromosomes: chromosomes.length,
+  }), [allVariants, chromosomes])
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold">Variants</h1>
-          <p className="text-muted-foreground mt-1">Genetic variants (SNPs, InDels, MNPs)</p>
+          <p className="text-muted-foreground mt-1">Genetic variants with virtual scrolling for large datasets</p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
@@ -208,37 +254,51 @@ export function Variants() {
       {/* Filters */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <Input
-                placeholder="Search variants..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="space-y-1">
+              <Label className="text-sm">Dataset Size</Label>
+              <Select value={variantCount} onValueChange={setVariantCount}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="100">100</SelectItem>
+                  <SelectItem value="1000">1,000</SelectItem>
+                  <SelectItem value="5000">5,000</SelectItem>
+                  <SelectItem value="10000">10,000</SelectItem>
+                  <SelectItem value="50000">50,000</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="SNP">SNP</SelectItem>
-                <SelectItem value="INDEL">INDEL</SelectItem>
-                <SelectItem value="MNP">MNP</SelectItem>
-                <SelectItem value="SV">SV</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={chrFilter} onValueChange={setChrFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Chromosome" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Chromosomes</SelectItem>
-                {chromosomes.map(chr => (
-                  <SelectItem key={chr} value={chr}>{chr}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-1">
+              <Label className="text-sm">Type</Label>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="SNP">SNP</SelectItem>
+                  <SelectItem value="INDEL">INDEL</SelectItem>
+                  <SelectItem value="MNP">MNP</SelectItem>
+                  <SelectItem value="SV">SV</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm">Chromosome</Label>
+              <Select value={chrFilter} onValueChange={setChrFilter}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Chromosome" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  {chromosomes.map(chr => (
+                    <SelectItem key={chr} value={chr}>{chr}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -247,79 +307,66 @@ export function Variants() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockVariants.length}</div>
+            <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground">Total Variants</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockVariants.filter(v => v.variantType === 'SNP').length}</div>
+            <div className="text-2xl font-bold">{stats.snps.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground">SNPs</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockVariants.filter(v => v.variantType === 'INDEL').length}</div>
+            <div className="text-2xl font-bold">{stats.indels.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground">InDels</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{chromosomes.length}</div>
+            <div className="text-2xl font-bold">{stats.chromosomes}</div>
             <p className="text-sm text-muted-foreground">Chromosomes</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Variants List */}
+      {/* Variants Table with Virtual Scrolling */}
       {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <Skeleton key={i} className="h-24 w-full" />
-          ))}
-        </div>
-      ) : variants.length === 0 ? (
+        <Skeleton className="h-96 w-full" />
+      ) : (
         <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No variants found</p>
+          <CardHeader className="pb-2">
+            <CardTitle>Variant List</CardTitle>
+            <CardDescription>
+              Showing {variants.length.toLocaleString()} variants
+              {(typeFilter !== 'all' || chrFilter !== 'all') && ` (filtered from ${allVariants.length.toLocaleString()})`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <VirtualDataGrid
+              data={variants}
+              columns={columns}
+              rowHeight={48}
+              maxHeight={500}
+              searchable
+              searchPlaceholder="Search variants..."
+              exportable
+              exportFilename="variants"
+              selectable
+              onSelectionChange={(selected) => {
+                if (selected.length > 0) {
+                  toast.info(`${selected.length} variants selected`)
+                }
+              }}
+              getRowId={(row) => row.variantDbId}
+              emptyMessage="No variants found matching your filters"
+            />
           </CardContent>
         </Card>
-      ) : (
-        <div className="space-y-3">
-          {variants.map((variant) => (
-            <Card key={variant.variantDbId} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Link 
-                        to={`/variants/${variant.variantDbId}`}
-                        className="font-semibold hover:text-primary"
-                      >
-                        {variant.variantName}
-                      </Link>
-                      <Badge className={getVariantTypeBadge(variant.variantType)}>
-                        {variant.variantType}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {variant.referenceName}:{variant.start}-{variant.end}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="font-mono bg-muted px-2 py-0.5 rounded">
-                        {variant.referenceBases} → {variant.alternateBases.join(', ')}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-right text-sm text-muted-foreground">
-                    {variant.created}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
       )}
     </div>
   )
 }
+
+export default Variants

@@ -2,8 +2,9 @@
  * Genetic Diversity Analysis Page
  * Analyze genetic diversity within and between populations
  */
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
+import { ScatterPlot, ScatterPoint } from '@/components/charts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -72,11 +73,37 @@ const distanceMatrix = [
   { pop1: 'Core Collection', pop2: 'Breeding Population', distance: 0.42, fst: 0.12 },
 ]
 
+// Generate PCA data for visualization
+function generatePCAData(): ScatterPoint[] {
+  const points: ScatterPoint[] = []
+  const populations = [
+    { name: 'Elite Lines 2024', center: [2, 1], spread: 0.8, count: 48 },
+    { name: 'Core Collection', center: [-1, -0.5], spread: 1.5, count: 100 },
+    { name: 'Breeding Population', center: [0.5, -1.5], spread: 1.0, count: 96 },
+  ]
+  
+  populations.forEach(pop => {
+    for (let i = 0; i < pop.count; i++) {
+      points.push({
+        x: pop.center[0] + (Math.random() - 0.5) * pop.spread * 2,
+        y: pop.center[1] + (Math.random() - 0.5) * pop.spread * 2,
+        label: `${pop.name.split(' ')[0]}_${i + 1}`,
+        group: pop.name,
+      })
+    }
+  })
+  
+  return points
+}
+
 export function GeneticDiversity() {
   const [selectedPop, setSelectedPop] = useState('pop1')
   const [analysisType, setAnalysisType] = useState('within')
 
   const currentPop = samplePopulations.find(p => p.id === selectedPop)
+  
+  // Generate PCA data once
+  const pcaData = useMemo(() => generatePCAData(), [])
 
   const getMetricColor = (value: number, range: [number, number]) => {
     const normalized = (value - range[0]) / (range[1] - range[0])
@@ -328,20 +355,25 @@ export function GeneticDiversity() {
             </CardContent>
           </Card>
 
-          {/* PCA Plot Placeholder */}
+          {/* PCA Plot with ECharts */}
           <Card>
             <CardHeader>
               <CardTitle>Principal Component Analysis</CardTitle>
               <CardDescription>PCA visualization of population structure</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <span className="text-4xl">📊</span>
-                  <p className="mt-2 text-muted-foreground">PCA Plot</p>
-                  <p className="text-xs text-muted-foreground">PC1 (45.2%) vs PC2 (18.7%)</p>
-                </div>
-              </div>
+              <ScatterPlot
+                data={pcaData}
+                title="Population Structure PCA"
+                xAxisLabel="PC1 (45.2%)"
+                yAxisLabel="PC2 (18.7%)"
+                colorByGroup
+                showLegend
+                height={400}
+                onPointClick={(point) => {
+                  console.log('Clicked:', point)
+                }}
+              />
             </CardContent>
           </Card>
         </TabsContent>

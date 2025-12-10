@@ -246,6 +246,17 @@ const SeedOpsVarieties = lazy(() => import('@/divisions/seed-operations/pages/Va
 const SeedOpsAgreements = lazy(() => import('@/divisions/seed-operations/pages/Agreements'))
 const SeedOpsRoyalties = lazy(() => import('@/divisions/seed-operations/pages/Royalties'))
 
+// Seed Bank Division - lazy loaded
+const SeedBankDashboard = lazy(() => import('@/divisions/seed-bank/pages/Dashboard'))
+const SeedBankVault = lazy(() => import('@/divisions/seed-bank/pages/VaultManagement'))
+const SeedBankAccessions = lazy(() => import('@/divisions/seed-bank/pages/Accessions'))
+const SeedBankAccessionNew = lazy(() => import('@/divisions/seed-bank/pages/AccessionNew'))
+const SeedBankAccessionDetail = lazy(() => import('@/divisions/seed-bank/pages/AccessionDetail'))
+const SeedBankConservation = lazy(() => import('@/divisions/seed-bank/pages/Conservation'))
+const SeedBankExchange = lazy(() => import('@/divisions/seed-bank/pages/GermplasmExchange'))
+const SeedBankViability = lazy(() => import('@/divisions/seed-bank/pages/ViabilityTesting'))
+const SeedBankRegeneration = lazy(() => import('@/divisions/seed-bank/pages/RegenerationPlanning'))
+
 // Inner component that uses router hooks
 function AppRoutes() {
   const navigate = useNavigate()
@@ -1108,6 +1119,18 @@ function AppRoutes() {
         <Route path="/seed-operations/varieties" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsVarieties /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-operations/agreements" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsAgreements /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-operations/royalties" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsRoyalties /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Seed Bank Division routes */}
+        <Route path="/seed-bank" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/dashboard" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/vault" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankVault /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/accessions" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankAccessions /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/accessions/new" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankAccessionNew /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/accessions/:id" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankAccessionDetail /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/conservation" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankConservation /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/viability" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankViability /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/regeneration" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankRegeneration /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/exchange" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankExchange /></Suspense></Layout></ProtectedRoute>} />
 
         {/* Integration Hub routes */}
         <Route

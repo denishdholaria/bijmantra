@@ -106,7 +106,7 @@ async def api_stats():
         "name": "Bijmantra API",
         "version": "0.1.0",
         "brapi_version": "2.1",
-        "total_endpoints": 380,
+        "total_endpoints": 433,
         "modules": [
             "Authentication", "BrAPI Core", "Compute Engine", "AI Insights",
             "Vector Store", "Weather", "Veena AI", "Cross Prediction",
@@ -117,7 +117,8 @@ async def api_stats():
             "Nursery Management", "Seed Traceability", "Variety Licensing",
             "Selection Index", "Genetic Gain", "Harvest Management",
             "Spatial Analysis", "Breeding Value", "Disease Resistance", "Abiotic Stress",
-            "Dispatch Management", "Seed Processing"
+            "Dispatch Management", "Seed Processing", "Sensor Networks", "Community Forums",
+            "Sun-Earth Systems", "Space Research"
         ],
         "status": "operational",
     }
@@ -146,9 +147,9 @@ async def serverinfo():
 
 # Import routers
 from app.api import auth
-from app.api.v2.core import programs, locations, trials, studies
+from app.api.v2.core import programs, locations, trials, studies, seasons
 from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
-from app.api.v2 import dispatch, processing
+from app.api.v2 import dispatch, processing, sensors, forums, solar, space
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -164,11 +165,13 @@ app.include_router(programs.router, prefix="/brapi/v2", tags=["Core - Programs"]
 app.include_router(locations.router, prefix="/brapi/v2", tags=["Core - Locations"])
 app.include_router(trials.router, prefix="/brapi/v2", tags=["Core - Trials"])
 app.include_router(studies.router, prefix="/brapi/v2", tags=["Core - Studies"])
+app.include_router(seasons.router, prefix="/brapi/v2", tags=["Core - Seasons"])
 
 # BrAPI v2.1 Germplasm routes
 from app.api.brapi import germplasm as brapi_germplasm
 from app.api.brapi import crosses as brapi_crosses
 from app.api.brapi import traits as brapi_traits
+from app.api.brapi import variables as brapi_variables
 from app.api.brapi import observations as brapi_observations
 from app.api.brapi import observationunits as brapi_observationunits
 from app.api.brapi import events as brapi_events
@@ -179,6 +182,7 @@ from app.api.brapi import seedlots as brapi_seedlots
 app.include_router(brapi_germplasm.router, prefix="/brapi/v2", tags=["Germplasm"])
 app.include_router(brapi_crosses.router, prefix="/brapi/v2", tags=["Crosses"])
 app.include_router(brapi_traits.router, prefix="/brapi/v2", tags=["Traits"])
+app.include_router(brapi_variables.router, prefix="/brapi/v2", tags=["Observation Variables"])
 app.include_router(brapi_observations.router, prefix="/brapi/v2", tags=["Observations"])
 app.include_router(brapi_observationunits.router, prefix="/brapi/v2", tags=["Observation Units"])
 app.include_router(brapi_events.router, prefix="/brapi/v2", tags=["Events"])
@@ -224,6 +228,10 @@ app.include_router(disease.router, prefix="/api/v2", tags=["Disease Resistance"]
 app.include_router(abiotic.router, prefix="/api/v2", tags=["Abiotic Stress"])
 app.include_router(dispatch.router, prefix="/api/v2", tags=["Dispatch Management"])
 app.include_router(processing.router, prefix="/api/v2", tags=["Seed Processing"])
+app.include_router(sensors.router, prefix="/api/v2", tags=["Sensor Networks"])
+app.include_router(forums.router, prefix="/api/v2", tags=["Community Forums"])
+app.include_router(solar.router, prefix="/api/v2", tags=["Sun-Earth Systems"])
+app.include_router(space.router, prefix="/api/v2", tags=["Space Research"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])

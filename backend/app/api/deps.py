@@ -14,6 +14,33 @@ from app.crud.core import user as user_crud
 from app.models.core import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
+
+
+async def get_optional_user(
+    db: AsyncSession = Depends(get_db),
+    token: Optional[str] = Depends(oauth2_scheme_optional)
+) -> Optional[User]:
+    """
+    Get current user if authenticated, otherwise return None.
+    Used for endpoints that work with or without authentication.
+    """
+    if not token:
+        return None
+    
+    payload = decode_access_token(token)
+    if payload is None:
+        return None
+    
+    user_id: Optional[int] = payload.get("sub")
+    if user_id is None:
+        return None
+    
+    db_user = await user_crud.get(db, id=int(user_id))
+    if db_user is None or not db_user.is_active:
+        return None
+    
+    return db_user
 
 
 async def get_current_user(

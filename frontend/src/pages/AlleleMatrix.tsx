@@ -1,14 +1,15 @@
 /**
  * Allele Matrix Page - BrAPI Genotyping Module
- * Visual matrix of genotypes across samples and variants
+ * Virtual scrolling for 100K+ genotypes
  */
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
+import { VirtualDataGrid, Column } from '@/components/VirtualDataGrid'
 import { toast } from 'sonner'
 
 interface MatrixData {
@@ -22,57 +23,131 @@ interface MatrixData {
   }>
 }
 
-// Mock matrix data
-const mockMatrix: MatrixData = {
-  callSetDbIds: ['Sample_001', 'Sample_002', 'Sample_003', 'Sample_004', 'Sample_005'],
-  variantDbIds: ['SNP_Chr1_12345', 'SNP_Chr1_23456', 'INDEL_Chr2_5678', 'SNP_Chr3_78901', 'MNP_Chr4_11111'],
-  dataMatrices: [{
-    dataMatrix: [
-      ['0/1', '1/1', '0/0', '0/1', '0/0'],
-      ['0/0', '0/1', '0/1', '1/1', '0/0'],
-      ['1/1', '0/0', '0/1', '0/0', '0/1'],
-      ['0/1', '0/1', '0/0', '0/1', '1/1'],
-      ['0/0', '1/1', '1/1', '0/0', '0/1'],
-    ],
-    dataMatrixAbbreviation: 'GT',
-    dataMatrixName: 'Genotype',
-    dataType: 'string',
-  }],
+// Generate larger mock data for demo
+function generateMockMatrix(samples: number, variants: number): MatrixData {
+  const genotypes = ['0/0', '0/1', '1/1', './.']
+  const callSetDbIds = Array.from({ length: samples }, (_, i) => `Sample_${String(i + 1).padStart(4, '0')}`)
+  const variantDbIds = Array.from({ length: variants }, (_, i) => {
+    const chr = Math.floor(i / 100) + 1
+    const pos = (i % 100) * 1000 + Math.floor(Math.random() * 1000)
+    return `SNP_Chr${chr}_${pos}`
+  })
+  
+  const dataMatrix = callSetDbIds.map(() =>
+    variantDbIds.map(() => genotypes[Math.floor(Math.random() * genotypes.length)])
+  )
+
+  return {
+    callSetDbIds,
+    variantDbIds,
+    dataMatrices: [{
+      dataMatrix,
+      dataMatrixAbbreviation: 'GT',
+      dataMatrixName: 'Genotype',
+      dataType: 'string',
+    }],
+  }
+}
+
+// Row type for virtual grid
+interface MatrixRow {
+  sample: string
+  sampleIndex: number
+  genotypes: string[]
+  [key: string]: string | number | string[]
 }
 
 export function AlleleMatrix() {
   const [variantSet, setVariantSet] = useState<string>('all')
+  const [sampleCount, setSampleCount] = useState<string>('100')
+  const [variantCount, setVariantCount] = useState<string>('50')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['alleleMatrix', variantSet],
+    queryKey: ['alleleMatrix', variantSet, sampleCount, variantCount],
     queryFn: async () => {
-      await new Promise(r => setTimeout(r, 600))
-      return mockMatrix
+      await new Promise(r => setTimeout(r, 300))
+      return generateMockMatrix(parseInt(sampleCount), parseInt(variantCount))
     },
   })
 
-  const getGenotypeColor = (gt: string) => {
-    if (gt === '0/0') return 'bg-green-500'
-    if (gt === '1/1') return 'bg-red-500'
-    if (gt === '0/1' || gt === '1/0') return 'bg-yellow-500'
-    if (gt === './.') return 'bg-gray-300'
-    return 'bg-blue-500'
+  // Transform matrix data for virtual grid
+  const gridData = useMemo<MatrixRow[]>(() => {
+    if (!data) return []
+    return data.callSetDbIds.map((sample, idx) => ({
+      sample,
+      sampleIndex: idx,
+      genotypes: data.dataMatrices[0].dataMatrix[idx],
+      // Add individual variant columns for display
+      ...Object.fromEntries(
+        data.variantDbIds.map((v, i) => [v, data.dataMatrices[0].dataMatrix[idx][i]])
+      ),
+    }))
+  }, [data])
+
+  // Generate columns dynamically
+  const columns = useMemo<Column<MatrixRow>[]>(() => {
+    if (!data) return []
+    
+    const cols: Column<MatrixRow>[] = [
+      {
+        id: 'sample',
+        header: 'Sample',
+        accessor: 'sample',
+        width: 140,
+        sticky: true,
+        sortable: true,
+      },
+    ]
+
+    // Add variant columns (limit display for performance)
+    const maxDisplayVariants = Math.min(data.variantDbIds.length, 100)
+    data.variantDbIds.slice(0, maxDisplayVariants).forEach((variant, idx) => {
+      cols.push({
+        id: variant,
+        header: variant.replace('SNP_', '').replace('Chr', 'C'),
+        accessor: (row) => {
+          const gt = row.genotypes[idx]
+          return (
+            <GenotypeCell genotype={gt} />
+          )
+        },
+        width: 60,
+        align: 'center',
+      })
+    })
+
+    return cols
+  }, [data])
+
+  const getGenotypeStats = () => {
+    if (!data) return { ref: 0, het: 0, alt: 0, missing: 0 }
+    const matrix = data.dataMatrices[0].dataMatrix
+    let ref = 0, het = 0, alt = 0, missing = 0
+    matrix.forEach(row => {
+      row.forEach(gt => {
+        if (gt === '0/0') ref++
+        else if (gt === '0/1' || gt === '1/0') het++
+        else if (gt === '1/1') alt++
+        else missing++
+      })
+    })
+    const total = ref + het + alt + missing
+    return {
+      ref: Math.round((ref / total) * 100),
+      het: Math.round((het / total) * 100),
+      alt: Math.round((alt / total) * 100),
+      missing: Math.round((missing / total) * 100),
+    }
   }
 
-  const getGenotypeLabel = (gt: string) => {
-    if (gt === '0/0') return 'Ref'
-    if (gt === '1/1') return 'Alt'
-    if (gt === '0/1' || gt === '1/0') return 'Het'
-    if (gt === './.') return 'NA'
-    return gt
-  }
+  const stats = getGenotypeStats()
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold">Allele Matrix</h1>
-          <p className="text-muted-foreground mt-1">Genotype matrix visualization</p>
+          <p className="text-muted-foreground mt-1">High-performance genotype matrix with virtual scrolling</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => toast.success('Export started (demo)')}>
@@ -86,11 +161,40 @@ export function AlleleMatrix() {
 
       <Card>
         <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Samples</label>
+              <Select value={sampleCount} onValueChange={setSampleCount}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="100">100</SelectItem>
+                  <SelectItem value="500">500</SelectItem>
+                  <SelectItem value="1000">1,000</SelectItem>
+                  <SelectItem value="5000">5,000</SelectItem>
+                  <SelectItem value="10000">10,000</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Variants</label>
+              <Select value={variantCount} onValueChange={setVariantCount}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                  <SelectItem value="500">500</SelectItem>
+                  <SelectItem value="1000">1,000</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="space-y-1">
               <label className="text-sm font-medium">Variant Set</label>
               <Select value={variantSet} onValueChange={setVariantSet}>
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Select variant set" />
                 </SelectTrigger>
                 <SelectContent>
@@ -100,22 +204,22 @@ export function AlleleMatrix() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex gap-4 text-sm">
+            <div className="flex gap-4 text-sm ml-auto">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-green-500"></div>
-                <span>Ref (0/0)</span>
+                <span>Ref</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-yellow-500"></div>
-                <span>Het (0/1)</span>
+                <span>Het</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-red-500"></div>
-                <span>Alt (1/1)</span>
+                <span>Alt</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-gray-300"></div>
-                <span>Missing</span>
+                <span>NA</span>
               </div>
             </div>
           </div>
@@ -126,48 +230,25 @@ export function AlleleMatrix() {
         <Skeleton className="h-96 w-full" />
       ) : (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-2">
             <CardTitle>Genotype Matrix</CardTitle>
             <CardDescription>
-              {data?.callSetDbIds.length} samples × {data?.variantDbIds.length} variants
+              {data?.callSetDbIds.length.toLocaleString()} samples × {data?.variantDbIds.length.toLocaleString()} variants
+              = {((data?.callSetDbIds.length || 0) * (data?.variantDbIds.length || 0)).toLocaleString()} genotypes
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="p-2 text-left font-medium border-b sticky left-0 bg-background">Sample</th>
-                    {data?.variantDbIds.map((variant) => (
-                      <th key={variant} className="p-2 text-center font-medium border-b text-xs">
-                        <div className="transform -rotate-45 origin-center whitespace-nowrap">
-                          {variant}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.callSetDbIds.map((sample, sampleIdx) => (
-                    <tr key={sample} className="hover:bg-muted/50">
-                      <td className="p-2 font-medium border-b sticky left-0 bg-background">
-                        {sample}
-                      </td>
-                      {data?.dataMatrices[0].dataMatrix[sampleIdx].map((gt, variantIdx) => (
-                        <td key={variantIdx} className="p-1 border-b text-center">
-                          <div
-                            className={`w-8 h-8 rounded flex items-center justify-center text-white text-xs font-bold mx-auto cursor-pointer hover:opacity-80 ${getGenotypeColor(gt)}`}
-                            title={`${sample} @ ${data?.variantDbIds[variantIdx]}: ${gt}`}
-                          >
-                            {getGenotypeLabel(gt)}
-                          </div>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <VirtualDataGrid
+              data={gridData}
+              columns={columns}
+              rowHeight={40}
+              maxHeight={500}
+              searchable
+              searchPlaceholder="Search samples..."
+              exportable
+              exportFilename="allele_matrix"
+              emptyMessage="No genotype data available"
+            />
           </CardContent>
         </Card>
       )}
@@ -180,15 +261,15 @@ export function AlleleMatrix() {
           <CardContent className="space-y-2">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Total Genotypes</span>
-              <span className="font-medium">{(data?.callSetDbIds.length || 0) * (data?.variantDbIds.length || 0)}</span>
+              <span className="font-medium">{((data?.callSetDbIds.length || 0) * (data?.variantDbIds.length || 0)).toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Samples</span>
-              <span className="font-medium">{data?.callSetDbIds.length}</span>
+              <span className="font-medium">{data?.callSetDbIds.length.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Variants</span>
-              <span className="font-medium">{data?.variantDbIds.length}</span>
+              <span className="font-medium">{data?.variantDbIds.length.toLocaleString()}</span>
             </div>
           </CardContent>
         </Card>
@@ -199,15 +280,19 @@ export function AlleleMatrix() {
           <CardContent className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Homozygous Ref</span>
-              <Badge className="bg-green-100 text-green-800">40%</Badge>
+              <Badge className="bg-green-100 text-green-800">{stats.ref}%</Badge>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Heterozygous</span>
-              <Badge className="bg-yellow-100 text-yellow-800">36%</Badge>
+              <Badge className="bg-yellow-100 text-yellow-800">{stats.het}%</Badge>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Homozygous Alt</span>
-              <Badge className="bg-red-100 text-red-800">24%</Badge>
+              <Badge className="bg-red-100 text-red-800">{stats.alt}%</Badge>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Missing</span>
+              <Badge className="bg-gray-100 text-gray-800">{stats.missing}%</Badge>
             </div>
           </CardContent>
         </Card>
@@ -218,7 +303,7 @@ export function AlleleMatrix() {
           <CardContent className="space-y-2">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Call Rate</span>
-              <span className="font-medium">98.5%</span>
+              <span className="font-medium">{100 - stats.missing}%</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Avg Depth</span>
@@ -234,3 +319,28 @@ export function AlleleMatrix() {
     </div>
   )
 }
+
+// Genotype cell component with color coding
+function GenotypeCell({ genotype }: { genotype: string }) {
+  const getColor = () => {
+    if (genotype === '0/0') return 'bg-green-500 text-white'
+    if (genotype === '1/1') return 'bg-red-500 text-white'
+    if (genotype === '0/1' || genotype === '1/0') return 'bg-yellow-500 text-black'
+    return 'bg-gray-300 text-gray-600'
+  }
+
+  const getLabel = () => {
+    if (genotype === '0/0') return 'R'
+    if (genotype === '1/1') return 'A'
+    if (genotype === '0/1' || genotype === '1/0') return 'H'
+    return '·'
+  }
+
+  return (
+    <div className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center ${getColor()}`}>
+      {getLabel()}
+    </div>
+  )
+}
+
+export default AlleleMatrix

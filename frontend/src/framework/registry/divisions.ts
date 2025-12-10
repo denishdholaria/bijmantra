@@ -195,19 +195,59 @@ export const divisions: Division[] = [
   },
 
   // Division 2: Seed Bank (Active)
+  // Genetic resources preservation and germplasm conservation module
   {
     id: 'seed-bank',
     name: 'Seed Bank',
     description: 'Genetic resources preservation and germplasm conservation',
     icon: 'Warehouse',
-    route: '/seedlots',
+    route: '/seed-bank',
     component: lazy(() => import('@/divisions/seed-bank')),
     requiredPermissions: ['read:seed_bank'],
     status: 'active',
-    version: '0.5.0',
+    version: '1.0.0',
     sections: [
-      { id: 'seedlots', name: 'Seed Lots', route: '/seedlots', icon: 'Package', isAbsolute: true },
-      { id: 'inventory', name: 'Inventory', route: '/inventory', icon: 'Archive', isAbsolute: true },
+      {
+        id: 'overview',
+        name: 'Overview',
+        route: '/seed-bank',
+        icon: 'LayoutDashboard',
+        isAbsolute: true,
+        items: [
+          { id: 'dashboard', name: 'Dashboard', route: '/seed-bank', isAbsolute: true },
+          { id: 'vault', name: 'Vault Management', route: '/seed-bank/vault', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'accessions',
+        name: 'Accessions',
+        route: '/seed-bank/accessions',
+        icon: 'Sprout',
+        isAbsolute: true,
+        items: [
+          { id: 'all', name: 'All Accessions', route: '/seed-bank/accessions', isAbsolute: true },
+          { id: 'register', name: 'Register New', route: '/seed-bank/accessions/new', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'conservation',
+        name: 'Conservation',
+        route: '/seed-bank/conservation',
+        icon: 'Shield',
+        isAbsolute: true,
+        items: [
+          { id: 'status', name: 'Conservation Status', route: '/seed-bank/conservation', isAbsolute: true },
+          { id: 'viability', name: 'Viability Testing', route: '/seed-bank/viability', isAbsolute: true },
+          { id: 'regeneration', name: 'Regeneration Planning', route: '/seed-bank/regeneration', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'exchange',
+        name: 'Exchange',
+        route: '/seed-bank/exchange',
+        icon: 'ArrowLeftRight',
+        isAbsolute: true,
+      },
     ],
   },
 
@@ -252,21 +292,26 @@ export const divisions: Division[] = [
     ],
   },
 
-  // Division 4: Sun-Earth Systems (Visionary)
+  // Division 4: Sun-Earth Systems (Active)
   {
     id: 'sun-earth-systems',
     name: 'Sun-Earth Systems',
-    description: 'Solar radiation, magnetic field monitoring, and space weather',
+    description: 'Solar radiation, photoperiod, UV index, and space weather',
     icon: 'Sun',
     route: '/sun-earth-systems',
     component: lazy(() => import('@/divisions/sun-earth-systems')),
     requiredPermissions: ['read:sun_earth_systems'],
-    featureFlag: 'SUN_EARTH_SYSTEMS_ENABLED',
-    status: 'visionary',
-    version: '0.0.1',
+    status: 'active',
+    version: '1.0.0',
+    sections: [
+      { id: 'dashboard', name: 'Dashboard', route: '/sun-earth-systems', icon: 'Sun', isAbsolute: true },
+      { id: 'solar-activity', name: 'Solar Activity', route: '/sun-earth-systems/solar-activity', icon: 'Activity', isAbsolute: true },
+      { id: 'photoperiod', name: 'Photoperiod', route: '/sun-earth-systems/photoperiod', icon: 'Clock', isAbsolute: true },
+      { id: 'uv-index', name: 'UV Index', route: '/sun-earth-systems/uv-index', icon: 'Shield', isAbsolute: true },
+    ],
   },
 
-  // Division 5: Sensor Networks (Planned)
+  // Division 5: Sensor Networks (Active)
   {
     id: 'sensor-networks',
     name: 'Sensor Networks',
@@ -275,9 +320,14 @@ export const divisions: Division[] = [
     route: '/sensor-networks',
     component: lazy(() => import('@/divisions/sensor-networks')),
     requiredPermissions: ['read:sensor_networks'],
-    featureFlag: 'SENSOR_NETWORKS_ENABLED',
-    status: 'planned',
-    version: '0.0.1',
+    status: 'active',
+    version: '1.0.0',
+    sections: [
+      { id: 'dashboard', name: 'Dashboard', route: '/sensor-networks', icon: 'LayoutDashboard', isAbsolute: true },
+      { id: 'devices', name: 'Devices', route: '/sensor-networks/devices', icon: 'Radio', isAbsolute: true },
+      { id: 'live', name: 'Live Data', route: '/sensor-networks/live', icon: 'Activity', isAbsolute: true },
+      { id: 'alerts', name: 'Alerts', route: '/sensor-networks/alerts', icon: 'Bell', isAbsolute: true },
+    ],
   },
 
   // Division 6: Seed Operations (Active) - LIMS, Processing, Inventory, Dispatch
@@ -385,7 +435,7 @@ export const divisions: Division[] = [
     ],
   },
 
-  // Division 7: Space Research (Visionary)
+  // Division 7: Space Research (Active)
   {
     id: 'space-research',
     name: 'Space Research',
@@ -394,9 +444,14 @@ export const divisions: Division[] = [
     route: '/space-research',
     component: lazy(() => import('@/divisions/space-research')),
     requiredPermissions: ['read:space_research'],
-    featureFlag: 'SPACE_RESEARCH_ENABLED',
-    status: 'visionary',
-    version: '0.0.1',
+    status: 'active',
+    version: '1.0.0',
+    sections: [
+      { id: 'dashboard', name: 'Dashboard', route: '/space-research', icon: 'Rocket', isAbsolute: true },
+      { id: 'crops', name: 'Space Crops', route: '/space-research/crops', icon: 'Leaf', isAbsolute: true },
+      { id: 'radiation', name: 'Radiation', route: '/space-research/radiation', icon: 'Shield', isAbsolute: true },
+      { id: 'life-support', name: 'Life Support', route: '/space-research/life-support', icon: 'Users', isAbsolute: true },
+    ],
   },
 
   // Division 8: Integration Hub (Active)
@@ -513,9 +568,11 @@ export const divisions: Division[] = [
     component: lazy(() => import('@/divisions/knowledge')),
     requiredPermissions: ['read:knowledge'],
     status: 'active',
-    version: '0.5.0',
+    version: '0.6.0',
     sections: [
       { id: 'help', name: 'Help Center', route: '/help', icon: 'HelpCircle', isAbsolute: true },
+      { id: 'training', name: 'Training Hub', route: '/knowledge/training', icon: 'GraduationCap', isAbsolute: true },
+      { id: 'forums', name: 'Community Forums', route: '/knowledge/forums', icon: 'MessageSquare', isAbsolute: true },
       { id: 'glossary', name: 'Glossary', route: '/glossary', icon: 'Book', isAbsolute: true },
       { id: 'about', name: 'About', route: '/about', icon: 'Info', isAbsolute: true },
       { id: 'vision', name: 'Our Vision', route: '/vision', icon: 'Telescope', isAbsolute: true },

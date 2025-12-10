@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -71,7 +71,7 @@ async def list_observation_units(
     germplasmDbId: Optional[str] = None,
     observationLevel: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of observation units"""
     _init_demo_data()
@@ -110,7 +110,7 @@ async def create_observation_unit(unit: ObservationUnitCreate, db: AsyncSession 
 
 
 @router.get("/observationunits/{observationUnitDbId}")
-async def get_observation_unit(observationUnitDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_observation_unit(observationUnitDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get observation unit by ID"""
     _init_demo_data()
     if observationUnitDbId not in _units_store:

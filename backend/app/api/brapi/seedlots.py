@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -62,7 +62,7 @@ async def list_seedlots(
     locationDbId: Optional[str] = None,
     programDbId: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of seed lots"""
     _init_demo_data()
@@ -101,7 +101,7 @@ async def create_seedlot(seedlot: SeedLotCreate, db: AsyncSession = Depends(get_
 
 
 @router.get("/seedlots/{seedLotDbId}")
-async def get_seedlot(seedLotDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_seedlot(seedLotDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get seed lot by ID"""
     _init_demo_data()
     if seedLotDbId not in _seedlots_store:

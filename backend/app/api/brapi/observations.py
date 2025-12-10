@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -60,7 +60,7 @@ async def list_observations(
     germplasmDbId: Optional[str] = None,
     observationVariableDbId: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of observations"""
     _init_demo_data()
@@ -99,7 +99,7 @@ async def create_observation(observation: ObservationCreate, db: AsyncSession = 
 
 
 @router.get("/observations/{observationDbId}")
-async def get_observation(observationDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_observation(observationDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get observation by ID"""
     _init_demo_data()
     if observationDbId not in _observations_store:

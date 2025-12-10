@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 
 router = APIRouter()
 
@@ -61,7 +61,7 @@ async def list_images(
     pageSize: int = Query(20, ge=1, le=1000),
     observationUnitDbId: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ):
     """Get list of images"""
     _init_demo_data()
@@ -96,7 +96,7 @@ async def create_image(image: ImageCreate, db: AsyncSession = Depends(get_db), c
 
 
 @router.get("/images/{imageDbId}")
-async def get_image(imageDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def get_image(imageDbId: str, db: AsyncSession = Depends(get_db), current_user = Depends(get_optional_user)):
     """Get image by ID"""
     _init_demo_data()
     if imageDbId not in _images_store:
