@@ -1,7 +1,7 @@
 # Bijmantra - Priority TODO
 
 > **Single Source of Truth** for what needs to be built  
-> Last updated: December 6, 2025
+> Last updated: December 10, 2025
 
 ---
 
@@ -40,29 +40,33 @@
 
 ---
 
-## 🟡 MEDIUM PRIORITY: Frontend UI for New APIs
+## ✅ COMPLETED: Frontend UI for New APIs (Dec 10, 2025)
 
-The backend APIs are complete. These need frontend UI.
-
-### New API Modules (380 total endpoints)
+### New API Modules (469 total endpoints)
 
 | Module | API Endpoints | UI Status | Priority |
 |--------|---------------|-----------|----------|
 | Seed Traceability | `/api/v2/traceability/` (16) | ✅ Connected | DONE |
 | Dispatch Management | `/api/v2/dispatch/` (18) | ✅ Connected | DONE |
 | Seed Processing | `/api/v2/processing/` (12) | ✅ Connected | DONE |
-| Variety Licensing | `/api/v2/licensing/` (17) | ⚠️ Placeholder | HIGH |
-| Selection Index | `/api/v2/selection/` (9) | ❌ Not started | MEDIUM |
-| Genetic Gain | `/api/v2/genetic-gain/` (9) | ❌ Not started | MEDIUM |
-| Harvest Management | `/api/v2/harvest/` (16) | ❌ Not started | MEDIUM |
-| Spatial Analysis | `/api/v2/spatial/` (11) | ❌ Not started | LOW |
-| Breeding Value | `/api/v2/breeding-value/` (8) | ❌ Not started | MEDIUM |
-| Disease Resistance | `/api/v2/disease/` (15) | ❌ Not started | HIGH |
-| Abiotic Stress | `/api/v2/abiotic/` (11) | ❌ Not started | HIGH |
+| Variety Licensing | `/api/v2/licensing/` (17) | ✅ Complete | DONE |
+| DUS Testing | `/api/v2/dus/` (17) | ✅ Complete | DONE |
+| MCPD Exchange | `/api/v2/seed-bank/mcpd/` (8) | ✅ Complete | DONE |
+| Disease Resistance | `/api/v2/disease/` (15) | ✅ Complete | DONE |
+| Abiotic Stress | `/api/v2/abiotic/` (11) | ✅ Complete | DONE |
+| Spatial Analysis | `/api/v2/spatial/` (11) | ✅ Complete | DONE |
+| Pedigree Analysis | `/api/v2/pedigree/` (8) | ✅ Complete | DONE |
+| Phenotype Analysis | `/api/v2/phenotype/` (7) | ✅ Complete | DONE |
+| Bioinformatics | `/api/v2/bioinformatics/` (7) | ✅ Complete | DONE |
+| Crop Calendar | `/api/v2/crop-calendar/` (10) | ✅ Complete | DONE |
+| Selection Index | `/api/v2/selection/` (9) | ⚠️ Backend only | LOW |
+| Genetic Gain | `/api/v2/genetic-gain/` (9) | ⚠️ Backend only | LOW |
+| Harvest Management | `/api/v2/harvest/` (16) | ⚠️ Backend only | LOW |
+| Breeding Value | `/api/v2/breeding-value/` (8) | ⚠️ Backend only | LOW |
 
 ---
 
-## 🟠 MEDIUM PRIORITY: Computer Vision
+## 🟡 MEDIUM PRIORITY: Computer Vision & WASM
 
 ### Plant Vision Models (1-2 weeks)
 - [ ] **Disease Detection** — TensorFlow.js model
@@ -74,11 +78,34 @@ The backend APIs are complete. These need frontend UI.
 
 ---
 
-## ✅ COMPLETED (Dec 6, 2025)
+## ✅ COMPLETED (Dec 10, 2025)
 
-### Backend APIs - Commercial Division
+### Frontend UI - Plant Sciences Analysis Tools (8 pages)
+- [x] **Disease Resistance** — Disease database, R-gene catalog, gene pyramiding
+- [x] **Abiotic Stress** — 8 stress types, tolerance genes, index calculator
+- [x] **Bioinformatics** — Sequence analysis, primer design, restriction sites
+- [x] **Crop Calendar** — Crop profiles, planting events, GDD tracking
+- [x] **Spatial Analysis** — Field registry, plot grid, distance calculator
+- [x] **Pedigree Analysis** — Load pedigree, coancestry, ancestry tracing
+- [x] **Phenotype Analysis** — Statistics, heritability, selection response
+
+### Frontend UI - Commercial Division
+- [x] **DUS Testing** — 3 pages (Trials, Crops, Trial Detail)
+- [x] **MCPD Exchange** — Export/import with validation
+- [x] **Variety Licensing** — Protection, agreements, royalties
+- [x] **Processing Stages** — 10-stage workflow visualization
+
+### All Divisions Now Active
+- [x] **Sun-Earth Systems** — Solar activity, photoperiod, UV index
+- [x] **Space Research** — Space crops, radiation, life support
+- [x] **Sensor Networks** — Devices, live data, alerts
+- [x] **Knowledge** — Training hub, community forums
+
+### Backend APIs - Commercial Division (Dec 6)
 - [x] **Seed Traceability** — Chain of custody, QR codes, certifications
 - [x] **Variety Licensing** — PVP/PBR, license agreements, royalties
+- [x] **DUS Testing** — UPOV variety protection, 10 crop templates
+- [x] **MCPD Exchange** — Genebank data exchange standard
 
 ### Backend APIs - Advanced Analytics
 - [x] **Selection Index** — Smith-Hazel, Desired Gains, Independent Culling, Tandem
@@ -106,7 +133,7 @@ The backend APIs are complete. These need frontend UI.
 - [x] **Nursery Management** — OYT/PYT/AYT/Elite stages
 - [x] **MCP Server** — ChatGPT/Claude integration
 - [x] **Integration Hub** — API management, event bus
-- [x] **210+ pages** — Frontend UI
+- [x] **271+ pages** — Frontend UI
 - [x] **BrAPI v2.1** — 34/34 endpoints (100%)
 
 ---
@@ -115,11 +142,13 @@ The backend APIs are complete. These need frontend UI.
 
 | Metric | Value |
 |--------|-------|
-| Total API Endpoints | 380 |
-| Frontend Pages | 230+ |
+| Total API Endpoints | 469 |
+| Frontend Pages | 271+ |
 | BrAPI Compliance | 100% |
 | TypeScript Errors | 0 |
 | Tests Passing | 48 |
+| Build Size | 5.0MB |
+| PWA Entries | 96 |
 
 ---
 

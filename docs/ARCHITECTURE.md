@@ -1,6 +1,6 @@
 # Bijmantra Architecture
 
-**Last Updated**: December 6, 2025
+**Last Updated**: December 10, 2025
 
 Bijmantra is an aerospace-grade plant breeding platform built on the **Parashakti Framework**, combining high-precision numerical computing with modern web technologies.
 
@@ -153,7 +153,7 @@ bijmantra/
 │   │   ├── registry/        # Module registry
 │   │   └── shell/           # Navigation, layout
 │   ├── components/          # Shared components
-│   ├── pages/               # 210+ page components
+│   ├── pages/               # 271+ page components
 │   ├── lib/                 # Utilities, API client
 │   └── store/               # Zustand stores
 ├── backend/app/
@@ -207,6 +207,10 @@ bijmantra/
 | WASM Genomics | ✅ | ❌ | UI done, needs Rust compilation |
 | pgvector | - | ✅ | Ready |
 | MCP Server | - | ✅ | ChatGPT/Claude integration |
+| Disease Resistance | ✅ | ✅ | Complete (Dec 10) |
+| Abiotic Stress | ✅ | ✅ | Complete (Dec 10) |
+| DUS Testing | ✅ | ✅ | Complete (Dec 10) |
+| MCPD Exchange | ✅ | ✅ | Complete (Dec 10) |
 
 ### Veena AI Assistant 🪷
 Named after Goddess Saraswati's sacred instrument:

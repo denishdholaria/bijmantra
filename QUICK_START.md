@@ -51,8 +51,8 @@ npm run dev
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Frontend | http://localhost:5173 | React PWA (230+ pages) |
-| Backend API | http://localhost:8000 | FastAPI server (380 endpoints) |
+| Frontend | http://localhost:5173 | React PWA (271+ pages) |
+| Backend API | http://localhost:8000 | FastAPI server (469 endpoints) |
 | API Docs | http://localhost:8000/docs | Swagger UI |
 | ReDoc | http://localhost:8000/redoc | Alternative docs |
 | BrAPI | http://localhost:8000/brapi/v2 | BrAPI v2.1 (100%) |
@@ -277,22 +277,30 @@ npm install
 
 ## 🎯 What's Implemented
 
-### Backend ✅ (380 API Endpoints)
+### Backend ✅ (469 API Endpoints)
 - Authentication (JWT)
 - BrAPI v2.1 (34/34 endpoints - 100%)
-- Plant Sciences (breeding, genomics, phenotyping)
+- Plant Sciences (breeding, genomics, phenotyping, analysis tools)
 - Seed Operations (dispatch, processing, quality)
-- Commercial (traceability, licensing)
+- Commercial (traceability, licensing, DUS testing)
 - Advanced Analytics (GWAS, G×E, selection index)
 - AI/ML (Veena RAG, voice, vector search)
+- Sun-Earth Systems (solar, photoperiod, UV)
+- Space Research (crops, radiation, life support)
+- Sensor Networks (devices, alerts, live data)
 - Multi-tenancy (organization-based)
 - Database migrations
 - API documentation
 
-### Frontend ✅ (230+ Pages)
-- Complete Plant Sciences module
+### Frontend ✅ (271+ Pages)
+- Complete Plant Sciences module (8 new analysis pages)
 - Complete Seed Operations module (18 pages)
+- Complete Commercial module (DUS, Licensing)
 - Earth Systems module
+- Sun-Earth Systems module
+- Space Research module
+- Sensor Networks module
+- Knowledge module (Training, Forums)
 - Integration Hub
 - Veena AI Assistant with voice
 - WASM Genomics tools
