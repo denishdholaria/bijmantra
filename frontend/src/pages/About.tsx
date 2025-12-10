@@ -434,6 +434,11 @@ export function About() {
               <span className="mr-2">🌌</span> Our Vision
             </Button>
           </Link>
+          <Link to="/dev-progress">
+            <Button variant="outline" className="border-green-300 text-green-700 hover:bg-green-50">
+              <span className="mr-2">📊</span> Dev Progress
+            </Button>
+          </Link>
           <Link to="/help">
             <Button variant="outline">
               <span className="mr-2">❓</span> Get Help

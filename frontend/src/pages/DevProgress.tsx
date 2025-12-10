@@ -1,8 +1,10 @@
 /**
- * Progress Tracker Page
+ * DevProgress Page
  *
  * Displays development progress across divisions, features, and roadmap.
  * Shows Past (completed), Present (in-progress), and Future (planned) items.
+ * Named "DevProgress" to distinguish from other progress tracking features
+ * (e.g., breeding program progress, trial progress).
  */
 
 import { useState } from 'react';
@@ -92,7 +94,7 @@ const STATUS_BADGES: Record<string, { variant: 'default' | 'secondary' | 'outlin
   backlog: { variant: 'outline', label: '📝 Backlog' },
 };
 
-function ProgressTracker() {
+function DevProgress() {
   const [activeTab, setActiveTab] = useState('overview');
 
   const { data, isLoading, error } = useQuery<ProgressData>({
@@ -618,4 +620,4 @@ function ProgressTracker() {
   );
 }
 
-export { ProgressTracker };
+export { DevProgress };

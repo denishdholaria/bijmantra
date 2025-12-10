@@ -77,7 +77,7 @@ import { Weather } from '@/pages/Weather'
 import { BarcodeScanner } from '@/pages/BarcodeScanner'
 import { UserManagement } from '@/pages/UserManagement'
 import { SystemSettings } from '@/pages/SystemSettings'
-import { ProgressTracker } from '@/pages/ProgressTracker'
+import { DevProgress } from '@/pages/DevProgress'
 import { BackupRestore } from '@/pages/BackupRestore'
 import { DataQuality } from '@/pages/DataQuality'
 import { ServerInfo } from '@/pages/ServerInfo'
@@ -1183,13 +1183,13 @@ function AppRoutes() {
           }
         />
 
-        {/* Progress Tracker */}
+        {/* Dev Progress - Development tracking dashboard */}
         <Route
-          path="/progress"
+          path="/dev-progress"
           element={
             <ProtectedRoute>
               <Layout>
-                <ProgressTracker />
+                <DevProgress />
               </Layout>
             </ProtectedRoute>
           }
