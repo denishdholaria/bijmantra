@@ -165,6 +165,27 @@ app.include_router(locations.router, prefix="/brapi/v2", tags=["Core - Locations
 app.include_router(trials.router, prefix="/brapi/v2", tags=["Core - Trials"])
 app.include_router(studies.router, prefix="/brapi/v2", tags=["Core - Studies"])
 
+# BrAPI v2.1 Germplasm routes
+from app.api.brapi import germplasm as brapi_germplasm
+from app.api.brapi import crosses as brapi_crosses
+from app.api.brapi import traits as brapi_traits
+from app.api.brapi import observations as brapi_observations
+from app.api.brapi import observationunits as brapi_observationunits
+from app.api.brapi import events as brapi_events
+from app.api.brapi import images as brapi_images
+from app.api.brapi import samples as brapi_samples
+from app.api.brapi import seedlots as brapi_seedlots
+
+app.include_router(brapi_germplasm.router, prefix="/brapi/v2", tags=["Germplasm"])
+app.include_router(brapi_crosses.router, prefix="/brapi/v2", tags=["Crosses"])
+app.include_router(brapi_traits.router, prefix="/brapi/v2", tags=["Traits"])
+app.include_router(brapi_observations.router, prefix="/brapi/v2", tags=["Observations"])
+app.include_router(brapi_observationunits.router, prefix="/brapi/v2", tags=["Observation Units"])
+app.include_router(brapi_events.router, prefix="/brapi/v2", tags=["Events"])
+app.include_router(brapi_images.router, prefix="/brapi/v2", tags=["Images"])
+app.include_router(brapi_samples.router, prefix="/brapi/v2", tags=["Samples"])
+app.include_router(brapi_seedlots.router, prefix="/brapi/v2", tags=["Seed Lots"])
+
 # APEX Features - AI & Analytics
 app.include_router(compute.router, prefix="/api/v2", tags=["Compute Engine"])
 app.include_router(audit.router, prefix="/api/v2", tags=["Audit Trail"])
