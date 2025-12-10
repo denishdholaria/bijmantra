@@ -122,7 +122,9 @@ class MeilisearchService:
     def connect(self) -> bool:
         """Connect to Meilisearch server"""
         try:
-            self.client = Client(MEILISEARCH_HOST, MEILISEARCH_API_KEY)
+            # In development mode, Meilisearch may not require an API key
+            api_key = MEILISEARCH_API_KEY if MEILISEARCH_API_KEY else None
+            self.client = Client(MEILISEARCH_HOST, api_key)
             # Test connection
             self.client.health()
             self._connected = True
