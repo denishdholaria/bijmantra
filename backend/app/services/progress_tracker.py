@@ -198,25 +198,25 @@ PROGRESS_DATA: Dict[str, Any] = {
     ],
     "roadmap": [
         {
-            "quarter": "Q1 2025",
+            "quarter": "Q1 2026",
             "title": "Standards & Compliance",
             "items": ["MIAPPE compliance", "RTL language support", "ORCID integration", "DOI/PUID integration"],
             "status": "planned",
         },
         {
-            "quarter": "Q2 2025",
+            "quarter": "Q2 2026",
             "title": "Mobile & Offline",
             "items": ["React Native mobile app", "Enhanced offline sync", "Barcode/QR scanning", "Voice data entry"],
             "status": "planned",
         },
         {
-            "quarter": "Q3 2025",
+            "quarter": "Q3 2026",
             "title": "AI & Analytics",
             "items": ["AI crop recommendations", "Predictive analytics", "Computer vision models", "Natural language queries"],
             "status": "backlog",
         },
         {
-            "quarter": "Q4 2025",
+            "quarter": "Q4 2026",
             "title": "Enterprise Features",
             "items": ["Multi-tenant SaaS", "Advanced RBAC", "Audit logging", "Custom reporting"],
             "status": "backlog",

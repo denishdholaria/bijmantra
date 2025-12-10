@@ -7,7 +7,7 @@
  * (e.g., breeding program progress, trial progress).
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -131,10 +131,10 @@ const FALLBACK_DATA: ProgressData = {
     { id: 'feat-mcpd-ui', name: 'MCPD Import/Export UI', description: 'File upload, validation preview', status: 'planned', priority: 'high', tags: ['frontend', 'seed-bank'] },
   ],
   roadmap: [
-    { quarter: 'Q1 2025', title: 'Standards & Compliance', items: ['MIAPPE compliance', 'RTL language support', 'ORCID integration'], status: 'planned' },
-    { quarter: 'Q2 2025', title: 'Mobile & Offline', items: ['React Native mobile app', 'Enhanced offline sync', 'Barcode scanning'], status: 'planned' },
-    { quarter: 'Q3 2025', title: 'AI & Analytics', items: ['AI crop recommendations', 'Predictive analytics', 'Computer vision'], status: 'backlog' },
-    { quarter: 'Q4 2025', title: 'Enterprise Features', items: ['Multi-tenant SaaS', 'Advanced RBAC', 'Audit logging'], status: 'backlog' },
+    { quarter: 'Q1 2026', title: 'Standards & Compliance', items: ['MIAPPE compliance', 'RTL language support', 'ORCID integration', 'DOI/PUID integration'], status: 'planned' },
+    { quarter: 'Q2 2026', title: 'Mobile & Offline', items: ['React Native mobile app', 'Enhanced offline sync', 'Barcode/QR scanning', 'Voice data entry'], status: 'planned' },
+    { quarter: 'Q3 2026', title: 'AI & Analytics', items: ['AI crop recommendations', 'Predictive analytics', 'Computer vision models', 'Natural language queries'], status: 'backlog' },
+    { quarter: 'Q4 2026', title: 'Enterprise Features', items: ['Multi-tenant SaaS', 'Advanced RBAC', 'Audit logging', 'Custom reporting'], status: 'backlog' },
   ],
   api_stats: { brapi_endpoints: 34, custom_endpoints: 435, total_endpoints: 469 },
   tech_stack: {
@@ -147,6 +147,13 @@ const FALLBACK_DATA: ProgressData = {
 
 function DevProgress() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Live clock - updates every second
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const { data, isLoading } = useQuery<ProgressData>({
     queryKey: ['progress'],
@@ -198,8 +205,8 @@ function DevProgress() {
             <TrendingUp className="h-6 w-6" />
             Development Progress
           </h1>
-          <p className="text-muted-foreground">
-            Last updated: {summary.last_updated}
+          <p className="text-muted-foreground text-sm">
+            Data from: {summary.last_updated} • Now: {currentTime.toLocaleString()}
           </p>
         </div>
         <Badge variant="outline" className="text-sm">
