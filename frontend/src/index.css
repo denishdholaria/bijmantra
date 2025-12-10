@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import './styles/field-mode.css';
+@import './styles/typography.css';
+@import './styles/design-tokens.css';
 
 @tailwind base;
 @tailwind components;

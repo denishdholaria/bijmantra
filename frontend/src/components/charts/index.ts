@@ -1,10 +1,11 @@
 /**
- * ECharts-based visualization components
+ * Chart Components
  * 
  * High-performance charts for scientific data visualization.
- * Uses WebGL rendering for large datasets (100K+ points).
+ * Includes ECharts (WebGL for 100K+ points) and Recharts components.
  */
 
+// ECharts-based components
 export { HeatmapChart } from './HeatmapChart';
 export type { HeatmapData } from './HeatmapChart';
 
@@ -13,3 +14,6 @@ export type { ScatterPoint } from './ScatterPlot';
 
 export { CorrelationMatrix } from './CorrelationMatrix';
 export type { CorrelationData } from './CorrelationMatrix';
+
+// Recharts-based components
+export { TraitRadar } from './TraitRadar';
