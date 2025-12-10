@@ -17,3 +17,16 @@ export type { CorrelationData } from './CorrelationMatrix';
 
 // Recharts-based components
 export { TraitRadar } from './TraitRadar';
+
+// Scientific visualization components
+export { AMMIBiplot } from './AMMIBiplot';
+export type { AMMIData } from './AMMIBiplot';
+
+export { PedigreeViewer } from './PedigreeViewer';
+export type { PedigreeNode } from './PedigreeViewer';
+
+export { SpatialFieldPlot } from './SpatialFieldPlot';
+export type { PlotData } from './SpatialFieldPlot';
+
+export { KinshipNetwork } from './KinshipNetwork';
+export type { KinshipNode, KinshipEdge } from './KinshipNetwork';
