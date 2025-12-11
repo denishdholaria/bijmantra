@@ -30,3 +30,6 @@ export type { PlotData } from './SpatialFieldPlot';
 
 export { KinshipNetwork } from './KinshipNetwork';
 export type { KinshipNode, KinshipEdge } from './KinshipNetwork';
+
+// Real-time streaming charts
+export { LiveSensorChart } from './LiveSensorChart';

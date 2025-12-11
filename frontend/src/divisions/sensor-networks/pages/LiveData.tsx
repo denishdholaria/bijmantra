@@ -26,7 +26,9 @@ import {
   Sun,
   Thermometer,
   Wind,
+  BarChart3,
 } from 'lucide-react';
+import { LiveSensorChart } from '@/components/charts/LiveSensorChart';
 
 interface SensorReading {
   id: string;
@@ -322,6 +324,21 @@ export function LiveData() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Live Streaming Chart */}
+      <LiveSensorChart
+        title="Real-Time Sensor Trends"
+        description="Live streaming data from environmental sensors"
+        sensors={[
+          { id: 'temp', name: 'Temperature', type: 'temperature', unit: '°C', color: '#ef4444', warningThreshold: 30, criticalThreshold: 35 },
+          { id: 'humidity', name: 'Humidity', type: 'humidity', unit: '%', color: '#3b82f6', warningThreshold: 80 },
+          { id: 'soil', name: 'Soil Moisture', type: 'soil_moisture', unit: '%', color: '#22c55e', warningThreshold: 30 },
+          { id: 'light', name: 'Light (PAR)', type: 'light', unit: 'µmol', color: '#f59e0b' },
+        ]}
+        pollingInterval={3000}
+        maxDataPoints={60}
+        height={300}
+      />
 
       {/* Readings by Device */}
       <div className="space-y-4">
