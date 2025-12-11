@@ -191,6 +191,23 @@ export const divisions: Division[] = [
           { id: 'yieldmap', name: 'Yield Map', route: '/yieldmap', isAbsolute: true },
         ],
       },
+      // Subgroup: Analysis Tools (NEW - Dec 10, 2025)
+      {
+        id: 'analysis-tools',
+        name: 'Analysis Tools',
+        route: '/disease-resistance',
+        icon: 'Beaker',
+        isAbsolute: true,
+        items: [
+          { id: 'disease-resistance', name: 'Disease Resistance', route: '/disease-resistance', isAbsolute: true },
+          { id: 'abiotic-stress', name: 'Abiotic Stress', route: '/abiotic-stress', isAbsolute: true },
+          { id: 'bioinformatics', name: 'Bioinformatics', route: '/bioinformatics', isAbsolute: true },
+          { id: 'crop-calendar', name: 'Crop Calendar', route: '/crop-calendar', isAbsolute: true },
+          { id: 'spatial-analysis', name: 'Spatial Analysis', route: '/spatial-analysis', isAbsolute: true },
+          { id: 'pedigree-analysis', name: 'Pedigree Analysis', route: '/pedigree-analysis', isAbsolute: true },
+          { id: 'phenotype-analysis', name: 'Phenotype Analysis', route: '/phenotype-analysis', isAbsolute: true },
+        ],
+      },
     ],
   },
 
@@ -247,6 +264,10 @@ export const divisions: Division[] = [
         route: '/seed-bank/exchange',
         icon: 'ArrowLeftRight',
         isAbsolute: true,
+        items: [
+          { id: 'germplasm-exchange', name: 'Germplasm Exchange', route: '/seed-bank/exchange', isAbsolute: true },
+          { id: 'mcpd', name: 'MCPD Exchange', route: '/seed-bank/mcpd', isAbsolute: true },
+        ],
       },
     ],
   },
@@ -416,22 +437,30 @@ export const divisions: Division[] = [
     ],
   },
 
-  // Division 6b: Commercial (Legacy - Planned)
+  // Division 6b: Commercial (Active - DUS Testing)
   {
     id: 'commercial',
     name: 'Commercial',
-    description: 'Traceability, licensing, and ERP integration',
+    description: 'DUS testing, variety protection, and ERP integration',
     icon: 'Building2',
     route: '/commercial',
     component: lazy(() => import('@/divisions/commercial')),
     requiredPermissions: ['read:commercial'],
-    featureFlag: 'COMMERCIAL_ENABLED',
-    status: 'planned',
-    version: '0.2.0',
+    status: 'active',
+    version: '1.0.0',
     sections: [
-      { id: 'traceability', name: 'Traceability', route: '/traceability', icon: 'ScanLine' },
-      { id: 'licensing', name: 'Licensing', route: '/licensing', icon: 'FileCheck' },
-      { id: 'erp', name: 'ERP Integration', route: '/erp', icon: 'Link' },
+      { id: 'dashboard', name: 'Dashboard', route: '/commercial', icon: 'LayoutDashboard', isAbsolute: true },
+      {
+        id: 'dus-testing',
+        name: 'DUS Testing',
+        route: '/commercial/dus-trials',
+        icon: 'ClipboardCheck',
+        isAbsolute: true,
+        items: [
+          { id: 'dus-trials', name: 'DUS Trials', route: '/commercial/dus-trials', isAbsolute: true },
+          { id: 'dus-crops', name: 'Crop Templates', route: '/commercial/dus-crops', isAbsolute: true },
+        ],
+      },
     ],
   },
 

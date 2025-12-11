@@ -143,6 +143,13 @@ import { SpeedBreeding } from '@/pages/SpeedBreeding'
 import { DoubledHaploid } from '@/pages/DoubledHaploid'
 import { PlantVision } from '@/pages/PlantVision'
 import { DiseaseAtlas } from '@/pages/DiseaseAtlas'
+import { DiseaseResistance } from '@/pages/DiseaseResistance'
+import { AbioticStress } from '@/pages/AbioticStress'
+import { Bioinformatics } from '@/pages/Bioinformatics'
+import { CropCalendar } from '@/pages/CropCalendar'
+import { SpatialAnalysis } from '@/pages/SpatialAnalysis'
+import { PedigreeAnalysis } from '@/pages/PedigreeAnalysis'
+import { PhenotypeAnalysis } from '@/pages/PhenotypeAnalysis'
 import { FieldScanner } from '@/pages/FieldScanner'
 import { CropHealthDashboard } from '@/pages/CropHealthDashboard'
 import { YieldPredictor } from '@/pages/YieldPredictor'
@@ -257,6 +264,13 @@ const SeedBankConservation = lazy(() => import('@/divisions/seed-bank/pages/Cons
 const SeedBankExchange = lazy(() => import('@/divisions/seed-bank/pages/GermplasmExchange'))
 const SeedBankViability = lazy(() => import('@/divisions/seed-bank/pages/ViabilityTesting'))
 const SeedBankRegeneration = lazy(() => import('@/divisions/seed-bank/pages/RegenerationPlanning'))
+const SeedBankMCPD = lazy(() => import('@/divisions/seed-bank/pages/MCPDExchange'))
+
+// Commercial Division - DUS Testing
+const CommercialDashboard = lazy(() => import('@/divisions/commercial/pages/Dashboard'))
+const DUSTrials = lazy(() => import('@/divisions/commercial/pages/DUSTrials'))
+const DUSCrops = lazy(() => import('@/divisions/commercial/pages/DUSCrops'))
+const DUSTrialDetail = lazy(() => import('@/divisions/commercial/pages/DUSTrialDetail'))
 
 // Inner component that uses router hooks
 function AppRoutes() {
@@ -1132,6 +1146,13 @@ function AppRoutes() {
         <Route path="/seed-bank/viability" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankViability /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-bank/regeneration" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankRegeneration /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-bank/exchange" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankExchange /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/mcpd" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankMCPD /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Commercial Division - DUS Testing */}
+        <Route path="/commercial" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><CommercialDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/commercial/dus-trials" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><DUSTrials /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/commercial/dus-crops" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><DUSCrops /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/commercial/dus-trials/:id" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><DUSTrialDetail /></Suspense></Layout></ProtectedRoute>} />
 
         {/* Integration Hub routes */}
         <Route
@@ -2076,6 +2097,90 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <DiseaseAtlas />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Disease Resistance */}
+        <Route
+          path="/disease-resistance"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DiseaseResistance />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Abiotic Stress */}
+        <Route
+          path="/abiotic-stress"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AbioticStress />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Bioinformatics */}
+        <Route
+          path="/bioinformatics"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Bioinformatics />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Crop Calendar */}
+        <Route
+          path="/crop-calendar"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CropCalendar />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Spatial Analysis */}
+        <Route
+          path="/spatial-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SpatialAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Pedigree Analysis */}
+        <Route
+          path="/pedigree-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PedigreeAnalysis />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phenotype Analysis */}
+        <Route
+          path="/phenotype-analysis"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PhenotypeAnalysis />
               </Layout>
             </ProtectedRoute>
           }
