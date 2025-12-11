@@ -1,7 +1,7 @@
 # Bijmantra - Priority TODO
 
 > **Single Source of Truth** for what needs to be built  
-> Last updated: December 10, 2025
+> Last updated: December 11, 2025
 
 ---
 
@@ -59,10 +59,10 @@
 | Phenotype Analysis | `/api/v2/phenotype/` (7) | ✅ Complete | DONE |
 | Bioinformatics | `/api/v2/bioinformatics/` (7) | ✅ Complete | DONE |
 | Crop Calendar | `/api/v2/crop-calendar/` (10) | ✅ Complete | DONE |
-| Selection Index | `/api/v2/selection/` (9) | ⚠️ Backend only | LOW |
-| Genetic Gain | `/api/v2/genetic-gain/` (9) | ⚠️ Backend only | LOW |
-| Harvest Management | `/api/v2/harvest/` (16) | ⚠️ Backend only | LOW |
-| Breeding Value | `/api/v2/breeding-value/` (8) | ⚠️ Backend only | LOW |
+| Selection Index | `/api/v2/selection/` (9) | ✅ Complete | DONE |
+| Genetic Gain | `/api/v2/genetic-gain/` (9) | ✅ Complete | DONE |
+| Harvest Management | `/api/v2/harvest/` (16) | ✅ Complete | DONE |
+| Breeding Value | `/api/v2/breeding-value/` (8) | ✅ Complete | DONE |
 
 ---
 
@@ -77,6 +77,14 @@
 - [ ] **Compile Rust to WASM** — GRM, LD, PCA
 
 ---
+
+## ✅ COMPLETED (Dec 11, 2025)
+
+### Frontend UI - Backend API Pages (4 pages)
+- [x] **Selection Index Calculator** — Smith-Hazel, Desired Gains, Base Index, Independent Culling, Response Prediction
+- [x] **Genetic Gain Tracker** — Program tracking, cycle recording, gain calculation, variety releases
+- [x] **Harvest Management** — Harvest plans, records, quality grading, storage management
+- [x] **Breeding Value Calculator** — BLUP, GBLUP, cross prediction, selection candidates
 
 ## ✅ COMPLETED (Dec 10, 2025)
 
@@ -143,7 +151,7 @@
 | Metric | Value |
 |--------|-------|
 | Total API Endpoints | 469 |
-| Frontend Pages | 271+ |
+| Frontend Pages | 275+ |
 | BrAPI Compliance | 100% |
 | TypeScript Errors | 0 |
 | Tests Passing | 48 |
