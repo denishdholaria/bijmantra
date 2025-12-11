@@ -10,77 +10,60 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
+import { apiClient } from '@/lib/api-client';
 import {
-  DollarSign,
-  Plus,
-  Search,
-  Calendar,
-  TrendingUp,
-  TrendingDown,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  FileText,
-  Download,
+  DollarSign, Plus, Search, Calendar, TrendingUp, TrendingDown,
+  CheckCircle2, Clock, AlertCircle, FileText, Download, Building2,
 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-interface Royalty {
+interface License {
   id: string;
-  agreement_id: string;
-  agreement_name?: string;
+  variety_id: string;
   variety_name?: string;
-  licensee?: string;
-  period_start: string;
-  period_end: string;
-  sales_quantity?: number;
-  sales_value?: number;
-  royalty_amount: number;
-  currency: string;
+  licensee_name: string;
+  royalty_rate_percent: number;
   status: string;
-  payment_date?: string;
-  notes?: string;
-  created_at: string;
 }
 
-interface Agreement {
+interface Variety {
   id: string;
-  variety_name?: string;
-  licensee: string;
-  royalty_rate?: number;
+  variety_name: string;
+  crop: string;
 }
 
 interface RoyaltySummary {
-  total_due: number;
+  variety_id: string;
+  variety_name: string;
+  total_royalties: number;
   total_paid: number;
   total_pending: number;
-  by_variety: Record<string, number>;
-  by_licensee: Record<string, number>;
+  license_count: number;
+  royalty_records: RoyaltyRecord[];
+}
+
+interface RoyaltyRecord {
+  id: string;
+  license_id: string;
+  licensee_name?: string;
+  variety_name?: string;
+  period_start: string;
+  period_end: string;
+  sales_quantity_kg: number;
+  sales_value: number;
+  royalty_amount: number;
+  payment_status: string;
+  created_at: string;
 }
 
 const statusColors: Record<string, string> = {
@@ -88,7 +71,6 @@ const statusColors: Record<string, string> = {
   invoiced: 'bg-blue-100 text-blue-800',
   paid: 'bg-green-100 text-green-800',
   overdue: 'bg-red-100 text-red-800',
-  disputed: 'bg-orange-100 text-orange-800',
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -96,192 +78,137 @@ const statusIcons: Record<string, React.ReactNode> = {
   invoiced: <FileText className="h-3 w-3" />,
   paid: <CheckCircle2 className="h-3 w-3" />,
   overdue: <AlertCircle className="h-3 w-3" />,
-  disputed: <AlertCircle className="h-3 w-3" />,
 };
 
 export function Royalties() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [yearFilter, setYearFilter] = useState<string>(new Date().getFullYear().toString());
+  const [selectedVariety, setSelectedVariety] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newRoyalty, setNewRoyalty] = useState({
-    agreement_id: '',
+    license_id: '',
     period_start: '',
     period_end: '',
-    sales_quantity: '',
+    sales_quantity_kg: '',
     sales_value: '',
     royalty_amount: '',
-    currency: 'USD',
-    notes: '',
   });
 
-  // Fetch royalties
-  const { data: royalties = [], isLoading } = useQuery<Royalty[]>({
-    queryKey: ['royalties', yearFilter],
-    queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/v2/licensing/royalties?year=${yearFilter}`);
-      if (!res.ok) throw new Error('Failed to fetch royalties');
-      return res.json();
-    },
+  // Fetch varieties for selection
+  const { data: varietiesResponse } = useQuery({
+    queryKey: ['licensing-varieties'],
+    queryFn: () => apiClient.getLicensingVarieties(),
   });
+  const varieties: Variety[] = varietiesResponse?.data || [];
 
-  // Fetch agreements for dropdown
-  const { data: agreements = [] } = useQuery<Agreement[]>({
-    queryKey: ['agreements'],
-    queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/v2/licensing/agreements?status=active`);
-      if (!res.ok) throw new Error('Failed to fetch agreements');
-      return res.json();
-    },
+  // Fetch licenses for dropdown
+  const { data: licensesResponse } = useQuery({
+    queryKey: ['licenses', 'active'],
+    queryFn: () => apiClient.getLicenses(undefined, undefined, undefined, 'active'),
   });
+  const licenses: License[] = licensesResponse?.data || [];
 
-  // Fetch royalty summary
-  const { data: summary } = useQuery<RoyaltySummary>({
-    queryKey: ['royalty-summary', yearFilter],
-    queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/v2/licensing/royalties/summary?year=${yearFilter}`);
-      if (!res.ok) throw new Error('Failed to fetch summary');
-      return res.json();
-    },
+  // Fetch royalty summary for selected variety
+  const { data: summaryResponse, isLoading } = useQuery({
+    queryKey: ['royalty-summary', selectedVariety],
+    queryFn: () => selectedVariety ? apiClient.getVarietyRoyaltySummary(selectedVariety) : null,
+    enabled: !!selectedVariety,
   });
+  const summary: RoyaltySummary | null = summaryResponse?.data || null;
+
+  // Fetch licensing statistics
+  const { data: statsResponse } = useQuery({
+    queryKey: ['licensing-statistics'],
+    queryFn: () => apiClient.getLicensingStatistics(),
+  });
+  const stats = statsResponse?.data || {
+    total_varieties: 0,
+    total_licenses: 0,
+    active_licenses: 0,
+    total_royalties_collected: 0,
+  };
 
   // Record royalty mutation
   const recordMutation = useMutation({
     mutationFn: async (data: typeof newRoyalty) => {
-      const payload = {
-        ...data,
-        sales_quantity: data.sales_quantity ? parseInt(data.sales_quantity) : undefined,
-        sales_value: data.sales_value ? parseFloat(data.sales_value) : undefined,
-        royalty_amount: parseFloat(data.royalty_amount),
-      };
-      const res = await fetch(`${API_BASE}/api/v2/licensing/royalties`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      return apiClient.recordRoyalty(data.license_id, {
+        period_start: data.period_start,
+        period_end: data.period_end,
+        sales_quantity_kg: parseFloat(data.sales_quantity_kg) || 0,
+        sales_value: parseFloat(data.sales_value) || 0,
+        royalty_amount: parseFloat(data.royalty_amount) || 0,
+        payment_status: 'pending',
       });
-      if (!res.ok) throw new Error('Failed to record royalty');
-      return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['royalties'] });
       queryClient.invalidateQueries({ queryKey: ['royalty-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['licensing-statistics'] });
       toast.success('Royalty recorded successfully');
       setIsDialogOpen(false);
       setNewRoyalty({
-        agreement_id: '',
-        period_start: '',
-        period_end: '',
-        sales_quantity: '',
-        sales_value: '',
-        royalty_amount: '',
-        currency: 'USD',
-        notes: '',
+        license_id: '', period_start: '', period_end: '',
+        sales_quantity_kg: '', sales_value: '', royalty_amount: '',
       });
     },
-    onError: () => {
-      toast.error('Failed to record royalty');
-    },
+    onError: () => toast.error('Failed to record royalty'),
   });
 
-  // Mark as paid mutation
-  const markPaidMutation = useMutation({
-    mutationFn: async (royaltyId: string) => {
-      const res = await fetch(`${API_BASE}/api/v2/licensing/royalties/${royaltyId}/pay`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_date: new Date().toISOString().split('T')[0] }),
-      });
-      if (!res.ok) throw new Error('Failed to mark as paid');
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['royalties'] });
-      queryClient.invalidateQueries({ queryKey: ['royalty-summary'] });
-      toast.success('Royalty marked as paid');
-    },
-    onError: () => {
-      toast.error('Failed to update royalty');
-    },
-  });
+  // Calculate royalty amount based on sales and rate
+  const calculateRoyalty = () => {
+    const license = licenses.find(l => l.id === newRoyalty.license_id);
+    if (license && newRoyalty.sales_value) {
+      const amount = (parseFloat(newRoyalty.sales_value) * license.royalty_rate_percent / 100).toFixed(2);
+      setNewRoyalty({ ...newRoyalty, royalty_amount: amount });
+    }
+  };
 
-  // Filter royalties
-  const filteredRoyalties = royalties.filter((r) => {
-    const matchesSearch =
-      (r.variety_name?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
-      (r.licensee?.toLowerCase().includes(search.toLowerCase()) ?? false);
-    const matchesStatus = statusFilter === 'all' || r.status === statusFilter;
+  const formatCurrency = (amount: number, currency = 'USD') => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
+  };
+
+  // Filter royalty records
+  const royaltyRecords = summary?.royalty_records || [];
+  const filteredRecords = royaltyRecords.filter((r) => {
+    const matchesSearch = (r.licensee_name?.toLowerCase().includes(search.toLowerCase()) ?? true);
+    const matchesStatus = statusFilter === 'all' || r.payment_status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   // Calculate totals
   const totals = {
-    due: summary?.total_due || royalties.filter(r => r.status !== 'paid').reduce((sum, r) => sum + r.royalty_amount, 0),
-    paid: summary?.total_paid || royalties.filter(r => r.status === 'paid').reduce((sum, r) => sum + r.royalty_amount, 0),
-    pending: summary?.total_pending || royalties.filter(r => r.status === 'pending').reduce((sum, r) => sum + r.royalty_amount, 0),
-    total: royalties.reduce((sum, r) => sum + r.royalty_amount, 0),
+    total: summary?.total_royalties || stats.total_royalties_collected || 0,
+    paid: summary?.total_paid || 0,
+    pending: summary?.total_pending || 0,
+    outstanding: (summary?.total_royalties || 0) - (summary?.total_paid || 0),
   };
-
-  const formatCurrency = (amount: number, currency = 'USD') => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency,
-    }).format(amount);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    recordMutation.mutate(newRoyalty);
-  };
-
-  // Generate year options
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <DollarSign className="h-6 w-6" />
-            Royalties
+            <DollarSign className="h-6 w-6" />Royalties
           </h1>
-          <p className="text-muted-foreground">
-            Track royalty payments and revenue from licensed varieties
-          </p>
+          <p className="text-muted-foreground">Track royalty payments and revenue from licensed varieties</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+          <Button variant="outline"><Download className="h-4 w-4 mr-2" />Export</Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Record Royalty
-              </Button>
+              <Button><Plus className="h-4 w-4 mr-2" />Record Royalty</Button>
             </DialogTrigger>
             <DialogContent className="max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Record Royalty Payment</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <DialogHeader><DialogTitle>Record Royalty Payment</DialogTitle></DialogHeader>
+              <form onSubmit={(e) => { e.preventDefault(); recordMutation.mutate(newRoyalty); }} className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Agreement *</Label>
-                  <Select
-                    value={newRoyalty.agreement_id}
-                    onValueChange={(v) => setNewRoyalty({ ...newRoyalty, agreement_id: v })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select agreement" />
-                    </SelectTrigger>
+                  <Label>License Agreement *</Label>
+                  <Select value={newRoyalty.license_id} onValueChange={(v) => setNewRoyalty({ ...newRoyalty, license_id: v })}>
+                    <SelectTrigger><SelectValue placeholder="Select license" /></SelectTrigger>
                     <SelectContent>
-                      {agreements.map((a) => (
-                        <SelectItem key={a.id} value={a.id}>
-                          {a.variety_name || 'Variety'} - {a.licensee}
-                          {a.royalty_rate && ` (${a.royalty_rate}%)`}
+                      {licenses.map((l) => (
+                        <SelectItem key={l.id} value={l.id}>
+                          {l.variety_name || 'Variety'} - {l.licensee_name} ({l.royalty_rate_percent}%)
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -290,90 +217,31 @@ export function Royalties() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Period Start *</Label>
-                    <Input
-                      type="date"
-                      value={newRoyalty.period_start}
-                      onChange={(e) => setNewRoyalty({ ...newRoyalty, period_start: e.target.value })}
-                      required
-                    />
+                    <Input type="date" value={newRoyalty.period_start} onChange={(e) => setNewRoyalty({ ...newRoyalty, period_start: e.target.value })} required />
                   </div>
                   <div className="space-y-2">
                     <Label>Period End *</Label>
-                    <Input
-                      type="date"
-                      value={newRoyalty.period_end}
-                      onChange={(e) => setNewRoyalty({ ...newRoyalty, period_end: e.target.value })}
-                      required
-                    />
+                    <Input type="date" value={newRoyalty.period_end} onChange={(e) => setNewRoyalty({ ...newRoyalty, period_end: e.target.value })} required />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Sales Quantity</Label>
-                    <Input
-                      type="number"
-                      value={newRoyalty.sales_quantity}
-                      onChange={(e) => setNewRoyalty({ ...newRoyalty, sales_quantity: e.target.value })}
-                      placeholder="Units sold"
-                    />
+                    <Label>Sales Quantity (kg)</Label>
+                    <Input type="number" value={newRoyalty.sales_quantity_kg} onChange={(e) => setNewRoyalty({ ...newRoyalty, sales_quantity_kg: e.target.value })} />
                   </div>
                   <div className="space-y-2">
-                    <Label>Sales Value</Label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      value={newRoyalty.sales_value}
-                      onChange={(e) => setNewRoyalty({ ...newRoyalty, sales_value: e.target.value })}
-                      placeholder="Total sales"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Royalty Amount *</Label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      value={newRoyalty.royalty_amount}
-                      onChange={(e) => setNewRoyalty({ ...newRoyalty, royalty_amount: e.target.value })}
-                      placeholder="Amount due"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Currency</Label>
-                    <Select
-                      value={newRoyalty.currency}
-                      onValueChange={(v) => setNewRoyalty({ ...newRoyalty, currency: v })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
-                        <SelectItem value="INR">INR</SelectItem>
-                        <SelectItem value="GBP">GBP</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label>Sales Value *</Label>
+                    <Input type="number" step="0.01" value={newRoyalty.sales_value} onChange={(e) => setNewRoyalty({ ...newRoyalty, sales_value: e.target.value })} onBlur={calculateRoyalty} required />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Notes</Label>
-                  <Textarea
-                    value={newRoyalty.notes}
-                    onChange={(e) => setNewRoyalty({ ...newRoyalty, notes: e.target.value })}
-                    placeholder="Additional notes..."
-                    rows={2}
-                  />
+                  <Label>Royalty Amount *</Label>
+                  <Input type="number" step="0.01" value={newRoyalty.royalty_amount} onChange={(e) => setNewRoyalty({ ...newRoyalty, royalty_amount: e.target.value })} required />
+                  <p className="text-xs text-muted-foreground">Auto-calculated based on sales value and royalty rate</p>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={recordMutation.isPending}>
-                    {recordMutation.isPending ? 'Recording...' : 'Record Royalty'}
-                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button type="submit" disabled={recordMutation.isPending}>{recordMutation.isPending ? 'Recording...' : 'Record'}</Button>
                 </div>
               </form>
             </DialogContent>
@@ -381,190 +249,132 @@ export function Royalties() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <DollarSign className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{formatCurrency(totals.total)}</p>
-                <p className="text-xs text-muted-foreground">Total {yearFilter}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{formatCurrency(totals.paid)}</p>
-                <p className="text-xs text-muted-foreground">Collected</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Clock className="h-5 w-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{formatCurrency(totals.pending)}</p>
-                <p className="text-xs text-muted-foreground">Pending</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <TrendingDown className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{formatCurrency(totals.due - totals.paid)}</p>
-                <p className="text-xs text-muted-foreground">Outstanding</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="p-2 bg-blue-100 rounded-lg"><DollarSign className="h-5 w-5 text-blue-600" /></div><div><p className="text-2xl font-bold">{formatCurrency(totals.total)}</p><p className="text-xs text-muted-foreground">Total Royalties</p></div></div></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="p-2 bg-green-100 rounded-lg"><TrendingUp className="h-5 w-5 text-green-600" /></div><div><p className="text-2xl font-bold">{formatCurrency(totals.paid)}</p><p className="text-xs text-muted-foreground">Collected</p></div></div></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="p-2 bg-yellow-100 rounded-lg"><Clock className="h-5 w-5 text-yellow-600" /></div><div><p className="text-2xl font-bold">{formatCurrency(totals.pending)}</p><p className="text-xs text-muted-foreground">Pending</p></div></div></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="p-2 bg-red-100 rounded-lg"><TrendingDown className="h-5 w-5 text-red-600" /></div><div><p className="text-2xl font-bold">{formatCurrency(totals.outstanding)}</p><p className="text-xs text-muted-foreground">Outstanding</p></div></div></CardContent></Card>
       </div>
 
-      {/* Filters */}
       <div className="flex gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by variety or licensee..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Select value={yearFilter} onValueChange={setYearFilter}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder="Year" />
-          </SelectTrigger>
+        <Select value={selectedVariety} onValueChange={setSelectedVariety}>
+          <SelectTrigger className="w-[250px]"><SelectValue placeholder="Select variety to view" /></SelectTrigger>
           <SelectContent>
-            {years.map((year) => (
-              <SelectItem key={year} value={year}>
-                {year}
-              </SelectItem>
-            ))}
+            {varieties.map((v) => <SelectItem key={v.id} value={v.id}>{v.variety_name} ({v.crop})</SelectItem>)}
           </SelectContent>
         </Select>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search by licensee..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+        </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
+          <SelectTrigger className="w-[150px]"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="invoiced">Invoiced</SelectItem>
             <SelectItem value="paid">Paid</SelectItem>
             <SelectItem value="overdue">Overdue</SelectItem>
-            <SelectItem value="disputed">Disputed</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Table */}
+      {!selectedVariety ? (
+        <Card>
+          <CardContent className="py-12 text-center text-muted-foreground">
+            <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <p>Select a variety to view royalty records</p>
+            <p className="text-sm mt-1">Choose from the dropdown above</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Royalty Records - {summary?.variety_name || 'Loading...'}</CardTitle>
+            <CardDescription>
+              {summary?.license_count || 0} active licenses • {filteredRecords.length} records
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
+            ) : filteredRecords.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>No royalty records found</p>
+                <p className="text-sm">Record your first royalty payment</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Licensee</TableHead>
+                    <TableHead>Period</TableHead>
+                    <TableHead>Sales (kg)</TableHead>
+                    <TableHead>Sales Value</TableHead>
+                    <TableHead>Royalty</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredRecords.map((record) => (
+                    <TableRow key={record.id}>
+                      <TableCell>
+                        <span className="flex items-center gap-1">
+                          <Building2 className="h-3 w-3 text-muted-foreground" />
+                          {record.licensee_name || '-'}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="flex items-center gap-1 text-sm">
+                          <Calendar className="h-3 w-3" />
+                          {record.period_start} - {record.period_end}
+                        </span>
+                      </TableCell>
+                      <TableCell>{record.sales_quantity_kg?.toLocaleString() || '-'}</TableCell>
+                      <TableCell>{formatCurrency(record.sales_value)}</TableCell>
+                      <TableCell className="font-medium">{formatCurrency(record.royalty_amount)}</TableCell>
+                      <TableCell>
+                        <Badge className={statusColors[record.payment_status] || 'bg-gray-100'}>
+                          <span className="flex items-center gap-1">
+                            {statusIcons[record.payment_status]}
+                            {record.payment_status}
+                          </span>
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Quick Stats */}
       <Card>
         <CardHeader>
-          <CardTitle>Royalty Records</CardTitle>
-          <CardDescription>
-            {filteredRoyalties.length} records for {yearFilter}
-          </CardDescription>
+          <CardTitle>Licensing Overview</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">Loading...</div>
-          ) : filteredRoyalties.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p>No royalty records found</p>
-              <p className="text-sm">Record your first royalty payment</p>
+          <div className="grid grid-cols-4 gap-4 text-center">
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-3xl font-bold">{stats.total_varieties}</p>
+              <p className="text-sm text-muted-foreground">Registered Varieties</p>
             </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Variety</TableHead>
-                  <TableHead>Licensee</TableHead>
-                  <TableHead>Period</TableHead>
-                  <TableHead>Sales</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRoyalties.map((royalty) => (
-                  <TableRow key={royalty.id}>
-                    <TableCell className="font-medium">
-                      {royalty.variety_name || '-'}
-                    </TableCell>
-                    <TableCell>{royalty.licensee || '-'}</TableCell>
-                    <TableCell>
-                      <span className="flex items-center gap-1 text-sm">
-                        <Calendar className="h-3 w-3" />
-                        {royalty.period_start} - {royalty.period_end}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {royalty.sales_quantity && (
-                        <div className="text-sm">
-                          <div>{royalty.sales_quantity.toLocaleString()} units</div>
-                          {royalty.sales_value && (
-                            <div className="text-muted-foreground">
-                              {formatCurrency(royalty.sales_value, royalty.currency)}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      {!royalty.sales_quantity && '-'}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {formatCurrency(royalty.royalty_amount, royalty.currency)}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={statusColors[royalty.status] || 'bg-gray-100'}>
-                        <span className="flex items-center gap-1">
-                          {statusIcons[royalty.status]}
-                          {royalty.status}
-                        </span>
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {royalty.status !== 'paid' && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => markPaidMutation.mutate(royalty.id)}
-                          disabled={markPaidMutation.isPending}
-                        >
-                          <CheckCircle2 className="h-3 w-3 mr-1" />
-                          Mark Paid
-                        </Button>
-                      )}
-                      {royalty.status === 'paid' && royalty.payment_date && (
-                        <span className="text-xs text-muted-foreground">
-                          Paid {royalty.payment_date}
-                        </span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-3xl font-bold">{stats.total_licenses}</p>
+              <p className="text-sm text-muted-foreground">Total Licenses</p>
+            </div>
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-3xl font-bold">{stats.active_licenses}</p>
+              <p className="text-sm text-muted-foreground">Active Licenses</p>
+            </div>
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-3xl font-bold">{formatCurrency(stats.total_royalties_collected)}</p>
+              <p className="text-sm text-muted-foreground">Total Collected</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,7 @@
 /**
  * User Profile Page
  * Account management and preferences
+ * Enhanced with i18n, density, and field mode settings
  */
 
 import { useState } from 'react'
@@ -12,10 +13,22 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
+import { useI18n } from '@/hooks/useI18n'
+import { useDensity } from '@/hooks/useDensity'
+import { useFieldMode } from '@/hooks/useFieldMode'
+import { useColorScheme } from '@/hooks/useColorScheme'
+import { LanguageSelector } from '@/components/LanguageSelector'
+import { Sun, Moon, Smartphone, Monitor, Palette, Languages, Maximize2, Eye, Volume2 } from 'lucide-react'
 
 export function Profile() {
   const { user } = useAuthStore()
+  const { t, language, setLanguage, isRTL } = useI18n()
+  const { density, setDensity } = useDensity()
+  const fieldMode = useFieldMode()
+  const colorScheme = useColorScheme()
+  
   const [fullName, setFullName] = useState(user?.full_name || '')
   const [email, setEmail] = useState(user?.email || '')
   const [currentPassword, setCurrentPassword] = useState('')
@@ -24,8 +37,9 @@ export function Profile() {
 
   // Preferences
   const [darkMode, setDarkMode] = useState(false)
-  const [compactView, setCompactView] = useState(false)
   const [emailNotifications, setEmailNotifications] = useState(true)
+  const [pushNotifications, setPushNotifications] = useState(true)
+  const [soundEnabled, setSoundEnabled] = useState(true)
 
   const handleUpdateProfile = () => {
     toast.success('Profile updated (demo)')
@@ -147,31 +161,152 @@ export function Profile() {
         </TabsContent>
 
         <TabsContent value="preferences" className="space-y-6 mt-6">
+          {/* Language & Localization */}
           <Card>
             <CardHeader>
-              <CardTitle>Display Preferences</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Languages className="h-5 w-5" />
+                Language & Localization
+              </CardTitle>
+              <CardDescription>Choose your preferred language and regional settings</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Language</p>
+                  <p className="text-sm text-muted-foreground">
+                    Select your preferred language {isRTL && '(RTL enabled)'}
+                  </p>
+                </div>
+                <LanguageSelector variant="default" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Display Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Monitor className="h-5 w-5" />
+                Display Settings
+              </CardTitle>
+              <CardDescription>Customize how the interface looks</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">Dark Mode</p>
-                  <p className="text-sm text-muted-foreground">Use dark theme (coming soon)</p>
+                  <p className="text-sm text-muted-foreground">Use dark theme</p>
                 </div>
-                <Switch checked={darkMode} onCheckedChange={setDarkMode} disabled />
+                <Switch checked={darkMode} onCheckedChange={setDarkMode} />
               </div>
+              
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Compact View</p>
-                  <p className="text-sm text-muted-foreground">Show more items per page</p>
+                  <p className="font-medium">Display Density</p>
+                  <p className="text-sm text-muted-foreground">Adjust spacing between elements</p>
                 </div>
-                <Switch checked={compactView} onCheckedChange={setCompactView} />
+                <Select value={density} onValueChange={(v: 'compact' | 'comfortable' | 'spacious') => setDensity(v)}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="compact">Compact</SelectItem>
+                    <SelectItem value="comfortable">Comfortable</SelectItem>
+                    <SelectItem value="spacious">Spacious</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Color Scheme</p>
+                  <p className="text-sm text-muted-foreground">Chart and data visualization colors</p>
+                </div>
+                <Select value={colorScheme.mode} onValueChange={(v: 'standard' | 'colorblind') => colorScheme.setMode(v)}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="standard">Standard</SelectItem>
+                    <SelectItem value="colorblind">Colorblind Safe</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
 
+          {/* Field Mode Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Smartphone className="h-5 w-5" />
+                Field Mode
+              </CardTitle>
+              <CardDescription>Optimize the interface for outdoor field work</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Enable Field Mode</p>
+                  <p className="text-sm text-muted-foreground">High contrast, large touch targets</p>
+                </div>
+                <Switch checked={fieldMode.isFieldMode} onCheckedChange={fieldMode.toggleFieldMode} />
+              </div>
+
+              {fieldMode.isFieldMode && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">High Contrast</p>
+                        <p className="text-sm text-muted-foreground">WCAG AAA 7:1 contrast ratio</p>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={fieldMode.highContrast} 
+                      onCheckedChange={(v) => fieldMode.updateSettings({ highContrast: v })} 
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Maximize2 className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">Large Text</p>
+                        <p className="text-sm text-muted-foreground">Increase font size for readability</p>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={fieldMode.largeText} 
+                      onCheckedChange={(v) => fieldMode.updateSettings({ largeText: v })} 
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Volume2 className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">Haptic Feedback</p>
+                        <p className="text-sm text-muted-foreground">Vibration on button press</p>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={fieldMode.hapticFeedback} 
+                      onCheckedChange={(v) => fieldMode.updateSettings({ hapticFeedback: v })} 
+                    />
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Notifications */}
           <Card>
             <CardHeader>
               <CardTitle>Notifications</CardTitle>
+              <CardDescription>Manage how you receive updates</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
@@ -180,6 +315,20 @@ export function Profile() {
                   <p className="text-sm text-muted-foreground">Receive updates via email</p>
                 </div>
                 <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Push Notifications</p>
+                  <p className="text-sm text-muted-foreground">Browser push notifications</p>
+                </div>
+                <Switch checked={pushNotifications} onCheckedChange={setPushNotifications} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Sound Effects</p>
+                  <p className="text-sm text-muted-foreground">Play sounds for notifications</p>
+                </div>
+                <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
               </div>
             </CardContent>
           </Card>

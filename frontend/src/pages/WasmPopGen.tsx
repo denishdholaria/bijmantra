@@ -88,14 +88,14 @@ function WasmPopGen() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Users className="h-8 w-8 text-green-500" />
-            WASM Population Genetics
+            Population Genetics
           </h1>
           <p className="text-muted-foreground mt-1">
-            Population structure and diversity analysis powered by Rust/WebAssembly
+            Diversity analysis, Fst, and population structure (PCA)
           </p>
         </div>
         <Badge variant={isReady ? "default" : "secondary"} className={isReady ? "bg-green-500" : ""}>
-          {isReady ? `WASM v${version}` : 'Loading...'}
+          {isReady ? `⚡ WebAssembly v${version}` : 'Loading...'}
         </Badge>
       </div>
 

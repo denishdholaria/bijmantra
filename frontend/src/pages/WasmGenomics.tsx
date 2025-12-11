@@ -73,10 +73,10 @@ function WasmGenomics() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Cpu className="h-8 w-8 text-orange-500" />
-            WASM Genomics Engine
+            Genomics Benchmark
           </h1>
           <p className="text-muted-foreground mt-1">
-            High-performance genomic computations powered by Rust/WebAssembly
+            High-performance genomic computations at native speed
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -85,12 +85,12 @@ function WasmGenomics() {
           ) : isReady ? (
             <Badge className="bg-green-500">
               <CheckCircle2 className="h-3 w-3 mr-1" />
-              WASM Ready v{version}
+              ⚡ WebAssembly v{version}
             </Badge>
           ) : (
             <Badge variant="destructive">
               <XCircle className="h-3 w-3 mr-1" />
-              WASM Not Available
+              Engine Not Available
             </Badge>
           )}
         </div>
@@ -99,7 +99,7 @@ function WasmGenomics() {
       {wasmError && (
         <Alert variant="destructive">
           <AlertDescription>
-            WASM module failed to load: {wasmError.message}
+            Compute engine failed to load: {wasmError.message}
           </AlertDescription>
         </Alert>
       )}
@@ -107,7 +107,7 @@ function WasmGenomics() {
       {!isReady && !isLoading && (
         <Alert>
           <AlertDescription>
-            WASM module not built. Run: <code className="bg-muted px-1 rounded">cd rust && ./build.sh</code>
+            Compute engine not built. Run: <code className="bg-muted px-1 rounded">cd rust && ./build.sh</code>
           </AlertDescription>
         </Alert>
       )}
@@ -382,8 +382,8 @@ function WasmGenomics() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Available WASM Functions</CardTitle>
-          <CardDescription>High-performance genomic algorithms</CardDescription>
+          <CardTitle>Available Functions</CardTitle>
+          <CardDescription>High-performance genomic algorithms powered by WebAssembly</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

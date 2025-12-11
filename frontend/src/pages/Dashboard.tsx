@@ -14,7 +14,9 @@ import { Badge } from '@/components/ui/badge'
 import { 
   AlertCircle, RefreshCw, ArrowRight, Clock, 
   Beaker, Leaf, Package, BarChart3, 
-  FlaskConical, Dna, MapPin, FileText
+  FlaskConical, Dna, MapPin, FileText,
+  ClipboardList, Sprout, Plus, QrCode, Truck,
+  Cog, ScanLine, Warehouse, ShieldCheck
 } from 'lucide-react'
 
 type UserRole = 'breeder' | 'seed_company' | 'admin'
@@ -253,10 +255,10 @@ function BreederDashboard({
             <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <QuickAction to="/observations/collect" icon="📝" label="Collect Data" primary />
-            <QuickAction to="/programs/new" icon="🌾" label="New Program" />
-            <QuickAction to="/trials/new" icon="🧪" label="New Trial" />
-            <QuickAction to="/germplasm/new" icon="🌱" label="Add Germplasm" />
+            <QuickAction to="/observations/collect" icon={<ClipboardList className="h-5 w-5" />} label="Collect Data" primary />
+            <QuickAction to="/programs/new" icon={<Plus className="h-5 w-5" />} label="New Program" />
+            <QuickAction to="/trials/new" icon={<FlaskConical className="h-5 w-5" />} label="New Trial" />
+            <QuickAction to="/germplasm/new" icon={<Sprout className="h-5 w-5" />} label="Add Germplasm" />
           </CardContent>
         </Card>
       </div>
@@ -356,7 +358,9 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
             <div className="grid grid-cols-2 gap-4">
               <Link to="/seed-operations/quality-gate" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🔍</span>
+                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
                   <div>
                     <p className="font-medium">Quality Gate</p>
                     <p className="text-sm text-muted-foreground">Scan & verify lots</p>
@@ -365,7 +369,9 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
               </Link>
               <Link to="/seed-operations/batches" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">⚙️</span>
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                    <Cog className="h-5 w-5" />
+                  </div>
                   <div>
                     <p className="font-medium">Processing</p>
                     <p className="text-sm text-muted-foreground">Batch management</p>
@@ -374,7 +380,9 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
               </Link>
               <Link to="/seed-operations/lots" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">📦</span>
+                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                    <Package className="h-5 w-5" />
+                  </div>
                   <div>
                     <p className="font-medium">Inventory</p>
                     <p className="text-sm text-muted-foreground">Seed lot tracking</p>
@@ -383,7 +391,9 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
               </Link>
               <Link to="/seed-operations/dispatch" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🚚</span>
+                  <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                    <Truck className="h-5 w-5" />
+                  </div>
                   <div>
                     <p className="font-medium">Dispatch</p>
                     <p className="text-sm text-muted-foreground">Create shipments</p>
@@ -407,10 +417,10 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
             <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <QuickAction to="/seedlots/new" icon="📦" label="New Seed Lot" primary />
-            <QuickAction to="/quality" icon="🔬" label="Lab Testing" />
-            <QuickAction to="/traceability" icon="📋" label="Traceability" />
-            <QuickAction to="/inventory" icon="📊" label="Inventory" />
+            <QuickAction to="/seedlots/new" icon={<Package className="h-5 w-5" />} label="New Seed Lot" primary />
+            <QuickAction to="/quality" icon={<FlaskConical className="h-5 w-5" />} label="Lab Testing" />
+            <QuickAction to="/traceability" icon={<QrCode className="h-5 w-5" />} label="Traceability" />
+            <QuickAction to="/inventory" icon={<Warehouse className="h-5 w-5" />} label="Inventory" />
           </CardContent>
         </Card>
       </div>
@@ -502,7 +512,7 @@ function StatCard({ title, value, icon, link, color, isLoading }: StatCardProps)
 
 interface QuickActionProps {
   to: string
-  icon: string
+  icon: React.ReactNode
   label: string
   primary?: boolean
 }
@@ -514,7 +524,7 @@ function QuickAction({ to, icon, label, primary }: QuickActionProps) {
         variant={primary ? 'default' : 'outline'} 
         className={`w-full justify-start gap-3 h-11 ${primary ? 'bg-green-600 hover:bg-green-700' : ''}`}
       >
-        <span className="text-lg">{icon}</span>
+        {icon}
         <span>{label}</span>
       </Button>
     </Link>
@@ -576,11 +586,12 @@ interface ActivityFeedProps {
 }
 
 function ActivityFeed({ observations, trials, germplasm }: ActivityFeedProps) {
-  const activities: { icon: string; title: string; subtitle: string; time: string; link: string }[] = []
+  const activities: { icon: React.ReactNode; iconBg: string; title: string; subtitle: string; time: string; link: string }[] = []
 
   observations.slice(0, 3).forEach((obs: any) => {
     activities.push({
-      icon: '📋',
+      icon: <ClipboardList className="h-4 w-4" />,
+      iconBg: 'bg-purple-100 text-purple-600',
       title: 'Observation recorded',
       subtitle: obs.observationVariableName || 'Unknown trait',
       time: formatRelativeTime(obs.observationTimeStamp),
@@ -590,7 +601,8 @@ function ActivityFeed({ observations, trials, germplasm }: ActivityFeedProps) {
 
   trials.slice(0, 2).forEach((trial: any) => {
     activities.push({
-      icon: '🧪',
+      icon: <FlaskConical className="h-4 w-4" />,
+      iconBg: 'bg-blue-100 text-blue-600',
       title: trial.trialName || 'Trial',
       subtitle: trial.programName || 'Unknown program',
       time: formatRelativeTime(trial.startDate),
@@ -600,7 +612,8 @@ function ActivityFeed({ observations, trials, germplasm }: ActivityFeedProps) {
 
   germplasm.slice(0, 2).forEach((germ: any) => {
     activities.push({
-      icon: '🌱',
+      icon: <Sprout className="h-4 w-4" />,
+      iconBg: 'bg-green-100 text-green-600',
       title: germ.germplasmName || 'Germplasm',
       subtitle: germ.commonCropName || germ.genus || 'Unknown',
       time: formatRelativeTime(germ.acquisitionDate),
@@ -611,7 +624,9 @@ function ActivityFeed({ observations, trials, germplasm }: ActivityFeedProps) {
   if (activities.length === 0) {
     return (
       <div className="text-center py-8">
-        <span className="text-4xl mb-3 block">📊</span>
+        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+          <BarChart3 className="h-6 w-6 text-gray-400" />
+        </div>
         <p className="text-gray-600">No recent activity</p>
         <p className="text-sm text-gray-500 mt-1">Start by creating programs and collecting data</p>
       </div>
@@ -626,7 +641,9 @@ function ActivityFeed({ observations, trials, germplasm }: ActivityFeedProps) {
           to={activity.link}
           className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
         >
-          <span className="text-xl">{activity.icon}</span>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activity.iconBg}`}>
+            {activity.icon}
+          </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-gray-900 truncate">{activity.title}</p>
             <p className="text-sm text-gray-500 truncate">{activity.subtitle}</p>

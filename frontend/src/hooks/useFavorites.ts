@@ -1,121 +1,119 @@
 /**
- * Favorites/Pinned Items Hook
- *
- * Manage user-defined shortcuts for quick access to entities.
- * Persisted to localStorage.
+ * Favorites Management Hook
+ * 
+ * Manages user's pinned/favorite items with localStorage persistence.
+ * Max 8 favorites to keep the dock clean.
  */
 
-import { useCallback, useMemo } from 'react';
-import { useLocalStorage } from './useLocalStorage';
+import { useState, useEffect, useCallback } from 'react'
 
 export interface FavoriteItem {
-  id: string;
-  type: 'program' | 'trial' | 'study' | 'germplasm' | 'accession' | 'page' | 'report';
-  name: string;
-  route: string;
-  icon?: string;
-  addedAt: string;
+  id: string
+  name: string
+  route: string
+  icon: string
+  type: 'program' | 'trial' | 'study' | 'germplasm' | 'accession' | 'page' | 'report' | 'division'
+  addedAt: number
 }
 
-const MAX_FAVORITES = 20;
+const STORAGE_KEY = 'bijmantra-favorites'
+const MAX_FAVORITES = 8
+
+function loadFavorites(): FavoriteItem[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
+function saveFavorites(favorites: FavoriteItem[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites))
+  } catch (e) {
+    console.error('Failed to save favorites:', e)
+  }
+}
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useLocalStorage<FavoriteItem[]>('userFavorites', []);
+  const [favorites, setFavorites] = useState<FavoriteItem[]>(loadFavorites)
 
-  const addFavorite = useCallback(
-    (item: Omit<FavoriteItem, 'addedAt'>) => {
-      setFavorites((prev) => {
-        // Check if already exists
-        if (prev.some((f) => f.id === item.id && f.type === item.type)) {
-          return prev;
-        }
-
-        const newFavorite: FavoriteItem = {
-          ...item,
-          addedAt: new Date().toISOString(),
-        };
-
-        // Add to beginning, limit to max
-        const updated = [newFavorite, ...prev].slice(0, MAX_FAVORITES);
-        return updated;
-      });
-    },
-    [setFavorites]
-  );
-
-  const removeFavorite = useCallback(
-    (id: string, type: FavoriteItem['type']) => {
-      setFavorites((prev) => prev.filter((f) => !(f.id === id && f.type === type)));
-    },
-    [setFavorites]
-  );
-
-  const toggleFavorite = useCallback(
-    (item: Omit<FavoriteItem, 'addedAt'>) => {
-      const exists = favorites.some((f) => f.id === item.id && f.type === item.type);
-      if (exists) {
-        removeFavorite(item.id, item.type);
-      } else {
-        addFavorite(item);
+  // Sync with localStorage on mount
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) {
+        setFavorites(loadFavorites())
       }
-    },
-    [favorites, addFavorite, removeFavorite]
-  );
+    }
+    window.addEventListener('storage', handleStorage)
+    return () => window.removeEventListener('storage', handleStorage)
+  }, [])
 
-  const isFavorite = useCallback(
-    (id: string, type: FavoriteItem['type']) => {
-      return favorites.some((f) => f.id === id && f.type === type);
-    },
-    [favorites]
-  );
+  const addFavorite = useCallback((item: Omit<FavoriteItem, 'addedAt'>) => {
+    setFavorites(prev => {
+      // Check if already exists
+      if (prev.some(f => f.id === item.id && f.type === item.type)) {
+        return prev
+      }
+      // Check max limit
+      if (prev.length >= MAX_FAVORITES) {
+        console.warn(`Max favorites (${MAX_FAVORITES}) reached`)
+        return prev
+      }
+      const newFavorites = [...prev, { ...item, addedAt: Date.now() }]
+      saveFavorites(newFavorites)
+      return newFavorites
+    })
+  }, [])
 
-  const reorderFavorites = useCallback(
-    (fromIndex: number, toIndex: number) => {
-      setFavorites((prev) => {
-        const updated = [...prev];
-        const [removed] = updated.splice(fromIndex, 1);
-        updated.splice(toIndex, 0, removed);
-        return updated;
-      });
-    },
-    [setFavorites]
-  );
+  const removeFavorite = useCallback((id: string, type: FavoriteItem['type']) => {
+    setFavorites(prev => {
+      const newFavorites = prev.filter(f => !(f.id === id && f.type === type))
+      saveFavorites(newFavorites)
+      return newFavorites
+    })
+  }, [])
+
+  const isFavorite = useCallback((id: string, type: FavoriteItem['type']) => {
+    return favorites.some(f => f.id === id && f.type === type)
+  }, [favorites])
+
+  const toggleFavorite = useCallback((item: Omit<FavoriteItem, 'addedAt'>) => {
+    if (isFavorite(item.id, item.type)) {
+      removeFavorite(item.id, item.type)
+    } else {
+      addFavorite(item)
+    }
+  }, [isFavorite, removeFavorite, addFavorite])
 
   const clearFavorites = useCallback(() => {
-    setFavorites([]);
-  }, [setFavorites]);
+    setFavorites([])
+    saveFavorites([])
+  }, [])
 
-  // Group favorites by type
-  const groupedFavorites = useMemo(() => {
-    const groups: Record<FavoriteItem['type'], FavoriteItem[]> = {
-      program: [],
-      trial: [],
-      study: [],
-      germplasm: [],
-      accession: [],
-      page: [],
-      report: [],
-    };
-
-    favorites.forEach((f) => {
-      groups[f.type].push(f);
-    });
-
-    return groups;
-  }, [favorites]);
+  const reorderFavorites = useCallback((fromIndex: number, toIndex: number) => {
+    setFavorites(prev => {
+      const newFavorites = [...prev]
+      const [removed] = newFavorites.splice(fromIndex, 1)
+      newFavorites.splice(toIndex, 0, removed)
+      saveFavorites(newFavorites)
+      return newFavorites
+    })
+  }, [])
 
   return {
     favorites,
-    groupedFavorites,
-    addFavorite,
-    removeFavorite,
-    toggleFavorite,
-    isFavorite,
-    reorderFavorites,
-    clearFavorites,
     count: favorites.length,
     maxFavorites: MAX_FAVORITES,
-  };
+    canAddMore: favorites.length < MAX_FAVORITES,
+    addFavorite,
+    removeFavorite,
+    isFavorite,
+    toggleFavorite,
+    clearFavorites,
+    reorderFavorites,
+  }
 }
 
-export default useFavorites;
+export default useFavorites

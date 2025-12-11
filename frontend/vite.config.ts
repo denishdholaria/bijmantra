@@ -150,6 +150,36 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks - split large dependencies
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select', '@radix-ui/react-tabs', '@radix-ui/react-tooltip', '@radix-ui/react-popover'],
+          'vendor-echarts': ['echarts', 'echarts-for-react'],
+          'vendor-recharts': ['recharts'],
+          'vendor-query': ['@tanstack/react-query', '@tanstack/react-virtual'],
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'vendor-utils': ['date-fns', 'clsx', 'tailwind-merge', 'class-variance-authority'],
+          // Division chunks - lazy loaded
+          'division-seed-bank': [
+            './src/divisions/seed-bank/index.tsx',
+          ],
+          'division-seed-operations': [
+            './src/divisions/seed-operations/index.tsx',
+          ],
+          'division-earth-systems': [
+            './src/divisions/earth-systems/index.tsx',
+          ],
+          'division-commercial': [
+            './src/divisions/commercial/index.tsx',
+          ],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase limit since we're chunking
+  },
   server: {
     port: 5173,
     proxy: {

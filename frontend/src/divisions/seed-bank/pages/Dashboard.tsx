@@ -9,6 +9,18 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiClient } from '@/lib/api-client';
+import { 
+  Sprout, 
+  Warehouse, 
+  Clock, 
+  RefreshCw, 
+  FlaskConical, 
+  FileText, 
+  Handshake,
+  AlertTriangle,
+  AlertCircle,
+  Info
+} from 'lucide-react';
 
 interface DashboardStats {
   total_accessions: number;
@@ -36,10 +48,10 @@ export function Dashboard() {
   });
 
   const quickActions = [
-    { label: 'Register Accession', path: '/seed-bank/accessions/new', icon: '🌱' },
-    { label: 'Viability Test', path: '/seed-bank/viability', icon: '🔬' },
-    { label: 'MCPD Exchange', path: '/seed-bank/mcpd', icon: '📄' },
-    { label: 'Germplasm Exchange', path: '/seed-bank/exchange', icon: '🤝' },
+    { label: 'Register Accession', path: '/seed-bank/accessions/new', icon: Sprout, color: 'text-green-600 bg-green-100' },
+    { label: 'Viability Test', path: '/seed-bank/viability', icon: FlaskConical, color: 'text-purple-600 bg-purple-100' },
+    { label: 'MCPD Exchange', path: '/seed-bank/mcpd', icon: FileText, color: 'text-blue-600 bg-blue-100' },
+    { label: 'Germplasm Exchange', path: '/seed-bank/exchange', icon: Handshake, color: 'text-amber-600 bg-amber-100' },
   ];
 
   return (
@@ -63,10 +75,10 @@ export function Dashboard() {
           ))
         ) : (
           <>
-            <StatCard label="Total Accessions" value={stats?.total_accessions || 0} icon="🌾" />
-            <StatCard label="Active Vaults" value={stats?.active_vaults || 0} icon="🏛️" />
-            <StatCard label="Pending Viability" value={stats?.pending_viability || 0} icon="⏳" />
-            <StatCard label="Regeneration Queue" value={stats?.scheduled_regeneration || 0} icon="🔄" />
+            <StatCard label="Total Accessions" value={stats?.total_accessions || 0} icon={Sprout} color="text-green-600 bg-green-100" />
+            <StatCard label="Active Vaults" value={stats?.active_vaults || 0} icon={Warehouse} color="text-blue-600 bg-blue-100" />
+            <StatCard label="Pending Viability" value={stats?.pending_viability || 0} icon={Clock} color="text-amber-600 bg-amber-100" />
+            <StatCard label="Regeneration Queue" value={stats?.scheduled_regeneration || 0} icon={RefreshCw} color="text-purple-600 bg-purple-100" />
           </>
         )}
       </div>
@@ -84,7 +96,9 @@ export function Dashboard() {
                 to={action.path}
                 className="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-green-500 hover:bg-green-50 transition-colors"
               >
-                <span className="text-3xl mb-2">{action.icon}</span>
+                <div className={`w-12 h-12 rounded-lg ${action.color} flex items-center justify-center mb-2`}>
+                  <action.icon className="h-6 w-6" />
+                </div>
                 <span className="text-sm font-medium text-gray-700">{action.label}</span>
               </Link>
             ))}
@@ -101,25 +115,29 @@ export function Dashboard() {
           <CardContent>
             <div className="space-y-3">
               <ActivityItem
-                icon="🌱"
+                icon={Sprout}
+                color="text-green-600 bg-green-100"
                 title="New accession registered"
                 description="ACC-2024-1234 - Triticum aestivum"
                 time="2 hours ago"
               />
               <ActivityItem
-                icon="🔬"
+                icon={FlaskConical}
+                color="text-purple-600 bg-purple-100"
                 title="Viability test completed"
                 description="Batch VT-2024-089 - 98% germination"
                 time="5 hours ago"
               />
               <ActivityItem
-                icon="🤝"
+                icon={Handshake}
+                color="text-amber-600 bg-amber-100"
                 title="Germplasm exchange approved"
                 description="EX-2024-045 to CIMMYT"
                 time="1 day ago"
               />
               <ActivityItem
-                icon="🔄"
+                icon={RefreshCw}
+                color="text-blue-600 bg-blue-100"
                 title="Regeneration completed"
                 description="REG-2024-012 - 500 seeds harvested"
                 time="2 days ago"
@@ -157,26 +175,32 @@ export function Dashboard() {
   );
 }
 
-function StatCard({ label, value, icon, alert }: { label: string; value: number; icon: string; alert?: boolean }) {
+function StatCard({ label, value, icon: Icon, color, alert }: { label: string; value: number; icon: React.ElementType; color: string; alert?: boolean }) {
   return (
     <Card className={alert && value > 0 ? 'border-red-300 bg-red-50' : ''}>
       <CardContent className="p-4">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{icon}</span>
-          <span className={`text-2xl font-bold ${alert && value > 0 ? 'text-red-600' : 'text-gray-900'}`}>
-            {value.toLocaleString()}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-lg ${color} flex items-center justify-center`}>
+            <Icon className="h-5 w-5" />
+          </div>
+          <div>
+            <span className={`text-2xl font-bold ${alert && value > 0 ? 'text-red-600' : 'text-gray-900'}`}>
+              {value.toLocaleString()}
+            </span>
+            <p className="text-sm text-gray-600">{label}</p>
+          </div>
         </div>
-        <p className="text-sm text-gray-600 mt-1">{label}</p>
       </CardContent>
     </Card>
   );
 }
 
-function ActivityItem({ icon, title, description, time }: { icon: string; title: string; description: string; time: string }) {
+function ActivityItem({ icon: Icon, title, description, time, color }: { icon: React.ElementType; title: string; description: string; time: string; color: string }) {
   return (
     <div className="flex items-start gap-3 p-2 rounded hover:bg-gray-50">
-      <span className="text-xl">{icon}</span>
+      <div className={`w-8 h-8 rounded-lg ${color} flex items-center justify-center flex-shrink-0`}>
+        <Icon className="h-4 w-4" />
+      </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-gray-900">{title}</p>
         <p className="text-sm text-gray-500 truncate">{description}</p>
@@ -192,12 +216,17 @@ function AlertItem({ level, title, description }: { level: 'critical' | 'warning
     warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
     info: 'bg-blue-50 border-blue-200 text-blue-800',
   };
-  const icons = { critical: '🚨', warning: '⚠️', info: 'ℹ️' };
+  const iconMap = { 
+    critical: AlertTriangle, 
+    warning: AlertCircle, 
+    info: Info 
+  };
+  const IconComponent = iconMap[level];
 
   return (
     <div className={`p-3 rounded-lg border ${styles[level]}`}>
       <div className="flex items-center gap-2">
-        <span>{icons[level]}</span>
+        <IconComponent className="h-4 w-4" />
         <span className="font-medium">{title}</span>
       </div>
       <p className="text-sm mt-1 opacity-80">{description}</p>

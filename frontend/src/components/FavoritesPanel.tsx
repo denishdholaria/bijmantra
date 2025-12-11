@@ -30,6 +30,7 @@ const TYPE_ICONS: Record<FavoriteItem['type'], React.ElementType> = {
   accession: Database,
   page: LayoutDashboard,
   report: BarChart3,
+  division: LayoutDashboard,
 };
 
 const TYPE_COLORS: Record<FavoriteItem['type'], string> = {
@@ -40,6 +41,7 @@ const TYPE_COLORS: Record<FavoriteItem['type'], string> = {
   accession: 'text-amber-500',
   page: 'text-gray-500',
   report: 'text-indigo-500',
+  division: 'text-green-600',
 };
 
 interface FavoritesPanelProps {

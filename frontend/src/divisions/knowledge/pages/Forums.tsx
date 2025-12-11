@@ -117,7 +117,10 @@ export function Forums() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold">Community Forums</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-2">
+            <MessageSquare className="h-8 w-8 text-primary" />
+            Community Forums
+          </h1>
           <p className="text-muted-foreground mt-1">
             Connect with fellow breeders, share knowledge, ask questions
           </p>

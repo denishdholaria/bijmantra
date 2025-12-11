@@ -86,8 +86,8 @@ export default function DUSCrops() {
   const crops: CropTemplate[] = cropsData?.crops || [];
   const filteredCrops = crops.filter(
     (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.scientific_name.toLowerCase().includes(search.toLowerCase())
+      (c.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
+      (c.scientific_name?.toLowerCase() || '').includes(search.toLowerCase())
   );
 
   const characters: DUSCharacter[] = cropDetail?.characters || [];

@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   Clock,
   TrendingUp,
+  Building2,
 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -115,7 +116,8 @@ export function Dashboard() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          💼 Commercial Division
+          <Building2 className="h-7 w-7 text-indigo-600" />
+          Commercial Division
         </h1>
         <p className="text-muted-foreground">
           DUS testing, variety protection, licensing, and royalty management

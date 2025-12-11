@@ -8,6 +8,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { 
+  CloudSun, BarChart3, Map, Sprout, FlaskConical, Droplets, 
+  Thermometer, Sun, AlertTriangle, Info, CheckCircle,
+  Cloud, CloudRain
+} from 'lucide-react';
 
 interface WeatherData {
   temperature: number;
@@ -38,14 +43,14 @@ export function Dashboard() {
   });
 
   const quickLinks = [
-    { label: '7-Day Forecast', path: '/earth-systems/weather', icon: '🌤️' },
-    { label: 'Climate Trends', path: '/earth-systems/climate', icon: '📊' },
-    { label: 'Field Map', path: '/earth-systems/map', icon: '🗺️' },
-    { label: 'Soil Data', path: '/earth-systems/soil', icon: '🌱' },
-    { label: 'Input Log', path: '/earth-systems/inputs', icon: '🧪' },
-    { label: 'Irrigation', path: '/earth-systems/irrigation', icon: '💧' },
-    { label: 'Growing Degrees', path: '/earth-systems/gdd', icon: '🌡️' },
-    { label: 'Drought Monitor', path: '/earth-systems/drought', icon: '🏜️' },
+    { label: '7-Day Forecast', path: '/earth-systems/weather', icon: CloudSun, color: 'text-blue-600 bg-blue-100' },
+    { label: 'Climate Trends', path: '/earth-systems/climate', icon: BarChart3, color: 'text-purple-600 bg-purple-100' },
+    { label: 'Field Map', path: '/earth-systems/map', icon: Map, color: 'text-green-600 bg-green-100' },
+    { label: 'Soil Data', path: '/earth-systems/soil', icon: Sprout, color: 'text-amber-600 bg-amber-100' },
+    { label: 'Input Log', path: '/earth-systems/inputs', icon: FlaskConical, color: 'text-pink-600 bg-pink-100' },
+    { label: 'Irrigation', path: '/earth-systems/irrigation', icon: Droplets, color: 'text-cyan-600 bg-cyan-100' },
+    { label: 'Growing Degrees', path: '/earth-systems/gdd', icon: Thermometer, color: 'text-red-600 bg-red-100' },
+    { label: 'Drought Monitor', path: '/earth-systems/drought', icon: Sun, color: 'text-orange-600 bg-orange-100' },
   ];
 
   return (
@@ -126,7 +131,9 @@ export function Dashboard() {
                 to={link.path}
                 className="flex flex-col items-center p-4 rounded-lg border hover:border-green-500 hover:bg-green-50 transition-colors"
               >
-                <span className="text-3xl mb-2">{link.icon}</span>
+                <div className={`w-10 h-10 rounded-lg ${link.color} flex items-center justify-center mb-2`}>
+                  <link.icon className="h-5 w-5" />
+                </div>
                 <span className="text-sm font-medium text-center">{link.label}</span>
               </Link>
             ))}
@@ -137,7 +144,10 @@ export function Dashboard() {
       {/* Agricultural Alerts */}
       <Card>
         <CardHeader>
-          <CardTitle>🚨 Agricultural Alerts</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            Agricultural Alerts
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -157,12 +167,16 @@ function AlertItem({ level, title, description }: { level: 'warning' | 'info' | 
     info: 'bg-blue-50 border-blue-200 text-blue-800',
     success: 'bg-green-50 border-green-200 text-green-800',
   };
-  const icons = { warning: '⚠️', info: 'ℹ️', success: '✅' };
+  const icons = { 
+    warning: <AlertTriangle className="h-4 w-4" />, 
+    info: <Info className="h-4 w-4" />, 
+    success: <CheckCircle className="h-4 w-4" /> 
+  };
 
   return (
     <div className={`p-3 rounded-lg border ${styles[level]}`}>
       <div className="flex items-center gap-2 font-medium">
-        <span>{icons[level]}</span>
+        {icons[level]}
         {title}
       </div>
       <p className="text-sm mt-1 opacity-80">{description}</p>

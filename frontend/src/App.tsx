@@ -77,6 +77,8 @@ import { Weather } from '@/pages/Weather'
 import { BarcodeScanner } from '@/pages/BarcodeScanner'
 import { UserManagement } from '@/pages/UserManagement'
 import { SystemSettings } from '@/pages/SystemSettings'
+import { SystemHealth } from '@/pages/SystemHealth'
+import { SecurityDashboard } from '@/pages/SecurityDashboard'
 import { DevProgress } from '@/pages/DevProgress'
 import { BackupRestore } from '@/pages/BackupRestore'
 import { DataQuality } from '@/pages/DataQuality'
@@ -146,6 +148,11 @@ import { PhenomicSelection } from '@/pages/PhenomicSelection'
 import { SpeedBreeding } from '@/pages/SpeedBreeding'
 import { DoubledHaploid } from '@/pages/DoubledHaploid'
 import { PlantVision } from '@/pages/PlantVision'
+import { VisionDashboard } from '@/pages/VisionDashboard'
+import { VisionDatasets } from '@/pages/VisionDatasets'
+import { VisionTraining } from '@/pages/VisionTraining'
+import { VisionRegistry } from '@/pages/VisionRegistry'
+import { VisionAnnotate } from '@/pages/VisionAnnotate'
 import { DiseaseAtlas } from '@/pages/DiseaseAtlas'
 import { DiseaseResistance } from '@/pages/DiseaseResistance'
 import { AbioticStress } from '@/pages/AbioticStress'
@@ -199,13 +206,13 @@ import { GeneticGainCalculator } from '@/pages/GeneticGainCalculator'
 import { TrialNetwork } from '@/pages/TrialNetwork'
 import { ParentSelection } from '@/pages/ParentSelection'
 import { OfflineMode } from '@/pages/OfflineMode'
+import { MobileApp } from '@/pages/MobileApp'
 import { BreedingSimulator } from '@/pages/BreedingSimulator'
 import { DataDictionary } from '@/pages/DataDictionary'
 import { ActivityTimeline } from '@/pages/ActivityTimeline'
 import { GermplasmSearch } from '@/pages/GermplasmSearch'
 import { FieldPlanning } from '@/pages/FieldPlanning'
 import { QuickEntry } from '@/pages/QuickEntry'
-import { SystemHealth } from '@/pages/SystemHealth'
 import { CrossPrediction } from '@/pages/CrossPrediction'
 import { TrialSummary } from '@/pages/TrialSummary'
 import { SelectionDecision } from '@/pages/SelectionDecision'
@@ -275,6 +282,30 @@ const CommercialDashboard = lazy(() => import('@/divisions/commercial/pages/Dash
 const DUSTrials = lazy(() => import('@/divisions/commercial/pages/DUSTrials'))
 const DUSCrops = lazy(() => import('@/divisions/commercial/pages/DUSCrops'))
 const DUSTrialDetail = lazy(() => import('@/divisions/commercial/pages/DUSTrialDetail'))
+
+// Sun-Earth Systems Division - lazy loaded
+const SunEarthDashboard = lazy(() => import('@/divisions/sun-earth-systems/pages/Dashboard'))
+const SunEarthSolarActivity = lazy(() => import('@/divisions/sun-earth-systems/pages/SolarActivity'))
+const SunEarthPhotoperiod = lazy(() => import('@/divisions/sun-earth-systems/pages/Photoperiod'))
+const SunEarthUVIndex = lazy(() => import('@/divisions/sun-earth-systems/pages/UVIndex'))
+
+// Space Research Division - lazy loaded
+const SpaceResearchDashboard = lazy(() => import('@/divisions/space-research/pages/Dashboard'))
+const SpaceResearchCrops = lazy(() => import('@/divisions/space-research/pages/SpaceCrops'))
+const SpaceResearchRadiation = lazy(() => import('@/divisions/space-research/pages/Radiation'))
+const SpaceResearchLifeSupport = lazy(() => import('@/divisions/space-research/pages/LifeSupport'))
+
+// Sensor Networks Division - lazy loaded
+const SensorNetworksDashboard = lazy(() => import('@/divisions/sensor-networks/pages/Dashboard'))
+const SensorNetworksDevices = lazy(() => import('@/divisions/sensor-networks/pages/Devices'))
+const SensorNetworksLiveData = lazy(() => import('@/divisions/sensor-networks/pages/LiveData'))
+const SensorNetworksAlerts = lazy(() => import('@/divisions/sensor-networks/pages/Alerts'))
+
+// Knowledge Division - lazy loaded
+const KnowledgeForums = lazy(() => import('@/divisions/knowledge/pages/Forums'))
+const KnowledgeForumTopic = lazy(() => import('@/divisions/knowledge/pages/ForumTopic'))
+const KnowledgeNewTopic = lazy(() => import('@/divisions/knowledge/pages/NewTopic'))
+const KnowledgeTrainingHub = lazy(() => import('@/divisions/knowledge/pages/TrainingHub'))
 
 // Inner component that uses router hooks
 function AppRoutes() {
@@ -1158,6 +1189,33 @@ function AppRoutes() {
         <Route path="/commercial/dus-crops" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><DUSCrops /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/commercial/dus-trials/:id" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><DUSTrialDetail /></Suspense></Layout></ProtectedRoute>} />
 
+        {/* Sun-Earth Systems Division routes */}
+        <Route path="/sun-earth-systems" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SunEarthDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sun-earth-systems/dashboard" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SunEarthDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sun-earth-systems/solar-activity" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SunEarthSolarActivity /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sun-earth-systems/photoperiod" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SunEarthPhotoperiod /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sun-earth-systems/uv-index" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SunEarthUVIndex /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Space Research Division routes */}
+        <Route path="/space-research" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SpaceResearchDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/space-research/dashboard" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SpaceResearchDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/space-research/crops" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SpaceResearchCrops /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/space-research/radiation" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SpaceResearchRadiation /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/space-research/life-support" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SpaceResearchLifeSupport /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Sensor Networks Division routes */}
+        <Route path="/sensor-networks" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SensorNetworksDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sensor-networks/dashboard" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SensorNetworksDashboard /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sensor-networks/devices" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SensorNetworksDevices /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sensor-networks/live" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SensorNetworksLiveData /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/sensor-networks/alerts" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SensorNetworksAlerts /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Knowledge Division routes */}
+        <Route path="/knowledge/training" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><KnowledgeTrainingHub /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/knowledge/forums" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><KnowledgeForums /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/knowledge/forums/new" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><KnowledgeNewTopic /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/knowledge/forums/:topicId" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><KnowledgeForumTopic /></Suspense></Layout></ProtectedRoute>} />
+
         {/* Integration Hub routes */}
         <Route
           path="/integrations"
@@ -1203,6 +1261,28 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <SystemSettings />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/system-health"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SystemHealth />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Security Dashboard - ASHTA-STAMBHA Command Center */}
+        <Route
+          path="/security"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SecurityDashboard />
               </Layout>
             </ProtectedRoute>
           }
@@ -2094,6 +2174,56 @@ function AppRoutes() {
           }
         />
 
+        {/* AI Vision Training Ground */}
+        <Route
+          path="/ai-vision"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <VisionDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-vision/datasets"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <VisionDatasets />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-vision/training"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <VisionTraining />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-vision/registry"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <VisionRegistry />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-vision/annotate/:datasetId"
+          element={
+            <ProtectedRoute>
+              <VisionAnnotate />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Disease Atlas */}
         <Route
           path="/disease-atlas"
@@ -2725,6 +2855,18 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <OfflineMode />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Mobile App Settings */}
+        <Route
+          path="/mobile-app"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <MobileApp />
               </Layout>
             </ProtectedRoute>
           }

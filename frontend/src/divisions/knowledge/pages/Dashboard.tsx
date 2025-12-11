@@ -6,14 +6,18 @@
 
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { 
+  BookOpen, GraduationCap, Library, HelpCircle, Users,
+  Search, FileText, Target, Lightbulb, Keyboard, Smartphone, RefreshCw
+} from 'lucide-react';
 
 export function Dashboard() {
   const sections = [
-    { title: 'Documentation', path: '/knowledge/docs', icon: '📚', description: 'Technical guides and API reference' },
-    { title: 'Tutorials', path: '/knowledge/tutorials', icon: '🎓', description: 'Step-by-step learning paths' },
-    { title: 'Glossary', path: '/knowledge/glossary', icon: '📖', description: 'Plant breeding terminology' },
-    { title: 'FAQ', path: '/knowledge/faq', icon: '❓', description: 'Frequently asked questions' },
-    { title: 'Community', path: '/knowledge/community', icon: '👥', description: 'Forums and discussions' },
+    { title: 'Documentation', path: '/knowledge/docs', icon: BookOpen, color: 'text-blue-600 bg-blue-100', description: 'Technical guides and API reference' },
+    { title: 'Tutorials', path: '/knowledge/tutorials', icon: GraduationCap, color: 'text-green-600 bg-green-100', description: 'Step-by-step learning paths' },
+    { title: 'Glossary', path: '/knowledge/glossary', icon: Library, color: 'text-purple-600 bg-purple-100', description: 'Plant breeding terminology' },
+    { title: 'FAQ', path: '/knowledge/faq', icon: HelpCircle, color: 'text-amber-600 bg-amber-100', description: 'Frequently asked questions' },
+    { title: 'Community', path: '/knowledge/community', icon: Users, color: 'text-pink-600 bg-pink-100', description: 'Forums and discussions' },
   ];
 
   const recentDocs = [
@@ -36,7 +40,9 @@ export function Dashboard() {
           <Link key={section.path} to={section.path}>
             <Card className="h-full hover:border-green-500 hover:shadow-md transition-all">
               <CardContent className="p-4 text-center">
-                <div className="text-4xl mb-2">{section.icon}</div>
+                <div className={`w-12 h-12 rounded-xl ${section.color} flex items-center justify-center mx-auto mb-2`}>
+                  <section.icon className="h-6 w-6" />
+                </div>
                 <div className="font-medium">{section.title}</div>
                 <p className="text-xs text-gray-500 mt-1">{section.description}</p>
               </CardContent>
@@ -49,7 +55,9 @@ export function Dashboard() {
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
-            <span className="text-3xl">🔍</span>
+            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+              <Search className="h-6 w-6 text-gray-600" />
+            </div>
             <input
               type="text"
               placeholder="Search documentation, tutorials, and more..."
@@ -62,7 +70,12 @@ export function Dashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Recent Documentation */}
         <Card>
-          <CardHeader><CardTitle>📄 Recent Documentation</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-blue-600" />
+              Recent Documentation
+            </CardTitle>
+          </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {recentDocs.map((doc, i) => (
@@ -77,7 +90,12 @@ export function Dashboard() {
 
         {/* Learning Paths */}
         <Card>
-          <CardHeader><CardTitle>🎯 Learning Paths</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-green-600" />
+              Learning Paths
+            </CardTitle>
+          </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <LearningPath title="Beginner's Guide" progress={0} lessons={8} />
@@ -91,12 +109,17 @@ export function Dashboard() {
 
       {/* Quick Tips */}
       <Card>
-        <CardHeader><CardTitle>💡 Quick Tips</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lightbulb className="h-5 w-5 text-amber-500" />
+            Quick Tips
+          </CardTitle>
+        </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
-            <TipCard icon="⌨️" title="Keyboard Shortcuts" tip="Press Ctrl+K to open command palette" />
-            <TipCard icon="📱" title="Mobile App" tip="Install as PWA for offline field access" />
-            <TipCard icon="🔄" title="Data Sync" tip="Changes sync automatically when online" />
+            <TipCard icon={<Keyboard className="h-5 w-5" />} title="Keyboard Shortcuts" tip="Press Ctrl+K to open command palette" />
+            <TipCard icon={<Smartphone className="h-5 w-5" />} title="Mobile App" tip="Install as PWA for offline field access" />
+            <TipCard icon={<RefreshCw className="h-5 w-5" />} title="Data Sync" tip="Changes sync automatically when online" />
           </div>
         </CardContent>
       </Card>
@@ -119,11 +142,11 @@ function LearningPath({ title, progress, lessons }: { title: string; progress: n
   );
 }
 
-function TipCard({ icon, title, tip }: { icon: string; title: string; tip: string }) {
+function TipCard({ icon, title, tip }: { icon: React.ReactNode; title: string; tip: string }) {
   return (
     <div className="p-4 bg-blue-50 rounded-lg">
-      <div className="flex items-center gap-2 font-medium mb-1">
-        <span>{icon}</span> {title}
+      <div className="flex items-center gap-2 font-medium mb-1 text-blue-700">
+        {icon} {title}
       </div>
       <p className="text-sm text-gray-600">{tip}</p>
     </div>

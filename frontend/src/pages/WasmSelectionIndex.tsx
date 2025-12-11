@@ -161,14 +161,14 @@ function WasmSelectionIndex() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Scale className="h-8 w-8 text-indigo-500" />
-            WASM Selection Index
+            Selection Index Calculator
           </h1>
           <p className="text-muted-foreground mt-1">
-            Multi-trait selection index calculator powered by Rust/WebAssembly
+            Multi-trait selection with economic weights and genetic parameters
           </p>
         </div>
         <Badge variant={isReady ? "default" : "secondary"} className={isReady ? "bg-green-500" : ""}>
-          {isReady ? `WASM v${version}` : 'Loading...'}
+          {isReady ? `⚡ WebAssembly v${version}` : 'Loading...'}
         </Badge>
       </div>
 

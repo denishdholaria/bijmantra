@@ -16,6 +16,7 @@ import {
   Thermometer,
   Wifi,
   WifiOff,
+  Plug,
 } from 'lucide-react';
 
 export function Dashboard() {
@@ -167,7 +168,10 @@ export function Dashboard() {
         {/* Integration Status */}
         <Card>
           <CardHeader>
-            <CardTitle>🔌 Integration Status</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Plug className="h-5 w-5 text-primary" />
+              Integration Status
+            </CardTitle>
             <CardDescription>Connected services and protocols</CardDescription>
           </CardHeader>
           <CardContent>

@@ -2,24 +2,26 @@
 
 A comprehensive Progressive Web Application for agricultural science, plant breeding, and future space-based research. Built on the **Parashakti Framework** — a modular, offline-first architecture designed to scale from individual researchers to global institutions.
 
-**271+ Pages** | **469 API Endpoints** | **11 Modules** | **Offline-First PWA** | **Multi-Engine Compute** | **BrAPI v2.1 100%**
+**285+ Pages** | **501 API Endpoints** | **11 Modules** | **Offline-First PWA** | **Multi-Engine Compute** | **BrAPI v2.1 100%**
 
-![Bijmantra Dashboard](docs/images/Screenshot-2025-12-04.png)
+![Bijmantra Dashboard](docs/images/Screenshot-2025-12-11.png)
+
 
 ---
 
 ## This App is in Developmental Stage.
 
-## ✅ Current Status (December 10, 2025)
+## ✅ Current Status (December 11, 2025)
 
 | Metric | Status |
 |--------|--------|
-| Pages | 271+ complete |
-| API Endpoints | 469 |
+| Pages | 285+ complete |
+| API Endpoints | 501 |
 | BrAPI Endpoints | 34/34 (100%) |
+| Components | 160+ |
 | TypeScript | 0 errors |
 | Tests | 48 passing |
-| Build | ✅ Verified (5.0MB) |
+| Build | ✅ Verified (5.3MB) |
 
 ---
 
@@ -107,9 +109,17 @@ See [ETHICAL_USE_POLICY.md](ETHICAL_USE_POLICY.md) for complete terms.
 - **Traceability** — Chain of custody, QR codes, lineage tracking
 - **Licensing** — Variety protection, license agreements, royalties
 
-### Commercial Module (NEW)
+### Commercial Module
 - **DUS Testing** — UPOV variety protection, 10 crop templates, character scoring
 - **MCPD Exchange** — Genebank data exchange, CSV/JSON export/import
+
+### AI & Vision Module (NEW)
+- **Plant Vision Training Ground** — Custom model training, dataset management
+
+### 🛡️ Security — ASHTA-STAMBHA (अष्ट-स्तम्भ)
+Eight Pillars of Protection for mission-critical environments.
+
+See [SECURITY.md](SECURITY.md) for security policy and vulnerability reporting.
 
 ### 🦀 WASM Genomics Engine
 | Tool | Description |
@@ -218,9 +228,10 @@ bijmantra/
 
 | Document | Description |
 |----------|-------------|
+| [SECURITY.md](SECURITY.md) | Security policy & vulnerability reporting |
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | Current status |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Technical architecture |
-| [docs/Godsend.md](docs/Godsend.md) | Feature tracking |
+| [docs/bijmantra-mindmap.mm.md](docs/bijmantra-mindmap.mm.md) | Visual architecture (Markmap) |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues |
 
 ---
@@ -245,12 +256,31 @@ See [LICENSE](LICENSE) and [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md) for fu
 
 ---
 
+## 🌟 Vision
+
+**Bijmantra** — from Sanskrit "Bij" (बीज, seed) and "Mantra" (मन्त्र, sacred utterance).
+
+A divine gift to plant breeders worldwide, empowering them to nurture the seeds of tomorrow. Built with reverence for the sacred work of those who feed the world.
+
+---
+
 ## 👨‍💻 Developer
 
 **R.E.E.V.A.i** — Rural Empowerment through Emerging Value-driven Agro-Intelligence
 
 ---
 
+## 🙏 Gratitude
+
+Dedicated to:
+- Plant breeders feeding the world
+- Open-source communities
+- Divine inspiration guiding innovation
+
+---
+
 **ॐ श्री गणेशाय नमः** 🙏
 
 *May Lord Ganesha remove all obstacles in the path of agricultural innovation*
+
+**जय श्री गणेशाय नमो नमः!**

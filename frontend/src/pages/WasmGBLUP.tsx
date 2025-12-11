@@ -122,14 +122,14 @@ function WasmGBLUP() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Calculator className="h-8 w-8 text-blue-500" />
-            WASM GBLUP Calculator
+            Genomic BLUP Calculator
           </h1>
           <p className="text-muted-foreground mt-1">
-            Genomic Best Linear Unbiased Prediction powered by Rust/WebAssembly
+            Genomic Best Linear Unbiased Prediction for breeding value estimation
           </p>
         </div>
         <Badge variant={isReady ? "default" : "secondary"} className={isReady ? "bg-green-500" : ""}>
-          {isReady ? `WASM v${version}` : 'Loading...'}
+          {isReady ? `⚡ WebAssembly v${version}` : 'Loading...'}
         </Badge>
       </div>
 

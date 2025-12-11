@@ -1,555 +1,419 @@
-/**
- * Plant Vision AI Page
- * AI-powered plant phenotyping using computer vision
- */
-import { useState, useRef, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
-import { 
-  plantVision, 
-  DiseaseDetection, 
-  GrowthStageResult, 
-  StressDetection, 
-  TraitMeasurement,
-  PlantCount 
-} from '@/lib/plant-vision'
+import { useState } from 'react';
+import { Camera, Leaf, Bug, History, Settings, Microscope, Sprout, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PlantVisionAnalyzer } from '@/components/camera/PlantVisionAnalyzer';
+
+interface AnalysisHistory {
+  id: string;
+  timestamp: string;
+  cropType: string;
+  imageUrl: string;
+  results: Array<{
+    type: string;
+    label: string;
+    confidence: number;
+    severity?: string;
+  }>;
+}
+
+// Demo history data
+const DEMO_HISTORY: AnalysisHistory[] = [
+  {
+    id: '1',
+    timestamp: '2025-12-11T10:30:00Z',
+    cropType: 'rice',
+    imageUrl: '',
+    results: [
+      { type: 'disease', label: 'Bacterial Leaf Blight', confidence: 0.89, severity: 'high' },
+      { type: 'growth_stage', label: 'Tillering (BBCH 21-29)', confidence: 0.94 },
+    ],
+  },
+  {
+    id: '2',
+    timestamp: '2025-12-10T14:15:00Z',
+    cropType: 'wheat',
+    imageUrl: '',
+    results: [
+      { type: 'growth_stage', label: 'Heading (BBCH 51-59)', confidence: 0.88 },
+      { type: 'nutrient', label: 'Nitrogen Deficiency', confidence: 0.72, severity: 'medium' },
+    ],
+  },
+  {
+    id: '3',
+    timestamp: '2025-12-09T09:45:00Z',
+    cropType: 'maize',
+    imageUrl: '',
+    results: [
+      { type: 'disease', label: 'Northern Corn Leaf Blight', confidence: 0.91, severity: 'medium' },
+    ],
+  },
+];
+
+// Stats data
+const STATS = {
+  totalScans: 156,
+  diseasesDetected: 42,
+  healthyPlants: 98,
+  accuracyRate: 94.2,
+};
+
+// Supported crops
+const CROPS = [
+  { value: 'rice', label: 'Rice', icon: '🌾' },
+  { value: 'wheat', label: 'Wheat', icon: '🌾' },
+  { value: 'maize', label: 'Maize', icon: '🌽' },
+  { value: 'soybean', label: 'Soybean', icon: '🫘' },
+  { value: 'cotton', label: 'Cotton', icon: '☁️' },
+  { value: 'tomato', label: 'Tomato', icon: '🍅' },
+  { value: 'potato', label: 'Potato', icon: '🥔' },
+];
 
 export function PlantVision() {
-  const [activeTab, setActiveTab] = useState('capture')
-  const [selectedCrop, setSelectedCrop] = useState('rice')
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [capturedImage, setCapturedImage] = useState<string | null>(null)
-  const [analysisResults, setAnalysisResults] = useState<{
-    diseases: DiseaseDetection[]
-    growthStage: GrowthStageResult | null
-    stress: StressDetection | null
-    traits: TraitMeasurement[]
-    plantCount: PlantCount | null
-  } | null>(null)
+  const [selectedCrop, setSelectedCrop] = useState('rice');
+  const [history, setHistory] = useState<AnalysisHistory[]>(DEMO_HISTORY);
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [cameraActive, setCameraActive] = useState(false)
+  const handleAnalysisComplete = (results: Array<{ type: string; label: string; confidence: number; severity?: string }>, imageData: string) => {
+    const newEntry: AnalysisHistory = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      cropType: selectedCrop,
+      imageUrl: imageData,
+      results,
+    };
+    setHistory([newEntry, ...history]);
+  };
 
-  // Start camera
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment', width: 1280, height: 720 } 
-      })
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        setCameraActive(true)
-      }
-    } catch (err) {
-      console.error('Camera access denied:', err)
-      alert('Camera access denied. Please allow camera access or upload an image.')
-    }
-  }
-
-  // Stop camera
-  const stopCamera = () => {
-    if (videoRef.current?.srcObject) {
-      const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
-      tracks.forEach(track => track.stop())
-      videoRef.current.srcObject = null
-      setCameraActive(false)
-    }
-  }
-
-  // Capture from camera
-  const captureFromCamera = () => {
-    if (videoRef.current && canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d')
-      canvasRef.current.width = videoRef.current.videoWidth
-      canvasRef.current.height = videoRef.current.videoHeight
-      ctx?.drawImage(videoRef.current, 0, 0)
-      const imageUrl = canvasRef.current.toDataURL('image/jpeg')
-      setCapturedImage(imageUrl)
-      stopCamera()
-      analyzeImage(canvasRef.current)
-    }
-  }
-
-  // Handle file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const imageUrl = event.target?.result as string
-        setCapturedImage(imageUrl)
-        
-        // Create image element for analysis
-        const img = new Image()
-        img.onload = () => analyzeImage(img)
-        img.src = imageUrl
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  // Analyze image
-  const analyzeImage = async (imageSource: HTMLImageElement | HTMLCanvasElement) => {
-    setIsAnalyzing(true)
-    setActiveTab('results')
-
-    try {
-      // Get image data
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      canvas.width = imageSource.width || 640
-      canvas.height = imageSource.height || 480
-      ctx?.drawImage(imageSource, 0, 0, canvas.width, canvas.height)
-      const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
-
-      if (imageData) {
-        // Run all analyses in parallel
-        const [diseases, growthStage, stress, traits, plantCount] = await Promise.all([
-          plantVision.detectDisease(imageData, selectedCrop),
-          plantVision.detectGrowthStage(imageData, selectedCrop),
-          plantVision.detectStress(imageData),
-          plantVision.measureTraits(imageData),
-          plantVision.countPlants(imageData),
-        ])
-
-        setAnalysisResults({ diseases, growthStage, stress, traits, plantCount })
-      }
-    } catch (err) {
-      console.error('Analysis failed:', err)
-    } finally {
-      setIsAnalyzing(false)
-    }
-  }
-
-  // Reset analysis
-  const resetAnalysis = () => {
-    setCapturedImage(null)
-    setAnalysisResults(null)
-    setActiveTab('capture')
-  }
-
-  const getSeverityColor = (severity: string) => {
+  const getSeverityColor = (severity?: string) => {
     switch (severity) {
-      case 'high': return 'bg-red-100 text-red-700'
-      case 'medium': return 'bg-yellow-100 text-yellow-700'
-      case 'low': return 'bg-green-100 text-green-700'
-      default: return 'bg-gray-100 text-gray-700'
+      case 'critical': return 'destructive';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'outline';
+      default: return 'outline';
     }
-  }
-
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.8) return 'text-green-600'
-    if (confidence >= 0.6) return 'text-yellow-600'
-    return 'text-red-600'
-  }
+  };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold">🌿 Plant Vision AI</h1>
-          <p className="text-muted-foreground mt-1">AI-powered plant phenotyping and disease detection</p>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Microscope className="h-6 w-6" />
+            Plant Vision
+          </h1>
+          <p className="text-muted-foreground">
+            AI-powered disease detection and growth stage analysis
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Select value={selectedCrop} onValueChange={setSelectedCrop}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="rice">🌾 Rice</SelectItem>
-              <SelectItem value="wheat">🌾 Wheat</SelectItem>
-              <SelectItem value="maize">🌽 Maize</SelectItem>
-            </SelectContent>
-          </Select>
-          {capturedImage && (
-            <Button variant="outline" onClick={resetAnalysis}>🔄 New Analysis</Button>
-          )}
-        </div>
+        <Select value={selectedCrop} onValueChange={setSelectedCrop}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {CROPS.map((crop) => (
+              <SelectItem key={crop.value} value={crop.value}>
+                <span className="flex items-center gap-2">
+                  <span>{crop.icon}</span>
+                  <span>{crop.label}</span>
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Feature Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        {[
-          { icon: '🦠', label: 'Disease Detection', desc: 'Identify plant diseases' },
-          { icon: '📈', label: 'Growth Stage', desc: 'BBCH stage classification' },
-          { icon: '⚠️', label: 'Stress Detection', desc: 'Drought, nutrient, heat' },
-          { icon: '📏', label: 'Trait Measurement', desc: 'LAI, chlorophyll, coverage' },
-          { icon: '🔢', label: 'Plant Counting', desc: 'Stand establishment' },
-        ].map((feature) => (
-          <Card key={feature.label} className="text-center">
-            <CardContent className="pt-4">
-              <span className="text-2xl">{feature.icon}</span>
-              <p className="font-medium text-sm mt-1">{feature.label}</p>
-              <p className="text-xs text-muted-foreground">{feature.desc}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="capture">📷 Capture</TabsTrigger>
-          <TabsTrigger value="results" disabled={!analysisResults}>📊 Results</TabsTrigger>
-          <TabsTrigger value="diseases" disabled={!analysisResults}>🦠 Diseases</TabsTrigger>
-          <TabsTrigger value="traits" disabled={!analysisResults}>📏 Traits</TabsTrigger>
-          <TabsTrigger value="history">📜 History</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="capture" className="space-y-6 mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Camera Capture */}
-            <Card>
-              <CardHeader>
-                <CardTitle>📷 Camera Capture</CardTitle>
-                <CardDescription>Take a photo of your plant</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="aspect-video bg-muted rounded-lg overflow-hidden relative">
-                  {cameraActive ? (
-                    <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                  ) : capturedImage ? (
-                    <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-4xl">📷</span>
-                    </div>
-                  )}
-                  {isAnalyzing && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <div className="text-white text-center">
-                        <div className="animate-spin text-4xl mb-2">🔄</div>
-                        <p>Analyzing...</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <canvas ref={canvasRef} className="hidden" />
-                <div className="flex gap-2">
-                  {!cameraActive ? (
-                    <Button onClick={startCamera} className="flex-1">📷 Start Camera</Button>
-                  ) : (
-                    <>
-                      <Button onClick={captureFromCamera} className="flex-1">📸 Capture</Button>
-                      <Button variant="outline" onClick={stopCamera}>✕ Stop</Button>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* File Upload */}
-            <Card>
-              <CardHeader>
-                <CardTitle>📁 Upload Image</CardTitle>
-                <CardDescription>Upload an existing plant photo</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div 
-                  className="aspect-video bg-muted rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-primary transition-colors"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <div className="text-center">
-                    <span className="text-4xl">📤</span>
-                    <p className="mt-2 text-sm text-muted-foreground">Click to upload or drag & drop</p>
-                    <p className="text-xs text-muted-foreground">JPG, PNG up to 10MB</p>
-                  </div>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-                <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()}>
-                  📁 Choose File
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Tips */}
-          <Card className="border-blue-200 bg-blue-50">
-            <CardHeader>
-              <CardTitle className="text-blue-800">💡 Tips for Best Results</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-blue-700 space-y-1">
-              <p>• Take photos in good lighting conditions (natural daylight preferred)</p>
-              <p>• Focus on the affected area for disease detection</p>
-              <p>• Include the whole plant for growth stage classification</p>
-              <p>• Use overhead shots for plant counting and canopy coverage</p>
-              <p>• Avoid shadows and reflections on leaves</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="results" className="space-y-6 mt-4">
-          {analysisResults && (
-            <>
-              {/* Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className={analysisResults.diseases[0]?.confidence > 0.5 ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}>
-                  <CardContent className="pt-4 text-center">
-                    <span className="text-3xl">{analysisResults.diseases[0]?.confidence > 0.5 ? '🦠' : '✅'}</span>
-                    <p className="font-bold mt-1">
-                      {analysisResults.diseases[0]?.confidence > 0.5 ? analysisResults.diseases[0].disease : 'Healthy'}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Disease Status</p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-blue-200 bg-blue-50">
-                  <CardContent className="pt-4 text-center">
-                    <span className="text-3xl">🌱</span>
-                    <p className="font-bold mt-1">{analysisResults.growthStage?.stage}</p>
-                    <p className="text-xs text-muted-foreground">{analysisResults.growthStage?.stageCode}</p>
-                  </CardContent>
-                </Card>
-
-                <Card className={analysisResults.stress?.stressType !== 'none' ? 'border-yellow-200 bg-yellow-50' : 'border-green-200 bg-green-50'}>
-                  <CardContent className="pt-4 text-center">
-                    <span className="text-3xl">{analysisResults.stress?.stressType !== 'none' ? '⚠️' : '💚'}</span>
-                    <p className="font-bold mt-1">
-                      {analysisResults.stress?.stressType !== 'none' 
-                        ? `${analysisResults.stress?.stressType} Stress` 
-                        : 'No Stress'}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {analysisResults.stress?.severity}% severity
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-purple-200 bg-purple-50">
-                  <CardContent className="pt-4 text-center">
-                    <span className="text-3xl">🌿</span>
-                    <p className="font-bold mt-1">{analysisResults.plantCount?.standEstablishment}%</p>
-                    <p className="text-xs text-muted-foreground">Stand Establishment</p>
-                  </CardContent>
-                </Card>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                <Camera className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
+              <div>
+                <p className="text-2xl font-bold">{STATS.totalScans}</p>
+                <p className="text-xs text-muted-foreground">Total Scans</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-red-100 dark:bg-red-900 rounded-lg">
+                <Bug className="h-5 w-5 text-red-600 dark:text-red-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{STATS.diseasesDetected}</p>
+                <p className="text-xs text-muted-foreground">Diseases Found</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                <Leaf className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{STATS.healthyPlants}</p>
+                <p className="text-xs text-muted-foreground">Healthy Plants</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{STATS.accuracyRate}%</p>
+                <p className="text-xs text-muted-foreground">Accuracy Rate</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-              {/* Captured Image with Analysis */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      {/* Main Content */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Analyzer */}
+        <PlantVisionAnalyzer
+          cropType={selectedCrop}
+          onAnalysisComplete={handleAnalysisComplete}
+        />
+
+        {/* History & Info */}
+        <div className="space-y-6">
+          <Tabs defaultValue="history">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="history">
+                <History className="h-4 w-4 mr-2" />
+                History
+              </TabsTrigger>
+              <TabsTrigger value="diseases">
+                <Bug className="h-4 w-4 mr-2" />
+                Diseases
+              </TabsTrigger>
+              <TabsTrigger value="stages">
+                <Sprout className="h-4 w-4 mr-2" />
+                Stages
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="history" className="space-y-4">
+              {history.length === 0 ? (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Analyzed Image</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {capturedImage && (
-                      <img src={capturedImage} alt="Analyzed" className="w-full rounded-lg" />
-                    )}
+                  <CardContent className="p-6 text-center text-muted-foreground">
+                    <History className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>No analysis history yet</p>
+                    <p className="text-sm">Capture or upload an image to get started</p>
                   </CardContent>
                 </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Key Findings</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {/* Growth Stage */}
-                    <div className="p-3 bg-muted rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">Growth Stage</span>
-                        <Badge>{analysisResults.growthStage?.stage}</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        ~{analysisResults.growthStage?.daysEstimate} days from sowing
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Next: {analysisResults.growthStage?.nextStage} in ~{analysisResults.growthStage?.daysToNextStage} days
-                      </p>
-                    </div>
-
-                    {/* Stress */}
-                    {analysisResults.stress && (
-                      <div className="p-3 bg-muted rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">Stress Level</span>
-                          <Badge className={analysisResults.stress.stressType !== 'none' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}>
-                            {analysisResults.stress.stressType !== 'none' ? analysisResults.stress.stressType : 'None'}
-                          </Badge>
+              ) : (
+                history.slice(0, 5).map((entry) => (
+                  <Card key={entry.id}>
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="font-medium capitalize">{entry.cropType}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(entry.timestamp).toLocaleString()}
+                          </p>
                         </div>
-                        {analysisResults.stress.indicators.length > 0 && (
-                          <ul className="text-sm text-muted-foreground mt-1 list-disc list-inside">
-                            {analysisResults.stress.indicators.slice(0, 3).map((ind, i) => (
-                              <li key={i}>{ind}</li>
-                            ))}
-                          </ul>
-                        )}
+                        <Badge variant="outline">{entry.results.length} findings</Badge>
                       </div>
-                    )}
-
-                    {/* Top Traits */}
-                    <div className="p-3 bg-muted rounded-lg">
-                      <span className="font-medium">Key Measurements</span>
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        {analysisResults.traits.slice(0, 4).map((trait) => (
-                          <div key={trait.trait} className="text-sm">
-                            <span className="text-muted-foreground">{trait.trait}:</span>
-                            <span className="font-bold ml-1">{trait.value} {trait.unit}</span>
-                          </div>
+                      <div className="flex flex-wrap gap-2">
+                        {entry.results.map((result, i) => (
+                          <Badge key={i} variant={getSeverityColor(result.severity)}>
+                            {result.label}
+                          </Badge>
                         ))}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Recommendations */}
-              {analysisResults.stress?.recommendations && analysisResults.stress.recommendations.length > 0 && (
-                <Card className="border-green-200 bg-green-50">
-                  <CardHeader>
-                    <CardTitle className="text-green-800">💡 Recommendations</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {analysisResults.stress.recommendations.map((rec, i) => (
-                        <li key={i} className="flex items-start gap-2 text-green-700">
-                          <span>✓</span>
-                          <span>{rec}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ))
               )}
-            </>
-          )}
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="diseases" className="space-y-6 mt-4">
-          {analysisResults?.diseases && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Disease Detection Results</CardTitle>
-                <CardDescription>Potential diseases ranked by confidence</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {analysisResults.diseases.map((disease, i) => (
-                    <div key={i} className={`p-4 border rounded-lg ${disease.confidence > 0.5 ? 'border-red-200 bg-red-50' : ''}`}>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">#{i + 1}</Badge>
-                          <h4 className="font-bold">{disease.disease}</h4>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={getSeverityColor(disease.severity)}>{disease.severity}</Badge>
-                          <span className={`font-bold ${getConfidenceColor(disease.confidence)}`}>
-                            {(disease.confidence * 100).toFixed(0)}%
-                          </span>
-                        </div>
-                      </div>
-                      <Progress value={disease.confidence * 100} className="h-2 mb-3" />
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="font-medium text-muted-foreground">Symptoms:</p>
-                          <ul className="list-disc list-inside">
-                            {disease.symptoms.map((s, j) => <li key={j}>{s}</li>)}
-                          </ul>
-                        </div>
-                        <div>
-                          <p className="font-medium text-muted-foreground">Treatment:</p>
-                          <ul className="list-disc list-inside">
-                            {disease.treatment.map((t, j) => <li key={j}>{t}</li>)}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="traits" className="space-y-6 mt-4">
-          {analysisResults?.traits && (
-            <>
+            <TabsContent value="diseases" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Trait Measurements</CardTitle>
-                  <CardDescription>Automated phenotypic measurements</CardDescription>
+                  <CardTitle className="text-lg">Common Diseases</CardTitle>
+                  <CardDescription>Diseases detectable for {selectedCrop}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {analysisResults.traits.map((trait) => (
-                      <div key={trait.trait} className="flex items-center gap-4">
-                        <div className="w-40">
-                          <p className="font-medium">{trait.trait}</p>
-                          <p className="text-xs text-muted-foreground">{trait.method}</p>
-                        </div>
-                        <div className="flex-1">
-                          <Progress value={trait.confidence * 100} className="h-3" />
-                        </div>
-                        <div className="w-24 text-right">
-                          <p className="font-bold">{trait.value} {trait.unit}</p>
-                          <p className="text-xs text-muted-foreground">{(trait.confidence * 100).toFixed(0)}% conf</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <CardContent className="space-y-3">
+                  {selectedCrop === 'rice' && (
+                    <>
+                      <DiseaseItem name="Bacterial Leaf Blight" pathogen="Xanthomonas oryzae" severity="high" />
+                      <DiseaseItem name="Rice Blast" pathogen="Magnaporthe oryzae" severity="high" />
+                      <DiseaseItem name="Sheath Blight" pathogen="Rhizoctonia solani" severity="medium" />
+                      <DiseaseItem name="Brown Spot" pathogen="Bipolaris oryzae" severity="low" />
+                    </>
+                  )}
+                  {selectedCrop === 'wheat' && (
+                    <>
+                      <DiseaseItem name="Stem Rust" pathogen="Puccinia graminis" severity="high" />
+                      <DiseaseItem name="Leaf Rust" pathogen="Puccinia triticina" severity="medium" />
+                      <DiseaseItem name="Powdery Mildew" pathogen="Blumeria graminis" severity="low" />
+                      <DiseaseItem name="Septoria" pathogen="Septoria tritici" severity="medium" />
+                    </>
+                  )}
+                  {selectedCrop === 'maize' && (
+                    <>
+                      <DiseaseItem name="Northern Corn Leaf Blight" pathogen="Exserohilum turcicum" severity="high" />
+                      <DiseaseItem name="Gray Leaf Spot" pathogen="Cercospora zeae-maydis" severity="medium" />
+                      <DiseaseItem name="Common Rust" pathogen="Puccinia sorghi" severity="low" />
+                    </>
+                  )}
+                  {!['rice', 'wheat', 'maize'].includes(selectedCrop) && (
+                    <p className="text-muted-foreground text-sm">
+                      Disease database for {selectedCrop} coming soon
+                    </p>
+                  )}
                 </CardContent>
               </Card>
+            </TabsContent>
 
-              {analysisResults.plantCount && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Plant Count Analysis</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <p className="text-2xl font-bold">{analysisResults.plantCount.totalPlants}</p>
-                        <p className="text-xs text-muted-foreground">Total Plants</p>
-                      </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <p className="text-2xl font-bold text-green-600">{analysisResults.plantCount.healthyPlants}</p>
-                        <p className="text-xs text-muted-foreground">Healthy</p>
-                      </div>
-                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                        <p className="text-2xl font-bold text-yellow-600">{analysisResults.plantCount.stressedPlants}</p>
-                        <p className="text-xs text-muted-foreground">Stressed</p>
-                      </div>
-                      <div className="text-center p-3 bg-red-50 rounded-lg">
-                        <p className="text-2xl font-bold text-red-600">{analysisResults.plantCount.missingSpots}</p>
-                        <p className="text-xs text-muted-foreground">Missing</p>
-                      </div>
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <p className="text-2xl font-bold text-blue-600">{analysisResults.plantCount.standEstablishment}%</p>
-                        <p className="text-xs text-muted-foreground">Stand Est.</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </>
-          )}
-        </TabsContent>
+            <TabsContent value="stages" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Growth Stages (BBCH Scale)</CardTitle>
+                  <CardDescription>Identifiable stages for {selectedCrop}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {selectedCrop === 'rice' && (
+                    <>
+                      <StageItem code="00-09" name="Germination" description="Seed imbibition to coleoptile emergence" />
+                      <StageItem code="10-19" name="Seedling" description="First leaf to 9 leaves unfolded" />
+                      <StageItem code="21-29" name="Tillering" description="Beginning to maximum tillering" />
+                      <StageItem code="30-39" name="Stem Elongation" description="Panicle initiation to booting" />
+                      <StageItem code="51-59" name="Heading" description="Panicle emergence" />
+                      <StageItem code="61-69" name="Flowering" description="Anthesis" />
+                      <StageItem code="71-89" name="Grain Filling" description="Milk to hard dough" />
+                      <StageItem code="92-99" name="Maturity" description="Ripening to harvest" />
+                    </>
+                  )}
+                  {selectedCrop === 'wheat' && (
+                    <>
+                      <StageItem code="00-09" name="Germination" description="Dry seed to emergence" />
+                      <StageItem code="10-19" name="Leaf Development" description="First to 9+ leaves" />
+                      <StageItem code="21-29" name="Tillering" description="Main shoot and tillers" />
+                      <StageItem code="30-39" name="Stem Elongation" description="Node development" />
+                      <StageItem code="41-49" name="Booting" description="Flag leaf to boot swollen" />
+                      <StageItem code="51-59" name="Heading" description="Ear emergence" />
+                      <StageItem code="61-69" name="Flowering" description="Anthesis" />
+                      <StageItem code="71-89" name="Grain Development" description="Milk to hard dough" />
+                    </>
+                  )}
+                  {selectedCrop === 'maize' && (
+                    <>
+                      <StageItem code="VE" name="Emergence" description="Coleoptile visible" />
+                      <StageItem code="V1-V6" name="Early Vegetative" description="1-6 leaves with collar" />
+                      <StageItem code="V7-V12" name="Mid Vegetative" description="Rapid growth phase" />
+                      <StageItem code="VT" name="Tasseling" description="Tassel fully visible" />
+                      <StageItem code="R1" name="Silking" description="Silks visible" />
+                      <StageItem code="R2-R4" name="Grain Fill" description="Blister to dough" />
+                      <StageItem code="R5-R6" name="Maturity" description="Dent to black layer" />
+                    </>
+                  )}
+                  {!['rice', 'wheat', 'maize'].includes(selectedCrop) && (
+                    <p className="text-muted-foreground text-sm">
+                      Growth stage data for {selectedCrop} coming soon
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
 
-        <TabsContent value="history" className="space-y-6 mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analysis History</CardTitle>
-              <CardDescription>Previous plant analyses (stored locally)</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <span className="text-4xl">📜</span>
-                <p className="mt-2">No previous analyses</p>
-                <p className="text-sm">Your analysis history will appear here</p>
+      {/* Tips */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Tips for Best Results
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-4 gap-4 text-sm">
+            <div className="flex items-start gap-2">
+              <div className="p-1.5 bg-blue-100 dark:bg-blue-900 rounded">
+                <Camera className="h-4 w-4 text-blue-600" />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              <div>
+                <p className="font-medium">Good Lighting</p>
+                <p className="text-muted-foreground">Natural daylight works best</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="p-1.5 bg-green-100 dark:bg-green-900 rounded">
+                <Leaf className="h-4 w-4 text-green-600" />
+              </div>
+              <div>
+                <p className="font-medium">Focus on Symptoms</p>
+                <p className="text-muted-foreground">Center affected areas in frame</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="p-1.5 bg-yellow-100 dark:bg-yellow-900 rounded">
+                <AlertTriangle className="h-4 w-4 text-yellow-600" />
+              </div>
+              <div>
+                <p className="font-medium">Multiple Angles</p>
+                <p className="text-muted-foreground">Take several photos if unsure</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="p-1.5 bg-purple-100 dark:bg-purple-900 rounded">
+                <Microscope className="h-4 w-4 text-purple-600" />
+              </div>
+              <div>
+                <p className="font-medium">Close-Up Details</p>
+                <p className="text-muted-foreground">Capture lesions and spots clearly</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
+}
+
+// Helper components
+function DiseaseItem({ name, pathogen, severity }: { name: string; pathogen: string; severity: string }) {
+  return (
+    <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+      <div>
+        <p className="font-medium">{name}</p>
+        <p className="text-xs text-muted-foreground italic">{pathogen}</p>
+      </div>
+      <Badge variant={severity === 'high' ? 'destructive' : severity === 'medium' ? 'secondary' : 'outline'}>
+        {severity}
+      </Badge>
+    </div>
+  );
+}
+
+function StageItem({ code, name, description }: { code: string; name: string; description: string }) {
+  return (
+    <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/50">
+      <Badge variant="outline" className="font-mono">{code}</Badge>
+      <div>
+        <p className="font-medium">{name}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  );
 }

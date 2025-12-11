@@ -9,7 +9,17 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Rocket, Leaf, Shield, Users, ArrowRight } from 'lucide-react';
+import { 
+  Rocket, 
+  Leaf, 
+  Shield, 
+  Users, 
+  ArrowRight, 
+  FlaskConical,
+  Atom,
+  RefreshCw,
+  Globe
+} from 'lucide-react';
 
 interface Mission {
   id: string;
@@ -92,7 +102,12 @@ export function Dashboard() {
       {/* Mission Profiles */}
       <Card>
         <CardHeader>
-          <CardTitle>🚀 Mission Profiles</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+              <Rocket className="h-5 w-5 text-indigo-600" />
+            </div>
+            Mission Profiles
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-4">
@@ -123,7 +138,12 @@ export function Dashboard() {
       {agencies.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>🌍 Space Agencies with Agriculture Programs</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                <Globe className="h-5 w-5 text-blue-600" />
+              </div>
+              Space Agencies with Agriculture Programs
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
@@ -146,18 +166,25 @@ export function Dashboard() {
       {/* Research Areas */}
       <Card>
         <CardHeader>
-          <CardTitle>🔬 Research Areas</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+              <FlaskConical className="h-5 w-5 text-purple-600" />
+            </div>
+            Research Areas
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-4 gap-4">
             {[
-              { icon: '🚀', title: 'Microgravity', desc: 'Zero-G plant adaptation' },
-              { icon: '☢️', title: 'Radiation', desc: 'Cosmic ray tolerance' },
-              { icon: '🔄', title: 'Life Support', desc: 'Closed-loop systems' },
-              { icon: '🔴', title: 'Mars Soil', desc: 'Regolith agriculture' },
+              { icon: Rocket, title: 'Microgravity', desc: 'Zero-G plant adaptation', color: 'bg-indigo-100 text-indigo-600' },
+              { icon: Atom, title: 'Radiation', desc: 'Cosmic ray tolerance', color: 'bg-yellow-100 text-yellow-600' },
+              { icon: RefreshCw, title: 'Life Support', desc: 'Closed-loop systems', color: 'bg-green-100 text-green-600' },
+              { icon: Globe, title: 'Mars Soil', desc: 'Regolith agriculture', color: 'bg-red-100 text-red-600' },
             ].map((item) => (
               <div key={item.title} className="p-4 border rounded-lg text-center">
-                <span className="text-3xl">{item.icon}</span>
+                <div className={`w-12 h-12 rounded-lg ${item.color} flex items-center justify-center mx-auto`}>
+                  <item.icon className="h-6 w-6" />
+                </div>
                 <h4 className="font-medium mt-2">{item.title}</h4>
                 <p className="text-xs text-gray-500">{item.desc}</p>
               </div>

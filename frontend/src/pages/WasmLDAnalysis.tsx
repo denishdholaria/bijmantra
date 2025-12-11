@@ -174,14 +174,14 @@ function WasmLDAnalysis() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Link2 className="h-8 w-8 text-purple-500" />
-            WASM LD Analysis
+            Linkage Disequilibrium Analysis
           </h1>
           <p className="text-muted-foreground mt-1">
-            Linkage Disequilibrium and Hardy-Weinberg analysis powered by Rust/WebAssembly
+            LD decay, r² calculation, and Hardy-Weinberg equilibrium testing
           </p>
         </div>
         <Badge variant={isReady ? "default" : "secondary"} className={isReady ? "bg-green-500" : ""}>
-          {isReady ? `WASM v${version}` : 'Loading...'}
+          {isReady ? `⚡ WebAssembly v${version}` : 'Loading...'}
         </Badge>
       </div>
 

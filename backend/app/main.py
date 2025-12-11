@@ -41,6 +41,18 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"[TaskQueue] Initialization skipped: {e}")
     
+    # Initialize Redis security storage
+    try:
+        from app.services.redis_security import init_redis_security
+        redis_url = os.getenv('REDIS_URL')
+        if redis_url:
+            await init_redis_security(redis_url)
+            print("[Redis] Security storage initialized")
+        else:
+            print("[Redis] No REDIS_URL configured, using in-memory storage")
+    except Exception as e:
+        print(f"[Redis] Security storage initialization skipped: {e}")
+    
     yield
     
     # Shutdown
@@ -72,6 +84,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Security headers middleware (OWASP recommendations)
+try:
+    from app.middleware.security_headers import SecurityHeadersMiddleware
+    app.add_middleware(
+        SecurityHeadersMiddleware, 
+        enabled=True,
+        csp_policy="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:;"
+    )
+    print("[Security] Security headers middleware enabled")
+except Exception as e:
+    print(f"[Security] Security headers middleware not available: {e}")
+
+# Security middleware (PRAHARI integration)
+try:
+    from app.middleware.security import SecurityMiddleware
+    app.add_middleware(SecurityMiddleware, enabled=True)
+    print("[PRAHARI] Security middleware enabled")
+except Exception as e:
+    print(f"[PRAHARI] Security middleware not available: {e}")
 
 # Mount Socket.IO
 try:
@@ -106,7 +138,7 @@ async def api_stats():
         "name": "Bijmantra API",
         "version": "0.1.0",
         "brapi_version": "2.1",
-        "total_endpoints": 433,
+        "total_endpoints": 542,
         "modules": [
             "Authentication", "BrAPI Core", "Compute Engine", "AI Insights",
             "Vector Store", "Weather", "Veena AI", "Cross Prediction",
@@ -118,7 +150,8 @@ async def api_stats():
             "Selection Index", "Genetic Gain", "Harvest Management",
             "Spatial Analysis", "Breeding Value", "Disease Resistance", "Abiotic Stress",
             "Dispatch Management", "Seed Processing", "Sensor Networks", "Community Forums",
-            "Sun-Earth Systems", "Space Research"
+            "Sun-Earth Systems", "Space Research", "Vision Training Ground",
+            "RAKSHAKA Self-Healing", "PRAHARI Defense", "CHAITANYA Orchestrator", "Security Audit"
         ],
         "status": "operational",
     }
@@ -149,7 +182,7 @@ async def serverinfo():
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies, seasons
 from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
-from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress
+from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -178,6 +211,7 @@ from app.api.brapi import events as brapi_events
 from app.api.brapi import images as brapi_images
 from app.api.brapi import samples as brapi_samples
 from app.api.brapi import seedlots as brapi_seedlots
+from app.api.brapi import people as brapi_people
 
 app.include_router(brapi_germplasm.router, prefix="/brapi/v2", tags=["Germplasm"])
 app.include_router(brapi_crosses.router, prefix="/brapi/v2", tags=["Crosses"])
@@ -189,6 +223,7 @@ app.include_router(brapi_events.router, prefix="/brapi/v2", tags=["Events"])
 app.include_router(brapi_images.router, prefix="/brapi/v2", tags=["Images"])
 app.include_router(brapi_samples.router, prefix="/brapi/v2", tags=["Samples"])
 app.include_router(brapi_seedlots.router, prefix="/brapi/v2", tags=["Seed Lots"])
+app.include_router(brapi_people.router, prefix="/brapi/v2", tags=["People"])
 
 # APEX Features - AI & Analytics
 app.include_router(compute.router, prefix="/api/v2", tags=["Compute Engine"])
@@ -234,6 +269,11 @@ app.include_router(solar.router, prefix="/api/v2", tags=["Sun-Earth Systems"])
 app.include_router(space.router, prefix="/api/v2", tags=["Space Research"])
 app.include_router(dus.router, prefix="/api/v2", tags=["DUS Testing"])
 app.include_router(progress.router, prefix="/api/v2", tags=["Progress Tracker"])
+app.include_router(vision.router, prefix="/api/v2", tags=["Vision Training Ground"])
+app.include_router(rakshaka.router, prefix="/api/v2", tags=["RAKSHAKA Self-Healing"])
+app.include_router(prahari.router, prefix="/api/v2", tags=["PRAHARI Defense"])
+app.include_router(chaitanya.router, prefix="/api/v2", tags=["CHAITANYA Orchestrator"])
+app.include_router(security_audit.router, prefix="/api/v2", tags=["Security Audit"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])

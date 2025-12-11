@@ -7,7 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from 'sonner'
+import { StatusPage } from '@/components/StatusPage'
 
 interface ServerInfo {
   serverName: string
@@ -89,10 +91,18 @@ export function ServerInfo() {
     <div className="space-y-6 animate-fade-in">
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold">Server Information</h1>
-        <p className="text-muted-foreground mt-1">BrAPI server capabilities and endpoints</p>
+        <p className="text-muted-foreground mt-1">BrAPI server capabilities, endpoints, and system status</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Tabs defaultValue="info">
+        <TabsList>
+          <TabsTrigger value="info">Server Info</TabsTrigger>
+          <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
+          <TabsTrigger value="status">System Status</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="info" className="space-y-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Server Details</CardTitle>
@@ -150,65 +160,73 @@ export function ServerInfo() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Available Endpoints</CardTitle>
-          <CardDescription>{serverInfo?.calls.length} BrAPI services available</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {serverInfo?.calls.map((call) => (
-              <div key={call.service} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center gap-4">
-                  <code className="text-sm font-mono bg-background px-2 py-1 rounded">
-                    /brapi/v2/{call.service}
-                  </code>
-                  <div className="flex gap-1">
-                    {call.methods.map((method) => (
-                      <Badge key={method} className={getMethodBadge(method)} variant="secondary">
-                        {method}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">v{call.versions[0]}</Badge>
-                  <Button size="sm" variant="ghost" onClick={() => copyEndpoint(call.service)}>
-                    📋
-                  </Button>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <div className="text-2xl font-bold">{serverInfo?.calls.length}</div>
+                <p className="text-sm text-muted-foreground">Endpoints</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <div className="text-2xl font-bold">{serverInfo?.calls.filter(c => c.methods.includes('GET')).length}</div>
+                <p className="text-sm text-muted-foreground">GET Endpoints</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <div className="text-2xl font-bold">{serverInfo?.calls.filter(c => c.methods.includes('POST')).length}</div>
+                <p className="text-sm text-muted-foreground">POST Endpoints</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <div className="text-2xl font-bold">v{serverInfo?.brapiVersion}</div>
+                <p className="text-sm text-muted-foreground">BrAPI Version</p>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <div className="text-2xl font-bold">{serverInfo?.calls.length}</div>
-            <p className="text-sm text-muted-foreground">Endpoints</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <div className="text-2xl font-bold">{serverInfo?.calls.filter(c => c.methods.includes('GET')).length}</div>
-            <p className="text-sm text-muted-foreground">GET Endpoints</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <div className="text-2xl font-bold">{serverInfo?.calls.filter(c => c.methods.includes('POST')).length}</div>
-            <p className="text-sm text-muted-foreground">POST Endpoints</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <div className="text-2xl font-bold">v{serverInfo?.brapiVersion}</div>
-            <p className="text-sm text-muted-foreground">BrAPI Version</p>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="endpoints" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Available Endpoints</CardTitle>
+              <CardDescription>{serverInfo?.calls.length} BrAPI services available</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {serverInfo?.calls.map((call) => (
+                  <div key={call.service} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <code className="text-sm font-mono bg-background px-2 py-1 rounded">
+                        /brapi/v2/{call.service}
+                      </code>
+                      <div className="flex gap-1">
+                        {call.methods.map((method) => (
+                          <Badge key={method} className={getMethodBadge(method)} variant="secondary">
+                            {method}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">v{call.versions[0]}</Badge>
+                      <Button size="sm" variant="ghost" onClick={() => copyEndpoint(call.service)}>
+                        📋
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="status" className="mt-6">
+          <StatusPage />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

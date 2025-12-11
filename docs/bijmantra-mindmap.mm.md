@@ -1,11 +1,13 @@
 # 🌱 Bijmantra - Complete Architecture
 
 ## 📊 Stats (Dec 2025)
-- 469 API Endpoints
-- 263+ Frontend Pages
+- 542 API Endpoints
+- 286+ Frontend Pages
 - 11 Divisions
-- 42 Backend Services
-- 50 API Routers
+- 58 Backend Services
+- 59 API Routers
+- 165+ Components
+- ASHTA-STAMBHA Security ✅
 
 ## 1️⃣ Plant Sciences (89 endpoints, 45 pages)
 
@@ -414,6 +416,11 @@
 - Task Queue
 - Event Bus
 
+### 🛡️ Security Dashboard
+- System Posture Display
+- Security Events
+- Health Metrics
+
 ## 1️⃣1️⃣ Home & Core
 
 ### 🏠 Dashboard
@@ -497,6 +504,16 @@
 - forums
 - progress_tracker
 
+### AI/Vision Services
+- vision_datasets
+- vision_annotation
+- vision_training
+- vision_deployment
+
+### 🛡️ ASHTA-STAMBHA (अष्ट-स्तम्भ)
+- Eight Pillars of Protection
+- Mission-critical security
+
 ## 🔌 API Routers (50 total)
 
 ### BrAPI Core
@@ -568,8 +585,10 @@
 - traceability
 - trial_design
 - vector
+- vision
 - voice
 - weather
+- security (ASHTA-STAMBHA)
 
 ## 🎨 Frontend Components
 
@@ -579,6 +598,9 @@
 - Tabs, Table, Form
 - Select, Input, Textarea
 - Progress, Switch, Slider
+- Accordion, Collapsible
+- HoverCard, RadioGroup
+- Toggle, ToggleGroup
 
 ### Charts (ECharts)
 - HeatmapChart
@@ -589,6 +611,27 @@
 - KinshipNetwork
 - PedigreeViewer
 - SpatialFieldPlot
+- LiveSensorChart
+
+### Icon System (NEW!)
+- 200+ Semantic Icon Mappings
+- 10 Custom Agriculture SVG Icons
+  - GermplasmIcon
+  - BreedingCrossIcon
+  - FieldPlotIcon
+  - PedigreeTreeIcon
+  - SeedLotIcon
+  - ViabilityTestIcon
+  - SelectionIndexIcon
+  - HarvestIcon
+  - QualityGateIcon
+  - PhotoperiodIcon
+
+### Navigation Components (NEW!)
+- Dock (macOS-style vertical dock)
+- ContextualTabs (horizontal section tabs)
+- useFavorites hook (max 8 favorites)
+- useWorkspace hook (5 role-based workspaces)
 
 ### Custom Components
 - VirtualDataGrid
@@ -601,6 +644,50 @@
 - VeenaVoiceInput
 - DashboardWidget
 - DashboardGrid
+- QuickStatsWidget
+- RecentActivityWidget
+- EntityContextMenu
+
+### UX Components
+- GlobalSearch
+- DataTable
+- ComparisonTable
+- StatsTable
+- MetricCard
+- SparklineChart
+- ProgressRing
+- TrendIndicator
+- FormField
+- SearchableSelect
+- DateRangePicker
+- TagInput
+- FileUpload
+- DataImportManager
+- DataExportManager
+- BulkOperationsPanel
+- PrintLayout
+- FormWizard
+- ActivityLogger
+- SearchResults
+- EntityPreviewCard
+- NotificationPreferences
+- OnboardingWizard
+- HelpCenter
+- Changelog
+- FeedbackWidget
+- FeatureTour
+- StatusPage
+- QuickStartGuide
+- Breadcrumbs
+
+### Camera & Vision
+- CameraCapture
+- PlantVisionAnalyzer
+
+### i18n System
+- 7 Languages (EN, HI, AR, ES, FR, PT, ZH)
+- RTL Support
+- LanguageSelector
 
 ## 🗄️ Database
 
@@ -619,16 +706,22 @@
 - Session Store
 - Task Queue
 
-## 🔒 Security
+## 🔒 Security — ASHTA-STAMBHA (अष्ट-स्तम्भ)
+
+> Eight Pillars of Protection
 
 ### Authentication
-- JWT Tokens (24h access, 7d refresh)
-- RBAC
+- JWT Authentication
+- Role-Based Access Control
 - Multi-tenant Isolation
 
+### ASHTA-STAMBHA (अष्ट-स्तम्भ)
+- Eight Pillars of Protection
+- Defense, Healing, Orchestration
+
 ### Infrastructure
-- HTTPS (Caddy auto-TLS)
-- Rate Limiting
+- HTTPS (Auto-TLS)
+- Security Headers
 - Audit Logging
 
 ## 🚀 Roadmap 2026

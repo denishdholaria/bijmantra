@@ -9,7 +9,19 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sun, Clock, Shield, Activity, ArrowRight } from 'lucide-react';
+import { 
+  Sun, 
+  Clock, 
+  Shield, 
+  Activity, 
+  ArrowRight, 
+  Sprout, 
+  FlaskConical,
+  Orbit,
+  Magnet,
+  Sparkles,
+  Globe
+} from 'lucide-react';
 
 interface SolarConditions {
   sunspot_number: number;
@@ -119,7 +131,12 @@ export function Dashboard() {
       {/* Agricultural Relevance */}
       <Card>
         <CardHeader>
-          <CardTitle>🌱 Agricultural Applications</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+              <Sprout className="h-5 w-5 text-green-600" />
+            </div>
+            Agricultural Applications
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
@@ -146,18 +163,25 @@ export function Dashboard() {
       {/* Research Areas */}
       <Card>
         <CardHeader>
-          <CardTitle>🔬 Research Areas</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+              <FlaskConical className="h-5 w-5 text-purple-600" />
+            </div>
+            Research Areas
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-4 gap-4">
             {[
-              { icon: '☀️', title: 'Solar Cycles', desc: '11-year activity patterns' },
-              { icon: '🧲', title: 'Geomagnetic', desc: 'Earth field variations' },
-              { icon: '🌌', title: 'Cosmic Rays', desc: 'Natural mutation source' },
-              { icon: '🌍', title: 'Ionosphere', desc: 'Atmospheric conditions' },
+              { icon: Sun, title: 'Solar Cycles', desc: '11-year activity patterns', color: 'bg-amber-100 text-amber-600' },
+              { icon: Orbit, title: 'Geomagnetic', desc: 'Earth field variations', color: 'bg-blue-100 text-blue-600' },
+              { icon: Sparkles, title: 'Cosmic Rays', desc: 'Natural mutation source', color: 'bg-purple-100 text-purple-600' },
+              { icon: Globe, title: 'Ionosphere', desc: 'Atmospheric conditions', color: 'bg-green-100 text-green-600' },
             ].map((item) => (
               <div key={item.title} className="p-4 border rounded-lg text-center">
-                <span className="text-3xl">{item.icon}</span>
+                <div className={`w-12 h-12 rounded-lg ${item.color} flex items-center justify-center mx-auto`}>
+                  <item.icon className="h-6 w-6" />
+                </div>
                 <h4 className="font-medium mt-2">{item.title}</h4>
                 <p className="text-xs text-gray-500">{item.desc}</p>
               </div>

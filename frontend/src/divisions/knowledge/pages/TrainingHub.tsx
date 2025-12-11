@@ -1,557 +1,503 @@
 /**
- * Training Hub
+ * Training Hub - BijMantra App Training
  * 
- * Courses, certifications, and learning paths for plant breeding professionals.
+ * Interactive tutorials and guides for learning to use BijMantra.
+ * NOT academic coursework - this is app onboarding and feature training.
  */
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
 import {
-  Award,
-  BookOpen,
+  Play,
   CheckCircle,
   Clock,
-  GraduationCap,
-  Play,
-  Search,
+  Rocket,
+  Target,
+  Zap,
+  BookOpen,
+  Video,
+  MousePointer,
+  Keyboard,
+  Monitor,
+  Smartphone,
+  Database,
+  BarChart3,
+  Leaf,
+  FlaskConical,
+  Map,
+  Settings,
+  Users,
+  ArrowRight,
   Star,
   Trophy,
-  Users,
+  RefreshCw,
 } from 'lucide-react';
 
-interface Course {
+interface Tutorial {
   id: string;
   title: string;
   description: string;
-  category: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
+  module: string;
+  type: 'video' | 'interactive' | 'walkthrough';
   duration: string;
-  lessons: number;
-  enrolled: number;
-  rating: number;
+  steps: number;
+  completed?: boolean;
   progress?: number;
-  instructor: string;
-  tags: string[];
 }
 
-interface Certification {
+interface QuickStart {
   id: string;
   title: string;
   description: string;
-  requirements: string[];
-  validityYears: number;
-  examDuration: string;
-  passingScore: number;
-  status?: 'available' | 'in-progress' | 'completed';
+  icon: React.ElementType;
+  route: string;
+  time: string;
 }
 
-interface LearningPath {
+interface FeatureGuide {
   id: string;
-  title: string;
-  description: string;
-  courses: string[];
-  totalDuration: string;
-  certification?: string;
+  module: string;
+  icon: React.ElementType;
+  features: string[];
+  tutorials: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
 }
 
-// Demo data
-const courses: Course[] = [
+// BijMantra-specific tutorials
+const tutorials: Tutorial[] = [
   {
-    id: 'course-1',
-    title: 'Introduction to Plant Breeding',
-    description: 'Learn the fundamentals of plant breeding, including selection methods, genetic principles, and breeding objectives.',
-    category: 'Fundamentals',
-    level: 'beginner',
-    duration: '8 hours',
-    lessons: 12,
-    enrolled: 1250,
-    rating: 4.8,
-    progress: 75,
-    instructor: 'Dr. Sarah Chen',
-    tags: ['genetics', 'selection', 'basics'],
+    id: 'tut-1',
+    title: 'Getting Started with BijMantra',
+    description: 'Your first 10 minutes: Navigate the dashboard, understand the layout, and customize your workspace.',
+    module: 'Getting Started',
+    type: 'interactive',
+    duration: '10 min',
+    steps: 8,
+    completed: true,
   },
   {
-    id: 'course-2',
-    title: 'Marker-Assisted Selection (MAS)',
-    description: 'Master the use of molecular markers for efficient selection in breeding programs.',
-    category: 'Molecular Breeding',
-    level: 'intermediate',
-    duration: '12 hours',
-    lessons: 18,
-    enrolled: 890,
-    rating: 4.9,
-    instructor: 'Dr. James Wilson',
-    tags: ['markers', 'MAS', 'genomics'],
+    id: 'tut-2',
+    title: 'Creating Your First Breeding Program',
+    description: 'Step-by-step guide to set up a breeding program, define objectives, and add germplasm.',
+    module: 'Core Breeding',
+    type: 'walkthrough',
+    duration: '15 min',
+    steps: 12,
+    progress: 60,
   },
   {
-    id: 'course-3',
-    title: 'Genomic Selection in Practice',
-    description: 'Implement genomic selection strategies using GBLUP and machine learning approaches.',
-    category: 'Molecular Breeding',
-    level: 'advanced',
-    duration: '16 hours',
-    lessons: 24,
-    enrolled: 456,
-    rating: 4.7,
-    progress: 30,
-    instructor: 'Dr. Maria Santos',
-    tags: ['GBLUP', 'genomic selection', 'ML'],
+    id: 'tut-3',
+    title: 'Recording Field Observations',
+    description: 'Learn to use the Field Book, collect data offline, and sync when back online.',
+    module: 'Field Operations',
+    type: 'interactive',
+    duration: '12 min',
+    steps: 10,
   },
   {
-    id: 'course-4',
-    title: 'Field Trial Design & Analysis',
-    description: 'Design efficient field trials and analyze data using modern statistical methods.',
-    category: 'Statistics',
-    level: 'intermediate',
-    duration: '10 hours',
-    lessons: 15,
-    enrolled: 780,
-    rating: 4.6,
-    instructor: 'Dr. Robert Kim',
-    tags: ['trials', 'statistics', 'RCBD'],
+    id: 'tut-4',
+    title: 'Designing Field Trials',
+    description: 'Create RCBD, Alpha-Lattice, and Augmented designs with automatic randomization.',
+    module: 'Trial Design',
+    type: 'video',
+    duration: '8 min',
+    steps: 6,
   },
   {
-    id: 'course-5',
-    title: 'Seed Production & Quality',
-    description: 'Learn seed production techniques, quality testing, and certification processes.',
-    category: 'Seed Technology',
-    level: 'beginner',
-    duration: '6 hours',
-    lessons: 10,
-    enrolled: 1100,
-    rating: 4.5,
-    instructor: 'Dr. Emily Brown',
-    tags: ['seed', 'quality', 'certification'],
+    id: 'tut-5',
+    title: 'Using the Selection Index Calculator',
+    description: 'Multi-trait selection using Smith-Hazel, Desired Gains, and custom indices.',
+    module: 'Analytics',
+    type: 'interactive',
+    duration: '10 min',
+    steps: 8,
   },
   {
-    id: 'course-6',
-    title: 'G×E Analysis & Stability',
-    description: 'Analyze genotype-by-environment interactions using AMMI and GGE biplot methods.',
-    category: 'Statistics',
-    level: 'advanced',
-    duration: '8 hours',
-    lessons: 12,
-    enrolled: 320,
-    rating: 4.8,
-    instructor: 'Dr. Carlos Mendez',
-    tags: ['GxE', 'AMMI', 'stability'],
-  },
-];
-
-const certifications: Certification[] = [
-  {
-    id: 'cert-1',
-    title: 'Certified Plant Breeder (CPB)',
-    description: 'Comprehensive certification covering all aspects of modern plant breeding.',
-    requirements: [
-      'Complete 3 core courses',
-      'Pass written examination (80%)',
-      'Submit breeding project portfolio',
-      '2+ years breeding experience',
-    ],
-    validityYears: 3,
-    examDuration: '3 hours',
-    passingScore: 80,
-    status: 'in-progress',
+    id: 'tut-6',
+    title: 'Genomic Data & Allele Matrix',
+    description: 'Import genotype data, visualize allele matrices, and run diversity analysis.',
+    module: 'Genomics',
+    type: 'walkthrough',
+    duration: '20 min',
+    steps: 15,
   },
   {
-    id: 'cert-2',
-    title: 'Molecular Breeding Specialist',
-    description: 'Advanced certification in molecular breeding techniques and genomic selection.',
-    requirements: [
-      'Complete MAS and Genomic Selection courses',
-      'Pass practical examination',
-      'Demonstrate marker analysis proficiency',
-    ],
-    validityYears: 2,
-    examDuration: '2 hours',
-    passingScore: 75,
-    status: 'available',
+    id: 'tut-7',
+    title: 'Seed Lot Traceability',
+    description: 'Track seed lots from harvest to dispatch with full chain of custody.',
+    module: 'Seed Operations',
+    type: 'interactive',
+    duration: '12 min',
+    steps: 10,
   },
   {
-    id: 'cert-3',
-    title: 'Seed Quality Analyst',
-    description: 'Certification for seed testing and quality assurance professionals.',
-    requirements: [
-      'Complete Seed Production & Quality course',
-      'Pass ISTA-aligned examination',
-      'Laboratory practical assessment',
-    ],
-    validityYears: 2,
-    examDuration: '2.5 hours',
-    passingScore: 70,
-    status: 'available',
+    id: 'tut-8',
+    title: 'Quality Gate Scanner',
+    description: 'Use barcode scanning for quality control and lot approval workflow.',
+    module: 'Seed Operations',
+    type: 'video',
+    duration: '6 min',
+    steps: 5,
+  },
+  {
+    id: 'tut-9',
+    title: 'Cross Prediction & Planning',
+    description: 'Predict cross outcomes and plan crossing blocks using breeding values.',
+    module: 'Analytics',
+    type: 'walkthrough',
+    duration: '15 min',
+    steps: 12,
+  },
+  {
+    id: 'tut-10',
+    title: 'Keyboard Shortcuts & Power User Tips',
+    description: 'Master keyboard navigation, command palette, and productivity shortcuts.',
+    module: 'Power User',
+    type: 'interactive',
+    duration: '8 min',
+    steps: 10,
+  },
+  {
+    id: 'tut-11',
+    title: 'Offline Mode & Data Sync',
+    description: 'Work without internet, manage sync queue, and resolve conflicts.',
+    module: 'Mobile & Offline',
+    type: 'video',
+    duration: '7 min',
+    steps: 6,
+  },
+  {
+    id: 'tut-12',
+    title: 'Import/Export & Data Integration',
+    description: 'Import from Excel, export to BrAPI, and integrate with external systems.',
+    module: 'Data Management',
+    type: 'walkthrough',
+    duration: '10 min',
+    steps: 8,
   },
 ];
 
-const learningPaths: LearningPath[] = [
-  {
-    id: 'path-1',
-    title: 'Plant Breeder Track',
-    description: 'Complete learning path from fundamentals to advanced breeding techniques.',
-    courses: ['course-1', 'course-4', 'course-2', 'course-3'],
-    totalDuration: '46 hours',
-    certification: 'cert-1',
-  },
-  {
-    id: 'path-2',
-    title: 'Molecular Breeding Track',
-    description: 'Specialized path for molecular breeding and genomics.',
-    courses: ['course-2', 'course-3', 'course-6'],
-    totalDuration: '36 hours',
-    certification: 'cert-2',
-  },
-  {
-    id: 'path-3',
-    title: 'Seed Technology Track',
-    description: 'Focus on seed production, quality, and certification.',
-    courses: ['course-5', 'course-1'],
-    totalDuration: '14 hours',
-    certification: 'cert-3',
-  },
+const quickStarts: QuickStart[] = [
+  { id: 'qs-1', title: 'Register Germplasm', description: 'Add new accessions to your collection', icon: Leaf, route: '/germplasm/new', time: '2 min' },
+  { id: 'qs-2', title: 'Create a Trial', description: 'Set up a new field trial', icon: Map, route: '/trials/new', time: '3 min' },
+  { id: 'qs-3', title: 'Record Observations', description: 'Collect phenotype data', icon: FlaskConical, route: '/fieldbook', time: '5 min' },
+  { id: 'qs-4', title: 'Run Analysis', description: 'Analyze trial results', icon: BarChart3, route: '/statistics', time: '5 min' },
+  { id: 'qs-5', title: 'Track Seed Lot', description: 'Check lot status and history', icon: Database, route: '/seed-operations/track', time: '1 min' },
+  { id: 'qs-6', title: 'Configure Settings', description: 'Customize your workspace', icon: Settings, route: '/settings', time: '3 min' },
+];
+
+const featureGuides: FeatureGuide[] = [
+  { id: 'fg-1', module: 'Plant Sciences', icon: Leaf, features: ['Programs', 'Trials', 'Germplasm', 'Crosses', 'Pedigree'], tutorials: 5, difficulty: 'beginner' },
+  { id: 'fg-2', module: 'Field Operations', icon: Map, features: ['Field Book', 'Trial Design', 'Observations', 'Field Layout'], tutorials: 4, difficulty: 'beginner' },
+  { id: 'fg-3', module: 'Genomics', icon: Database, features: ['Allele Matrix', 'Variants', 'Diversity', 'GWAS', 'Genomic Selection'], tutorials: 5, difficulty: 'advanced' },
+  { id: 'fg-4', module: 'Seed Operations', icon: FlaskConical, features: ['Quality Gate', 'Traceability', 'Inventory', 'Dispatch'], tutorials: 4, difficulty: 'intermediate' },
+  { id: 'fg-5', module: 'Analytics', icon: BarChart3, features: ['Selection Index', 'Breeding Values', 'G×E Analysis', 'Statistics'], tutorials: 4, difficulty: 'advanced' },
+  { id: 'fg-6', module: 'Mobile & Offline', icon: Smartphone, features: ['Offline Mode', 'Data Sync', 'Field Mode', 'PWA Install'], tutorials: 3, difficulty: 'beginner' },
 ];
 
 export function TrainingHub() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedModule, setSelectedModule] = useState<string | null>(null);
 
-  const categories = [...new Set(courses.map(c => c.category))];
+  const modules = [...new Set(tutorials.map(t => t.module))];
+  const completedCount = tutorials.filter(t => t.completed).length;
+  const inProgressCount = tutorials.filter(t => t.progress && !t.completed).length;
 
-  const filteredCourses = courses.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory = !selectedCategory || course.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredTutorials = selectedModule 
+    ? tutorials.filter(t => t.module === selectedModule)
+    : tutorials;
 
-  const myCourses = courses.filter(c => c.progress !== undefined);
-
-  const getLevelBadge = (level: string) => {
-    const colors: Record<string, string> = {
-      beginner: 'bg-green-100 text-green-700',
-      intermediate: 'bg-yellow-100 text-yellow-700',
-      advanced: 'bg-red-100 text-red-700',
-    };
-    return <Badge className={colors[level]}>{level}</Badge>;
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'video': return <Video className="h-4 w-4" />;
+      case 'interactive': return <MousePointer className="h-4 w-4" />;
+      case 'walkthrough': return <BookOpen className="h-4 w-4" />;
+      default: return <Play className="h-4 w-4" />;
+    }
   };
 
-  const getCertStatusBadge = (status?: string) => {
-    if (!status) return null;
-    const colors: Record<string, string> = {
-      available: 'bg-blue-100 text-blue-700',
-      'in-progress': 'bg-yellow-100 text-yellow-700',
-      completed: 'bg-green-100 text-green-700',
-    };
-    return <Badge className={colors[status]}>{status.replace('-', ' ')}</Badge>;
+  const getDifficultyColor = (diff: string) => {
+    switch (diff) {
+      case 'beginner': return 'bg-green-100 text-green-700';
+      case 'intermediate': return 'bg-yellow-100 text-yellow-700';
+      case 'advanced': return 'bg-red-100 text-red-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-2">
-            <GraduationCap className="h-8 w-8" />
-            Training Hub
+            <Rocket className="h-8 w-8 text-primary" />
+            Learn BijMantra
           </h1>
           <p className="text-muted-foreground mt-1">
-            Courses, certifications, and learning paths for plant breeding professionals
+            Interactive tutorials to master every feature of the platform
           </p>
         </div>
+        <Button variant="outline">
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Reset Progress
+        </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <BookOpen className="h-8 w-8 text-blue-500" />
+      {/* Progress Overview */}
+      <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <CardContent className="py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center">
+                <Trophy className="h-8 w-8 text-primary" />
+              </div>
               <div>
-                <p className="text-2xl font-bold">{courses.length}</p>
-                <p className="text-sm text-muted-foreground">Courses</p>
+                <h3 className="text-lg font-semibold">Your Learning Progress</h3>
+                <p className="text-sm text-muted-foreground">
+                  {completedCount} of {tutorials.length} tutorials completed
+                </p>
+                <Progress value={(completedCount / tutorials.length) * 100} className="h-2 w-48 mt-2" />
               </div>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <Award className="h-8 w-8 text-yellow-500" />
+            <div className="flex gap-8 text-center">
               <div>
-                <p className="text-2xl font-bold">{certifications.length}</p>
-                <p className="text-sm text-muted-foreground">Certifications</p>
+                <p className="text-3xl font-bold text-green-600">{completedCount}</p>
+                <p className="text-xs text-muted-foreground">Completed</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-yellow-600">{inProgressCount}</p>
+                <p className="text-xs text-muted-foreground">In Progress</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-gray-400">{tutorials.length - completedCount - inProgressCount}</p>
+                <p className="text-xs text-muted-foreground">Not Started</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <Trophy className="h-8 w-8 text-purple-500" />
-              <div>
-                <p className="text-2xl font-bold">{learningPaths.length}</p>
-                <p className="text-sm text-muted-foreground">Learning Paths</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="h-8 w-8 text-green-500" />
-              <div>
-                <p className="text-2xl font-bold">{myCourses.length}</p>
-                <p className="text-sm text-muted-foreground">In Progress</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <Tabs defaultValue="courses">
+      <Tabs defaultValue="tutorials">
         <TabsList>
-          <TabsTrigger value="courses">All Courses</TabsTrigger>
-          <TabsTrigger value="my-learning">My Learning</TabsTrigger>
-          <TabsTrigger value="certifications">Certifications</TabsTrigger>
-          <TabsTrigger value="paths">Learning Paths</TabsTrigger>
+          <TabsTrigger value="tutorials">Tutorials</TabsTrigger>
+          <TabsTrigger value="quick-start">Quick Start</TabsTrigger>
+          <TabsTrigger value="by-module">By Module</TabsTrigger>
+          <TabsTrigger value="shortcuts">Shortcuts</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="courses" className="space-y-4 mt-4">
-          {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="flex gap-2 flex-wrap">
+        {/* Tutorials Tab */}
+        <TabsContent value="tutorials" className="space-y-4 mt-4">
+          {/* Module Filter */}
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              variant={selectedModule === null ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedModule(null)}
+            >
+              All
+            </Button>
+            {modules.map(mod => (
               <Button
-                variant={selectedCategory === null ? 'default' : 'outline'}
+                key={mod}
+                variant={selectedModule === mod ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => setSelectedModule(mod)}
               >
-                All
+                {mod}
               </Button>
-              {categories.map(cat => (
-                <Button
-                  key={cat}
-                  variant={selectedCategory === cat ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  {cat}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Course Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredCourses.map(course => (
-              <Card key={course.id} className="flex flex-col">
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <Badge variant="outline">{course.category}</Badge>
-                    {getLevelBadge(course.level)}
-                  </div>
-                  <CardTitle className="text-lg mt-2">{course.title}</CardTitle>
-                  <CardDescription className="line-clamp-2">{course.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>{course.duration}</span>
-                      <span>•</span>
-                      <span>{course.lessons} lessons</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      <span>{course.enrolled.toLocaleString()} enrolled</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span>{course.rating}</span>
-                      <span>•</span>
-                      <span>{course.instructor}</span>
-                    </div>
-                  </div>
-                  {course.progress !== undefined && (
-                    <div className="mt-3">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>Progress</span>
-                        <span>{course.progress}%</span>
-                      </div>
-                      <Progress value={course.progress} className="h-2" />
-                    </div>
-                  )}
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full">
-                    {course.progress !== undefined ? (
-                      <>
-                        <Play className="h-4 w-4 mr-2" />
-                        Continue
-                      </>
-                    ) : (
-                      <>
-                        <BookOpen className="h-4 w-4 mr-2" />
-                        Enroll
-                      </>
-                    )}
-                  </Button>
-                </CardFooter>
-              </Card>
             ))}
           </div>
-        </TabsContent>
 
-        <TabsContent value="my-learning" className="space-y-4 mt-4">
-          {myCourses.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium">No courses in progress</h3>
-                <p className="text-muted-foreground mt-1">
-                  Enroll in a course to start learning
-                </p>
-                <Button className="mt-4">Browse Courses</Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {myCourses.map(course => (
-                <Card key={course.id}>
-                  <CardContent className="py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium">{course.title}</h3>
-                          {getLevelBadge(course.level)}
-                        </div>
-                        <p className="text-sm text-muted-foreground">{course.instructor}</p>
-                        <div className="mt-2">
-                          <div className="flex justify-between text-xs mb-1">
-                            <span>{course.progress}% complete</span>
-                            <span>{Math.round((course.lessons * (course.progress || 0)) / 100)} / {course.lessons} lessons</span>
-                          </div>
-                          <Progress value={course.progress} className="h-2" />
-                        </div>
-                      </div>
-                      <Button>
-                        <Play className="h-4 w-4 mr-2" />
-                        Continue
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="certifications" className="space-y-4 mt-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {certifications.map(cert => (
-              <Card key={cert.id} className="flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <Award className="h-8 w-8 text-yellow-500" />
-                    {getCertStatusBadge(cert.status)}
-                  </div>
-                  <CardTitle className="text-lg">{cert.title}</CardTitle>
-                  <CardDescription>{cert.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm font-medium mb-2">Requirements:</p>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        {cert.requirements.map((req, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <CheckCircle className="h-4 w-4 mt-0.5 text-green-500 shrink-0" />
-                            {req}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="flex gap-4 text-sm text-muted-foreground">
-                      <span>Valid: {cert.validityYears} years</span>
-                      <span>Exam: {cert.examDuration}</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full" variant={cert.status === 'in-progress' ? 'default' : 'outline'}>
-                    {cert.status === 'in-progress' ? 'Continue Preparation' : 'Start Certification'}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="paths" className="space-y-4 mt-4">
-          <div className="space-y-4">
-            {learningPaths.map(path => (
-              <Card key={path.id}>
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <Trophy className="h-8 w-8 text-purple-500" />
-                    <div>
-                      <CardTitle>{path.title}</CardTitle>
-                      <CardDescription>{path.description}</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>{path.courses.length} courses</span>
-                      <span>•</span>
-                      <span>{path.totalDuration} total</span>
-                      {path.certification && (
-                        <>
-                          <span>•</span>
-                          <span className="flex items-center gap-1">
-                            <Award className="h-4 w-4 text-yellow-500" />
-                            Includes certification
-                          </span>
-                        </>
+          {/* Tutorial List */}
+          <div className="grid gap-4">
+            {filteredTutorials.map(tutorial => (
+              <Card key={tutorial.id} className={tutorial.completed ? 'border-green-200 bg-green-50/50' : ''}>
+                <CardContent className="py-4">
+                  <div className="flex items-center gap-4">
+                    <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${
+                      tutorial.completed ? 'bg-green-100' : tutorial.progress ? 'bg-yellow-100' : 'bg-gray-100'
+                    }`}>
+                      {tutorial.completed ? (
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                      ) : (
+                        getTypeIcon(tutorial.type)
                       )}
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {path.courses.map(courseId => {
-                        const course = courses.find(c => c.id === courseId);
-                        return course ? (
-                          <Badge key={courseId} variant="outline">
-                            {course.title}
-                          </Badge>
-                        ) : null;
-                      })}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-medium">{tutorial.title}</h3>
+                        <Badge variant="outline" className="text-xs">{tutorial.module}</Badge>
+                        <Badge variant="secondary" className="text-xs capitalize">{tutorial.type}</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{tutorial.description}</p>
+                      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {tutorial.duration}
+                        </span>
+                        <span>{tutorial.steps} steps</span>
+                      </div>
+                      {tutorial.progress && !tutorial.completed && (
+                        <div className="mt-2">
+                          <Progress value={tutorial.progress} className="h-1.5 w-48" />
+                          <span className="text-xs text-muted-foreground">{tutorial.progress}% complete</span>
+                        </div>
+                      )}
                     </div>
+                    <Button variant={tutorial.completed ? 'outline' : 'default'}>
+                      {tutorial.completed ? (
+                        <>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          Redo
+                        </>
+                      ) : tutorial.progress ? (
+                        <>
+                          <Play className="h-4 w-4 mr-2" />
+                          Continue
+                        </>
+                      ) : (
+                        <>
+                          <Play className="h-4 w-4 mr-2" />
+                          Start
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button>Start Learning Path</Button>
-                </CardFooter>
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        {/* Quick Start Tab */}
+        <TabsContent value="quick-start" className="mt-4">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Jump Right In</h3>
+            <p className="text-sm text-muted-foreground">Quick tasks to get you started immediately</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {quickStarts.map(qs => (
+              <Card key={qs.id} className="hover:border-primary/50 transition-colors cursor-pointer">
+                <CardContent className="py-4">
+                  <div className="flex items-start gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <qs.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium">{qs.title}</h4>
+                      <p className="text-sm text-muted-foreground">{qs.description}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {qs.time}
+                        </span>
+                        <Button variant="ghost" size="sm">
+                          Go <ArrowRight className="h-3 w-3 ml-1" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* By Module Tab */}
+        <TabsContent value="by-module" className="mt-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {featureGuides.map(guide => (
+              <Card key={guide.id}>
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <guide.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <Badge className={getDifficultyColor(guide.difficulty)}>{guide.difficulty}</Badge>
+                  </div>
+                  <CardTitle className="text-lg mt-2">{guide.module}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {guide.features.map(f => (
+                      <Badge key={f} variant="outline" className="text-xs">{f}</Badge>
+                    ))}
+                  </div>
+                  <p className="text-sm text-muted-foreground">{guide.tutorials} tutorials available</p>
+                  <Button className="w-full mt-3" variant="outline">
+                    Explore Module
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Shortcuts Tab */}
+        <TabsContent value="shortcuts" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Keyboard className="h-5 w-5" />
+                Essential Keyboard Shortcuts
+              </CardTitle>
+              <CardDescription>Master these to work faster in BijMantra</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3">Navigation</h4>
+                  <div className="space-y-2">
+                    {[
+                      { keys: '⌘ K', action: 'Open Command Palette' },
+                      { keys: '⌘ /', action: 'Show Keyboard Shortcuts' },
+                      { keys: 'G then D', action: 'Go to Dashboard' },
+                      { keys: 'G then P', action: 'Go to Programs' },
+                      { keys: 'G then T', action: 'Go to Trials' },
+                      { keys: 'G then G', action: 'Go to Germplasm' },
+                    ].map(s => (
+                      <div key={s.keys} className="flex items-center justify-between py-1">
+                        <span className="text-sm">{s.action}</span>
+                        <kbd className="px-2 py-1 bg-muted rounded text-xs font-mono">{s.keys}</kbd>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-3">Actions</h4>
+                  <div className="space-y-2">
+                    {[
+                      { keys: 'N', action: 'New Item (context-aware)' },
+                      { keys: 'E', action: 'Edit Selected' },
+                      { keys: '⌘ S', action: 'Save' },
+                      { keys: '⌘ Enter', action: 'Submit Form' },
+                      { keys: 'Esc', action: 'Close Dialog / Cancel' },
+                      { keys: '?', action: 'Show Help' },
+                    ].map(s => (
+                      <div key={s.keys} className="flex items-center justify-between py-1">
+                        <span className="text-sm">{s.action}</span>
+                        <kbd className="px-2 py-1 bg-muted rounded text-xs font-mono">{s.keys}</kbd>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <Zap className="h-4 w-4 inline mr-1 text-yellow-500" />
+                  <strong>Pro tip:</strong> Press <kbd className="px-1.5 py-0.5 bg-background rounded text-xs font-mono">⌘ K</kbd> anywhere to open the Command Palette and search for any action.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
   );
 }
-
 
 export default TrainingHub;

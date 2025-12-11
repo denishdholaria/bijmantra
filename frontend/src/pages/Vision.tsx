@@ -21,7 +21,15 @@ import {
   Star,
   Leaf,
   Sun,
-  Moon
+  Moon,
+  BookOpen,
+  Wheat,
+  TreeDeciduous,
+  RefreshCw,
+  Scale,
+  Heart,
+  Target,
+  Orbit
 } from 'lucide-react'
 
 export function Vision() {
@@ -368,15 +376,17 @@ function Vision100Years() {
           <p className="text-slate-600 mb-4">Through all transformations, these principles remain:</p>
           <div className="grid md:grid-cols-3 gap-3">
             {[
-              { icon: '📖', title: 'Open Knowledge', desc: 'Breeding data is a public good' },
-              { icon: '🌾', title: 'Farmer Sovereignty', desc: 'Farmers own their data and seeds' },
-              { icon: '🌿', title: 'Biodiversity', desc: 'Preserve all genetic diversity' },
-              { icon: '♻️', title: 'Sustainability', desc: 'Agriculture must regenerate' },
-              { icon: '⚖️', title: 'Equity', desc: 'Technology serves all' },
-              { icon: '🙏', title: 'Humility', desc: 'We are stewards of nature' },
+              { icon: BookOpen, title: 'Open Knowledge', desc: 'Breeding data is a public good', color: 'bg-blue-100 text-blue-600' },
+              { icon: Wheat, title: 'Farmer Sovereignty', desc: 'Farmers own their data and seeds', color: 'bg-amber-100 text-amber-600' },
+              { icon: TreeDeciduous, title: 'Biodiversity', desc: 'Preserve all genetic diversity', color: 'bg-green-100 text-green-600' },
+              { icon: RefreshCw, title: 'Sustainability', desc: 'Agriculture must regenerate', color: 'bg-emerald-100 text-emerald-600' },
+              { icon: Scale, title: 'Equity', desc: 'Technology serves all', color: 'bg-purple-100 text-purple-600' },
+              { icon: Heart, title: 'Humility', desc: 'We are stewards of nature', color: 'bg-pink-100 text-pink-600' },
             ].map((p, i) => (
               <div key={i} className="p-3 bg-white rounded-lg shadow-sm">
-                <span className="text-xl">{p.icon}</span>
+                <div className={`w-8 h-8 rounded-lg ${p.color} flex items-center justify-center`}>
+                  <p.icon className="h-4 w-4" />
+                </div>
                 <h4 className="font-semibold mt-1">{p.title}</h4>
                 <p className="text-xs text-slate-600">{p.desc}</p>
               </div>
@@ -394,7 +404,7 @@ function Vision1000Years() {
     {
       name: 'Horizon 1: Planetary',
       period: '2025-2200',
-      icon: '🌍',
+      icon: Globe,
       color: 'emerald',
       focus: 'Mastering Earth and near-space agriculture',
       items: ['Complete understanding of plant genetics', 'Climate-proof food systems', 'Lunar and Martian agriculture', 'Synthetic food production']
@@ -402,7 +412,7 @@ function Vision1000Years() {
     {
       name: 'Horizon 2: Stellar',
       period: '2200-2500',
-      icon: '⭐',
+      icon: Star,
       color: 'blue',
       focus: 'Expanding to other star systems',
       items: ['Generation ship seed banks', 'Exoplanet adaptation breeding', 'Light-year communication protocols', 'Autonomous breeding AI colonies']
@@ -410,7 +420,7 @@ function Vision1000Years() {
     {
       name: 'Horizon 3: Galactic',
       period: '2500-3025',
-      icon: '🌌',
+      icon: Orbit,
       color: 'purple',
       focus: 'Becoming a multi-stellar civilization',
       items: ['Galactic germplasm network', 'Universal genetic language', 'Post-biological agriculture', 'Cosmic-scale food security']
@@ -452,8 +462,8 @@ function Vision1000Years() {
           <Card key={i} className={`border-l-4 border-l-${h.color}-500`}>
             <CardContent className="pt-6">
               <div className="flex items-start gap-4">
-                <div className={`w-16 h-16 bg-${h.color}-100 rounded-xl flex items-center justify-center text-3xl flex-shrink-0`}>
-                  {h.icon}
+                <div className={`w-16 h-16 bg-${h.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
+                  <h.icon className={`h-8 w-8 text-${h.color}-600`} />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">

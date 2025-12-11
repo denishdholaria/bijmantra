@@ -273,6 +273,24 @@ export function SystemSettings() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div>
+                  <h3 className="font-medium">🧠 Security Command Center</h3>
+                  <p className="text-sm text-muted-foreground">ASHTA-STAMBHA unified security dashboard (CHAITANYA + PRAHARI + RAKSHAKA)</p>
+                </div>
+                <Button variant="outline" onClick={() => window.location.href = '/security'}>
+                  Open →
+                </Button>
+              </div>
+              <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div>
+                  <h3 className="font-medium">🛡️ RAKSHAKA System Health</h3>
+                  <p className="text-sm text-muted-foreground">Self-healing system monitoring and anomaly detection</p>
+                </div>
+                <Button variant="outline" onClick={() => window.location.href = '/system-health'}>
+                  Open →
+                </Button>
+              </div>
+              <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div>
                   <h3 className="font-medium">📊 Dev Progress</h3>
                   <p className="text-sm text-muted-foreground">View development progress, features, and roadmap</p>
                 </div>

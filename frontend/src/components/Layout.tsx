@@ -13,6 +13,8 @@ const CommandPalette = lazy(() => import('@/components/CommandPalette').then(m =
 const UserMenu = lazy(() => import('@/components/UserMenu').then(m => ({ default: m.UserMenu })))
 const Veena = lazy(() => import('@/components/ai/Veena').then(m => ({ default: m.Veena })))
 const FieldModeToggle = lazy(() => import('@/components/FieldModeToggle').then(m => ({ default: m.FieldModeToggle })))
+const HelpCenter = lazy(() => import('@/components/HelpCenter').then(m => ({ default: m.HelpCenter })))
+const OnboardingWizard = lazy(() => import('@/components/OnboardingWizard').then(m => ({ default: m.OnboardingWizard })))
 
 // Import lighter components directly
 import { useKeyboardShortcuts } from '@/components/KeyboardShortcuts'
@@ -21,6 +23,8 @@ import { ToastContainer } from '@/components/ToastContainer'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { SyncStatusIndicator, OfflineBanner } from '@/components/SyncStatusIndicator'
 import { NotificationProvider, NotificationBell } from '@/components/notifications'
+import { useOnboarding } from '@/components/OnboardingWizard'
+import { HelpCircle } from 'lucide-react'
 
 function LoadingFallback() {
   return (
@@ -54,6 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [useSmartNav] = useState(true)
+  const { showWizard, completeOnboarding } = useOnboarding()
 
   // Global keyboard shortcut for Command Palette
   useEffect(() => {
@@ -202,6 +207,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
             {/* Notification Bell */}
             <NotificationBell />
             
+            {/* Help Center */}
+            <Suspense fallback={null}>
+              <HelpCenter 
+                contextPage={location.pathname.split('/')[1]}
+                trigger={
+                  <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg" aria-label="Help">
+                    <HelpCircle className="h-5 w-5" />
+                  </button>
+                }
+              />
+            </Suspense>
+            
             {/* User Menu */}
             <Suspense fallback={<div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />}>
               <UserMenu />
@@ -242,6 +259,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       
       {/* Toast Container - renders all active toasts */}
       <ToastContainer />
+      
+      {/* Onboarding Wizard - shows for new users */}
+      {showWizard && (
+        <Suspense fallback={null}>
+          <OnboardingWizard 
+            onComplete={completeOnboarding}
+            onSkip={completeOnboarding}
+          />
+        </Suspense>
+      )}
     </div>
     </NotificationProvider>
   )
