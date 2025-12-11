@@ -121,14 +121,16 @@ Eight Pillars of Protection for mission-critical environments.
 
 See [SECURITY.md](SECURITY.md) for security policy and vulnerability reporting.
 
-### 🦀 WASM Genomics Engine
+### 🦀 High-Performance Genomics
 | Tool | Description |
 |------|-------------|
-| WASM Genomics | High-performance benchmark dashboard |
-| WASM GBLUP | Genomic BLUP calculator |
-| WASM PopGen | Diversity, Fst, PCA analysis |
-| WASM LD | Linkage disequilibrium & HWE |
-| WASM Selection | Multi-trait selection calculator |
+| Genomics Benchmark | High-performance benchmark dashboard |
+| Genomic BLUP | Genomic BLUP calculator |
+| Population Genetics | Diversity, Fst, PCA analysis |
+| Linkage Disequilibrium | Linkage disequilibrium & HWE |
+| Selection Index | Multi-trait selection calculator |
+
+*Powered by WebAssembly for native-speed calculations*
 
 ### 🤖 AI Phenotyping
 | Tool | Description |
