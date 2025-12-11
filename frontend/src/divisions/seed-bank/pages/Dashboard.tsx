@@ -36,9 +36,9 @@ export function Dashboard() {
   });
 
   const quickActions = [
-    { label: 'Register Accession', path: '/seed-bank/accessions', icon: '🌱' },
+    { label: 'Register Accession', path: '/seed-bank/accessions/new', icon: '🌱' },
     { label: 'Viability Test', path: '/seed-bank/viability', icon: '🔬' },
-    { label: 'Plan Regeneration', path: '/seed-bank/regeneration', icon: '🔄' },
+    { label: 'MCPD Exchange', path: '/seed-bank/mcpd', icon: '📄' },
     { label: 'Germplasm Exchange', path: '/seed-bank/exchange', icon: '🤝' },
   ];
 

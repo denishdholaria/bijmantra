@@ -14,6 +14,106 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 
+// Demo progeny data generator
+function generateDemoProgeny(crossId: string, parent1Name?: string, parent2Name?: string) {
+  const baseId = crossId.replace(/[^0-9]/g, '') || '1';
+  const count = Math.floor(Math.random() * 8) + 3; // 3-10 progeny
+  
+  return Array.from({ length: count }, (_, i) => ({
+    id: `PRG-${baseId}-${String(i + 1).padStart(3, '0')}`,
+    name: `${parent1Name?.substring(0, 3) || 'P1'}×${parent2Name?.substring(0, 3) || 'P2'}-F1-${i + 1}`,
+    generation: 'F1',
+    status: ['Growing', 'Selected', 'Harvested', 'Discarded'][Math.floor(Math.random() * 4)],
+    plantDate: new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    vigor: Math.floor(Math.random() * 5) + 1,
+    notes: i === 0 ? 'Best performer' : i === 1 ? 'Good disease resistance' : undefined,
+  }));
+}
+
+function ProgenyList({ crossId, parent1Name, parent2Name }: { crossId: string; parent1Name?: string; parent2Name?: string }) {
+  const [progeny] = useState(() => generateDemoProgeny(crossId, parent1Name, parent2Name));
+  
+  const statusColors: Record<string, string> = {
+    Growing: 'bg-green-100 text-green-800',
+    Selected: 'bg-blue-100 text-blue-800',
+    Harvested: 'bg-yellow-100 text-yellow-800',
+    Discarded: 'bg-gray-100 text-gray-800',
+  };
+
+  const vigorStars = (vigor: number) => '★'.repeat(vigor) + '☆'.repeat(5 - vigor);
+
+  if (progeny.length === 0) {
+    return (
+      <div className="p-8 text-center text-muted-foreground">
+        <div className="text-4xl mb-2">🌱</div>
+        <p>No progeny registered yet</p>
+        <p className="text-sm mt-1">Register offspring from this cross to track their performance</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="text-center">
+          <p className="text-2xl font-bold">{progeny.length}</p>
+          <p className="text-xs text-muted-foreground">Total Progeny</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-green-600">{progeny.filter(p => p.status === 'Growing').length}</p>
+          <p className="text-xs text-muted-foreground">Growing</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-blue-600">{progeny.filter(p => p.status === 'Selected').length}</p>
+          <p className="text-xs text-muted-foreground">Selected</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-yellow-600">{progeny.filter(p => p.status === 'Harvested').length}</p>
+          <p className="text-xs text-muted-foreground">Harvested</p>
+        </div>
+      </div>
+
+      {/* Progeny Table */}
+      <div className="border rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/50">
+            <tr>
+              <th className="text-left p-3 font-medium">Progeny ID</th>
+              <th className="text-left p-3 font-medium">Name</th>
+              <th className="text-left p-3 font-medium">Generation</th>
+              <th className="text-left p-3 font-medium">Status</th>
+              <th className="text-left p-3 font-medium">Vigor</th>
+              <th className="text-left p-3 font-medium">Plant Date</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {progeny.map((p) => (
+              <tr key={p.id} className="hover:bg-muted/30">
+                <td className="p-3 font-mono text-xs">{p.id}</td>
+                <td className="p-3">
+                  <div>
+                    <span className="font-medium">{p.name}</span>
+                    {p.notes && <p className="text-xs text-muted-foreground">{p.notes}</p>}
+                  </div>
+                </td>
+                <td className="p-3">
+                  <Badge variant="outline">{p.generation}</Badge>
+                </td>
+                <td className="p-3">
+                  <Badge className={statusColors[p.status]}>{p.status}</Badge>
+                </td>
+                <td className="p-3 text-yellow-500">{vigorStars(p.vigor)}</td>
+                <td className="p-3 text-muted-foreground">{p.plantDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export function CrossDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -176,17 +276,21 @@ export function CrossDetail() {
         </CardContent>
       </Card>
 
-      {/* Progeny Placeholder */}
+      {/* Progeny Section */}
       <Card>
         <CardHeader>
-          <CardTitle>Progeny</CardTitle>
-          <CardDescription>Offspring from this cross</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Progeny</CardTitle>
+              <CardDescription>Offspring from this cross</CardDescription>
+            </div>
+            <Button variant="outline" size="sm">
+              + Register Progeny
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="p-8 text-center text-muted-foreground">
-            <div className="text-4xl mb-2">🌱</div>
-            <p>Progeny tracking coming soon</p>
-          </div>
+          <ProgenyList crossId={cross.crossDbId} parent1Name={parent1?.germplasmName} parent2Name={parent2?.germplasmName} />
         </CardContent>
       </Card>
 

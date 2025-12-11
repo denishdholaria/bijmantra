@@ -353,13 +353,48 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
             <CardTitle className="text-lg font-semibold">Operations Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-12 text-gray-500">
-              <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p className="font-medium">Seed Company Dashboard</p>
-              <p className="text-sm mt-1">LIMS, traceability, and dispatch features coming soon</p>
-              <Link to="/quality">
-                <Button variant="outline" className="mt-4">
-                  View Quality Control
+            <div className="grid grid-cols-2 gap-4">
+              <Link to="/seed-operations/quality-gate" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🔍</span>
+                  <div>
+                    <p className="font-medium">Quality Gate</p>
+                    <p className="text-sm text-muted-foreground">Scan & verify lots</p>
+                  </div>
+                </div>
+              </Link>
+              <Link to="/seed-operations/batches" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">⚙️</span>
+                  <div>
+                    <p className="font-medium">Processing</p>
+                    <p className="text-sm text-muted-foreground">Batch management</p>
+                  </div>
+                </div>
+              </Link>
+              <Link to="/seed-operations/lots" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📦</span>
+                  <div>
+                    <p className="font-medium">Inventory</p>
+                    <p className="text-sm text-muted-foreground">Seed lot tracking</p>
+                  </div>
+                </div>
+              </Link>
+              <Link to="/seed-operations/dispatch" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🚚</span>
+                  <div>
+                    <p className="font-medium">Dispatch</p>
+                    <p className="text-sm text-muted-foreground">Create shipments</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+            <div className="mt-4 pt-4 border-t">
+              <Link to="/seed-operations">
+                <Button variant="outline" className="w-full">
+                  Open Seed Operations Dashboard →
                 </Button>
               </Link>
             </div>
@@ -386,29 +421,29 @@ function SeedCompanyDashboard({ totalSeedlots, totalGermplasm, isLoading }: Seed
           title="Sample Registration"
           description="Register new samples for testing"
           icon={<FlaskConical className="h-6 w-6" />}
-          link="/quality"
+          link="/seed-operations/samples"
           status="available"
         />
         <WorkflowCard 
           title="Lab Testing"
           description="Germination, purity, moisture"
           icon={<Beaker className="h-6 w-6" />}
-          link="/quality"
+          link="/seed-operations/testing"
           status="available"
         />
         <WorkflowCard 
           title="Seed Processing"
           description="Cleaning, grading, treatment"
           icon={<Package className="h-6 w-6" />}
-          link="/harvest"
-          status="coming"
+          link="/seed-operations/stages"
+          status="available"
         />
         <WorkflowCard 
           title="Dispatch"
           description="Packaging and shipping"
           icon={<MapPin className="h-6 w-6" />}
-          link="/traceability"
-          status="coming"
+          link="/seed-operations/dispatch"
+          status="available"
         />
       </div>
     </>

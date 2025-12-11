@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from 'sonner'
 
 export function ProgramDetail() {
   const { programDbId } = useParams<{ programDbId: string }>()
@@ -197,7 +198,31 @@ export function ProgramDetail() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => alert('Export feature coming soon!')}
+                onClick={() => {
+                  const exportData = {
+                    program: {
+                      id: program.programDbId,
+                      name: program.programName,
+                      abbreviation: program.abbreviation,
+                      objective: program.objective,
+                      leadPerson: program.leadPersonName,
+                      fundingSource: program.fundingSource,
+                      documentationURL: program.documentationURL,
+                    },
+                    exportDate: new Date().toISOString(),
+                    format: 'BrAPI v2.1',
+                  };
+                  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `program_${program.programDbId}_export.json`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                  toast.success('Program data exported');
+                }}
               >
                 📥 Export Data
               </Button>

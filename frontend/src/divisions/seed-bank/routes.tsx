@@ -17,6 +17,7 @@ const Conservation = lazy(() => import('./pages/Conservation'));
 const GermplasmExchange = lazy(() => import('./pages/GermplasmExchange'));
 const ViabilityTesting = lazy(() => import('./pages/ViabilityTesting'));
 const RegenerationPlanning = lazy(() => import('./pages/RegenerationPlanning'));
+const MCPDExchange = lazy(() => import('./pages/MCPDExchange'));
 
 /**
  * Seed Bank Division Routes
@@ -32,6 +33,7 @@ export const seedBankRoutes: RouteObject[] = [
   { path: 'exchange', element: <GermplasmExchange /> },
   { path: 'viability', element: <ViabilityTesting /> },
   { path: 'regeneration', element: <RegenerationPlanning /> },
+  { path: 'mcpd', element: <MCPDExchange /> },
 ];
 
 export default seedBankRoutes;

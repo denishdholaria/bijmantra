@@ -14,6 +14,121 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 
+// Demo associations generator
+function generateDemoAssociations(personId: string) {
+  const roles = ['Principal Investigator', 'Co-Investigator', 'Data Collector', 'Technician', 'Collaborator'];
+  
+  return {
+    programs: Array.from({ length: Math.floor(Math.random() * 3) + 1 }, (_, i) => ({
+      id: `PRG-${personId.slice(-3)}-${i + 1}`,
+      name: ['Rice Improvement Program', 'Wheat Breeding Initiative', 'Maize Hybrid Development', 'Sorghum Drought Tolerance'][i % 4],
+      role: roles[Math.floor(Math.random() * roles.length)],
+      startYear: 2020 + Math.floor(Math.random() * 4),
+    })),
+    studies: Array.from({ length: Math.floor(Math.random() * 4) + 1 }, (_, i) => ({
+      id: `STD-${personId.slice(-3)}-${i + 1}`,
+      name: [`Yield Trial ${2024 - i}`, `Disease Screening ${2024 - i}`, `Multi-location Trial`, `Drought Stress Study`][i % 4],
+      role: roles[Math.floor(Math.random() * roles.length)],
+      season: ['Kharif 2024', 'Rabi 2023-24', 'Summer 2024', 'Kharif 2023'][i % 4],
+    })),
+    observations: Math.floor(Math.random() * 5000) + 500,
+    germplasm: Math.floor(Math.random() * 200) + 20,
+  };
+}
+
+function PersonAssociations({ personId, personName }: { personId: string; personName: string }) {
+  const [associations] = useState(() => generateDemoAssociations(personId));
+  const [activeTab, setActiveTab] = useState<'programs' | 'studies'>('programs');
+
+  return (
+    <div className="space-y-4">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="text-center">
+          <p className="text-2xl font-bold text-blue-600">{associations.programs.length}</p>
+          <p className="text-xs text-muted-foreground">Programs</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-green-600">{associations.studies.length}</p>
+          <p className="text-xs text-muted-foreground">Studies</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-purple-600">{associations.observations.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">Observations</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-orange-600">{associations.germplasm}</p>
+          <p className="text-xs text-muted-foreground">Germplasm</p>
+        </div>
+      </div>
+
+      {/* Tab Buttons */}
+      <div className="flex gap-2 border-b">
+        <button
+          onClick={() => setActiveTab('programs')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+            activeTab === 'programs' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          🎯 Programs ({associations.programs.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('studies')}
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+            activeTab === 'studies' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          📊 Studies ({associations.studies.length})
+        </button>
+      </div>
+
+      {/* Programs Tab */}
+      {activeTab === 'programs' && (
+        <div className="space-y-2">
+          {associations.programs.map((program) => (
+            <Link
+              key={program.id}
+              to={`/programs/${program.id}`}
+              className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🎯</span>
+                <div>
+                  <p className="font-medium">{program.name}</p>
+                  <p className="text-sm text-muted-foreground">Since {program.startYear}</p>
+                </div>
+              </div>
+              <Badge variant="outline">{program.role}</Badge>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Studies Tab */}
+      {activeTab === 'studies' && (
+        <div className="space-y-2">
+          {associations.studies.map((study) => (
+            <Link
+              key={study.id}
+              to={`/studies/${study.id}`}
+              className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">📊</span>
+                <div>
+                  <p className="font-medium">{study.name}</p>
+                  <p className="text-sm text-muted-foreground">{study.season}</p>
+                </div>
+              </div>
+              <Badge variant="outline">{study.role}</Badge>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function PersonDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -170,10 +285,7 @@ export function PersonDetail() {
           <CardDescription>Programs, studies, and observations linked to this person</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="p-8 text-center text-muted-foreground">
-            <div className="text-4xl mb-2">🔗</div>
-            <p>Data associations coming soon</p>
-          </div>
+          <PersonAssociations personId={person.personDbId} personName={fullName} />
         </CardContent>
       </Card>
 

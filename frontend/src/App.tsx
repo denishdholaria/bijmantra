@@ -87,6 +87,10 @@ import { Progeny } from '@/pages/Progeny'
 import { TrialDesign } from '@/pages/TrialDesign'
 import { SelectionIndex } from '@/pages/SelectionIndex'
 import { GeneticGain } from '@/pages/GeneticGain'
+import { SelectionIndexCalculator } from '@/pages/SelectionIndexCalculator'
+import { GeneticGainTracker } from '@/pages/GeneticGainTracker'
+import { HarvestManagement } from '@/pages/HarvestManagement'
+import { BreedingValueCalculator } from '@/pages/BreedingValueCalculator'
 import { PedigreeViewer } from '@/pages/PedigreeViewer'
 import { BreedingPipeline } from '@/pages/BreedingPipeline'
 import { HarvestPlanner } from '@/pages/HarvestPlanner'
@@ -2998,6 +3002,54 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <ApexAnalytics />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Selection Index Calculator */}
+        <Route
+          path="/selection-index-calculator"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SelectionIndexCalculator />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Genetic Gain Tracker */}
+        <Route
+          path="/genetic-gain-tracker"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GeneticGainTracker />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Harvest Management */}
+        <Route
+          path="/harvest-management"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <HarvestManagement />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Breeding Value Calculator */}
+        <Route
+          path="/breeding-value-calculator"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <BreedingValueCalculator />
               </Layout>
             </ProtectedRoute>
           }

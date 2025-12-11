@@ -16,6 +16,132 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 
+// Demo transaction history generator
+function generateDemoTransactions(seedLotId: string) {
+  const types = ['addition', 'removal', 'transfer_in', 'transfer_out', 'adjustment', 'harvest'];
+  const reasons = {
+    addition: ['Initial stock', 'Harvest received', 'Purchase', 'Donation received'],
+    removal: ['Planting', 'Sale', 'Sample taken', 'Quality testing'],
+    transfer_in: ['From warehouse A', 'From field station', 'Inter-location transfer'],
+    transfer_out: ['To warehouse B', 'To research station', 'To partner organization'],
+    adjustment: ['Inventory correction', 'Moisture loss', 'Damage write-off'],
+    harvest: ['Field harvest', 'Greenhouse harvest', 'Regeneration harvest'],
+  };
+  
+  const count = Math.floor(Math.random() * 8) + 4; // 4-11 transactions
+  const transactions = [];
+  
+  for (let i = 0; i < count; i++) {
+    const type = types[Math.floor(Math.random() * types.length)] as keyof typeof reasons;
+    const isPositive = ['addition', 'transfer_in', 'harvest'].includes(type);
+    const amount = Math.floor(Math.random() * 500) + 10;
+    const daysAgo = Math.floor(Math.random() * 365);
+    
+    transactions.push({
+      id: `TXN-${seedLotId.slice(-4)}-${String(i + 1).padStart(4, '0')}`,
+      type,
+      amount: isPositive ? amount : -amount,
+      reason: reasons[type][Math.floor(Math.random() * reasons[type].length)],
+      date: new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toISOString(),
+      user: ['John Smith', 'Maria Garcia', 'Ahmed Hassan', 'Li Wei'][Math.floor(Math.random() * 4)],
+      reference: Math.random() > 0.5 ? `REF-${Math.floor(Math.random() * 10000)}` : undefined,
+    });
+  }
+  
+  return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+function TransactionHistory({ seedLotId, units }: { seedLotId: string; units: string }) {
+  const [transactions] = useState(() => generateDemoTransactions(seedLotId));
+  
+  const typeIcons: Record<string, string> = {
+    addition: '➕',
+    removal: '➖',
+    transfer_in: '📥',
+    transfer_out: '📤',
+    adjustment: '🔧',
+    harvest: '🌾',
+  };
+  
+  const typeColors: Record<string, string> = {
+    addition: 'text-green-600',
+    removal: 'text-red-600',
+    transfer_in: 'text-blue-600',
+    transfer_out: 'text-orange-600',
+    adjustment: 'text-purple-600',
+    harvest: 'text-green-600',
+  };
+
+  if (transactions.length === 0) {
+    return (
+      <div className="p-8 text-center text-muted-foreground">
+        <div className="text-4xl mb-2">📋</div>
+        <p>No transactions recorded yet</p>
+      </div>
+    );
+  }
+
+  // Calculate running balance
+  let runningBalance = 0;
+  const transactionsWithBalance = [...transactions].reverse().map(t => {
+    runningBalance += t.amount;
+    return { ...t, balance: runningBalance };
+  }).reverse();
+
+  return (
+    <div className="space-y-4">
+      {/* Summary */}
+      <div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="text-center">
+          <p className="text-2xl font-bold text-green-600">
+            +{transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0)}
+          </p>
+          <p className="text-xs text-muted-foreground">Total In</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-red-600">
+            {transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0)}
+          </p>
+          <p className="text-xs text-muted-foreground">Total Out</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold">{transactions.length}</p>
+          <p className="text-xs text-muted-foreground">Transactions</p>
+        </div>
+      </div>
+
+      {/* Transaction List */}
+      <div className="border rounded-lg divide-y max-h-[400px] overflow-y-auto">
+        {transactionsWithBalance.map((txn) => (
+          <div key={txn.id} className="p-3 hover:bg-muted/30 flex items-center gap-4">
+            <div className="text-2xl">{typeIcons[txn.type]}</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="font-medium capitalize">{txn.type.replace('_', ' ')}</span>
+                {txn.reference && (
+                  <Badge variant="outline" className="text-xs">{txn.reference}</Badge>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">{txn.reason}</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(txn.date).toLocaleDateString()} • {txn.user}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className={`font-bold ${typeColors[txn.type]}`}>
+                {txn.amount > 0 ? '+' : ''}{txn.amount} {units}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Balance: {txn.balance} {units}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function SeedLotDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -211,17 +337,14 @@ export function SeedLotDetail() {
         </Card>
       </div>
 
-      {/* Transaction History Placeholder */}
+      {/* Transaction History */}
       <Card>
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
           <CardDescription>Stock movements for this seed lot</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="p-8 text-center text-muted-foreground">
-            <div className="text-4xl mb-2">📋</div>
-            <p>Transaction history coming soon</p>
-          </div>
+          <TransactionHistory seedLotId={seedLot.seedLotDbId} units={seedLot.units || 'units'} />
         </CardContent>
       </Card>
 

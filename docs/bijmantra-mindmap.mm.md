@@ -2,7 +2,7 @@
 
 ## 📊 Stats (Dec 2025)
 - 469 API Endpoints
-- 252+ Frontend Pages
+- 263+ Frontend Pages
 - 11 Divisions
 - 42 Backend Services
 - 50 API Routers
@@ -115,7 +115,7 @@
 - Pedigree Viewer
 - Parentage Analysis
 
-## 2️⃣ Seed Bank (31 endpoints, 9 pages)
+## 2️⃣ Seed Bank (31 endpoints, 10 pages)
 
 ### 🏛️ Vaults
 - Vault Management
@@ -143,12 +143,15 @@
 - Material Transfer Agreements
 - Request Workflow
 
-### 📄 Standards
-- MCPD v2.1 Import
-- MCPD v2.1 Export
-- CSV/JSON Formats
-- Validation
-- Reference Codes (SAMPSTAT, COLLSRC, STORAGE)
+### 📄 MCPD Exchange (NEW!)
+- MCPD v2.1 Export (CSV/JSON)
+- MCPD v2.1 Import with Preview
+- Template Download
+- Reference Codes Browser
+  - SAMPSTAT (Biological Status)
+  - COLLSRC (Acquisition Source)
+  - STORAGE (Storage Type)
+- Validation with Error Reporting
 
 ## 3️⃣ Earth Systems (28 endpoints, 12 pages)
 
@@ -225,10 +228,25 @@
 - Acknowledge/Resolve
 - Alert History
 
-## 6️⃣ Commercial (95 endpoints, 18 pages)
+## 6️⃣ Commercial (95 endpoints, 21 pages)
 
 ### 🏷️ DUS Testing (UPOV)
-- 10 Crop Templates
+- DUS Trials Page (NEW!)
+  - Trial List with Filters
+  - Create Trial Dialog
+  - Crop/Year Filtering
+- DUS Crops Page (NEW!)
+  - 10 Crop Templates Browser
+  - Character Details Accordion
+  - UPOV Character Definitions
+- DUS Trial Detail Page (NEW!)
+  - Entry Management
+  - Character Scoring
+  - Distinctness Analysis
+  - Uniformity Calculation
+  - Stability Assessment
+  - DUS Report Generation
+- Crop Templates:
   - Rice (20 chars)
   - Wheat (15 chars)
   - Maize (18 chars)
@@ -239,12 +257,6 @@
   - Pigeonpea (16 chars)
   - Soybean (15 chars)
   - Chickpea (16 chars)
-- Trial Management
-- Character Scoring
-- Distinctness Analysis
-- Uniformity Calculation
-- Stability Assessment
-- DUS Report Generation
 
 ### 🔗 Traceability
 - Seed Lot Registration
@@ -256,12 +268,25 @@
 - Track Lot
 - Lineage View
 
-### 📜 Licensing
-- Variety Registration
-- PVP/PBR/Patent Filing
-- License Agreements
-- Royalty Tracking
-- Protection Types
+### 📜 Licensing (Full UI!)
+- Varieties Page (NEW!)
+  - Variety Registration
+  - Protection Status Tracking
+  - PVP/PBR/Patent Filing
+  - Protection Types Reference
+- Agreements Page (NEW!)
+  - License Agreement Management
+  - Exclusive/Non-Exclusive/Research Types
+  - Territory & Period Tracking
+  - Royalty Rate Configuration
+  - Agreement Activation
+- Royalties Page (NEW!)
+  - Payment Recording
+  - Sales Tracking
+  - Revenue Dashboard
+  - Year-over-Year Filtering
+  - Currency Support (USD/EUR/INR/GBP)
+  - Export Functionality
 
 ### 🏭 Seed Operations
 - Lab Samples

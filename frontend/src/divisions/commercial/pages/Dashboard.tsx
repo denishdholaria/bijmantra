@@ -1,88 +1,298 @@
 /**
  * Commercial Dashboard
  *
- * Seed traceability, licensing, and business operations.
+ * Seed traceability, licensing, DUS testing, and business operations.
  */
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  ClipboardCheck,
+  Sprout,
+  FileText,
+  DollarSign,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
+} from 'lucide-react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export function Dashboard() {
-  const features = [
-    { icon: '📦', title: 'Seed Traceability', description: 'Track seed lots from breeding to market' },
-    { icon: '📜', title: 'Licensing Management', description: 'Variety licensing and royalty tracking' },
-    { icon: '🔗', title: 'ERP Integration', description: 'Connect with ERPNext and other systems' },
-    { icon: '📊', title: 'Market Analytics', description: 'Sales forecasting and demand planning' },
+  // Fetch DUS stats
+  const { data: dusStats } = useQuery({
+    queryKey: ['dus-stats'],
+    queryFn: async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/v2/dus/trials`);
+        if (!res.ok) return { total: 0, active: 0 };
+        const trials = await res.json();
+        return {
+          total: trials.length,
+          active: trials.filter((t: any) => t.status === 'in_progress').length,
+        };
+      } catch {
+        return { total: 0, active: 0 };
+      }
+    },
+  });
+
+  // Fetch licensing stats
+  const { data: licensingStats } = useQuery({
+    queryKey: ['licensing-stats'],
+    queryFn: async () => {
+      try {
+        const [varietiesRes, agreementsRes] = await Promise.all([
+          fetch(`${API_BASE}/api/v2/licensing/varieties`),
+          fetch(`${API_BASE}/api/v2/licensing/agreements`),
+        ]);
+        const varieties = varietiesRes.ok ? await varietiesRes.json() : [];
+        const agreements = agreementsRes.ok ? await agreementsRes.json() : [];
+        return {
+          varieties: varieties.length,
+          protected: varieties.filter((v: any) => v.protection_status === 'granted').length,
+          agreements: agreements.length,
+          active: agreements.filter((a: any) => a.status === 'active').length,
+        };
+      } catch {
+        return { varieties: 0, protected: 0, agreements: 0, active: 0 };
+      }
+    },
+  });
+
+  const modules = [
+    {
+      icon: ClipboardCheck,
+      title: 'DUS Testing',
+      description: 'UPOV variety protection with 10 crop templates',
+      href: '/commercial/dus',
+      color: 'bg-purple-100 text-purple-600',
+      stats: dusStats ? `${dusStats.total} trials` : 'Loading...',
+      badge: 'Active',
+    },
+    {
+      icon: Sprout,
+      title: 'Variety Registration',
+      description: 'Register and protect plant varieties',
+      href: '/seed-operations/varieties',
+      color: 'bg-green-100 text-green-600',
+      stats: licensingStats ? `${licensingStats.varieties} varieties` : 'Loading...',
+      badge: 'Active',
+    },
+    {
+      icon: FileText,
+      title: 'License Agreements',
+      description: 'Manage licensing contracts and territories',
+      href: '/seed-operations/agreements',
+      color: 'bg-blue-100 text-blue-600',
+      stats: licensingStats ? `${licensingStats.agreements} agreements` : 'Loading...',
+      badge: 'Active',
+    },
+    {
+      icon: DollarSign,
+      title: 'Royalty Tracking',
+      description: 'Track payments and revenue from licensed varieties',
+      href: '/seed-operations/royalties',
+      color: 'bg-yellow-100 text-yellow-600',
+      stats: 'Revenue dashboard',
+      badge: 'Active',
+    },
+  ];
+
+  const quickActions = [
+    { label: 'New DUS Trial', href: '/commercial/dus', icon: ClipboardCheck },
+    { label: 'Register Variety', href: '/seed-operations/varieties', icon: Sprout },
+    { label: 'New Agreement', href: '/seed-operations/agreements', icon: FileText },
+    { label: 'Record Royalty', href: '/seed-operations/royalties', icon: DollarSign },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Commercial</h1>
-        <p className="text-gray-600 mt-1">Seed traceability, licensing, and business operations</p>
-        <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">
-          📋 Planned Module
-        </div>
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          💼 Commercial Division
+        </h1>
+        <p className="text-muted-foreground">
+          DUS testing, variety protection, licensing, and royalty management
+        </p>
       </div>
 
-      <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <span className="text-4xl">💼</span>
-            <div>
-              <h3 className="font-semibold text-lg text-blue-900">Business Operations Hub</h3>
-              <p className="text-blue-700 mt-1">
-                This division will bridge breeding operations with commercial activities, 
-                enabling seamless tracking from variety development to market release.
-              </p>
+      {/* Stats Overview */}
+      <div className="grid grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <ClipboardCheck className="h-5 w-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{dusStats?.total || 0}</p>
+                <p className="text-xs text-muted-foreground">DUS Trials</p>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{licensingStats?.protected || 0}</p>
+                <p className="text-xs text-muted-foreground">Protected Varieties</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <FileText className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{licensingStats?.active || 0}</p>
+                <p className="text-xs text-muted-foreground">Active Licenses</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-yellow-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">10</p>
+                <p className="text-xs text-muted-foreground">Crop Templates</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
+      {/* Quick Actions */}
       <Card>
-        <CardHeader>
-          <CardTitle>Planned Features</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            {features.map((feature, i) => (
-              <div key={i} className="p-4 border rounded-lg hover:border-blue-300 transition-colors">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{feature.icon}</span>
-                  <div>
-                    <h4 className="font-medium">{feature.title}</h4>
-                    <p className="text-sm text-gray-600">{feature.description}</p>
-                  </div>
-                </div>
-              </div>
+          <div className="flex gap-2 flex-wrap">
+            {quickActions.map((action) => (
+              <Button key={action.label} variant="outline" size="sm" asChild>
+                <Link to={action.href}>
+                  <action.icon className="h-4 w-4 mr-2" />
+                  {action.label}
+                </Link>
+              </Button>
             ))}
           </div>
         </CardContent>
       </Card>
 
+      {/* Module Cards */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {modules.map((module) => (
+          <Card key={module.title} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-lg ${module.color}`}>
+                    <module.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium">{module.title}</h3>
+                      <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                        {module.badge}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">{module.description}</p>
+                    <p className="text-xs text-muted-foreground mt-2">{module.stats}</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to={module.href}>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* DUS Crop Templates */}
       <Card>
         <CardHeader>
-          <CardTitle>🔗 Integration Roadmap</CardTitle>
+          <CardTitle>DUS Crop Templates</CardTitle>
+          <CardDescription>
+            UPOV-compliant character templates for variety testing
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2 text-gray-600">
-            <li className="flex items-center gap-2">
-              <span className="text-green-500">○</span>
-              ERPNext integration for inventory and sales
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-500">○</span>
-              Blockchain-based seed certification
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-500">○</span>
-              QR code generation for lot tracking
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-500">○</span>
-              Regulatory compliance reporting
-            </li>
-          </ul>
+          <div className="grid grid-cols-5 gap-2">
+            {[
+              { name: 'Rice', chars: 20 },
+              { name: 'Wheat', chars: 15 },
+              { name: 'Maize', chars: 18 },
+              { name: 'Cotton', chars: 18 },
+              { name: 'Castor', chars: 15 },
+              { name: 'Groundnut', chars: 17 },
+              { name: 'Cumin', chars: 14 },
+              { name: 'Pigeonpea', chars: 16 },
+              { name: 'Soybean', chars: 15 },
+              { name: 'Chickpea', chars: 16 },
+            ].map((crop) => (
+              <div
+                key={crop.name}
+                className="p-2 border rounded text-center hover:bg-muted/50 cursor-pointer"
+              >
+                <p className="font-medium text-sm">{crop.name}</p>
+                <p className="text-xs text-muted-foreground">{crop.chars} chars</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/commercial/dus/crops">
+                View All Templates
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Upcoming Features */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Coming Soon</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 p-3 border rounded-lg">
+              <Clock className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="font-medium">Blockchain Certification</p>
+                <p className="text-sm text-muted-foreground">Immutable seed certification records</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 border rounded-lg">
+              <Clock className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="font-medium">ERPNext Integration</p>
+                <p className="text-sm text-muted-foreground">Sync with inventory and sales</p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
