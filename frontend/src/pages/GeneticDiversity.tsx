@@ -3,6 +3,7 @@
  * Analyze genetic diversity within and between populations
  */
 import { useState, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { ScatterPlot, ScatterPoint } from '@/components/charts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +11,9 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { RefreshCw } from 'lucide-react'
 
 interface DiversityMetric {
   name: string
@@ -97,13 +101,136 @@ function generatePCAData(): ScatterPoint[] {
 }
 
 export function GeneticDiversity() {
+  const { isDemoMode } = useDemoMode()
   const [selectedPop, setSelectedPop] = useState('pop1')
   const [analysisType, setAnalysisType] = useState('within')
 
-  const currentPop = samplePopulations.find(p => p.id === selectedPop)
+  // Fetch populations from API
+  const { data: populationsData, isLoading: isLoadingPops } = useQuery({
+    queryKey: ['genetic-diversity-populations'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/genetic-diversity/populations')
+      if (!response.ok) throw new Error('Failed to fetch populations')
+      return response.json()
+    },
+    enabled: !isDemoMode,
+  })
+
+  // Fetch diversity metrics for selected population
+  const { data: metricsData, isLoading: isLoadingMetrics, refetch: refetchMetrics } = useQuery({
+    queryKey: ['genetic-diversity-metrics', selectedPop],
+    queryFn: async () => {
+      const response = await fetch(`/api/v2/genetic-diversity/populations/${selectedPop}/metrics`)
+      if (!response.ok) throw new Error('Failed to fetch metrics')
+      return response.json()
+    },
+    enabled: !isDemoMode && !!selectedPop,
+  })
+
+  // Fetch genetic distances
+  const { data: distancesData } = useQuery({
+    queryKey: ['genetic-diversity-distances'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/genetic-diversity/distances')
+      if (!response.ok) throw new Error('Failed to fetch distances')
+      return response.json()
+    },
+    enabled: !isDemoMode,
+  })
+
+  // Fetch AMOVA results
+  const { data: amovaData } = useQuery({
+    queryKey: ['genetic-diversity-amova'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/genetic-diversity/amova')
+      if (!response.ok) throw new Error('Failed to fetch AMOVA')
+      return response.json()
+    },
+    enabled: !isDemoMode,
+  })
+
+  // Fetch admixture proportions
+  const { data: admixtureData } = useQuery({
+    queryKey: ['genetic-diversity-admixture'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/genetic-diversity/admixture?k=3')
+      if (!response.ok) throw new Error('Failed to fetch admixture')
+      return response.json()
+    },
+    enabled: !isDemoMode,
+  })
+
+  // Fetch PCA data
+  const { data: pcaApiData } = useQuery({
+    queryKey: ['genetic-diversity-pca'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/genetic-diversity/pca')
+      if (!response.ok) throw new Error('Failed to fetch PCA')
+      return response.json()
+    },
+    enabled: !isDemoMode,
+  })
+
+  // Use API data or fall back to demo data
+  const populations: Population[] = isDemoMode 
+    ? samplePopulations 
+    : (populationsData?.data || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        size: p.size,
+        metrics: [], // Will be fetched separately
+      }))
+
+  const currentPop = isDemoMode 
+    ? samplePopulations.find(p => p.id === selectedPop)
+    : populations.find(p => p.id === selectedPop)
+
+  // Get metrics from API or demo
+  const currentMetrics = isDemoMode 
+    ? currentPop?.metrics 
+    : metricsData?.data?.metrics?.map((m: any) => ({
+        name: m.name,
+        value: m.value,
+        interpretation: m.interpretation,
+        range: m.range as [number, number],
+      }))
+
+  const recommendations = isDemoMode ? [] : (metricsData?.data?.recommendations || [])
+
+  // Get distances from API or demo
+  const distances = isDemoMode 
+    ? distanceMatrix 
+    : (distancesData?.data || []).map((d: any) => ({
+        pop1: d.population1_name,
+        pop2: d.population2_name,
+        distance: d.nei_distance,
+        fst: d.fst,
+      }))
+
+  // Get AMOVA from API or demo
+  const amova = isDemoMode 
+    ? { among_populations: 8, among_individuals: 12, within_individuals: 80 }
+    : amovaData?.data?.variance_components || { among_populations: 8, among_individuals: 12, within_individuals: 80 }
+
+  // Get admixture from API or demo
+  const admixturePopulations = isDemoMode 
+    ? samplePopulations 
+    : (admixtureData?.data?.populations || [])
   
-  // Generate PCA data once
-  const pcaData = useMemo(() => generatePCAData(), [])
+  // Generate PCA data once (for demo) or use API data
+  const pcaData = useMemo(() => {
+    if (!isDemoMode && pcaApiData?.data?.points) {
+      return pcaApiData.data.points.map((p: any) => ({
+        x: p.x,
+        y: p.y,
+        label: p.label,
+        group: p.group,
+      }))
+    }
+    return generatePCAData()
+  }, [isDemoMode, pcaApiData])
+
+  const isLoading = !isDemoMode && (isLoadingPops || isLoadingMetrics)
 
   const getMetricColor = (value: number, range: [number, number]) => {
     const normalized = (value - range[0]) / (range[1] - range[0])
@@ -124,10 +251,21 @@ export function GeneticDiversity() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold">Genetic Diversity Analysis</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-2">
+            Genetic Diversity Analysis
+            {isDemoMode && (
+              <Badge variant="outline" className="ml-2 text-xs">Demo Mode</Badge>
+            )}
+          </h1>
           <p className="text-muted-foreground mt-1">Analyze population genetic diversity and structure</p>
         </div>
         <div className="flex gap-2">
+          {!isDemoMode && (
+            <Button variant="outline" onClick={() => refetchMetrics()} disabled={isLoading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          )}
           <Select value={analysisType} onValueChange={setAnalysisType}>
             <SelectTrigger className="w-40">
               <SelectValue />
@@ -175,35 +313,43 @@ export function GeneticDiversity() {
           </div>
 
           {/* Diversity Metrics */}
-          {currentPop && (
+          {currentPop && currentMetrics && (
             <Card>
               <CardHeader>
                 <CardTitle>{currentPop.name} - Diversity Metrics</CardTitle>
                 <CardDescription>Statistical measures of genetic diversity</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {currentPop.metrics.map((metric) => (
-                  <div key={metric.name} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{metric.name}</span>
+                {isLoadingMetrics ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <Skeleton key={i} className="h-12 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  currentMetrics.map((metric: DiversityMetric) => (
+                    <div key={metric.name} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{metric.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold">{metric.value.toFixed(2)}</span>
+                          <span className={`text-sm ${getInterpretationColor(metric.interpretation)}`}>
+                            ({metric.interpretation})
+                          </span>
+                        </div>
+                      </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold">{metric.value.toFixed(2)}</span>
-                        <span className={`text-sm ${getInterpretationColor(metric.interpretation)}`}>
-                          ({metric.interpretation})
+                        <Progress 
+                          value={((metric.value - metric.range[0]) / (metric.range[1] - metric.range[0])) * 100} 
+                          className="h-2"
+                        />
+                        <span className="text-xs text-muted-foreground w-20">
+                          {metric.range[0]} - {metric.range[1]}
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Progress 
-                        value={((metric.value - metric.range[0]) / (metric.range[1] - metric.range[0])) * 100} 
-                        className="h-2"
-                      />
-                      <span className="text-xs text-muted-foreground w-20">
-                        {metric.range[0]} - {metric.range[1]}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </CardContent>
             </Card>
           )}
@@ -214,10 +360,25 @@ export function GeneticDiversity() {
               <CardTitle className="text-blue-800">💡 Recommendations</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-blue-700 space-y-2">
-              <p>• <strong>Inbreeding coefficient (F):</strong> {currentPop && ((currentPop.metrics[4].value - currentPop.metrics[5].value) / currentPop.metrics[4].value).toFixed(3)} - Monitor for inbreeding depression</p>
-              <p>• Consider introgression from Core Collection to increase diversity</p>
-              <p>• Maintain effective population size (Ne) above 50 to avoid genetic drift</p>
-              <p>• Use molecular markers to identify unique alleles for conservation</p>
+              {isDemoMode ? (
+                <>
+                  <p>• <strong>Inbreeding coefficient (F):</strong> {currentPop && currentMetrics && currentMetrics.length >= 6 ? ((currentMetrics[4].value - currentMetrics[5].value) / currentMetrics[4].value).toFixed(3) : 'N/A'} - Monitor for inbreeding depression</p>
+                  <p>• Consider introgression from Core Collection to increase diversity</p>
+                  <p>• Maintain effective population size (Ne) above 50 to avoid genetic drift</p>
+                  <p>• Use molecular markers to identify unique alleles for conservation</p>
+                </>
+              ) : (
+                recommendations.length > 0 ? (
+                  recommendations.map((rec: string, i: number) => (
+                    <p key={i}>• {rec}</p>
+                  ))
+                ) : (
+                  <>
+                    <p>• Maintain effective population size (Ne) above 50 to avoid genetic drift</p>
+                    <p>• Use molecular markers to identify unique alleles for conservation</p>
+                  </>
+                )
+              )}
             </CardContent>
           </Card>
         </TabsContent>
