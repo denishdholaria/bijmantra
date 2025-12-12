@@ -115,7 +115,7 @@ src/
 ## 🔐 Authentication
 
 Default development credentials:
-- **Email**: admin@bijmantra.org
+- **Email**: admin@example.org
 - **Password**: admin123
 
 ⚠️ Change in production!

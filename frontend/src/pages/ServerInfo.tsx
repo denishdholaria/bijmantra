@@ -32,10 +32,10 @@ const mockServerInfo: ServerInfo = {
   serverName: 'Bijmantra BrAPI Server',
   serverDescription: 'A modern BrAPI v2.1 compliant plant breeding management system',
   organizationName: 'Bijmantra Project',
-  organizationURL: 'https://bijmantra.org',
+  organizationURL: 'https://github.com/denishdholaria/bijmantra',
   location: 'Global',
-  contactEmail: 'support@bijmantra.org',
-  documentationURL: 'https://docs.bijmantra.org',
+  contactEmail: 'denishdholaria@gmail.com',
+  documentationURL: 'https://github.com/denishdholaria/bijmantra#readme',
   brapiVersion: '2.1',
   calls: [
     { service: 'programs', dataTypes: ['application/json'], methods: ['GET', 'POST', 'PUT', 'DELETE'], versions: ['2.1'] },

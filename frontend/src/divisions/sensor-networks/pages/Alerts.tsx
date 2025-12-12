@@ -1,16 +1,18 @@
 /**
  * Sensor Alerts
- * 
+ *
  * Configure and manage sensor threshold alerts.
+ * Connected to /api/v2/sensors/alerts endpoints.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
@@ -36,11 +38,11 @@ import {
   CheckCircle,
   Clock,
   Plus,
+  RefreshCw,
   Settings,
-  Thermometer,
   Trash2,
-  XCircle,
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface AlertRule {
   id: string;
@@ -51,17 +53,17 @@ interface AlertRule {
   unit: string;
   severity: 'critical' | 'warning' | 'info';
   enabled: boolean;
-  notifyEmail: boolean;
-  notifySms: boolean;
-  notifyPush: boolean;
+  notify_email: boolean;
+  notify_sms: boolean;
+  notify_push: boolean;
 }
 
 interface AlertEvent {
   id: string;
-  ruleId: string;
-  ruleName: string;
-  deviceId: string;
-  deviceName: string;
+  rule_id: string;
+  rule_name: string;
+  device_id: string;
+  device_name: string;
   sensor: string;
   value: number;
   threshold: number;
@@ -69,143 +71,172 @@ interface AlertEvent {
   severity: 'critical' | 'warning' | 'info';
   timestamp: string;
   acknowledged: boolean;
-  acknowledgedBy?: string;
-  acknowledgedAt?: string;
+  acknowledged_by?: string;
+  acknowledged_at?: string;
 }
 
-// Demo data
-const alertRules: AlertRule[] = [
-  {
-    id: 'rule-1',
-    name: 'High Temperature Alert',
-    sensor: 'temperature',
-    condition: 'above',
-    threshold: 35,
-    unit: '°C',
-    severity: 'critical',
-    enabled: true,
-    notifyEmail: true,
-    notifySms: true,
-    notifyPush: true,
-  },
-  {
-    id: 'rule-2',
-    name: 'Low Soil Moisture',
-    sensor: 'soil_moisture',
-    condition: 'below',
-    threshold: 30,
-    unit: '%',
-    severity: 'warning',
-    enabled: true,
-    notifyEmail: true,
-    notifySms: false,
-    notifyPush: true,
-  },
-  {
-    id: 'rule-3',
-    name: 'Frost Warning',
-    sensor: 'temperature',
-    condition: 'below',
-    threshold: 2,
-    unit: '°C',
-    severity: 'critical',
-    enabled: true,
-    notifyEmail: true,
-    notifySms: true,
-    notifyPush: true,
-  },
-  {
-    id: 'rule-4',
-    name: 'High Humidity',
-    sensor: 'humidity',
-    condition: 'above',
-    threshold: 90,
-    unit: '%',
-    severity: 'warning',
-    enabled: true,
-    notifyEmail: true,
-    notifySms: false,
-    notifyPush: true,
-  },
-  {
-    id: 'rule-5',
-    name: 'Low Battery',
-    sensor: 'battery',
-    condition: 'below',
-    threshold: 20,
-    unit: '%',
-    severity: 'warning',
-    enabled: true,
-    notifyEmail: true,
-    notifySms: false,
-    notifyPush: false,
-  },
-];
-
-const alertEvents: AlertEvent[] = [
-  {
-    id: 'event-1',
-    ruleId: 'rule-2',
-    ruleName: 'Low Soil Moisture',
-    deviceId: 'DEV-003',
-    deviceName: 'Soil Probe B2',
-    sensor: 'soil_moisture',
-    value: 25,
-    threshold: 30,
-    condition: 'below',
-    severity: 'warning',
-    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
-    acknowledged: false,
-  },
-  {
-    id: 'event-2',
-    ruleId: 'rule-5',
-    ruleName: 'Low Battery',
-    deviceId: 'DEV-003',
-    deviceName: 'Soil Probe B2',
-    sensor: 'battery',
-    value: 15,
-    threshold: 20,
-    condition: 'below',
-    severity: 'warning',
-    timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
-    acknowledged: true,
-    acknowledgedBy: 'admin@bijmantra.org',
-    acknowledgedAt: new Date(Date.now() - 1 * 3600000).toISOString(),
-  },
-  {
-    id: 'event-3',
-    ruleId: 'rule-1',
-    ruleName: 'High Temperature Alert',
-    deviceId: 'DEV-001',
-    deviceName: 'Weather Station Alpha',
-    sensor: 'temperature',
-    value: 38.5,
-    threshold: 35,
-    condition: 'above',
-    severity: 'critical',
-    timestamp: new Date(Date.now() - 5 * 3600000).toISOString(),
-    acknowledged: true,
-    acknowledgedBy: 'admin@bijmantra.org',
-    acknowledgedAt: new Date(Date.now() - 4 * 3600000).toISOString(),
-  },
-];
-
 const sensorOptions = [
-  { value: 'temperature', label: 'Temperature' },
-  { value: 'humidity', label: 'Humidity' },
-  { value: 'soil_moisture', label: 'Soil Moisture' },
-  { value: 'soil_temp', label: 'Soil Temperature' },
-  { value: 'pressure', label: 'Pressure' },
-  { value: 'wind_speed', label: 'Wind Speed' },
-  { value: 'battery', label: 'Battery Level' },
-  { value: 'signal', label: 'Signal Strength' },
+  { value: 'temperature', label: 'Temperature', unit: '°C' },
+  { value: 'humidity', label: 'Humidity', unit: '%' },
+  { value: 'soil_moisture', label: 'Soil Moisture', unit: '%' },
+  { value: 'soil_temp', label: 'Soil Temperature', unit: '°C' },
+  { value: 'pressure', label: 'Pressure', unit: 'hPa' },
+  { value: 'wind_speed', label: 'Wind Speed', unit: 'km/h' },
+  { value: 'battery', label: 'Battery Level', unit: '%' },
+  { value: 'signal', label: 'Signal Strength', unit: '%' },
+];
+
+// Demo data for fallback
+const demoRules: AlertRule[] = [
+  { id: 'rule-1', name: 'High Temperature Alert', sensor: 'temperature', condition: 'above', threshold: 35, unit: '°C', severity: 'critical', enabled: true, notify_email: true, notify_sms: true, notify_push: true },
+  { id: 'rule-2', name: 'Low Soil Moisture', sensor: 'soil_moisture', condition: 'below', threshold: 30, unit: '%', severity: 'warning', enabled: true, notify_email: true, notify_sms: false, notify_push: true },
+  { id: 'rule-3', name: 'Frost Warning', sensor: 'temperature', condition: 'below', threshold: 2, unit: '°C', severity: 'critical', enabled: true, notify_email: true, notify_sms: true, notify_push: true },
+  { id: 'rule-4', name: 'High Humidity', sensor: 'humidity', condition: 'above', threshold: 90, unit: '%', severity: 'warning', enabled: true, notify_email: true, notify_sms: false, notify_push: true },
+  { id: 'rule-5', name: 'Low Battery', sensor: 'battery', condition: 'below', threshold: 20, unit: '%', severity: 'warning', enabled: true, notify_email: true, notify_sms: false, notify_push: false },
+];
+
+const demoEvents: AlertEvent[] = [
+  { id: 'event-1', rule_id: 'rule-2', rule_name: 'Low Soil Moisture', device_id: 'DEV-003', device_name: 'Soil Probe B2', sensor: 'soil_moisture', value: 25, threshold: 30, condition: 'below', severity: 'warning', timestamp: new Date(Date.now() - 30 * 60000).toISOString(), acknowledged: false },
+  { id: 'event-2', rule_id: 'rule-5', rule_name: 'Low Battery', device_id: 'DEV-003', device_name: 'Soil Probe B2', sensor: 'battery', value: 15, threshold: 20, condition: 'below', severity: 'warning', timestamp: new Date(Date.now() - 2 * 3600000).toISOString(), acknowledged: true, acknowledged_by: 'admin@example.org', acknowledged_at: new Date(Date.now() - 1 * 3600000).toISOString() },
+  { id: 'event-3', rule_id: 'rule-1', rule_name: 'High Temperature Alert', device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'temperature', value: 38.5, threshold: 35, condition: 'above', severity: 'critical', timestamp: new Date(Date.now() - 5 * 3600000).toISOString(), acknowledged: true, acknowledged_by: 'admin@example.org', acknowledged_at: new Date(Date.now() - 4 * 3600000).toISOString() },
 ];
 
 export function Alerts() {
-  const [rules, setRules] = useState(alertRules);
-  const [events, setEvents] = useState(alertEvents);
+  const [rules, setRules] = useState<AlertRule[]>([]);
+  const [events, setEvents] = useState<AlertEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  // New rule form state
+  const [newRule, setNewRule] = useState({
+    name: '',
+    sensor: '',
+    condition: 'above' as const,
+    threshold: 0,
+    severity: 'warning' as const,
+    notify_email: true,
+    notify_sms: false,
+    notify_push: true,
+  });
+
+  const fetchRules = async () => {
+    try {
+      const res = await fetch('/api/v2/sensors/alerts/rules');
+      if (res.ok) {
+        const data = await res.json();
+        setRules(data.rules || []);
+      } else {
+        setRules(demoRules);
+      }
+    } catch {
+      setRules(demoRules);
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch('/api/v2/sensors/alerts/events?limit=50');
+      if (res.ok) {
+        const data = await res.json();
+        setEvents(data.events || []);
+      } else {
+        setEvents(demoEvents);
+      }
+    } catch {
+      setEvents(demoEvents);
+    }
+  };
+
+  useEffect(() => {
+    Promise.all([fetchRules(), fetchEvents()]).finally(() => setLoading(false));
+  }, []);
+
+  const handleCreateRule = async () => {
+    if (!newRule.name || !newRule.sensor) {
+      toast({ title: 'Error', description: 'Please fill in all required fields', variant: 'destructive' });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const sensorInfo = sensorOptions.find(s => s.value === newRule.sensor);
+      const res = await fetch('/api/v2/sensors/alerts/rules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newRule,
+          unit: sensorInfo?.unit || '',
+        }),
+      });
+
+      if (res.ok) {
+        toast({ title: 'Success', description: 'Alert rule created successfully' });
+        setDialogOpen(false);
+        setNewRule({ name: '', sensor: '', condition: 'above', threshold: 0, severity: 'warning', notify_email: true, notify_sms: false, notify_push: true });
+        fetchRules();
+      } else {
+        const error = await res.json();
+        toast({ title: 'Error', description: error.detail || 'Failed to create rule', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to create rule', variant: 'destructive' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const toggleRule = async (ruleId: string, enabled: boolean) => {
+    try {
+      const res = await fetch(`/api/v2/sensors/alerts/rules/${ruleId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled }),
+      });
+
+      if (res.ok) {
+        setRules(rules.map(r => r.id === ruleId ? { ...r, enabled } : r));
+      }
+    } catch {
+      // Update locally anyway for demo
+      setRules(rules.map(r => r.id === ruleId ? { ...r, enabled } : r));
+    }
+  };
+
+  const deleteRule = async (ruleId: string) => {
+    if (!confirm('Are you sure you want to delete this rule?')) return;
+
+    try {
+      const res = await fetch(`/api/v2/sensors/alerts/rules/${ruleId}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast({ title: 'Success', description: 'Rule deleted successfully' });
+        setRules(rules.filter(r => r.id !== ruleId));
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to delete rule', variant: 'destructive' });
+    }
+  };
+
+  const acknowledgeAlert = async (eventId: string) => {
+    try {
+      const res = await fetch(`/api/v2/sensors/alerts/events/${eventId}/acknowledge?user=admin@example.org`, {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        setEvents(events.map(e =>
+          e.id === eventId ? { ...e, acknowledged: true, acknowledged_by: 'admin@example.org', acknowledged_at: new Date().toISOString() } : e
+        ));
+        toast({ title: 'Success', description: 'Alert acknowledged' });
+      }
+    } catch {
+      // Update locally for demo
+      setEvents(events.map(e =>
+        e.id === eventId ? { ...e, acknowledged: true, acknowledged_by: 'admin@example.org', acknowledged_at: new Date().toISOString() } : e
+      ));
+    }
+  };
 
   const activeAlerts = events.filter(e => !e.acknowledged);
   const acknowledgedAlerts = events.filter(e => e.acknowledged);
@@ -228,35 +259,27 @@ export function Alerts() {
     return conditionMap[condition];
   };
 
-  const toggleRule = (ruleId: string) => {
-    setRules(rules.map(r => 
-      r.id === ruleId ? { ...r, enabled: !r.enabled } : r
-    ));
-  };
-
-  const acknowledgeAlert = (eventId: string) => {
-    setEvents(events.map(e =>
-      e.id === eventId ? {
-        ...e,
-        acknowledged: true,
-        acknowledgedBy: 'admin@bijmantra.org',
-        acknowledgedAt: new Date().toISOString(),
-      } : e
-    ));
-  };
-
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
-    
-    if (diff < 3600000) {
-      return `${Math.floor(diff / 60000)} min ago`;
-    } else if (diff < 86400000) {
-      return `${Math.floor(diff / 3600000)} hours ago`;
-    }
+
+    if (diff < 3600000) return `${Math.floor(diff / 60000)} min ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
     return date.toLocaleDateString();
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <Skeleton className="h-10 w-64" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}
+        </div>
+        <Skeleton className="h-96" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -270,100 +293,103 @@ export function Alerts() {
             Configure thresholds and manage alert notifications
           </p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Alert Rule
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create Alert Rule</DialogTitle>
-              <DialogDescription>
-                Set up a new threshold-based alert.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label>Rule Name</Label>
-                <Input placeholder="e.g., High Temperature Alert" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Sensor</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select sensor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sensorOptions.map(opt => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Condition</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select condition" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="above">Above</SelectItem>
-                      <SelectItem value="below">Below</SelectItem>
-                      <SelectItem value="equals">Equals</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Threshold Value</Label>
-                  <Input type="number" placeholder="e.g., 35" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Severity</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select severity" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="critical">Critical</SelectItem>
-                      <SelectItem value="warning">Warning</SelectItem>
-                      <SelectItem value="info">Info</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <Label>Notifications</Label>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Email</span>
-                  <Switch defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">SMS</span>
-                  <Switch />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Push Notification</span>
-                  <Switch defaultChecked />
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => { fetchRules(); fetchEvents(); }}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                New Alert Rule
               </Button>
-              <Button onClick={() => setDialogOpen(false)}>
-                Create Rule
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create Alert Rule</DialogTitle>
+                <DialogDescription>Set up a new threshold-based alert.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>Rule Name *</Label>
+                  <Input
+                    placeholder="e.g., High Temperature Alert"
+                    value={newRule.name}
+                    onChange={(e) => setNewRule({ ...newRule, name: e.target.value })}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Sensor *</Label>
+                    <Select value={newRule.sensor} onValueChange={(v) => setNewRule({ ...newRule, sensor: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select sensor" /></SelectTrigger>
+                      <SelectContent>
+                        {sensorOptions.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Condition</Label>
+                    <Select value={newRule.condition} onValueChange={(v: any) => setNewRule({ ...newRule, condition: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="above">Above</SelectItem>
+                        <SelectItem value="below">Below</SelectItem>
+                        <SelectItem value="equals">Equals</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Threshold Value</Label>
+                    <Input
+                      type="number"
+                      placeholder="e.g., 35"
+                      value={newRule.threshold}
+                      onChange={(e) => setNewRule({ ...newRule, threshold: parseFloat(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Severity</Label>
+                    <Select value={newRule.severity} onValueChange={(v: any) => setNewRule({ ...newRule, severity: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="critical">Critical</SelectItem>
+                        <SelectItem value="warning">Warning</SelectItem>
+                        <SelectItem value="info">Info</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Label>Notifications</Label>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Email</span>
+                    <Switch checked={newRule.notify_email} onCheckedChange={(v) => setNewRule({ ...newRule, notify_email: v })} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">SMS</span>
+                    <Switch checked={newRule.notify_sms} onCheckedChange={(v) => setNewRule({ ...newRule, notify_sms: v })} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Push Notification</span>
+                    <Switch checked={newRule.notify_push} onCheckedChange={(v) => setNewRule({ ...newRule, notify_push: v })} />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                <Button onClick={handleCreateRule} disabled={submitting}>
+                  {submitting ? 'Creating...' : 'Create Rule'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Stats */}
@@ -419,9 +445,7 @@ export function Alerts() {
           <TabsTrigger value="active" className="relative">
             Active Alerts
             {activeAlerts.length > 0 && (
-              <span className="ml-2 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full">
-                {activeAlerts.length}
-              </span>
+              <span className="ml-2 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full">{activeAlerts.length}</span>
             )}
           </TabsTrigger>
           <TabsTrigger value="history">Alert History</TabsTrigger>
@@ -434,46 +458,31 @@ export function Alerts() {
               <CardContent className="py-12 text-center">
                 <CheckCircle className="h-12 w-12 mx-auto text-green-500 mb-4" />
                 <h3 className="text-lg font-medium">All Clear</h3>
-                <p className="text-muted-foreground mt-1">
-                  No active alerts at this time
-                </p>
+                <p className="text-muted-foreground mt-1">No active alerts at this time</p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-3">
               {activeAlerts.map(event => (
-                <Card key={event.id} className={`border-l-4 ${
-                  event.severity === 'critical' ? 'border-l-red-500' : 'border-l-yellow-500'
-                }`}>
+                <Card key={event.id} className={`border-l-4 ${event.severity === 'critical' ? 'border-l-red-500' : 'border-l-yellow-500'}`}>
                   <CardContent className="py-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
-                        <AlertTriangle className={`h-5 w-5 mt-0.5 ${
-                          event.severity === 'critical' ? 'text-red-500' : 'text-yellow-500'
-                        }`} />
+                        <AlertTriangle className={`h-5 w-5 mt-0.5 ${event.severity === 'critical' ? 'text-red-500' : 'text-yellow-500'}`} />
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{event.ruleName}</span>
+                            <span className="font-medium">{event.rule_name}</span>
                             {getSeverityBadge(event.severity)}
                           </div>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {event.deviceName} ({event.deviceId})
-                          </p>
-                          <p className="text-sm mt-1">
-                            Value: <span className="font-medium">{event.value}</span> 
-                            {' '}(threshold: {event.condition} {event.threshold})
-                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">{event.device_name} ({event.device_id})</p>
+                          <p className="text-sm mt-1">Value: <span className="font-medium">{event.value}</span> (threshold: {event.condition} {event.threshold})</p>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
                             <Clock className="h-3 w-3" />
                             {formatTime(event.timestamp)}
                           </div>
                         </div>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => acknowledgeAlert(event.id)}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => acknowledgeAlert(event.id)}>
                         <Check className="h-4 w-4 mr-1" />
                         Acknowledge
                       </Button>
@@ -490,37 +499,23 @@ export function Alerts() {
             {events.map(event => (
               <Card key={event.id} className="opacity-75">
                 <CardContent className="py-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
-                      {event.acknowledged ? (
-                        <CheckCircle className="h-5 w-5 mt-0.5 text-green-500" />
-                      ) : (
-                        <AlertTriangle className={`h-5 w-5 mt-0.5 ${
-                          event.severity === 'critical' ? 'text-red-500' : 'text-yellow-500'
-                        }`} />
-                      )}
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{event.ruleName}</span>
-                          {getSeverityBadge(event.severity)}
-                          {event.acknowledged && (
-                            <Badge variant="outline" className="text-green-600">
-                              Acknowledged
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {event.deviceName}
-                        </p>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
-                          <Clock className="h-3 w-3" />
-                          {formatTime(event.timestamp)}
-                          {event.acknowledgedBy && (
-                            <span className="ml-2">
-                              • Ack by {event.acknowledgedBy}
-                            </span>
-                          )}
-                        </div>
+                  <div className="flex items-start gap-3">
+                    {event.acknowledged ? (
+                      <CheckCircle className="h-5 w-5 mt-0.5 text-green-500" />
+                    ) : (
+                      <AlertTriangle className={`h-5 w-5 mt-0.5 ${event.severity === 'critical' ? 'text-red-500' : 'text-yellow-500'}`} />
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{event.rule_name}</span>
+                        {getSeverityBadge(event.severity)}
+                        {event.acknowledged && <Badge variant="outline" className="text-green-600">Acknowledged</Badge>}
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">{event.device_name}</p>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+                        <Clock className="h-3 w-3" />
+                        {formatTime(event.timestamp)}
+                        {event.acknowledged_by && <span className="ml-2">• Ack by {event.acknowledged_by}</span>}
                       </div>
                     </div>
                   </div>
@@ -537,32 +532,23 @@ export function Alerts() {
                 <CardContent className="py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <Switch
-                        checked={rule.enabled}
-                        onCheckedChange={() => toggleRule(rule.id)}
-                      />
+                      <Switch checked={rule.enabled} onCheckedChange={(v) => toggleRule(rule.id, v)} />
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{rule.name}</span>
                           {getSeverityBadge(rule.severity)}
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {rule.sensor} {getConditionText(rule.condition, rule.threshold, rule.unit)}
-                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">{rule.sensor} {getConditionText(rule.condition, rule.threshold, rule.unit)}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          {rule.notifyEmail && <Badge variant="outline">Email</Badge>}
-                          {rule.notifySms && <Badge variant="outline">SMS</Badge>}
-                          {rule.notifyPush && <Badge variant="outline">Push</Badge>}
+                          {rule.notify_email && <Badge variant="outline">Email</Badge>}
+                          {rule.notify_sms && <Badge variant="outline">SMS</Badge>}
+                          {rule.notify_push && <Badge variant="outline">Push</Badge>}
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Settings className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="text-red-500">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <Button variant="ghost" size="icon"><Settings className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => deleteRule(rule.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                     </div>
                   </div>
                 </CardContent>

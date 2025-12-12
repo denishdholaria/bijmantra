@@ -618,7 +618,7 @@ Client-side compute for offline capability.
 
 ```typescript
 // frontend/src/framework/compute/wasm.ts
-import init, { calculate_grm, run_pca } from '@bijmantra/wasm-genomics';
+import init, { calculate_grm, run_pca } from '@/wasm/pkg/bijmantra_genomics';
 
 class WasmCompute {
   private initialized = false;

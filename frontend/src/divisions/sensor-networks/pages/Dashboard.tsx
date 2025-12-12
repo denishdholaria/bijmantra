@@ -2,31 +2,103 @@
  * Sensor Networks Dashboard
  *
  * IoT sensors and environmental monitoring network.
+ * Connected to /api/v2/sensors endpoints.
  */
 
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Activity,
   AlertTriangle,
   Bell,
   Radio,
+  RefreshCw,
   Thermometer,
   Wifi,
   WifiOff,
   Plug,
+  Droplets,
+  Wind,
+  Gauge,
 } from 'lucide-react';
 
+interface NetworkStats {
+  total_devices: number;
+  online: number;
+  offline: number;
+  warning: number;
+  total_readings: number;
+  active_alerts: number;
+}
+
+interface LiveReading {
+  device_id: string;
+  device_name: string;
+  sensor: string;
+  value: number;
+  unit: string;
+  timestamp: string;
+}
+
 export function Dashboard() {
-  // Demo stats
-  const stats = {
-    totalDevices: 7,
-    online: 5,
-    offline: 1,
-    warning: 1,
-    activeAlerts: 1,
+  const [stats, setStats] = useState<NetworkStats | null>(null);
+  const [liveReadings, setLiveReadings] = useState<LiveReading[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const [statsRes, liveRes] = await Promise.all([
+        fetch('/api/v2/sensors/stats'),
+        fetch('/api/v2/sensors/readings/live'),
+      ]);
+
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setStats(statsData);
+      }
+
+      if (liveRes.ok) {
+        const liveData = await liveRes.json();
+        setLiveReadings(liveData.readings || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch sensor data:', error);
+      // Use demo data as fallback
+      setStats({
+        total_devices: 7,
+        online: 5,
+        offline: 1,
+        warning: 1,
+        total_readings: 1250,
+        active_alerts: 1,
+      });
+      setLiveReadings([
+        { device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'temperature', value: 24.5, unit: '°C', timestamp: new Date().toISOString() },
+        { device_id: 'DEV-002', device_name: 'Soil Probe B1', sensor: 'soil_moisture', value: 42, unit: '%', timestamp: new Date().toISOString() },
+        { device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'humidity', value: 65, unit: '%', timestamp: new Date().toISOString() },
+        { device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'wind_speed', value: 15, unit: 'km/h', timestamp: new Date().toISOString() },
+      ]);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchData();
   };
 
   const quickActions = [
@@ -35,23 +107,56 @@ export function Dashboard() {
     { icon: <Bell className="h-5 w-5" />, label: 'Alerts', path: '/sensor-networks/alerts' },
   ];
 
-  const recentReadings = [
-    { sensor: 'Temperature', value: '24.5°C', device: 'Weather Station Alpha', time: '2 min ago' },
-    { sensor: 'Soil Moisture', value: '42%', device: 'Soil Probe B1', time: '5 min ago' },
-    { sensor: 'Humidity', value: '65%', device: 'Weather Station Alpha', time: '2 min ago' },
-    { sensor: 'Wind Speed', value: '15 km/h', device: 'Weather Station Alpha', time: '2 min ago' },
-  ];
+  const getSensorIcon = (sensor: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      temperature: <Thermometer className="h-4 w-4 text-red-500" />,
+      humidity: <Droplets className="h-4 w-4 text-blue-500" />,
+      soil_moisture: <Droplets className="h-4 w-4 text-amber-600" />,
+      wind_speed: <Wind className="h-4 w-4 text-cyan-500" />,
+      pressure: <Gauge className="h-4 w-4 text-purple-500" />,
+    };
+    return icons[sensor] || <Activity className="h-4 w-4 text-gray-500" />;
+  };
+
+  const formatTimestamp = (ts: string) => {
+    const date = new Date(ts);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    return date.toLocaleTimeString();
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <Skeleton className="h-10 w-64" />
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-24" />
+          ))}
+        </div>
+        <Skeleton className="h-48" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-2">
-          <Radio className="h-8 w-8" />
-          Sensor Networks
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          IoT sensors and environmental monitoring network
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-2">
+            <Radio className="h-8 w-8" />
+            Sensor Networks
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            IoT sensors and environmental monitoring network
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
       </div>
 
       {/* Stats */}
@@ -61,7 +166,7 @@ export function Dashboard() {
             <div className="flex items-center gap-3">
               <Radio className="h-6 w-6 text-blue-500" />
               <div>
-                <p className="text-2xl font-bold">{stats.totalDevices}</p>
+                <p className="text-2xl font-bold">{stats?.total_devices || 0}</p>
                 <p className="text-xs text-muted-foreground">Total Devices</p>
               </div>
             </div>
@@ -72,7 +177,7 @@ export function Dashboard() {
             <div className="flex items-center gap-3">
               <Wifi className="h-6 w-6 text-green-500" />
               <div>
-                <p className="text-2xl font-bold">{stats.online}</p>
+                <p className="text-2xl font-bold">{stats?.online || 0}</p>
                 <p className="text-xs text-muted-foreground">Online</p>
               </div>
             </div>
@@ -83,7 +188,7 @@ export function Dashboard() {
             <div className="flex items-center gap-3">
               <Activity className="h-6 w-6 text-yellow-500" />
               <div>
-                <p className="text-2xl font-bold">{stats.warning}</p>
+                <p className="text-2xl font-bold">{stats?.warning || 0}</p>
                 <p className="text-xs text-muted-foreground">Warning</p>
               </div>
             </div>
@@ -94,7 +199,7 @@ export function Dashboard() {
             <div className="flex items-center gap-3">
               <WifiOff className="h-6 w-6 text-gray-500" />
               <div>
-                <p className="text-2xl font-bold">{stats.offline}</p>
+                <p className="text-2xl font-bold">{stats?.offline || 0}</p>
                 <p className="text-xs text-muted-foreground">Offline</p>
               </div>
             </div>
@@ -105,7 +210,7 @@ export function Dashboard() {
             <div className="flex items-center gap-3">
               <AlertTriangle className="h-6 w-6 text-red-500" />
               <div>
-                <p className="text-2xl font-bold">{stats.activeAlerts}</p>
+                <p className="text-2xl font-bold">{stats?.active_alerts || 0}</p>
                 <p className="text-xs text-muted-foreground">Active Alerts</p>
               </div>
             </div>
@@ -138,24 +243,30 @@ export function Dashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Thermometer className="h-5 w-5" />
-              Recent Readings
+              Live Readings
             </CardTitle>
-            <CardDescription>Latest sensor data</CardDescription>
+            <CardDescription>Real-time sensor data</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentReadings.map((reading, i) => (
+              {liveReadings.slice(0, 6).map((reading, i) => (
                 <div key={i} className="flex items-center justify-between p-2 border rounded">
-                  <div>
-                    <div className="font-medium">{reading.sensor}</div>
-                    <div className="text-xs text-muted-foreground">{reading.device}</div>
+                  <div className="flex items-center gap-2">
+                    {getSensorIcon(reading.sensor)}
+                    <div>
+                      <div className="font-medium capitalize">{reading.sensor.replace('_', ' ')}</div>
+                      <div className="text-xs text-muted-foreground">{reading.device_name}</div>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold">{reading.value}</div>
-                    <div className="text-xs text-muted-foreground">{reading.time}</div>
+                    <div className="font-bold">{reading.value}{reading.unit}</div>
+                    <div className="text-xs text-muted-foreground">{formatTimestamp(reading.timestamp)}</div>
                   </div>
                 </div>
               ))}
+              {liveReadings.length === 0 && (
+                <p className="text-center text-muted-foreground py-4">No live readings available</p>
+              )}
             </div>
             <Link to="/sensor-networks/live">
               <Button variant="outline" className="w-full mt-4">
@@ -192,6 +303,11 @@ export function Dashboard() {
                 <span>Weather API</span>
                 <Badge className="bg-yellow-100 text-yellow-700">Limited</Badge>
               </div>
+            </div>
+            <div className="mt-4 p-3 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <strong>Total Readings:</strong> {stats?.total_readings?.toLocaleString() || 0}
+              </p>
             </div>
           </CardContent>
         </Card>

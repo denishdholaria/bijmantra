@@ -2,7 +2,7 @@
 name = "bijmantra-genomics"
 version = "0.1.0"
 edition = "2021"
-authors = ["Denish Dholaria <denish@bijmantra.com>"]
+authors = ["Denish Dholaria <denishdholaria@gmail.com>"]
 description = "High-performance genomic computations for Bijmantra plant breeding platform"
 license = "MIT"
 repository = "https://github.com/denishdholaria/bijmantra"

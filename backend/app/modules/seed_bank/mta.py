@@ -144,7 +144,7 @@ class MTAService:
                     "institution": "Bijmantra Seed Bank",
                     "country": "India",
                     "contact": "Dr. Priya Sharma",
-                    "email": "priya@bijmantra.org",
+                    "email": "priya@example.org",
                 },
                 "recipient": {
                     "institution": "CIMMYT",
@@ -182,7 +182,7 @@ class MTAService:
                     "institution": "Bijmantra Seed Bank",
                     "country": "India",
                     "contact": "Dr. Raj Patel",
-                    "email": "raj@bijmantra.org",
+                    "email": "raj@example.org",
                 },
                 "accessions": ["IRRI-ACC-5001", "IRRI-ACC-5002"],
                 "accession_count": 2,
@@ -208,7 +208,7 @@ class MTAService:
                     "institution": "Bijmantra Seed Bank",
                     "country": "India",
                     "contact": "Dr. Priya Sharma",
-                    "email": "priya@bijmantra.org",
+                    "email": "priya@example.org",
                 },
                 "recipient": {
                     "institution": "University of California Davis",
@@ -240,7 +240,7 @@ class MTAService:
                     "institution": "Bijmantra Seed Bank",
                     "country": "India",
                     "contact": "Dr. Priya Sharma",
-                    "email": "priya@bijmantra.org",
+                    "email": "priya@example.org",
                 },
                 "recipient": {
                     "institution": "AgriCorp Seeds Ltd",

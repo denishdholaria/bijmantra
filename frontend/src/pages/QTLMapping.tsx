@@ -1,124 +1,95 @@
 /**
  * QTL Mapping Interface
  * Quantitative Trait Loci mapping and marker-trait association analysis
+ * Connected to /api/v2/qtl-mapping endpoints
  */
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Slider } from '@/components/ui/slider'
-
-interface QTL {
-  id: string
-  name: string
-  chromosome: string
-  position: number
-  lod: number
-  pve: number
-  addEffect: number
-  domEffect: number
-  flanking: [string, string]
-  confidence: [number, number]
-  trait: string
-}
-
-interface MarkerAssociation {
-  marker: string
-  chromosome: string
-  position: number
-  pValue: number
-  logP: number
-  effect: number
-  maf: number
-  trait: string
-}
-
-const sampleQTLs: QTL[] = [
-  {
-    id: 'qtl1',
-    name: 'qYLD1.1',
-    chromosome: '1',
-    position: 45.2,
-    lod: 8.5,
-    pve: 15.2,
-    addEffect: 0.85,
-    domEffect: 0.12,
-    flanking: ['SNP_1_42', 'SNP_1_48'],
-    confidence: [42.1, 48.3],
-    trait: 'Grain Yield',
-  },
-  {
-    id: 'qtl2',
-    name: 'qPH3.1',
-    chromosome: '3',
-    position: 78.6,
-    lod: 12.3,
-    pve: 22.8,
-    addEffect: -2.45,
-    domEffect: 0.35,
-    flanking: ['SNP_3_75', 'SNP_3_82'],
-    confidence: [75.2, 82.1],
-    trait: 'Plant Height',
-  },
-  {
-    id: 'qtl3',
-    name: 'qDTF5.1',
-    chromosome: '5',
-    position: 112.4,
-    lod: 6.8,
-    pve: 11.5,
-    addEffect: 1.2,
-    domEffect: -0.08,
-    flanking: ['SNP_5_108', 'SNP_5_116'],
-    confidence: [108.5, 116.2],
-    trait: 'Days to Flowering',
-  },
-  {
-    id: 'qtl4',
-    name: 'qGW7.1',
-    chromosome: '7',
-    position: 34.8,
-    lod: 9.2,
-    pve: 18.4,
-    addEffect: 0.42,
-    domEffect: 0.15,
-    flanking: ['SNP_7_31', 'SNP_7_38'],
-    confidence: [31.2, 38.5],
-    trait: 'Grain Weight',
-  },
-]
-
-const gwasResults: MarkerAssociation[] = [
-  { marker: 'SNP_1_45', chromosome: '1', position: 45.2, pValue: 2.5e-8, logP: 7.6, effect: 0.82, maf: 0.35, trait: 'Grain Yield' },
-  { marker: 'SNP_3_79', chromosome: '3', position: 79.1, pValue: 1.2e-12, logP: 11.9, effect: -2.38, maf: 0.42, trait: 'Plant Height' },
-  { marker: 'SNP_5_112', chromosome: '5', position: 112.8, pValue: 8.5e-7, logP: 6.1, effect: 1.15, maf: 0.28, trait: 'Days to Flowering' },
-  { marker: 'SNP_7_35', chromosome: '7', position: 35.2, pValue: 5.8e-9, logP: 8.2, effect: 0.45, maf: 0.38, trait: 'Grain Weight' },
-  { marker: 'SNP_2_88', chromosome: '2', position: 88.5, pValue: 3.2e-6, logP: 5.5, effect: 0.28, maf: 0.31, trait: 'Grain Yield' },
-  { marker: 'SNP_4_56', chromosome: '4', position: 56.3, pValue: 7.1e-5, logP: 4.1, effect: -0.95, maf: 0.22, trait: 'Plant Height' },
-]
-
-const chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useDemoMode } from '@/hooks/useDemoMode';
 
 export function QTLMapping() {
-  const [analysisType, setAnalysisType] = useState('linkage')
-  const [selectedTrait, setSelectedTrait] = useState('all')
-  const [lodThreshold, setLodThreshold] = useState([3.0])
-  const [pThreshold, setPThreshold] = useState([5])
+  const [analysisType, setAnalysisType] = useState('linkage');
+  const [selectedTrait, setSelectedTrait] = useState('all');
+  const [lodThreshold, setLodThreshold] = useState([3.0]);
+  const [pThreshold, setPThreshold] = useState([5]);
+  const { isDemoMode } = useDemoMode();
 
-  const filteredQTLs = selectedTrait === 'all' 
-    ? sampleQTLs 
-    : sampleQTLs.filter(q => q.trait === selectedTrait)
+  // Fetch traits
+  const { data: traitsData } = useQuery({
+    queryKey: ['qtl-mapping', 'traits'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/qtl-mapping/traits');
+      if (!response.ok) throw new Error('Failed to fetch traits');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
 
-  const filteredGWAS = selectedTrait === 'all'
-    ? gwasResults
-    : gwasResults.filter(g => g.trait === selectedTrait)
+  // Fetch QTLs
+  const { data: qtlsData, isLoading: loadingQTLs } = useQuery({
+    queryKey: ['qtl-mapping', 'qtls', selectedTrait, lodThreshold[0]],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedTrait !== 'all') params.append('trait', selectedTrait);
+      params.append('min_lod', lodThreshold[0].toString());
+      const response = await fetch(`/api/v2/qtl-mapping/qtls?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch QTLs');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
 
-  const traits = [...new Set([...sampleQTLs.map(q => q.trait), ...gwasResults.map(g => g.trait)])]
+  // Fetch GWAS results
+  const { data: gwasData, isLoading: loadingGWAS } = useQuery({
+    queryKey: ['qtl-mapping', 'gwas', selectedTrait, pThreshold[0]],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedTrait !== 'all') params.append('trait', selectedTrait);
+      params.append('min_log_p', pThreshold[0].toString());
+      const response = await fetch(`/api/v2/qtl-mapping/gwas?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch GWAS');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
+
+  // Fetch QTL summary
+  const { data: qtlSummary } = useQuery({
+    queryKey: ['qtl-mapping', 'summary', 'qtl'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/qtl-mapping/summary/qtl');
+      if (!response.ok) throw new Error('Failed to fetch summary');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
+
+  // Fetch GO enrichment
+  const { data: goData } = useQuery({
+    queryKey: ['qtl-mapping', 'go-enrichment'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/qtl-mapping/go-enrichment');
+      if (!response.ok) throw new Error('Failed to fetch GO');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
+
+  const traits = traitsData?.traits || ['Grain Yield', 'Plant Height', 'Days to Flowering', 'Grain Weight'];
+  const qtls = qtlsData?.qtls || [];
+  const gwasResults = gwasData?.associations || [];
+  const goEnrichment = goData?.enrichment || [];
+  const chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -134,14 +105,50 @@ export function QTLMapping() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Traits</SelectItem>
-              {traits.map(t => (
+              {traits.map((t: string) => (
                 <SelectItem key={t} value={t}>{t}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Button>🧬 Run Analysis</Button>
+          <Button>Run Analysis</Button>
         </div>
       </div>
+
+      {/* Summary Stats */}
+      {qtlSummary && (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <Card>
+            <CardContent className="pt-4 text-center">
+              <p className="text-2xl font-bold text-primary">{qtlSummary.total_qtls}</p>
+              <p className="text-xs text-muted-foreground">Total QTLs</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4 text-center">
+              <p className="text-2xl font-bold text-blue-600">{qtlSummary.major_qtls}</p>
+              <p className="text-xs text-muted-foreground">Major QTLs</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4 text-center">
+              <p className="text-2xl font-bold text-green-600">{qtlSummary.total_pve}%</p>
+              <p className="text-xs text-muted-foreground">Total PVE</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4 text-center">
+              <p className="text-2xl font-bold text-purple-600">{qtlSummary.average_lod}</p>
+              <p className="text-xs text-muted-foreground">Avg LOD</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4 text-center">
+              <p className="text-2xl font-bold text-orange-600">{qtlSummary.traits_analyzed}</p>
+              <p className="text-xs text-muted-foreground">Traits</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Tabs value={analysisType} onValueChange={setAnalysisType}>
         <TabsList>
@@ -152,7 +159,6 @@ export function QTLMapping() {
         </TabsList>
 
         <TabsContent value="linkage" className="space-y-6 mt-4">
-          {/* LOD Threshold */}
           <Card>
             <CardHeader>
               <CardTitle>Analysis Parameters</CardTitle>
@@ -162,21 +168,13 @@ export function QTLMapping() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label>LOD Threshold: {lodThreshold[0].toFixed(1)}</Label>
-                  <Slider
-                    value={lodThreshold}
-                    onValueChange={setLodThreshold}
-                    min={2}
-                    max={10}
-                    step={0.5}
-                  />
+                  <Slider value={lodThreshold} onValueChange={setLodThreshold} min={2} max={10} step={0.5} />
                   <p className="text-xs text-muted-foreground">Minimum LOD score for QTL detection</p>
                 </div>
                 <div className="space-y-2">
                   <Label>Mapping Method</Label>
                   <Select defaultValue="cim">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="sim">Simple Interval Mapping</SelectItem>
                       <SelectItem value="cim">Composite Interval Mapping</SelectItem>
@@ -187,9 +185,7 @@ export function QTLMapping() {
                 <div className="space-y-2">
                   <Label>Population Type</Label>
                   <Select defaultValue="ril">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="f2">F2</SelectItem>
                       <SelectItem value="bc">Backcross</SelectItem>
@@ -202,57 +198,55 @@ export function QTLMapping() {
             </CardContent>
           </Card>
 
-          {/* QTL Results Table */}
           <Card>
             <CardHeader>
               <CardTitle>Detected QTLs</CardTitle>
-              <CardDescription>{filteredQTLs.length} QTLs above LOD threshold</CardDescription>
+              <CardDescription>{qtls.length} QTLs above LOD threshold</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="text-left p-3">QTL Name</th>
-                      <th className="text-left p-3">Trait</th>
-                      <th className="text-center p-3">Chr</th>
-                      <th className="text-right p-3">Position (cM)</th>
-                      <th className="text-right p-3">LOD</th>
-                      <th className="text-right p-3">PVE (%)</th>
-                      <th className="text-right p-3">Add. Effect</th>
-                      <th className="text-left p-3">Flanking Markers</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredQTLs.filter(q => q.lod >= lodThreshold[0]).map((qtl) => (
-                      <tr key={qtl.id} className="border-b hover:bg-muted/50">
-                        <td className="p-3 font-medium">{qtl.name}</td>
-                        <td className="p-3">
-                          <Badge variant="outline">{qtl.trait}</Badge>
-                        </td>
-                        <td className="p-3 text-center">{qtl.chromosome}</td>
-                        <td className="p-3 text-right font-mono">{qtl.position.toFixed(1)}</td>
-                        <td className="p-3 text-right">
-                          <span className={`font-bold ${qtl.lod >= 8 ? 'text-green-600' : qtl.lod >= 5 ? 'text-yellow-600' : 'text-muted-foreground'}`}>
-                            {qtl.lod.toFixed(1)}
-                          </span>
-                        </td>
-                        <td className="p-3 text-right font-mono">{qtl.pve.toFixed(1)}%</td>
-                        <td className="p-3 text-right font-mono">
-                          <span className={qtl.addEffect > 0 ? 'text-green-600' : 'text-red-600'}>
-                            {qtl.addEffect > 0 ? '+' : ''}{qtl.addEffect.toFixed(2)}
-                          </span>
-                        </td>
-                        <td className="p-3 text-xs">{qtl.flanking.join(' - ')}</td>
+              {loadingQTLs ? <Skeleton className="h-48 w-full" /> : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b bg-muted/50">
+                        <th className="text-left p-3">QTL Name</th>
+                        <th className="text-left p-3">Trait</th>
+                        <th className="text-center p-3">Chr</th>
+                        <th className="text-right p-3">Position (cM)</th>
+                        <th className="text-right p-3">LOD</th>
+                        <th className="text-right p-3">PVE (%)</th>
+                        <th className="text-right p-3">Add. Effect</th>
+                        <th className="text-left p-3">Flanking Markers</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {qtls.map((qtl: any) => (
+                        <tr key={qtl.id} className="border-b hover:bg-muted/50">
+                          <td className="p-3 font-medium">{qtl.name}</td>
+                          <td className="p-3"><Badge variant="outline">{qtl.trait}</Badge></td>
+                          <td className="p-3 text-center">{qtl.chromosome}</td>
+                          <td className="p-3 text-right font-mono">{qtl.position.toFixed(1)}</td>
+                          <td className="p-3 text-right">
+                            <span className={`font-bold ${qtl.lod >= 8 ? 'text-green-600' : qtl.lod >= 5 ? 'text-yellow-600' : 'text-muted-foreground'}`}>
+                              {qtl.lod.toFixed(1)}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right font-mono">{qtl.pve.toFixed(1)}%</td>
+                          <td className="p-3 text-right font-mono">
+                            <span className={qtl.add_effect > 0 ? 'text-green-600' : 'text-red-600'}>
+                              {qtl.add_effect > 0 ? '+' : ''}{qtl.add_effect.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="p-3 text-xs">{qtl.flanking_markers?.join(' - ')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* LOD Profile Visualization */}
           <Card>
             <CardHeader>
               <CardTitle>LOD Profile</CardTitle>
@@ -261,41 +255,28 @@ export function QTLMapping() {
             <CardContent>
               <div className="space-y-4">
                 {chromosomes.slice(0, 7).map((chr) => {
-                  const chrQTLs = filteredQTLs.filter(q => q.chromosome === chr)
+                  const chrQTLs = qtls.filter((q: any) => q.chromosome === chr);
                   return (
                     <div key={chr} className="flex items-center gap-4">
                       <span className="w-8 text-sm font-medium">Chr {chr}</span>
                       <div className="flex-1 h-8 bg-muted rounded relative">
-                        {chrQTLs.map((qtl) => (
-                          <div
-                            key={qtl.id}
-                            className="absolute top-0 h-full w-2 bg-primary rounded cursor-pointer hover:bg-primary/80"
+                        {chrQTLs.map((qtl: any) => (
+                          <div key={qtl.id} className="absolute top-0 h-full w-2 bg-primary rounded cursor-pointer hover:bg-primary/80"
                             style={{ left: `${(qtl.position / 150) * 100}%` }}
-                            title={`${qtl.name}: LOD ${qtl.lod.toFixed(1)}`}
-                          />
+                            title={`${qtl.name}: LOD ${qtl.lod.toFixed(1)}`} />
                         ))}
-                        <div 
-                          className="absolute top-0 h-full border-l-2 border-dashed border-red-500"
-                          style={{ left: '0%' }}
-                        />
                       </div>
                       <span className="w-16 text-xs text-muted-foreground">150 cM</span>
                     </div>
-                  )
+                  );
                 })}
-                <div className="flex items-center gap-2 mt-2 text-sm">
-                  <div className="w-4 h-4 bg-primary rounded" />
-                  <span>QTL Peak</span>
-                  <div className="w-4 h-0.5 border-t-2 border-dashed border-red-500 ml-4" />
-                  <span>LOD Threshold ({lodThreshold[0].toFixed(1)})</span>
-                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
+
         <TabsContent value="gwas" className="space-y-6 mt-4">
-          {/* GWAS Parameters */}
           <Card>
             <CardHeader>
               <CardTitle>GWAS Parameters</CardTitle>
@@ -305,20 +286,12 @@ export function QTLMapping() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label>-log10(P) Threshold: {pThreshold[0]}</Label>
-                  <Slider
-                    value={pThreshold}
-                    onValueChange={setPThreshold}
-                    min={3}
-                    max={10}
-                    step={0.5}
-                  />
+                  <Slider value={pThreshold} onValueChange={setPThreshold} min={3} max={10} step={0.5} />
                 </div>
                 <div className="space-y-2">
                   <Label>Model</Label>
                   <Select defaultValue="mlm">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="glm">GLM</SelectItem>
                       <SelectItem value="mlm">MLM</SelectItem>
@@ -339,43 +312,38 @@ export function QTLMapping() {
             </CardContent>
           </Card>
 
-          {/* GWAS Results */}
           <Card>
             <CardHeader>
               <CardTitle>Significant Associations</CardTitle>
-              <CardDescription>{filteredGWAS.filter(g => g.logP >= pThreshold[0]).length} markers above threshold</CardDescription>
+              <CardDescription>{gwasResults.length} markers above threshold</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="text-left p-3">Marker</th>
-                      <th className="text-left p-3">Trait</th>
-                      <th className="text-center p-3">Chr</th>
-                      <th className="text-right p-3">Position</th>
-                      <th className="text-right p-3">P-value</th>
-                      <th className="text-right p-3">-log10(P)</th>
-                      <th className="text-right p-3">Effect</th>
-                      <th className="text-right p-3">MAF</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredGWAS
-                      .filter(g => g.logP >= pThreshold[0])
-                      .sort((a, b) => b.logP - a.logP)
-                      .map((assoc) => (
+              {loadingGWAS ? <Skeleton className="h-48 w-full" /> : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b bg-muted/50">
+                        <th className="text-left p-3">Marker</th>
+                        <th className="text-left p-3">Trait</th>
+                        <th className="text-center p-3">Chr</th>
+                        <th className="text-right p-3">Position</th>
+                        <th className="text-right p-3">P-value</th>
+                        <th className="text-right p-3">-log10(P)</th>
+                        <th className="text-right p-3">Effect</th>
+                        <th className="text-right p-3">MAF</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {gwasResults.map((assoc: any) => (
                         <tr key={assoc.marker} className="border-b hover:bg-muted/50">
                           <td className="p-3 font-mono font-medium">{assoc.marker}</td>
-                          <td className="p-3">
-                            <Badge variant="outline">{assoc.trait}</Badge>
-                          </td>
+                          <td className="p-3"><Badge variant="outline">{assoc.trait}</Badge></td>
                           <td className="p-3 text-center">{assoc.chromosome}</td>
                           <td className="p-3 text-right font-mono">{assoc.position.toFixed(1)}</td>
-                          <td className="p-3 text-right font-mono text-xs">{assoc.pValue.toExponential(1)}</td>
+                          <td className="p-3 text-right font-mono text-xs">{assoc.p_value.toExponential(1)}</td>
                           <td className="p-3 text-right">
-                            <span className={`font-bold ${assoc.logP >= 8 ? 'text-red-600' : assoc.logP >= 5 ? 'text-orange-600' : 'text-yellow-600'}`}>
-                              {assoc.logP.toFixed(1)}
+                            <span className={`font-bold ${assoc.log_p >= 8 ? 'text-red-600' : assoc.log_p >= 5 ? 'text-orange-600' : 'text-yellow-600'}`}>
+                              {assoc.log_p.toFixed(1)}
                             </span>
                           </td>
                           <td className="p-3 text-right font-mono">
@@ -386,9 +354,10 @@ export function QTLMapping() {
                           <td className="p-3 text-right font-mono">{assoc.maf.toFixed(2)}</td>
                         </tr>
                       ))}
-                  </tbody>
-                </table>
-              </div>
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -400,28 +369,19 @@ export function QTLMapping() {
               <CardDescription>Genome-wide association visualization</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Simulated Manhattan Plot */}
               <div className="h-64 bg-muted rounded-lg p-4">
                 <div className="h-full flex items-end gap-1">
                   {chromosomes.map((chr, i) => (
                     <div key={chr} className="flex-1 flex flex-col justify-end gap-0.5">
-                      {/* Simulated dots */}
                       {Array.from({ length: 15 }).map((_, j) => {
-                        const height = Math.random() * 60 + 10
-                        const isSignificant = gwasResults.some(g => g.chromosome === chr && g.logP >= pThreshold[0])
-                        const isPeak = j === 7 && isSignificant
+                        const height = Math.random() * 60 + 10;
+                        const isSignificant = gwasResults.some((g: any) => g.chromosome === chr && g.log_p >= pThreshold[0]);
+                        const isPeak = j === 7 && isSignificant;
                         return (
-                          <div
-                            key={j}
-                            className={`w-1.5 h-1.5 rounded-full mx-auto ${
-                              isPeak ? 'bg-red-500' : i % 2 === 0 ? 'bg-blue-400' : 'bg-blue-600'
-                            }`}
-                            style={{ 
-                              marginBottom: `${isPeak ? height + 40 : height}%`,
-                              opacity: isPeak ? 1 : 0.6
-                            }}
-                          />
-                        )
+                          <div key={j}
+                            className={`w-1.5 h-1.5 rounded-full mx-auto ${isPeak ? 'bg-red-500' : i % 2 === 0 ? 'bg-blue-400' : 'bg-blue-600'}`}
+                            style={{ marginBottom: `${isPeak ? height + 40 : height}%`, opacity: isPeak ? 1 : 0.6 }} />
+                        );
                       })}
                       <span className="text-xs text-center mt-2">{chr}</span>
                     </div>
@@ -430,17 +390,14 @@ export function QTLMapping() {
               </div>
               <div className="flex items-center justify-between mt-4 text-sm">
                 <span className="text-muted-foreground">Chromosome</span>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-0.5 bg-red-500" />
-                    <span>Significance threshold (-log10(P) = {pThreshold[0]})</span>
-                  </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-0.5 bg-red-500" />
+                  <span>Significance threshold (-log10(P) = {pThreshold[0]})</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* QQ Plot */}
           <Card>
             <CardHeader>
               <CardTitle>Q-Q Plot</CardTitle>
@@ -466,13 +423,13 @@ export function QTLMapping() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {filteredQTLs.map((qtl) => (
+                {qtls.slice(0, 4).map((qtl: any) => (
                   <div key={qtl.id} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h4 className="font-bold">{qtl.name}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Chr {qtl.chromosome}: {qtl.confidence[0].toFixed(1)} - {qtl.confidence[1].toFixed(1)} cM
+                          Chr {qtl.chromosome}: {qtl.confidence_interval?.[0]?.toFixed(1)} - {qtl.confidence_interval?.[1]?.toFixed(1)} cM
                         </p>
                       </div>
                       <Badge>{qtl.trait}</Badge>
@@ -481,9 +438,7 @@ export function QTLMapping() {
                       {['Gene_A', 'Gene_B', 'Gene_C'].map((gene, i) => (
                         <div key={gene} className="p-2 bg-muted rounded text-sm">
                           <p className="font-mono font-medium">{gene}_{qtl.chromosome}_{i + 1}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {['Transcription factor', 'Kinase', 'Transporter'][i]}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{['Transcription factor', 'Kinase', 'Transporter'][i]}</p>
                         </div>
                       ))}
                     </div>
@@ -493,7 +448,6 @@ export function QTLMapping() {
             </CardContent>
           </Card>
 
-          {/* Gene Ontology */}
           <Card>
             <CardHeader>
               <CardTitle>GO Enrichment</CardTitle>
@@ -501,20 +455,18 @@ export function QTLMapping() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {[
-                  { term: 'Response to abiotic stress', pValue: 0.001, genes: 8 },
-                  { term: 'Carbohydrate metabolic process', pValue: 0.005, genes: 5 },
-                  { term: 'Regulation of growth', pValue: 0.012, genes: 4 },
-                  { term: 'Photosynthesis', pValue: 0.023, genes: 3 },
-                ].map((go, i) => (
+                {(goEnrichment.length > 0 ? goEnrichment : [
+                  { name: 'Response to abiotic stress', p_value: 0.001, gene_count: 8 },
+                  { name: 'Carbohydrate metabolic process', p_value: 0.005, gene_count: 5 },
+                  { name: 'Regulation of growth', p_value: 0.012, gene_count: 4 },
+                  { name: 'Photosynthesis', p_value: 0.023, gene_count: 3 },
+                ]).map((go: any, i: number) => (
                   <div key={i} className="flex items-center justify-between p-3 bg-muted rounded">
                     <div>
-                      <p className="font-medium">{go.term}</p>
-                      <p className="text-xs text-muted-foreground">{go.genes} genes</p>
+                      <p className="font-medium">{go.name}</p>
+                      <p className="text-xs text-muted-foreground">{go.gene_count} genes</p>
                     </div>
-                    <Badge variant={go.pValue < 0.01 ? 'default' : 'secondary'}>
-                      P = {go.pValue.toFixed(3)}
-                    </Badge>
+                    <Badge variant={go.p_value < 0.01 ? 'default' : 'secondary'}>P = {go.p_value.toFixed(3)}</Badge>
                   </div>
                 ))}
               </div>
@@ -523,5 +475,5 @@ export function QTLMapping() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

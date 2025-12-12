@@ -43,7 +43,7 @@ export function UserMenu() {
   }
 
   const userName = user?.full_name || 'User'
-  const userEmail = user?.email || 'user@bijmantra.com'
+  const userEmail = user?.email || 'user@example.com'
 
   const getInitials = (name?: string) => {
     if (!name) return 'U'

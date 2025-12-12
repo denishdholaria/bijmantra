@@ -381,7 +381,7 @@ export function HelpCenter({ contextPage, trigger }: HelpCenterProps) {
                   <div>
                     <p className="font-medium">Need more help?</p>
                     <p className="text-sm text-muted-foreground">
-                      Contact support at support@bijmantra.com
+                      Contact support via GitHub Issues
                     </p>
                   </div>
                 </div>

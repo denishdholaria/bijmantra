@@ -27,7 +27,7 @@ interface User {
 }
 
 const mockUsers: User[] = [
-  { userId: 'u001', email: 'admin@bijmantra.org', fullName: 'System Admin', role: 'admin', status: 'active', lastLogin: '2024-02-20T10:30:00', createdAt: '2023-01-01', programAccess: ['all'] },
+  { userId: 'u001', email: 'admin@example.org', fullName: 'System Admin', role: 'admin', status: 'active', lastLogin: '2024-02-20T10:30:00', createdAt: '2023-01-01', programAccess: ['all'] },
   { userId: 'u002', email: 'john.smith@example.com', fullName: 'John Smith', role: 'breeder', status: 'active', lastLogin: '2024-02-20T09:15:00', createdAt: '2023-06-15', programAccess: ['Rice Breeding', 'Wheat Breeding'] },
   { userId: 'u003', email: 'jane.doe@example.com', fullName: 'Jane Doe', role: 'technician', status: 'active', lastLogin: '2024-02-19T16:45:00', createdAt: '2023-08-20', programAccess: ['Rice Breeding'] },
   { userId: 'u004', email: 'bob.wilson@example.com', fullName: 'Bob Wilson', role: 'viewer', status: 'inactive', lastLogin: '2024-01-15T11:00:00', createdAt: '2023-10-01', programAccess: ['Maize Breeding'] },

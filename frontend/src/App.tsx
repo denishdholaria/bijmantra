@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useAuthStore } from '@/store/auth'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
@@ -233,7 +233,6 @@ import InsightsDashboard from '@/pages/InsightsDashboard'
 import ApexAnalytics from '@/pages/ApexAnalytics'
 
 // Earth Systems Division - lazy loaded
-import { lazy, Suspense } from 'react'
 const EarthSystemsDashboard = lazy(() => import('@/divisions/earth-systems/pages/Dashboard'))
 const EarthSystemsWeather = lazy(() => import('@/divisions/earth-systems/pages/WeatherForecast'))
 const EarthSystemsClimate = lazy(() => import('@/divisions/earth-systems/pages/ClimateAnalysis'))

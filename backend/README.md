@@ -83,7 +83,7 @@ See `.env.example` in the root directory.
 ## Default Credentials
 
 After seeding the database:
-- **Email**: admin@bijmantra.org
+- **Email**: admin@example.org
 - **Password**: admin123
 
 ⚠️ **Change these credentials in production!**

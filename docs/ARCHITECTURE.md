@@ -10,7 +10,7 @@ Bijmantra is an aerospace-grade plant breeding platform built on the **Parashakt
 
 > "Build tools that solve real problems, not encyclopedias that document everything."
 
-- **100% Open Source** — No proprietary dependencies
+- **Open Source** — Source available, free for non-commercial use (see LICENSE)
 - **PWA-First** — Offline-capable, installable, field-ready
 - **Modular Architecture** — Modules that evolve independently
 - **Multi-Engine Compute** — Python, Rust/WASM, Fortran

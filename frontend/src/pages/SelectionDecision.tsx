@@ -391,34 +391,34 @@ export function SelectionDecision() {
                 className="pl-10" 
               />
             </div>
-            <Select value={selectedProgram} onValueChange={setSelectedProgram}>
+            <Select value={selectedProgram || '__all__'} onValueChange={(v) => setSelectedProgram(v === '__all__' ? '' : v)}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="All Programs" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Programs</SelectItem>
+                <SelectItem value="__all__">All Programs</SelectItem>
                 {programs.map(p => (
                   <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Select value={selectedTrial} onValueChange={setSelectedTrial}>
+            <Select value={selectedTrial || '__all__'} onValueChange={(v) => setSelectedTrial(v === '__all__' ? '' : v)}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="All Trials" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Trials</SelectItem>
+                <SelectItem value="__all__">All Trials</SelectItem>
                 {trials.map(t => (
                   <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Select value={decisionFilter} onValueChange={setDecisionFilter}>
+            <Select value={decisionFilter || '__all__'} onValueChange={(v) => setDecisionFilter(v === '__all__' ? '' : v)}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Status</SelectItem>
+                <SelectItem value="__all__">All Status</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="advance">Advanced</SelectItem>
                 <SelectItem value="reject">Rejected</SelectItem>

@@ -1,15 +1,17 @@
 /**
  * Sensor Devices Management
- * 
+ *
  * Register, configure, and monitor IoT sensor devices.
+ * Connected to /api/v2/sensors/devices endpoints.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
@@ -44,138 +46,166 @@ import {
   Search,
   Settings,
   Signal,
-  Thermometer,
   Wifi,
   WifiOff,
+  Trash2,
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface SensorDevice {
   id: string;
   name: string;
-  type: 'weather' | 'soil' | 'plant' | 'water' | 'gateway';
+  device_type: string;
   status: 'online' | 'offline' | 'warning';
   battery: number;
   signal: number;
   location: string;
-  fieldId?: string;
-  lastSeen: string;
+  field_id?: string;
+  last_seen: string;
   firmware: string;
   sensors: string[];
 }
 
-// Demo data
-const devices: SensorDevice[] = [
-  {
-    id: 'DEV-001',
-    name: 'Weather Station Alpha',
-    type: 'weather',
-    status: 'online',
-    battery: 85,
-    signal: 92,
-    location: 'Field A - North',
-    fieldId: 'field-1',
-    lastSeen: '2 min ago',
-    firmware: 'v2.1.0',
-    sensors: ['temperature', 'humidity', 'pressure', 'wind', 'rain'],
-  },
-  {
-    id: 'DEV-002',
-    name: 'Soil Probe B1',
-    type: 'soil',
-    status: 'online',
-    battery: 72,
-    signal: 78,
-    location: 'Field B - Block 1',
-    fieldId: 'field-2',
-    lastSeen: '5 min ago',
-    firmware: 'v1.8.2',
-    sensors: ['soil_moisture', 'soil_temp', 'ec', 'ph'],
-  },
-  {
-    id: 'DEV-003',
-    name: 'Soil Probe B2',
-    type: 'soil',
-    status: 'warning',
-    battery: 15,
-    signal: 65,
-    location: 'Field B - Block 2',
-    fieldId: 'field-2',
-    lastSeen: '10 min ago',
-    firmware: 'v1.8.2',
-    sensors: ['soil_moisture', 'soil_temp', 'ec'],
-  },
-  {
-    id: 'DEV-004',
-    name: 'Plant Sensor P1',
-    type: 'plant',
-    status: 'online',
-    battery: 90,
-    signal: 88,
-    location: 'Greenhouse 1',
-    lastSeen: '1 min ago',
-    firmware: 'v3.0.1',
-    sensors: ['leaf_wetness', 'canopy_temp', 'par'],
-  },
-  {
-    id: 'DEV-005',
-    name: 'Water Level Sensor',
-    type: 'water',
-    status: 'online',
-    battery: 95,
-    signal: 90,
-    location: 'Irrigation Tank',
-    lastSeen: '3 min ago',
-    firmware: 'v1.2.0',
-    sensors: ['water_level', 'water_temp', 'flow_rate'],
-  },
-  {
-    id: 'GW-001',
-    name: 'LoRa Gateway Main',
-    type: 'gateway',
-    status: 'online',
-    battery: 100,
-    signal: 100,
-    location: 'Central Building',
-    lastSeen: 'Just now',
-    firmware: 'v4.2.0',
-    sensors: [],
-  },
-  {
-    id: 'DEV-006',
-    name: 'Weather Station Beta',
-    type: 'weather',
-    status: 'offline',
-    battery: 0,
-    signal: 0,
-    location: 'Field C - South',
-    fieldId: 'field-3',
-    lastSeen: '2 days ago',
-    firmware: 'v2.0.5',
-    sensors: ['temperature', 'humidity', 'pressure'],
-  },
-];
-
-const deviceTypes = [
-  { value: 'weather', label: 'Weather Station', icon: '🌤️' },
-  { value: 'soil', label: 'Soil Sensor', icon: '🌱' },
-  { value: 'plant', label: 'Plant Sensor', icon: '🌿' },
-  { value: 'water', label: 'Water Sensor', icon: '💧' },
-  { value: 'gateway', label: 'Gateway', icon: '📡' },
-];
+interface DeviceType {
+  value: string;
+  label: string;
+  icon: string;
+}
 
 export function Devices() {
+  const [devices, setDevices] = useState<SensorDevice[]>([]);
+  const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  // Form state
+  const [newDevice, setNewDevice] = useState({
+    device_id: '',
+    name: '',
+    device_type: '',
+    location: '',
+    sensors: [] as string[],
+  });
+
+  const fetchDevices = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (statusFilter !== 'all') params.append('status', statusFilter);
+      if (typeFilter !== 'all') params.append('device_type', typeFilter);
+
+      const res = await fetch(`/api/v2/sensors/devices?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setDevices(data.devices || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch devices:', error);
+      // Demo fallback
+      setDevices([
+        { id: 'DEV-001', name: 'Weather Station Alpha', device_type: 'weather', status: 'online', battery: 85, signal: 92, location: 'Field A - North', last_seen: '2 min ago', firmware: 'v2.1.0', sensors: ['temperature', 'humidity', 'pressure', 'wind', 'rain'] },
+        { id: 'DEV-002', name: 'Soil Probe B1', device_type: 'soil', status: 'online', battery: 72, signal: 78, location: 'Field B - Block 1', last_seen: '5 min ago', firmware: 'v1.8.2', sensors: ['soil_moisture', 'soil_temp', 'ec', 'ph'] },
+        { id: 'DEV-003', name: 'Soil Probe B2', device_type: 'soil', status: 'warning', battery: 15, signal: 65, location: 'Field B - Block 2', last_seen: '10 min ago', firmware: 'v1.8.2', sensors: ['soil_moisture', 'soil_temp', 'ec'] },
+        { id: 'DEV-004', name: 'Plant Sensor P1', device_type: 'plant', status: 'online', battery: 90, signal: 88, location: 'Greenhouse 1', last_seen: '1 min ago', firmware: 'v3.0.1', sensors: ['leaf_wetness', 'canopy_temp', 'par'] },
+        { id: 'DEV-005', name: 'Water Level Sensor', device_type: 'water', status: 'online', battery: 95, signal: 90, location: 'Irrigation Tank', last_seen: '3 min ago', firmware: 'v1.2.0', sensors: ['water_level', 'water_temp', 'flow_rate'] },
+        { id: 'GW-001', name: 'LoRa Gateway Main', device_type: 'gateway', status: 'online', battery: 100, signal: 100, location: 'Central Building', last_seen: 'Just now', firmware: 'v4.2.0', sensors: [] },
+        { id: 'DEV-006', name: 'Weather Station Beta', device_type: 'weather', status: 'offline', battery: 0, signal: 0, location: 'Field C - South', last_seen: '2 days ago', firmware: 'v2.0.5', sensors: ['temperature', 'humidity', 'pressure'] },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDeviceTypes = async () => {
+    try {
+      const res = await fetch('/api/v2/sensors/device-types');
+      if (res.ok) {
+        const data = await res.json();
+        setDeviceTypes(data.types || []);
+      }
+    } catch {
+      setDeviceTypes([
+        { value: 'weather', label: 'Weather Station', icon: '🌤️' },
+        { value: 'soil', label: 'Soil Sensor', icon: '🌱' },
+        { value: 'plant', label: 'Plant Sensor', icon: '🌿' },
+        { value: 'water', label: 'Water Sensor', icon: '💧' },
+        { value: 'gateway', label: 'Gateway', icon: '📡' },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    fetchDevices();
+    fetchDeviceTypes();
+  }, [statusFilter, typeFilter]);
+
+  const handleRegisterDevice = async () => {
+    if (!newDevice.device_id || !newDevice.name || !newDevice.device_type) {
+      toast({ title: 'Error', description: 'Please fill in all required fields', variant: 'destructive' });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/v2/sensors/devices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newDevice,
+          sensors: getSensorsForType(newDevice.device_type),
+        }),
+      });
+
+      if (res.ok) {
+        toast({ title: 'Success', description: 'Device registered successfully' });
+        setDialogOpen(false);
+        setNewDevice({ device_id: '', name: '', device_type: '', location: '', sensors: [] });
+        fetchDevices();
+      } else {
+        const error = await res.json();
+        toast({ title: 'Error', description: error.detail || 'Failed to register device', variant: 'destructive' });
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to register device', variant: 'destructive' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteDevice = async (deviceId: string) => {
+    if (!confirm('Are you sure you want to remove this device?')) return;
+
+    try {
+      const res = await fetch(`/api/v2/sensors/devices/${deviceId}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast({ title: 'Success', description: 'Device removed successfully' });
+        fetchDevices();
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to remove device', variant: 'destructive' });
+    }
+  };
+
+  const getSensorsForType = (type: string): string[] => {
+    const sensorMap: Record<string, string[]> = {
+      weather: ['temperature', 'humidity', 'pressure', 'wind_speed', 'rainfall'],
+      soil: ['soil_moisture', 'soil_temp', 'ec', 'ph'],
+      plant: ['leaf_wetness', 'canopy_temp', 'par'],
+      water: ['water_level', 'water_temp', 'flow_rate'],
+      gateway: [],
+    };
+    return sensorMap[type] || [];
+  };
 
   const filteredDevices = devices.filter(device => {
     const matchesSearch = device.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       device.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       device.location.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || device.status === statusFilter;
-    const matchesType = typeFilter === 'all' || device.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
+    return matchesSearch;
   });
 
   const stats = {
@@ -217,6 +247,18 @@ export function Devices() {
     return 'text-red-500';
   };
 
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <Skeleton className="h-10 w-64" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}
+        </div>
+        <Skeleton className="h-96" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -230,7 +272,7 @@ export function Devices() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => fetchDevices()}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
@@ -250,16 +292,27 @@ export function Devices() {
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label>Device ID</Label>
-                  <Input placeholder="DEV-XXX or scan QR code" />
+                  <Label>Device ID *</Label>
+                  <Input
+                    placeholder="DEV-XXX or scan QR code"
+                    value={newDevice.device_id}
+                    onChange={(e) => setNewDevice({ ...newDevice, device_id: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label>Device Name</Label>
-                  <Input placeholder="e.g., Weather Station Field A" />
+                  <Label>Device Name *</Label>
+                  <Input
+                    placeholder="e.g., Weather Station Field A"
+                    value={newDevice.name}
+                    onChange={(e) => setNewDevice({ ...newDevice, name: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label>Device Type</Label>
-                  <Select>
+                  <Label>Device Type *</Label>
+                  <Select
+                    value={newDevice.device_type}
+                    onValueChange={(v) => setNewDevice({ ...newDevice, device_type: v })}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -274,15 +327,19 @@ export function Devices() {
                 </div>
                 <div className="space-y-2">
                   <Label>Location</Label>
-                  <Input placeholder="e.g., Field A - North" />
+                  <Input
+                    placeholder="e.g., Field A - North"
+                    value={newDevice.location}
+                    onChange={(e) => setNewDevice({ ...newDevice, location: e.target.value })}
+                  />
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={() => setDialogOpen(false)}>
-                  Register Device
+                <Button onClick={handleRegisterDevice} disabled={submitting}>
+                  {submitting ? 'Registering...' : 'Register Device'}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -388,7 +445,7 @@ export function Devices() {
                 <TableHead>Signal</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Last Seen</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
+                <TableHead className="w-[80px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -401,8 +458,8 @@ export function Devices() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-lg mr-1">{getTypeIcon(device.type)}</span>
-                    <span className="capitalize">{device.type}</span>
+                    <span className="text-lg mr-1">{getTypeIcon(device.device_type)}</span>
+                    <span className="capitalize">{device.device_type}</span>
                   </TableCell>
                   <TableCell>{getStatusBadge(device.status)}</TableCell>
                   <TableCell>
@@ -423,14 +480,26 @@ export function Devices() {
                       {device.location}
                     </div>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{device.lastSeen}</TableCell>
+                  <TableCell className="text-muted-foreground">{device.last_seen}</TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="icon">
-                      <Settings className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="icon">
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDeleteDevice(device.id)}>
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
+              {filteredDevices.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    No devices found
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>

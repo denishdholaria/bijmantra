@@ -40,7 +40,7 @@ async def test_api():
         response = await client.post(
             f"{BASE_URL}/api/auth/login",
             data={
-                "username": "admin@bijmantra.org",
+                "username": "admin@example.org",
                 "password": "admin123"
             }
         )

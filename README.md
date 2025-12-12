@@ -61,7 +61,7 @@ Bijmantra is built on the Parashakti Framework — a modular architecture where 
 
 ### Core Principles
 
-- **100% Open Source** — No proprietary dependencies
+- **Open Source** — Source available, free for non-commercial use (see LICENSE)
 - **PWA-First** — Offline-capable, installable, field-ready
 - **Modular Architecture** — Modules evolve independently
 - **Integration-First** — Connect to external systems, don't rebuild them

@@ -157,14 +157,14 @@ CREATE INDEX IF NOT EXISTS ix_studies_organization_id ON studies(organization_id
 
 -- Insert default organization
 INSERT INTO organizations (name, description, contact_email)
-VALUES ('Default Organization', 'Default organization for Bijmantra', 'admin@bijmantra.org')
+VALUES ('Default Organization', 'Default organization for Bijmantra', 'admin@example.org')
 ON CONFLICT (name) DO NOTHING;
 
 -- Insert admin user (password: admin123, hashed with bcrypt)
 INSERT INTO users (organization_id, email, hashed_password, full_name, is_active, is_superuser)
 SELECT 
     id,
-    'admin@bijmantra.org',
+    'admin@example.org',
     '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5aeWG3xck5.Ky',
     'Admin User',
     TRUE,

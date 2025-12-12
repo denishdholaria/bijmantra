@@ -376,7 +376,7 @@ class SeedTraceabilityService:
             "purity": lot.get("purity_percent"),
             "certified": len(valid_certs) > 0,
             "cert_numbers": [c["cert_number"] for c in valid_certs],
-            "trace_url": f"https://bijmantra.org/trace/{lot_id}",
+            "trace_url": f"/trace/{lot_id}",
         }
     
     def get_statistics(self) -> Dict:

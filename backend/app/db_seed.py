@@ -24,7 +24,7 @@ async def seed_database():
                     obj_in=OrganizationCreate(
                         name="Default Organization",
                         description="Default organization for Bijmantra",
-                        contact_email="admin@bijmantra.org"
+                        contact_email="admin@example.org"
                     )
                 )
                 await db.commit()
@@ -34,14 +34,14 @@ async def seed_database():
                 print(f"✓ Organization already exists: {org.name} (ID: {org.id})")
             
             # Check if admin user already exists
-            existing_user = await user_crud.get_by_email(db, "admin@bijmantra.org")
+            existing_user = await user_crud.get_by_email(db, "admin@example.org")
             
             if not existing_user:
                 print("Creating admin user...")
                 user = await user_crud.create(
                     db,
                     obj_in=UserCreate(
-                        email="admin@bijmantra.org",
+                        email="admin@example.org",
                         password="admin123",  # Change this in production!
                         full_name="Admin User",
                         organization_id=org.id
@@ -52,7 +52,7 @@ async def seed_database():
                 db.add(user)
                 await db.commit()
                 print(f"✓ Created admin user: {user.email}")
-                print("  Email: admin@bijmantra.org")
+                print("  Email: admin@example.org")
                 print("  Password: admin123")
                 print("  ⚠️  CHANGE THIS PASSWORD IN PRODUCTION!")
             else:

@@ -38,9 +38,9 @@ def _init_demo_data():
     
     # Demo annotators
     demo_annotators = [
-        {"id": "ann-001", "name": "Dr. Sharma", "email": "sharma@bijmantra.org", "annotations_count": 1245, "accuracy": 0.96},
-        {"id": "ann-002", "name": "Priya Patel", "email": "priya@bijmantra.org", "annotations_count": 892, "accuracy": 0.94},
-        {"id": "ann-003", "name": "Raj Kumar", "email": "raj@bijmantra.org", "annotations_count": 567, "accuracy": 0.91},
+        {"id": "ann-001", "name": "Dr. Sharma", "email": "sharma@example.org", "annotations_count": 1245, "accuracy": 0.96},
+        {"id": "ann-002", "name": "Priya Patel", "email": "priya@example.org", "annotations_count": 892, "accuracy": 0.94},
+        {"id": "ann-003", "name": "Raj Kumar", "email": "raj@example.org", "annotations_count": 567, "accuracy": 0.91},
     ]
     for ann in demo_annotators:
         ANNOTATORS[ann["id"]] = ann

@@ -26,7 +26,7 @@ interface Backup {
 const mockBackups: Backup[] = [
   { id: 'b001', name: 'backup_2024-02-20_auto', size: '2.4 GB', type: 'full', status: 'completed', createdAt: '2024-02-20T03:00:00', createdBy: 'System' },
   { id: 'b002', name: 'backup_2024-02-19_auto', size: '2.3 GB', type: 'full', status: 'completed', createdAt: '2024-02-19T03:00:00', createdBy: 'System' },
-  { id: 'b003', name: 'backup_2024-02-18_manual', size: '2.3 GB', type: 'manual', status: 'completed', createdAt: '2024-02-18T14:30:00', createdBy: 'admin@bijmantra.org' },
+  { id: 'b003', name: 'backup_2024-02-18_manual', size: '2.3 GB', type: 'manual', status: 'completed', createdAt: '2024-02-18T14:30:00', createdBy: 'admin@example.org' },
   { id: 'b004', name: 'backup_2024-02-17_auto', size: '2.2 GB', type: 'full', status: 'completed', createdAt: '2024-02-17T03:00:00', createdBy: 'System' },
   { id: 'b005', name: 'backup_2024-02-16_auto', size: '2.2 GB', type: 'incremental', status: 'failed', createdAt: '2024-02-16T03:00:00', createdBy: 'System' },
 ]

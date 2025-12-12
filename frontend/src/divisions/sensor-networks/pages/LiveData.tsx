@@ -1,13 +1,14 @@
 /**
  * Live Sensor Data
- * 
+ *
  * Real-time visualization of sensor readings.
+ * Connected to /api/v2/sensors/readings endpoints.
  */
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
   SelectContent,
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Activity,
   Cloud,
@@ -26,144 +26,23 @@ import {
   Sun,
   Thermometer,
   Wind,
-  BarChart3,
 } from 'lucide-react';
 import { LiveSensorChart } from '@/components/charts/LiveSensorChart';
 
 interface SensorReading {
   id: string;
-  deviceId: string;
-  deviceName: string;
+  device_id: string;
+  device_name: string;
   sensor: string;
   value: number;
   unit: string;
   timestamp: string;
-  trend: 'up' | 'down' | 'stable';
 }
 
-// Simulated live data
-const generateReadings = (): SensorReading[] => [
-  {
-    id: '1',
-    deviceId: 'DEV-001',
-    deviceName: 'Weather Station Alpha',
-    sensor: 'temperature',
-    value: 24.5 + (Math.random() - 0.5) * 2,
-    unit: '°C',
-    timestamp: new Date().toISOString(),
-    trend: Math.random() > 0.5 ? 'up' : 'down',
-  },
-  {
-    id: '2',
-    deviceId: 'DEV-001',
-    deviceName: 'Weather Station Alpha',
-    sensor: 'humidity',
-    value: 65 + (Math.random() - 0.5) * 10,
-    unit: '%',
-    timestamp: new Date().toISOString(),
-    trend: 'stable',
-  },
-  {
-    id: '3',
-    deviceId: 'DEV-001',
-    deviceName: 'Weather Station Alpha',
-    sensor: 'pressure',
-    value: 1013 + (Math.random() - 0.5) * 5,
-    unit: 'hPa',
-    timestamp: new Date().toISOString(),
-    trend: Math.random() > 0.5 ? 'up' : 'down',
-  },
-  {
-    id: '4',
-    deviceId: 'DEV-001',
-    deviceName: 'Weather Station Alpha',
-    sensor: 'wind_speed',
-    value: 12 + Math.random() * 8,
-    unit: 'km/h',
-    timestamp: new Date().toISOString(),
-    trend: 'up',
-  },
-  {
-    id: '5',
-    deviceId: 'DEV-002',
-    deviceName: 'Soil Probe B1',
-    sensor: 'soil_moisture',
-    value: 42 + (Math.random() - 0.5) * 5,
-    unit: '%',
-    timestamp: new Date().toISOString(),
-    trend: 'down',
-  },
-  {
-    id: '6',
-    deviceId: 'DEV-002',
-    deviceName: 'Soil Probe B1',
-    sensor: 'soil_temp',
-    value: 18 + (Math.random() - 0.5) * 2,
-    unit: '°C',
-    timestamp: new Date().toISOString(),
-    trend: 'stable',
-  },
-  {
-    id: '7',
-    deviceId: 'DEV-002',
-    deviceName: 'Soil Probe B1',
-    sensor: 'ec',
-    value: 1.2 + (Math.random() - 0.5) * 0.3,
-    unit: 'dS/m',
-    timestamp: new Date().toISOString(),
-    trend: 'stable',
-  },
-  {
-    id: '8',
-    deviceId: 'DEV-002',
-    deviceName: 'Soil Probe B1',
-    sensor: 'ph',
-    value: 6.5 + (Math.random() - 0.5) * 0.5,
-    unit: '',
-    timestamp: new Date().toISOString(),
-    trend: 'stable',
-  },
-  {
-    id: '9',
-    deviceId: 'DEV-004',
-    deviceName: 'Plant Sensor P1',
-    sensor: 'leaf_wetness',
-    value: Math.random() * 100,
-    unit: '%',
-    timestamp: new Date().toISOString(),
-    trend: 'down',
-  },
-  {
-    id: '10',
-    deviceId: 'DEV-004',
-    deviceName: 'Plant Sensor P1',
-    sensor: 'par',
-    value: 800 + Math.random() * 400,
-    unit: 'µmol/m²/s',
-    timestamp: new Date().toISOString(),
-    trend: 'up',
-  },
-  {
-    id: '11',
-    deviceId: 'DEV-005',
-    deviceName: 'Water Level Sensor',
-    sensor: 'water_level',
-    value: 75 + (Math.random() - 0.5) * 5,
-    unit: '%',
-    timestamp: new Date().toISOString(),
-    trend: 'down',
-  },
-  {
-    id: '12',
-    deviceId: 'DEV-005',
-    deviceName: 'Water Level Sensor',
-    sensor: 'flow_rate',
-    value: 2.5 + Math.random() * 1.5,
-    unit: 'L/min',
-    timestamp: new Date().toISOString(),
-    trend: 'stable',
-  },
-];
+interface Device {
+  id: string;
+  name: string;
+}
 
 const sensorIcons: Record<string, React.ReactNode> = {
   temperature: <Thermometer className="h-5 w-5" />,
@@ -195,53 +74,118 @@ const sensorLabels: Record<string, string> = {
   flow_rate: 'Flow Rate',
 };
 
+// Demo data generator for fallback
+const generateDemoReadings = (): SensorReading[] => [
+  { id: '1', device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'temperature', value: 24.5 + (Math.random() - 0.5) * 2, unit: '°C', timestamp: new Date().toISOString() },
+  { id: '2', device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'humidity', value: 65 + (Math.random() - 0.5) * 10, unit: '%', timestamp: new Date().toISOString() },
+  { id: '3', device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'pressure', value: 1013 + (Math.random() - 0.5) * 5, unit: 'hPa', timestamp: new Date().toISOString() },
+  { id: '4', device_id: 'DEV-001', device_name: 'Weather Station Alpha', sensor: 'wind_speed', value: 12 + Math.random() * 8, unit: 'km/h', timestamp: new Date().toISOString() },
+  { id: '5', device_id: 'DEV-002', device_name: 'Soil Probe B1', sensor: 'soil_moisture', value: 42 + (Math.random() - 0.5) * 5, unit: '%', timestamp: new Date().toISOString() },
+  { id: '6', device_id: 'DEV-002', device_name: 'Soil Probe B1', sensor: 'soil_temp', value: 18 + (Math.random() - 0.5) * 2, unit: '°C', timestamp: new Date().toISOString() },
+  { id: '7', device_id: 'DEV-002', device_name: 'Soil Probe B1', sensor: 'ec', value: 1.2 + (Math.random() - 0.5) * 0.3, unit: 'dS/m', timestamp: new Date().toISOString() },
+  { id: '8', device_id: 'DEV-002', device_name: 'Soil Probe B1', sensor: 'ph', value: 6.5 + (Math.random() - 0.5) * 0.5, unit: '', timestamp: new Date().toISOString() },
+  { id: '9', device_id: 'DEV-004', device_name: 'Plant Sensor P1', sensor: 'leaf_wetness', value: Math.random() * 100, unit: '%', timestamp: new Date().toISOString() },
+  { id: '10', device_id: 'DEV-004', device_name: 'Plant Sensor P1', sensor: 'par', value: 800 + Math.random() * 400, unit: 'µmol/m²/s', timestamp: new Date().toISOString() },
+  { id: '11', device_id: 'DEV-005', device_name: 'Water Level Sensor', sensor: 'water_level', value: 75 + (Math.random() - 0.5) * 5, unit: '%', timestamp: new Date().toISOString() },
+  { id: '12', device_id: 'DEV-005', device_name: 'Water Level Sensor', sensor: 'flow_rate', value: 2.5 + Math.random() * 1.5, unit: 'L/min', timestamp: new Date().toISOString() },
+];
+
 export function LiveData() {
-  const [readings, setReadings] = useState<SensorReading[]>(generateReadings());
+  const [readings, setReadings] = useState<SensorReading[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>('all');
   const [isLive, setIsLive] = useState(true);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [loading, setLoading] = useState(true);
+  const [useDemo, setUseDemo] = useState(false);
 
-  // Simulate live updates
+  const fetchLiveReadings = async () => {
+    try {
+      const res = await fetch('/api/v2/sensors/readings/live');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.readings && data.readings.length > 0) {
+          setReadings(data.readings);
+          setUseDemo(false);
+        } else {
+          // No real data, use demo
+          setReadings(generateDemoReadings());
+          setUseDemo(true);
+        }
+      } else {
+        setReadings(generateDemoReadings());
+        setUseDemo(true);
+      }
+    } catch {
+      setReadings(generateDemoReadings());
+      setUseDemo(true);
+    }
+    setLastUpdate(new Date());
+    setLoading(false);
+  };
+
+  const fetchDevices = async () => {
+    try {
+      const res = await fetch('/api/v2/sensors/devices');
+      if (res.ok) {
+        const data = await res.json();
+        setDevices(data.devices?.map((d: any) => ({ id: d.id, name: d.name })) || []);
+      }
+    } catch {
+      // Use devices from readings
+    }
+  };
+
+  useEffect(() => {
+    fetchLiveReadings();
+    fetchDevices();
+  }, []);
+
+  // Live updates
   useEffect(() => {
     if (!isLive) return;
-    
+
     const interval = setInterval(() => {
-      setReadings(generateReadings());
-      setLastUpdate(new Date());
+      if (useDemo) {
+        setReadings(generateDemoReadings());
+        setLastUpdate(new Date());
+      } else {
+        fetchLiveReadings();
+      }
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [isLive]);
+  }, [isLive, useDemo]);
 
-  const devices = [...new Set(readings.map(r => r.deviceId))];
-  
-  const filteredReadings = selectedDevice === 'all' 
-    ? readings 
-    : readings.filter(r => r.deviceId === selectedDevice);
+  const uniqueDevices = devices.length > 0
+    ? devices
+    : [...new Map(readings.map(r => [r.device_id, { id: r.device_id, name: r.device_name }])).values()];
 
-  const getTrendIcon = (trend: string) => {
-    if (trend === 'up') return '↑';
-    if (trend === 'down') return '↓';
-    return '→';
-  };
-
-  const getTrendColor = (trend: string) => {
-    if (trend === 'up') return 'text-green-500';
-    if (trend === 'down') return 'text-red-500';
-    return 'text-gray-500';
-  };
+  const filteredReadings = selectedDevice === 'all'
+    ? readings
+    : readings.filter(r => r.device_id === selectedDevice);
 
   // Group readings by device
   const groupedByDevice = filteredReadings.reduce((acc, reading) => {
-    if (!acc[reading.deviceId]) {
-      acc[reading.deviceId] = {
-        deviceName: reading.deviceName,
+    if (!acc[reading.device_id]) {
+      acc[reading.device_id] = {
+        deviceName: reading.device_name,
         readings: [],
       };
     }
-    acc[reading.deviceId].readings.push(reading);
+    acc[reading.device_id].readings.push(reading);
     return acc;
   }, {} as Record<string, { deviceName: string; readings: SensorReading[] }>);
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <Skeleton className="h-10 w-64" />
+        <Skeleton className="h-32" />
+        <Skeleton className="h-64" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -253,6 +197,7 @@ export function LiveData() {
           </h1>
           <p className="text-muted-foreground mt-1">
             Real-time readings from all connected sensors
+            {useDemo && <span className="text-yellow-600 ml-2">(Demo Mode)</span>}
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -290,14 +235,11 @@ export function LiveData() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Devices</SelectItem>
-            {devices.map(deviceId => {
-              const device = readings.find(r => r.deviceId === deviceId);
-              return (
-                <SelectItem key={deviceId} value={deviceId}>
-                  {device?.deviceName || deviceId}
-                </SelectItem>
-              );
-            })}
+            {uniqueDevices.map(device => (
+              <SelectItem key={device.id} value={device.id}>
+                {device.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -356,17 +298,14 @@ export function LiveData() {
                     className="p-3 border rounded-lg hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                      {sensorIcons[reading.sensor]}
-                      <span className="text-sm">{sensorLabels[reading.sensor]}</span>
+                      {sensorIcons[reading.sensor] || <Activity className="h-5 w-5" />}
+                      <span className="text-sm">{sensorLabels[reading.sensor] || reading.sensor}</span>
                     </div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl font-bold">
                         {reading.value.toFixed(reading.sensor === 'ph' ? 1 : reading.sensor === 'ec' ? 2 : 1)}
                       </span>
                       <span className="text-muted-foreground">{reading.unit}</span>
-                      <span className={`text-sm ${getTrendColor(reading.trend)}`}>
-                        {getTrendIcon(reading.trend)}
-                      </span>
                     </div>
                   </div>
                 ))}
@@ -374,6 +313,13 @@ export function LiveData() {
             </CardContent>
           </Card>
         ))}
+        {Object.keys(groupedByDevice).length === 0 && (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              No sensor readings available
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

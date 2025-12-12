@@ -66,7 +66,7 @@ npm run dev
 ## 🔑 Default Credentials
 
 ### Application
-- **Email**: admin@bijmantra.org
+- **Email**: admin@example.org
 - **Password**: admin123
 
 ### MinIO
@@ -314,7 +314,7 @@ npm install
 ```bash
 curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin@bijmantra.org&password=admin123"
+  -d "username=admin@example.org&password=admin123"
 ```
 
 ### List Programs

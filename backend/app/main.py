@@ -177,11 +177,11 @@ async def serverinfo():
         },
         "result": {
             "calls": [],
-            "contactEmail": "admin@bijmantra.org",
+            "contactEmail": "denishdholaria@gmail.com",
             "documentationURL": "https://github.com/yourusername/bijmantra",
             "location": "India",
             "organizationName": "Bijmantra",
-            "organizationURL": "https://bijmantra.org",
+            "organizationURL": "https://github.com/denishdholaria/bijmantra",
             "serverDescription": "Bijmantra - Plant Breeding Application",
             "serverName": "Bijmantra",
         },
@@ -191,7 +191,7 @@ async def serverinfo():
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies, seasons
 from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
-from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit, rls, grin, mta, barcode, vault_sensors, devguru, selection_decisions, parent_selection, performance_ranking, progeny, germplasm_comparison, breeding_pipeline, genetic_diversity
+from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit, rls, grin, mta, barcode, vault_sensors, devguru, selection_decisions, parent_selection, performance_ranking, progeny, germplasm_comparison, breeding_pipeline, genetic_diversity, population_genetics, qtl_mapping, genomic_selection
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -296,6 +296,9 @@ app.include_router(progeny.router, prefix="/api/v2", tags=["Progeny"])
 app.include_router(germplasm_comparison.router, prefix="/api/v2", tags=["Germplasm Comparison"])
 app.include_router(breeding_pipeline.router, prefix="/api/v2", tags=["Breeding Pipeline"])
 app.include_router(genetic_diversity.router, prefix="/api/v2", tags=["Genetic Diversity"])
+app.include_router(population_genetics.router, prefix="/api/v2", tags=["Population Genetics"])
+app.include_router(qtl_mapping.router, prefix="/api/v2", tags=["QTL Mapping"])
+app.include_router(genomic_selection.router, prefix="/api/v2", tags=["Genomic Selection"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])
