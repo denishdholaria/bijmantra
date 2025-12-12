@@ -16,7 +16,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers
 revision = '005_security_audit'
-down_revision = '004_seed_bank_tables'
+down_revision = '004_seed_bank'
 branch_labels = None
 depends_on = None
 

@@ -39,6 +39,7 @@ import { CrossForm } from '@/pages/CrossForm'
 import { People } from '@/pages/People'
 import { Events } from '@/pages/Events'
 import { GermplasmEdit } from '@/pages/GermplasmEdit'
+import { GermplasmComparison } from '@/pages/GermplasmComparison'
 import { Samples } from '@/pages/Samples'
 import { Images } from '@/pages/Images'
 import { PersonForm } from '@/pages/PersonForm'
@@ -148,6 +149,7 @@ import { PhenomicSelection } from '@/pages/PhenomicSelection'
 import { SpeedBreeding } from '@/pages/SpeedBreeding'
 import { DoubledHaploid } from '@/pages/DoubledHaploid'
 import { PlantVision } from '@/pages/PlantVision'
+const PlantVisionStrategy = lazy(() => import('@/divisions/plant-sciences/pages/PlantVisionStrategy'))
 import { VisionDashboard } from '@/pages/VisionDashboard'
 import { VisionDatasets } from '@/pages/VisionDatasets'
 import { VisionTraining } from '@/pages/VisionTraining'
@@ -263,7 +265,9 @@ const SeedOpsTrack = lazy(() => import('@/divisions/seed-operations/pages/TrackL
 const SeedOpsLineage = lazy(() => import('@/divisions/seed-operations/pages/Lineage'))
 const SeedOpsVarieties = lazy(() => import('@/divisions/seed-operations/pages/Varieties'))
 const SeedOpsAgreements = lazy(() => import('@/divisions/seed-operations/pages/Agreements'))
-const SeedOpsRoyalties = lazy(() => import('@/divisions/seed-operations/pages/Royalties'))
+
+// Barcode Management
+const BarcodeManagement = lazy(() => import('@/pages/BarcodeManagement'))
 
 // Seed Bank Division - lazy loaded
 const SeedBankDashboard = lazy(() => import('@/divisions/seed-bank/pages/Dashboard'))
@@ -276,6 +280,11 @@ const SeedBankExchange = lazy(() => import('@/divisions/seed-bank/pages/Germplas
 const SeedBankViability = lazy(() => import('@/divisions/seed-bank/pages/ViabilityTesting'))
 const SeedBankRegeneration = lazy(() => import('@/divisions/seed-bank/pages/RegenerationPlanning'))
 const SeedBankMCPD = lazy(() => import('@/divisions/seed-bank/pages/MCPDExchange'))
+const SeedBankGRINSearch = lazy(() => import('@/divisions/seed-bank/pages/GRINSearch'))
+const SeedBankTaxonomy = lazy(() => import('@/divisions/seed-bank/pages/TaxonomyValidator'))
+const SeedBankMTA = lazy(() => import('@/divisions/seed-bank/pages/MTAManagement'))
+const SeedBankVaultMonitoring = lazy(() => import('@/divisions/seed-bank/pages/VaultMonitoring'))
+const SeedBankOfflineEntry = lazy(() => import('@/divisions/seed-bank/pages/OfflineDataEntry'))
 
 // Commercial Division - DUS Testing
 const CommercialDashboard = lazy(() => import('@/divisions/commercial/pages/Dashboard'))
@@ -1168,7 +1177,9 @@ function AppRoutes() {
         <Route path="/seed-operations/lineage" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsLineage /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-operations/varieties" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsVarieties /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-operations/agreements" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsAgreements /></Suspense></Layout></ProtectedRoute>} />
-        <Route path="/seed-operations/royalties" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedOpsRoyalties /></Suspense></Layout></ProtectedRoute>} />
+
+        {/* Barcode Management */}
+        <Route path="/barcode" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><BarcodeManagement /></Suspense></Layout></ProtectedRoute>} />
 
         {/* Seed Bank Division routes */}
         <Route path="/seed-bank" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankDashboard /></Suspense></Layout></ProtectedRoute>} />
@@ -1182,6 +1193,11 @@ function AppRoutes() {
         <Route path="/seed-bank/regeneration" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankRegeneration /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-bank/exchange" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankExchange /></Suspense></Layout></ProtectedRoute>} />
         <Route path="/seed-bank/mcpd" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankMCPD /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/grin-search" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankGRINSearch /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/taxonomy" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankTaxonomy /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/mta" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankMTA /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/monitoring" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankVaultMonitoring /></Suspense></Layout></ProtectedRoute>} />
+        <Route path="/seed-bank/offline" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><SeedBankOfflineEntry /></Suspense></Layout></ProtectedRoute>} />
 
         {/* Commercial Division - DUS Testing */}
         <Route path="/commercial" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><CommercialDashboard /></Suspense></Layout></ProtectedRoute>} />
@@ -1485,6 +1501,16 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <GermplasmEdit />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/germplasm-comparison"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <GermplasmComparison />
               </Layout>
             </ProtectedRoute>
           }
@@ -2173,6 +2199,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route path="/plant-vision/strategy" element={<ProtectedRoute><Layout><Suspense fallback={<div className="p-8 text-center">Loading...</div>}><PlantVisionStrategy /></Suspense></Layout></ProtectedRoute>} />
 
         {/* AI Vision Training Ground */}
         <Route

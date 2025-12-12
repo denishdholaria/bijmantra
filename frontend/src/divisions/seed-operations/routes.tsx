@@ -26,7 +26,6 @@ const TrackLot = lazy(() => import('./pages/TrackLot'));
 const Lineage = lazy(() => import('./pages/Lineage'));
 const Varieties = lazy(() => import('./pages/Varieties'));
 const Agreements = lazy(() => import('./pages/Agreements'));
-const Royalties = lazy(() => import('./pages/Royalties'));
 
 /**
  * Seed Operations Division Routes
@@ -63,7 +62,6 @@ export const seedOperationsRoutes: RouteObject[] = [
   // Licensing
   { path: 'varieties', element: <Varieties /> },
   { path: 'agreements', element: <Agreements /> },
-  { path: 'royalties', element: <Royalties /> },
 ];
 
 export default seedOperationsRoutes;

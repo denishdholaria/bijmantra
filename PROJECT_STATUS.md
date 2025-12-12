@@ -1,14 +1,16 @@
 # Bijmantra Project Status
 
-**Last Updated**: December 10, 2025  
+**Last Updated**: December 12, 2025  
 **Version**: 1.0.0  
-**Status**: ✅ Production Ready
+**Status**: 🟡 Active Development
 
 ---
 
 ## 🎯 Overview
 
-Bijmantra is a BrAPI v2.1 compliant Progressive Web Application for plant breeding management, built on the **Parashakti Framework**. It combines traditional breeding wisdom with cutting-edge AI technology.
+Bijmantra is a BrAPI v2.1 compatible Progressive Web Application for plant breeding management, built on the **Parashakti Framework**. It combines traditional breeding wisdom with cutting-edge AI technology.
+
+> **BrAPI Status:** 55% compliant (74/135 endpoints). See [BRAPI_AUDIT.md](docs/BRAPI_AUDIT.md) for details.
 
 ---
 
@@ -38,10 +40,10 @@ Bijmantra is a BrAPI v2.1 compliant Progressive Web Application for plant breedi
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Total Pages | 271+ | ✅ Complete |
-| API Endpoints | 469 | ✅ Complete |
+| Total Pages | 295+ | ✅ Complete |
+| API Endpoints | 611 | ✅ Complete |
 | Modules | 11 | ✅ All Active |
-| BrAPI Endpoints | 34/34 | ✅ 100% |
+| BrAPI v2.1 Coverage | 74/135 | 🟡 55% |
 | AI Tools | 8 | ✅ Complete |
 | Genomic Tools | 16 | ✅ Complete |
 | WASM Engine Tools | 5 | ✅ Complete |
@@ -50,6 +52,17 @@ Bijmantra is a BrAPI v2.1 compliant Progressive Web Application for plant breedi
 | Plant Sciences Tools | 8 pages | ✅ Complete |
 | DUS Testing | 3 pages | ✅ Complete |
 | MCPD Exchange | 1 page | ✅ Complete |
+
+### BrAPI v2.1 Compliance
+
+| Module | Implemented | Total | Coverage |
+|--------|-------------|-------|----------|
+| Core | 22 | 27 | 81% |
+| Phenotyping | 24 | 35 | 69% |
+| Genotyping | 12 | 47 | 26% |
+| Germplasm | 16 | 26 | 62% |
+
+**Key Gaps:** Search endpoints, Lists, Genotyping (Calls, CallSets, References, VariantSets)
 
 ---
 

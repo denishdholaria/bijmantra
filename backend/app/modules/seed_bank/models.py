@@ -68,7 +68,7 @@ class Vault(Base):
     __tablename__ = "seed_bank_vaults"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organization_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
     type = Column(Enum(VaultType), nullable=False)
     temperature = Column(Float, nullable=False)
@@ -88,7 +88,7 @@ class Accession(Base):
     __tablename__ = "seed_bank_accessions"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organization_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
     accession_number = Column(String(50), nullable=False, unique=True, index=True)
     genus = Column(String(100), nullable=False, index=True)
     species = Column(String(100), nullable=False, index=True)
@@ -122,7 +122,7 @@ class ViabilityTest(Base):
     __tablename__ = "seed_bank_viability_tests"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organization_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
     batch_number = Column(String(50), nullable=False, unique=True)
     accession_id = Column(UUID(as_uuid=True), ForeignKey("seed_bank_accessions.id"), nullable=False)
     test_date = Column(DateTime, nullable=False)
@@ -143,7 +143,7 @@ class RegenerationTask(Base):
     __tablename__ = "seed_bank_regeneration_tasks"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organization_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
     accession_id = Column(UUID(as_uuid=True), ForeignKey("seed_bank_accessions.id"), nullable=False)
     reason = Column(String(50), nullable=False)
     priority = Column(Enum(RegenerationPriority), default=RegenerationPriority.MEDIUM)
@@ -164,7 +164,7 @@ class GermplasmExchange(Base):
     __tablename__ = "seed_bank_exchanges"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organization_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
     request_number = Column(String(50), nullable=False, unique=True)
     type = Column(Enum(ExchangeType), nullable=False)
     institution_id = Column(UUID(as_uuid=True))

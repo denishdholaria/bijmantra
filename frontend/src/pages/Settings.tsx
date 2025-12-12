@@ -4,17 +4,28 @@
 
 import { useState } from 'react'
 import { useAuthStore } from '@/store/auth'
+import { useDemoMode } from '@/hooks/useDemoMode'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
+import { FlaskConical, Database, Leaf, Thermometer, Eye, Beaker } from 'lucide-react'
 
 export function Settings() {
   const { user } = useAuthStore()
   const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || '')
+  const { 
+    isDemoMode, 
+    showDemoBanner, 
+    demoDatasets, 
+    setDemoMode, 
+    toggleDemoBanner,
+    setDatasetDemo 
+  } = useDemoMode()
 
   const handleSaveApiUrl = () => {
     if (apiUrl) {
@@ -120,6 +131,123 @@ export function Settings() {
                 <Button variant="outline" className="flex-1">☀️ Light</Button>
                 <Button variant="outline" className="flex-1" disabled>🌙 Dark (Coming Soon)</Button>
                 <Button variant="outline" className="flex-1" disabled>💻 System</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FlaskConical className="h-5 w-5 text-amber-500" />
+                Demo Mode
+              </CardTitle>
+              <CardDescription>
+                Enable demo mode to explore the application with sample data. 
+                Perfect for learning, training, and showcasing features.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Main Toggle */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                <div className="space-y-0.5">
+                  <Label className="text-base font-medium">Demo Mode</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {isDemoMode 
+                      ? 'Using demo data for exploration' 
+                      : 'Using production data only'}
+                  </p>
+                </div>
+                <Switch
+                  checked={isDemoMode}
+                  onCheckedChange={(checked) => {
+                    setDemoMode(checked)
+                    toast.success(checked ? 'Demo mode enabled' : 'Demo mode disabled')
+                  }}
+                />
+              </div>
+
+              {/* Banner Toggle */}
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Show Demo Banner</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Display a banner when demo mode is active
+                  </p>
+                </div>
+                <Switch
+                  checked={showDemoBanner}
+                  onCheckedChange={toggleDemoBanner}
+                  disabled={!isDemoMode}
+                />
+              </div>
+
+              {/* Dataset-specific toggles */}
+              {isDemoMode && (
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-sm font-medium text-muted-foreground">
+                    Demo Data by Module
+                  </Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Leaf className="h-4 w-4 text-green-500" />
+                        <span className="text-sm">Germplasm</span>
+                      </div>
+                      <Switch
+                        checked={demoDatasets.germplasm}
+                        onCheckedChange={(checked) => setDatasetDemo('germplasm', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Beaker className="h-4 w-4 text-blue-500" />
+                        <span className="text-sm">Trials</span>
+                      </div>
+                      <Switch
+                        checked={demoDatasets.trials}
+                        onCheckedChange={(checked) => setDatasetDemo('trials', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Database className="h-4 w-4 text-purple-500" />
+                        <span className="text-sm">Seed Bank</span>
+                      </div>
+                      <Switch
+                        checked={demoDatasets.seedBank}
+                        onCheckedChange={(checked) => setDatasetDemo('seedBank', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Thermometer className="h-4 w-4 text-orange-500" />
+                        <span className="text-sm">Sensors</span>
+                      </div>
+                      <Switch
+                        checked={demoDatasets.sensors}
+                        onCheckedChange={(checked) => setDatasetDemo('sensors', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Eye className="h-4 w-4 text-cyan-500" />
+                        <span className="text-sm">AI Vision</span>
+                      </div>
+                      <Switch
+                        checked={demoDatasets.vision}
+                        onCheckedChange={(checked) => setDatasetDemo('vision', checked)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Info Box */}
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <strong>Note:</strong> Demo mode provides sample data for learning and exploration. 
+                  Disable it to work with your actual production data.
+                </p>
               </div>
             </CardContent>
           </Card>

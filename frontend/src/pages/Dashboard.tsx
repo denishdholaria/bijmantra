@@ -18,6 +18,7 @@ import {
   ClipboardList, Sprout, Plus, QrCode, Truck,
   Cog, ScanLine, Warehouse, ShieldCheck
 } from 'lucide-react'
+import { FunFacts } from '@/components/FunFacts'
 
 type UserRole = 'breeder' | 'seed_company' | 'admin'
 
@@ -262,6 +263,9 @@ function BreederDashboard({
           </CardContent>
         </Card>
       </div>
+
+      {/* Fun Facts */}
+      <FunFacts variant="inline" showCategory={true} />
 
       {/* Recent Programs */}
       {programs.length > 0 && (

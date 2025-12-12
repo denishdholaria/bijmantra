@@ -93,22 +93,14 @@ export function Dashboard() {
       stats: licensingStats ? `${licensingStats.agreements} agreements` : 'Loading...',
       badge: 'Active',
     },
-    {
-      icon: DollarSign,
-      title: 'Royalty Tracking',
-      description: 'Track payments and revenue from licensed varieties',
-      href: '/seed-operations/royalties',
-      color: 'bg-yellow-100 text-yellow-600',
-      stats: 'Revenue dashboard',
-      badge: 'Active',
-    },
+
   ];
 
   const quickActions = [
     { label: 'New DUS Trial', href: '/commercial/dus', icon: ClipboardCheck },
     { label: 'Register Variety', href: '/seed-operations/varieties', icon: Sprout },
     { label: 'New Agreement', href: '/seed-operations/agreements', icon: FileText },
-    { label: 'Record Royalty', href: '/seed-operations/royalties', icon: DollarSign },
+
   ];
 
   return (

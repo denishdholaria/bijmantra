@@ -1,10 +1,21 @@
 """
 Veena AI Chat API
-RAG-powered conversational assistant for plant breeding
+Multi-tier LLM-powered conversational assistant for plant breeding
+
+Supports multiple LLM providers (in priority order):
+1. Ollama (local, free, private)
+2. Groq (free tier: 30 req/min)
+3. Google AI Studio (free tier: 60 req/min)
+4. HuggingFace (free tier)
+5. OpenAI (paid)
+6. Anthropic (paid)
+7. Template fallback (always works)
 
 Endpoints:
 - POST /api/v2/chat - Send a message to Veena
 - POST /api/v2/chat/context - Get relevant context for a query
+- GET /api/v2/chat/status - Get LLM provider status
+- GET /api/v2/chat/health - Health check
 """
 
 from typing import List, Optional, Dict, Any
@@ -19,6 +30,12 @@ from app.services.vector_store import (
     BreedingVectorService,
     EmbeddingService,
     SearchResult,
+)
+from app.services.llm_service import (
+    get_llm_service,
+    MultiTierLLMService,
+    LLMProvider,
+    ConversationMessage,
 )
 
 router = APIRouter(prefix="/chat", tags=["Veena AI"])
@@ -39,8 +56,10 @@ class ChatRequest(BaseModel):
     """Request to chat with Veena"""
     message: str = Field(..., description="User's message")
     conversation_id: Optional[str] = Field(None, description="Conversation ID for context")
+    conversation_history: Optional[List[ChatMessage]] = Field(None, description="Previous messages")
     include_context: bool = Field(True, description="Whether to retrieve RAG context")
     context_limit: int = Field(5, ge=1, le=20, description="Max context documents")
+    preferred_provider: Optional[str] = Field(None, description="Force specific LLM provider")
 
 
 class ContextDocument(BaseModel):
@@ -56,9 +75,13 @@ class ContextDocument(BaseModel):
 class ChatResponse(BaseModel):
     """Response from Veena"""
     message: str
+    provider: str
+    model: str
     context: Optional[List[ContextDocument]] = None
     conversation_id: Optional[str] = None
     suggestions: Optional[List[str]] = None
+    cached: bool = False
+    latency_ms: Optional[float] = None
 
 
 class ContextRequest(BaseModel):
@@ -103,160 +126,63 @@ async def get_breeding_service(
 
 
 # ============================================
-# VEENA RESPONSE GENERATION
+# HELPER FUNCTIONS
 # ============================================
 
-class VeenaAssistant:
-    """
-    Veena AI Assistant for plant breeding.
+def format_context_for_llm(documents: List[SearchResult]) -> str:
+    """Format retrieved documents as context for the LLM"""
+    if not documents:
+        return ""
     
-    Currently uses template-based responses with RAG context.
-    Can be extended to use LLM APIs (OpenAI, Anthropic, local models).
-    """
+    context_parts = []
+    for i, doc in enumerate(documents, 1):
+        context_parts.append(f"[{i}] {doc.doc_type.upper()}: {doc.title or 'Untitled'}")
+        # Include relevant content
+        content = doc.content[:500] if len(doc.content) > 500 else doc.content
+        context_parts.append(f"    {content}")
+        context_parts.append("")
     
-    GREETING_PATTERNS = [
-        "hello", "hi", "hey", "namaste", "good morning", 
-        "good afternoon", "good evening"
-    ]
-    
-    HELP_PATTERNS = [
-        "help", "what can you do", "capabilities", "features"
-    ]
-    
-    def __init__(self):
-        self.name = "Veena"
-    
-    def _is_greeting(self, message: str) -> bool:
-        message_lower = message.lower().strip()
-        return any(pattern in message_lower for pattern in self.GREETING_PATTERNS)
-    
-    def _is_help_request(self, message: str) -> bool:
-        message_lower = message.lower().strip()
-        return any(pattern in message_lower for pattern in self.HELP_PATTERNS)
-    
-    def _format_context(self, documents: List[SearchResult]) -> str:
-        """Format retrieved documents as context"""
-        if not documents:
-            return ""
-        
-        context_parts = ["Based on the knowledge base:\n"]
-        for i, doc in enumerate(documents, 1):
-            context_parts.append(f"{i}. [{doc.doc_type}] {doc.title or 'Untitled'}")
-            # Truncate content for context
-            content_preview = doc.content[:300] + "..." if len(doc.content) > 300 else doc.content
-            context_parts.append(f"   {content_preview}\n")
-        
-        return "\n".join(context_parts)
-    
-    def generate_response(
-        self, 
-        message: str, 
-        context_docs: Optional[List[SearchResult]] = None
-    ) -> tuple[str, List[str]]:
-        """
-        Generate a response to the user's message.
-        
-        Returns: (response_text, suggestions)
-        """
-        # Handle greetings
-        if self._is_greeting(message):
-            return (
-                f"Namaste! 🙏 I'm {self.name}, your plant breeding assistant. "
-                "I can help you with:\n"
-                "• Finding germplasm by traits or characteristics\n"
-                "• Searching breeding protocols and SOPs\n"
-                "• Answering questions about trials and studies\n"
-                "• Recommending crosses based on genetic similarity\n\n"
-                "What would you like to know?",
-                [
-                    "Show me drought-tolerant varieties",
-                    "What protocols do we have for DNA extraction?",
-                    "Find germplasm similar to IR64"
-                ]
-            )
-        
-        # Handle help requests
-        if self._is_help_request(message):
-            return (
-                f"I'm {self.name}, your AI assistant for plant breeding. Here's what I can do:\n\n"
-                "🌾 **Germplasm Search**\n"
-                "Ask me about varieties, traits, or characteristics.\n"
-                "Example: 'Find rice varieties with high yield and disease resistance'\n\n"
-                "📋 **Protocol Lookup**\n"
-                "Search breeding protocols and standard procedures.\n"
-                "Example: 'How do I perform marker-assisted selection?'\n\n"
-                "🔬 **Trial Information**\n"
-                "Get details about ongoing or past trials.\n"
-                "Example: 'What trials are running in Hyderabad?'\n\n"
-                "🧬 **Similarity Search**\n"
-                "Find genetically or phenotypically similar entries.\n"
-                "Example: 'Find varieties similar to Swarna'\n\n"
-                "Just ask your question naturally!",
-                [
-                    "Search for high-yielding wheat varieties",
-                    "Show me crossing protocols",
-                    "What germplasm do we have from IRRI?"
-                ]
-            )
-        
-        # Generate response based on context
-        if context_docs and len(context_docs) > 0:
-            # We have relevant context
-            top_doc = context_docs[0]
-            
-            if top_doc.similarity > 0.7:
-                # High confidence match
-                response = f"I found relevant information:\n\n"
-                response += f"**{top_doc.title or top_doc.doc_type.title()}**\n"
-                response += f"{top_doc.content[:500]}"
-                if len(top_doc.content) > 500:
-                    response += "...\n\n"
-                else:
-                    response += "\n\n"
-                
-                if len(context_docs) > 1:
-                    response += f"I also found {len(context_docs) - 1} related entries. "
-                    response += "Would you like me to show more details?"
-                
-                suggestions = [
-                    f"Tell me more about {top_doc.title}" if top_doc.title else "Show more details",
-                    "Find similar entries",
-                    "Search for something else"
-                ]
-            else:
-                # Lower confidence - provide what we found but note uncertainty
-                response = "Here's what I found that might be relevant:\n\n"
-                for doc in context_docs[:3]:
-                    response += f"• **{doc.title or doc.doc_type}** (similarity: {doc.similarity:.0%})\n"
-                    response += f"  {doc.content[:150]}...\n\n"
-                
-                response += "Would you like me to search with different terms?"
-                suggestions = [
-                    "Refine my search",
-                    "Show all results",
-                    "Search in a different category"
-                ]
-        else:
-            # No context found
-            response = (
-                "I couldn't find specific information about that in the knowledge base. "
-                "This could mean:\n"
-                "• The data hasn't been indexed yet\n"
-                "• Try rephrasing your question\n"
-                "• The information might be under a different category\n\n"
-                "Would you like me to help you search differently?"
-            )
-            suggestions = [
-                "Show me all germplasm",
-                "List available protocols",
-                "What data is indexed?"
-            ]
-        
-        return response, suggestions
+    return "\n".join(context_parts)
 
 
-# Singleton assistant
-_veena = VeenaAssistant()
+def generate_suggestions(message: str, response: str) -> List[str]:
+    """Generate follow-up suggestions based on conversation"""
+    message_lower = message.lower()
+    
+    if "germplasm" in message_lower or "variety" in message_lower:
+        return [
+            "Show me similar varieties",
+            "What are the key traits?",
+            "Find disease-resistant options"
+        ]
+    
+    if "trial" in message_lower:
+        return [
+            "Show trial results",
+            "Compare with other trials",
+            "What's the best performer?"
+        ]
+    
+    if "cross" in message_lower or "breeding" in message_lower:
+        return [
+            "Suggest optimal parents",
+            "Calculate genetic distance",
+            "Show pedigree information"
+        ]
+    
+    if "disease" in message_lower or "resistance" in message_lower:
+        return [
+            "List resistance genes",
+            "Show screening protocols",
+            "Find resistant varieties"
+        ]
+    
+    # Default suggestions
+    return [
+        "Tell me more",
+        "Search germplasm",
+        "Show active trials"
+    ]
 
 
 # ============================================
@@ -271,11 +197,18 @@ async def chat_with_veena(
     """
     Send a message to Veena AI assistant.
     
-    Veena uses RAG (Retrieval-Augmented Generation) to provide
-    contextually relevant responses based on your breeding data.
+    Veena uses RAG (Retrieval-Augmented Generation) combined with
+    multi-tier LLM support to provide intelligent, contextual responses.
+    
+    **Free LLM Options:**
+    - Ollama (local): Install from ollama.ai
+    - Groq: Get free API key from console.groq.com
+    - Google AI: Get free key from aistudio.google.com
     """
+    llm_service = get_llm_service()
     context_docs = None
     context_response = None
+    context_text = None
     
     # Retrieve relevant context if enabled
     if request.include_context:
@@ -291,27 +224,55 @@ async def chat_with_veena(
                         doc_id=doc.doc_id,
                         doc_type=doc.doc_type,
                         title=doc.title,
-                        content=doc.content[:500],  # Truncate for response
+                        content=doc.content[:500],
                         similarity=doc.similarity,
                         source_id=doc.source_id
                     )
                     for doc in context_docs
                 ]
+                context_text = format_context_for_llm(context_docs)
         except Exception as e:
             print(f"[Veena] Context retrieval error: {e}")
-            # Continue without context
     
-    # Generate response
-    response_text, suggestions = _veena.generate_response(
-        request.message, 
-        context_docs
+    # Convert conversation history
+    history = None
+    if request.conversation_history:
+        history = [
+            ConversationMessage(
+                role=msg.role,
+                content=msg.content,
+                timestamp=msg.timestamp or datetime.utcnow()
+            )
+            for msg in request.conversation_history
+        ]
+    
+    # Parse preferred provider
+    preferred = None
+    if request.preferred_provider:
+        try:
+            preferred = LLMProvider(request.preferred_provider.lower())
+        except ValueError:
+            pass
+    
+    # Generate response using LLM
+    llm_response = await llm_service.chat(
+        user_message=request.message,
+        conversation_history=history,
+        context=context_text
     )
     
+    # Generate suggestions
+    suggestions = generate_suggestions(request.message, llm_response.content)
+    
     return ChatResponse(
-        message=response_text,
+        message=llm_response.content,
+        provider=llm_response.provider.value,
+        model=llm_response.model,
         context=context_response,
         conversation_id=request.conversation_id,
-        suggestions=suggestions
+        suggestions=suggestions,
+        cached=llm_response.cached,
+        latency_ms=llm_response.latency_ms
     )
 
 
@@ -351,18 +312,40 @@ async def get_context(
     )
 
 
+@router.get("/status")
+async def get_llm_status():
+    """
+    Get status of all LLM providers.
+    
+    Shows which providers are configured and available.
+    """
+    llm_service = get_llm_service()
+    return await llm_service.get_status()
+
+
 @router.get("/health")
 async def veena_health():
     """Check Veena AI health status"""
+    llm_service = get_llm_service()
+    status = await llm_service.get_status()
+    
     return {
         "status": "healthy",
         "assistant": "Veena",
+        "active_provider": status["active_provider"],
+        "active_model": status["active_model"],
         "capabilities": [
             "semantic_search",
             "germplasm_lookup",
             "protocol_search",
             "trial_information",
-            "similarity_matching"
+            "similarity_matching",
+            "natural_conversation"
         ],
-        "rag_enabled": True
+        "rag_enabled": True,
+        "llm_enabled": status["active_provider"] != "template",
+        "free_tier_available": any(
+            p["available"] and p["free_tier"] 
+            for p in status["providers"].values()
+        )
     }

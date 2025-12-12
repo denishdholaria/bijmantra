@@ -91,7 +91,6 @@ const ROUTE_LABELS: Record<string, string> = {
   'dus-crops': 'DUS Crops',
   varieties: 'Varieties',
   agreements: 'Agreements',
-  royalties: 'Royalties',
   training: 'Training Hub',
   forums: 'Forums',
   glossary: 'Glossary',

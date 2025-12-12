@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from 'sonner'
+import { useDemoMode } from '@/hooks/useDemoMode'
 import {
   Users,
   Search,
@@ -19,7 +21,9 @@ import {
   Plus,
   Download,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  RefreshCw,
+  Loader2
 } from 'lucide-react'
 
 interface Parent {
@@ -28,38 +32,195 @@ interface Parent {
   type: 'elite' | 'donor' | 'landrace'
   traits: string[]
   gebv: number
-  heterosis: number
-  selected: boolean
+  heterosis_potential: number
   pedigree: string
+  markers?: Record<string, boolean>
+  agronomic_data?: {
+    yield_potential: number
+    days_to_maturity: number
+    plant_height: number
+  }
 }
 
+interface CrossPrediction {
+  parent1: { id: string; name: string; type: string }
+  parent2: { id: string; name: string; type: string }
+  expected_gebv: number
+  heterosis: number
+  genetic_distance: number
+  success_probability: number
+  combined_traits: string[]
+  recommendation: string
+}
+
+interface Recommendation {
+  cross: string
+  parent1_id: string
+  parent2_id: string
+  score: number
+  reason: string
+  expected_gebv: number
+  heterosis: number
+  combined_traits: string[]
+}
+
+// Demo data
+const DEMO_PARENTS: Parent[] = [
+  { id: '1', name: 'IR64', type: 'elite', traits: ['High yield', 'Good quality'], gebv: 2.45, heterosis_potential: 15.2, pedigree: 'IR5657-33-2-1/IR2061-465-1-5-5' },
+  { id: '2', name: 'Swarna', type: 'elite', traits: ['High yield', 'Wide adaptation'], gebv: 2.38, heterosis_potential: 12.8, pedigree: 'Vasistha/Mahsuri' },
+  { id: '3', name: 'FR13A', type: 'donor', traits: ['Submergence tolerance'], gebv: 1.85, heterosis_potential: 8.5, pedigree: 'Landrace selection' },
+  { id: '4', name: 'Pokkali', type: 'donor', traits: ['Salt tolerance'], gebv: 1.72, heterosis_potential: 7.2, pedigree: 'Kerala landrace' },
+  { id: '5', name: 'Kasalath', type: 'landrace', traits: ['Drought tolerance', 'Deep roots'], gebv: 1.65, heterosis_potential: 6.8, pedigree: 'Aus landrace' },
+  { id: '6', name: 'N22', type: 'donor', traits: ['Heat tolerance', 'Drought tolerance'], gebv: 1.58, heterosis_potential: 9.1, pedigree: 'Aus variety' },
+  { id: '7', name: 'IRBB60', type: 'donor', traits: ['Bacterial blight resistance'], gebv: 1.92, heterosis_potential: 5.4, pedigree: 'IR24 NIL' },
+  { id: '8', name: 'Tetep', type: 'donor', traits: ['Blast resistance'], gebv: 1.78, heterosis_potential: 6.2, pedigree: 'Vietnamese variety' }
+]
+
+const DEMO_RECOMMENDATIONS: Recommendation[] = [
+  { cross: 'IR64 × FR13A', parent1_id: '1', parent2_id: '3', score: 92, reason: 'High yield + submergence tolerance', expected_gebv: 2.15, heterosis: 11.8, combined_traits: ['High yield', 'Submergence tolerance'] },
+  { cross: 'Swarna × Pokkali', parent1_id: '2', parent2_id: '4', score: 88, reason: 'Adaptation + salt tolerance', expected_gebv: 2.05, heterosis: 10.0, combined_traits: ['Wide adaptation', 'Salt tolerance'] },
+  { cross: 'IR64 × N22', parent1_id: '1', parent2_id: '6', score: 85, reason: 'Yield + heat tolerance', expected_gebv: 2.01, heterosis: 12.1, combined_traits: ['High yield', 'Heat tolerance'] }
+]
+
 export function ParentSelection() {
+  const { isDemoMode } = useDemoMode()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedParents, setSelectedParents] = useState<string[]>([])
-  const [traitFilter, setTraitFilter] = useState('all')
+  const [typeFilter, setTypeFilter] = useState('all')
+  const [traitFilter, setTraitFilter] = useState('')
+  
+  const [parents, setParents] = useState<Parent[]>([])
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [crossPrediction, setCrossPrediction] = useState<CrossPrediction | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [predicting, setPredicting] = useState(false)
 
-  const parents: Parent[] = [
-    { id: '1', name: 'IR64', type: 'elite', traits: ['High yield', 'Good quality'], gebv: 2.45, heterosis: 15.2, selected: false, pedigree: 'IR5657-33-2-1/IR2061-465-1-5-5' },
-    { id: '2', name: 'Swarna', type: 'elite', traits: ['High yield', 'Wide adaptation'], gebv: 2.38, heterosis: 12.8, selected: false, pedigree: 'Vasistha/Mahsuri' },
-    { id: '3', name: 'FR13A', type: 'donor', traits: ['Submergence tolerance'], gebv: 1.85, heterosis: 8.5, selected: false, pedigree: 'Landrace selection' },
-    { id: '4', name: 'Pokkali', type: 'donor', traits: ['Salt tolerance'], gebv: 1.72, heterosis: 7.2, selected: false, pedigree: 'Kerala landrace' },
-    { id: '5', name: 'Kasalath', type: 'landrace', traits: ['Drought tolerance', 'Deep roots'], gebv: 1.65, heterosis: 6.8, selected: false, pedigree: 'Aus landrace' },
-    { id: '6', name: 'N22', type: 'donor', traits: ['Heat tolerance', 'Drought tolerance'], gebv: 1.58, heterosis: 9.1, selected: false, pedigree: 'Aus variety' },
-    { id: '7', name: 'IRBB60', type: 'donor', traits: ['Bacterial blight resistance'], gebv: 1.92, heterosis: 5.4, selected: false, pedigree: 'IR24 NIL' },
-    { id: '8', name: 'Tetep', type: 'donor', traits: ['Blast resistance'], gebv: 1.78, heterosis: 6.2, selected: false, pedigree: 'Vietnamese variety' }
-  ]
+  useEffect(() => {
+    fetchData()
+  }, [isDemoMode])
+
+  useEffect(() => {
+    if (selectedParents.length >= 2) {
+      predictCross()
+    } else {
+      setCrossPrediction(null)
+    }
+  }, [selectedParents])
+
+  const fetchData = async () => {
+    if (isDemoMode) {
+      setParents(DEMO_PARENTS)
+      setRecommendations(DEMO_RECOMMENDATIONS)
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    try {
+      // Fetch parents
+      const parentsRes = await fetch('/api/v2/parent-selection/parents')
+      if (parentsRes.ok) {
+        const data = await parentsRes.json()
+        setParents(data.data || [])
+      }
+
+      // Fetch recommendations
+      const recsRes = await fetch('/api/v2/parent-selection/recommendations?limit=5')
+      if (recsRes.ok) {
+        const data = await recsRes.json()
+        setRecommendations(data.data || [])
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setParents(DEMO_PARENTS)
+      setRecommendations(DEMO_RECOMMENDATIONS)
+      toast.error('Failed to load data, showing demo data')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const predictCross = async () => {
+    if (selectedParents.length < 2) return
+
+    if (isDemoMode) {
+      // Generate demo prediction
+      const p1 = parents.find(p => p.id === selectedParents[0])
+      const p2 = parents.find(p => p.id === selectedParents[1])
+      if (p1 && p2) {
+        setCrossPrediction({
+          parent1: { id: p1.id, name: p1.name, type: p1.type },
+          parent2: { id: p2.id, name: p2.name, type: p2.type },
+          expected_gebv: (p1.gebv + p2.gebv) / 2,
+          heterosis: (p1.heterosis_potential + p2.heterosis_potential) / 2,
+          genetic_distance: 0.42,
+          success_probability: 78,
+          combined_traits: [...new Set([...p1.traits, ...p2.traits])],
+          recommendation: 'Recommended cross based on complementary traits'
+        })
+      }
+      return
+    }
+
+    setPredicting(true)
+    try {
+      const res = await fetch(`/api/v2/parent-selection/predict-cross?parent1_id=${selectedParents[0]}&parent2_id=${selectedParents[1]}`)
+      if (res.ok) {
+        const data = await res.json()
+        setCrossPrediction(data.data)
+      }
+    } catch (error) {
+      console.error('Error predicting cross:', error)
+    } finally {
+      setPredicting(false)
+    }
+  }
 
   const toggleParent = (id: string) => {
-    setSelectedParents(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id])
+    setSelectedParents(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(p => p !== id)
+      }
+      if (prev.length >= 2) {
+        // Replace the second parent
+        return [prev[0], id]
+      }
+      return [...prev, id]
+    })
   }
 
   const filteredParents = parents.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesTrait = traitFilter === 'all' || p.traits.some(t => t.toLowerCase().includes(traitFilter.toLowerCase()))
-    return matchesSearch && matchesTrait
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.pedigree.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesType = typeFilter === 'all' || p.type === typeFilter
+    const matchesTrait = !traitFilter || p.traits.some(t => t.toLowerCase().includes(traitFilter.toLowerCase()))
+    return matchesSearch && matchesType && matchesTrait
   })
 
   const selectedParentData = parents.filter(p => selectedParents.includes(p.id))
+
+  const exportParents = () => {
+    const csv = [
+      ['Name', 'Type', 'GEBV', 'Heterosis', 'Traits', 'Pedigree'].join(','),
+      ...parents.map(p => [
+        p.name,
+        p.type,
+        p.gebv,
+        p.heterosis_potential,
+        `"${p.traits.join('; ')}"`,
+        `"${p.pedigree}"`
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `parents-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Parents exported to CSV')
+  }
 
   return (
     <div className="space-y-6">
@@ -72,8 +233,16 @@ export function ParentSelection() {
           <p className="text-muted-foreground mt-1">Select optimal parents for crossing based on breeding values</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline"><Download className="h-4 w-4 mr-2" />Export</Button>
-          <Button disabled={selectedParents.length < 2}><Plus className="h-4 w-4 mr-2" />Create Cross Plan</Button>
+          <Button variant="outline" onClick={fetchData} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+          <Button variant="outline" onClick={exportParents}>
+            <Download className="h-4 w-4 mr-2" />Export
+          </Button>
+          <Button disabled={selectedParents.length < 2}>
+            <Plus className="h-4 w-4 mr-2" />Create Cross Plan
+          </Button>
         </div>
       </div>
 
@@ -85,17 +254,19 @@ export function ParentSelection() {
               <div className="flex items-center gap-4">
                 <CheckCircle2 className="h-6 w-6 text-primary" />
                 <div>
-                  <div className="font-medium">{selectedParents.length} Parents Selected</div>
+                  <div className="font-medium">{selectedParents.length} Parent{selectedParents.length > 1 ? 's' : ''} Selected</div>
                   <div className="text-sm text-muted-foreground">
                     {selectedParentData.map(p => p.name).join(' × ')}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <div className="text-sm text-muted-foreground">Predicted Heterosis</div>
-                  <div className="font-bold text-green-600">+{(selectedParentData.reduce((sum, p) => sum + p.heterosis, 0) / selectedParentData.length).toFixed(1)}%</div>
-                </div>
+                {crossPrediction && (
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground">Predicted Heterosis</div>
+                    <div className="font-bold text-green-600">+{crossPrediction.heterosis.toFixed(1)}%</div>
+                  </div>
+                )}
                 <Button variant="outline" size="sm" onClick={() => setSelectedParents([])}>Clear</Button>
               </div>
             </div>
@@ -108,58 +279,81 @@ export function ParentSelection() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Available Parents</CardTitle>
-            <CardDescription>Select parents based on breeding objectives</CardDescription>
+            <CardDescription>Select parents based on breeding objectives (click to select, max 2)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="relative flex-1">
+            <div className="flex flex-wrap items-center gap-4 mb-4">
+              <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input placeholder="Search parents..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
               </div>
-              <Select value={traitFilter} onValueChange={setTraitFilter}>
-                <SelectTrigger className="w-[180px]"><Filter className="h-4 w-4 mr-2" /><SelectValue placeholder="Filter by trait" /></SelectTrigger>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Traits</SelectItem>
-                  <SelectItem value="yield">High Yield</SelectItem>
-                  <SelectItem value="drought">Drought Tolerance</SelectItem>
-                  <SelectItem value="disease">Disease Resistance</SelectItem>
-                  <SelectItem value="quality">Grain Quality</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="elite">Elite</SelectItem>
+                  <SelectItem value="donor">Donor</SelectItem>
+                  <SelectItem value="landrace">Landrace</SelectItem>
                 </SelectContent>
               </Select>
+              <Input 
+                placeholder="Filter by trait..." 
+                value={traitFilter} 
+                onChange={(e) => setTraitFilter(e.target.value)} 
+                className="w-[180px]"
+              />
             </div>
 
-            <ScrollArea className="h-[400px]">
+            {loading ? (
               <div className="space-y-2">
-                {filteredParents.map((parent) => (
-                  <div key={parent.id} className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors ${selectedParents.includes(parent.id) ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'}`} onClick={() => toggleParent(parent.id)}>
-                    <Checkbox checked={selectedParents.includes(parent.id)} />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{parent.name}</span>
-                        <Badge variant={parent.type === 'elite' ? 'default' : parent.type === 'donor' ? 'secondary' : 'outline'}>{parent.type}</Badge>
-                      </div>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {parent.traits.map((trait, i) => (
-                          <Badge key={i} variant="outline" className="text-xs">{trait}</Badge>
-                        ))}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">{parent.pedigree}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1 text-green-600">
-                        <TrendingUp className="h-4 w-4" />
-                        <span className="font-bold">{parent.gebv.toFixed(2)}</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">GEBV</div>
-                    </div>
-                  </div>
+                {[1, 2, 3, 4].map(i => (
+                  <Skeleton key={i} className="h-20 w-full" />
                 ))}
               </div>
-            </ScrollArea>
+            ) : (
+              <ScrollArea className="h-[400px]">
+                <div className="space-y-2">
+                  {filteredParents.map((parent) => (
+                    <div 
+                      key={parent.id} 
+                      className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors ${
+                        selectedParents.includes(parent.id) ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
+                      }`} 
+                      onClick={() => toggleParent(parent.id)}
+                    >
+                      <Checkbox checked={selectedParents.includes(parent.id)} />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{parent.name}</span>
+                          <Badge variant={parent.type === 'elite' ? 'default' : parent.type === 'donor' ? 'secondary' : 'outline'}>
+                            {parent.type}
+                          </Badge>
+                        </div>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {parent.traits.map((trait, i) => (
+                            <Badge key={i} variant="outline" className="text-xs">{trait}</Badge>
+                          ))}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">{parent.pedigree}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-1 text-green-600">
+                          <TrendingUp className="h-4 w-4" />
+                          <span className="font-bold">{parent.gebv.toFixed(2)}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">GEBV</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
 
-        {/* Selection Criteria */}
+        {/* Selection Criteria & Recommendations */}
         <div className="space-y-4">
           <Card>
             <CardHeader>
@@ -190,22 +384,32 @@ export function ParentSelection() {
               <CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5" />AI Recommendations</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {[
-                  { cross: 'IR64 × FR13A', reason: 'High yield + submergence tolerance', score: 92 },
-                  { cross: 'Swarna × Pokkali', reason: 'Adaptation + salt tolerance', score: 88 },
-                  { cross: 'IR64 × N22', reason: 'Yield + heat tolerance', score: 85 }
-                ].map((rec, i) => (
-                  <div key={i} className="p-3 border rounded-lg">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-sm">{rec.cross}</span>
-                      <Badge variant="default">{rec.score}%</Badge>
+              {loading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <Skeleton key={i} className="h-16 w-full" />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {recommendations.map((rec, i) => (
+                    <div 
+                      key={i} 
+                      className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => setSelectedParents([rec.parent1_id, rec.parent2_id])}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-sm">{rec.cross}</span>
+                        <Badge variant="default">{rec.score}%</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{rec.reason}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">{rec.reason}</p>
-                  </div>
-                ))}
-              </div>
-              <Button variant="outline" className="w-full mt-4"><Sparkles className="h-4 w-4 mr-2" />Get More Suggestions</Button>
+                  ))}
+                </div>
+              )}
+              <Button variant="outline" className="w-full mt-4" onClick={fetchData}>
+                <Sparkles className="h-4 w-4 mr-2" />Get More Suggestions
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -219,30 +423,54 @@ export function ParentSelection() {
             <CardDescription>Predicted performance of selected cross</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-center gap-4 mb-6">
-              {selectedParentData.map((p, i) => (
-                <div key={p.id} className="flex items-center gap-2">
-                  <div className="p-4 bg-primary/10 rounded-lg text-center">
-                    <div className="font-bold">{p.name}</div>
-                    <div className="text-sm text-muted-foreground">{p.type}</div>
+            {predicting ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className="ml-2">Calculating prediction...</span>
+              </div>
+            ) : crossPrediction ? (
+              <>
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  {selectedParentData.map((p, i) => (
+                    <div key={p.id} className="flex items-center gap-2">
+                      <div className="p-4 bg-primary/10 rounded-lg text-center">
+                        <div className="font-bold">{p.name}</div>
+                        <div className="text-sm text-muted-foreground">{p.type}</div>
+                      </div>
+                      {i < selectedParentData.length - 1 && <ArrowRight className="h-6 w-6 text-muted-foreground" />}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-4 gap-4 mb-4">
+                  {[
+                    { label: 'Expected GEBV', value: crossPrediction.expected_gebv.toFixed(2) },
+                    { label: 'Heterosis', value: `+${crossPrediction.heterosis.toFixed(1)}%` },
+                    { label: 'Genetic Distance', value: crossPrediction.genetic_distance.toFixed(2) },
+                    { label: 'Success Probability', value: `${crossPrediction.success_probability}%` }
+                  ].map((stat, i) => (
+                    <div key={i} className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                      <div className="text-sm text-muted-foreground">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>Recommendation:</strong> {crossPrediction.recommendation}
+                  </p>
+                </div>
+                {crossPrediction.combined_traits.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-2">Combined Traits:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {crossPrediction.combined_traits.map((trait, i) => (
+                        <Badge key={i} variant="outline">{trait}</Badge>
+                      ))}
+                    </div>
                   </div>
-                  {i < selectedParentData.length - 1 && <ArrowRight className="h-6 w-6 text-muted-foreground" />}
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-4 gap-4">
-              {[
-                { label: 'Expected GEBV', value: (selectedParentData.reduce((sum, p) => sum + p.gebv, 0) / 2).toFixed(2) },
-                { label: 'Heterosis', value: `+${(selectedParentData.reduce((sum, p) => sum + p.heterosis, 0) / selectedParentData.length).toFixed(1)}%` },
-                { label: 'Genetic Distance', value: '0.42' },
-                { label: 'Success Probability', value: '78%' }
-              ].map((stat, i) => (
-                <div key={i} className="text-center p-4 bg-muted rounded-lg">
-                  <div className="text-2xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+                )}
+              </>
+            ) : null}
           </CardContent>
         </Card>
       )}

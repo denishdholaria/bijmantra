@@ -105,6 +105,14 @@ try:
 except Exception as e:
     print(f"[PRAHARI] Security middleware not available: {e}")
 
+# Tenant context middleware (RLS support)
+try:
+    from app.middleware.tenant_context import TenantContextMiddleware
+    app.add_middleware(TenantContextMiddleware)
+    print("[RLS] Tenant context middleware enabled")
+except Exception as e:
+    print(f"[RLS] Tenant context middleware not available: {e}")
+
 # Mount Socket.IO
 try:
     from app.core.socketio import socket_app
@@ -138,7 +146,7 @@ async def api_stats():
         "name": "Bijmantra API",
         "version": "0.1.0",
         "brapi_version": "2.1",
-        "total_endpoints": 542,
+        "total_endpoints": 572,
         "modules": [
             "Authentication", "BrAPI Core", "Compute Engine", "AI Insights",
             "Vector Store", "Weather", "Veena AI", "Cross Prediction",
@@ -151,7 +159,8 @@ async def api_stats():
             "Spatial Analysis", "Breeding Value", "Disease Resistance", "Abiotic Stress",
             "Dispatch Management", "Seed Processing", "Sensor Networks", "Community Forums",
             "Sun-Earth Systems", "Space Research", "Vision Training Ground",
-            "RAKSHAKA Self-Healing", "PRAHARI Defense", "CHAITANYA Orchestrator", "Security Audit"
+            "RAKSHAKA Self-Healing", "PRAHARI Defense", "CHAITANYA Orchestrator", "Security Audit",
+            "DevGuru PhD Mentor"
         ],
         "status": "operational",
     }
@@ -182,7 +191,7 @@ async def serverinfo():
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies, seasons
 from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
-from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit
+from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit, rls, grin, mta, barcode, vault_sensors, devguru, selection_decisions, parent_selection, performance_ranking, progeny
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -274,6 +283,16 @@ app.include_router(rakshaka.router, prefix="/api/v2", tags=["RAKSHAKA Self-Heali
 app.include_router(prahari.router, prefix="/api/v2", tags=["PRAHARI Defense"])
 app.include_router(chaitanya.router, prefix="/api/v2", tags=["CHAITANYA Orchestrator"])
 app.include_router(security_audit.router, prefix="/api/v2", tags=["Security Audit"])
+app.include_router(rls.router, prefix="/api/v2", tags=["Row-Level Security"])
+app.include_router(grin.router, prefix="/api/v2", tags=["GRIN-Global Integration"])
+app.include_router(mta.router, prefix="/api/v2", tags=["Material Transfer Agreements"])
+app.include_router(barcode.router, prefix="/api/v2", tags=["Barcode/QR"])
+app.include_router(vault_sensors.router, prefix="/api/v2", tags=["Vault Sensors"])
+app.include_router(devguru.router, prefix="/api/v2", tags=["DevGuru PhD Mentor"])
+app.include_router(selection_decisions.router, prefix="/api/v2", tags=["Selection Decisions"])
+app.include_router(parent_selection.router, prefix="/api/v2", tags=["Parent Selection"])
+app.include_router(performance_ranking.router, prefix="/api/v2", tags=["Performance Ranking"])
+app.include_router(progeny.router, prefix="/api/v2", tags=["Progeny"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])

@@ -350,7 +350,6 @@ export const Icons = {
   commercial: Building2,
   dus: ClipboardCheck,
   licensing: FileText,
-  royalties: Calculator,
   
   // Space Research
   spaceResearch: Rocket,

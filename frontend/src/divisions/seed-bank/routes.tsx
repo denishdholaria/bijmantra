@@ -18,6 +18,11 @@ const GermplasmExchange = lazy(() => import('./pages/GermplasmExchange'));
 const ViabilityTesting = lazy(() => import('./pages/ViabilityTesting'));
 const RegenerationPlanning = lazy(() => import('./pages/RegenerationPlanning'));
 const MCPDExchange = lazy(() => import('./pages/MCPDExchange'));
+const GRINSearch = lazy(() => import('./pages/GRINSearch'));
+const TaxonomyValidator = lazy(() => import('./pages/TaxonomyValidator'));
+const MTAManagement = lazy(() => import('./pages/MTAManagement'));
+const VaultMonitoring = lazy(() => import('./pages/VaultMonitoring'));
+const OfflineDataEntry = lazy(() => import('./pages/OfflineDataEntry'));
 
 /**
  * Seed Bank Division Routes
@@ -34,6 +39,11 @@ export const seedBankRoutes: RouteObject[] = [
   { path: 'viability', element: <ViabilityTesting /> },
   { path: 'regeneration', element: <RegenerationPlanning /> },
   { path: 'mcpd', element: <MCPDExchange /> },
+  { path: 'grin-search', element: <GRINSearch /> },
+  { path: 'taxonomy', element: <TaxonomyValidator /> },
+  { path: 'mta', element: <MTAManagement /> },
+  { path: 'monitoring', element: <VaultMonitoring /> },
+  { path: 'offline', element: <OfflineDataEntry /> },
 ];
 
 export default seedBankRoutes;

@@ -2,26 +2,40 @@
 
 A comprehensive Progressive Web Application for agricultural science, plant breeding, and future space-based research. Built on the **Parashakti Framework** — a modular, offline-first architecture designed to scale from individual researchers to global institutions.
 
-**285+ Pages** | **501 API Endpoints** | **11 Modules** | **Offline-First PWA** | **Multi-Engine Compute** | **BrAPI v2.1 100%**
+**285+ Pages** | **611 API Endpoints** | **11 Modules** | **Offline-First PWA** | **Multi-Engine Compute** | **BrAPI v2.1 Compatible**
 
 ![Bijmantra Dashboard](docs/images/Screenshot-2025-12-11.png)
 
 
 ---
 
-## This App is in Developmental Stage.
+## ⚠️ Development Status Notice
 
-## ✅ Current Status (December 11, 2025)
+**This application is in active development.** While the UI is extensive, not all pages are fully functional:
+
+| Status | Count | Description |
+|--------|-------|-------------|
+| ✅ Functional | 99 pages | Connected to real backend APIs |
+| 🟡 Demo Data | 70 pages | UI works with mock/demo data |
+| 🔴 UI Only | 8 pages | Visual mockups, no backend |
+
+**See [FUNCTIONALITY_AUDIT.md](docs/FUNCTIONALITY_AUDIT.md) for detailed page-by-page status.**
+
+---
+
+## ✅ Current Status (December 12, 2025)
 
 | Metric | Status |
 |--------|--------|
-| Pages | 285+ complete |
-| API Endpoints | 501 |
-| BrAPI Endpoints | 34/34 (100%) |
-| Components | 160+ |
+| Pages | 295+ (177 audited) |
+| API Endpoints | 611 |
+| BrAPI v2.1 Coverage | 74/135 (55%) |
+| Components | 174+ |
 | TypeScript | 0 errors |
 | Tests | 48 passing |
-| Build | ✅ Verified (5.3MB) |
+| Build | ✅ Verified (5.4MB) |
+
+> **Note:** BrAPI compliance is partial. See [BRAPI_AUDIT.md](docs/BRAPI_AUDIT.md) for details.
 
 ---
 
@@ -147,11 +161,16 @@ See [SECURITY.md](SECURITY.md) for security policy and vulnerability reporting.
 | Genomics, matrices | Rust/WASM |
 | BLUP, REML, statistics | Fortran |
 
-### BrAPI v2.1 Compatibility (100%)
-- Core Module (Programs, Trials, Studies, Locations)
-- Germplasm Module (Germplasm, Pedigree, Crosses)
-- Phenotyping Module (Observations, Traits, Events)
-- Genotyping Module (Samples, Variants, Calls)
+### BrAPI v2.1 Compatibility (55%)
+
+| Module | Coverage | Status |
+|--------|----------|--------|
+| Core | 81% | Programs, Trials, Studies, Locations, Seasons, People |
+| Phenotyping | 69% | Observations, Variables, Traits, Events, Images |
+| Germplasm | 62% | Germplasm, Crosses, Seed Lots |
+| Genotyping | 26% | Samples, basic Variants |
+
+**Missing:** Search endpoints, Lists, Calls, CallSets, References, VariantSets. See [BRAPI_AUDIT.md](docs/BRAPI_AUDIT.md).
 
 ---
 

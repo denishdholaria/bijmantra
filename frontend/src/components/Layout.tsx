@@ -15,6 +15,7 @@ const Veena = lazy(() => import('@/components/ai/Veena').then(m => ({ default: m
 const FieldModeToggle = lazy(() => import('@/components/FieldModeToggle').then(m => ({ default: m.FieldModeToggle })))
 const HelpCenter = lazy(() => import('@/components/HelpCenter').then(m => ({ default: m.HelpCenter })))
 const OnboardingWizard = lazy(() => import('@/components/OnboardingWizard').then(m => ({ default: m.OnboardingWizard })))
+const DemoModeBanner = lazy(() => import('@/components/DemoModeBanner').then(m => ({ default: m.DemoModeBanner })))
 
 // Import lighter components directly
 import { useKeyboardShortcuts } from '@/components/KeyboardShortcuts'
@@ -82,6 +83,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <NotificationProvider>
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 dark:from-slate-900 dark:to-slate-900 flex flex-col">
+      {/* Demo Mode Banner - shows when demo mode is active */}
+      <Suspense fallback={null}>
+        <DemoModeBanner />
+      </Suspense>
+      
       {/* Offline Banner - shows when offline */}
       <OfflineBanner />
       

@@ -19,8 +19,11 @@ import {
   Handshake,
   AlertTriangle,
   AlertCircle,
-  Info
+  Info,
+  Activity
 } from 'lucide-react';
+import { VaultSensorWidget } from '@/components/VaultSensorWidget';
+import { useNavigate } from 'react-router-dom';
 
 interface DashboardStats {
   total_accessions: number;
@@ -30,6 +33,7 @@ interface DashboardStats {
 }
 
 export function Dashboard() {
+  const navigate = useNavigate();
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ['seed-bank', 'dashboard-stats'],
     queryFn: async () => {
@@ -105,6 +109,9 @@ export function Dashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Vault Environmental Monitoring */}
+      <VaultSensorWidget onViewDetails={() => navigate('/seed-bank/monitoring')} />
 
       {/* Recent Activity & Alerts */}
       <div className="grid md:grid-cols-2 gap-6">

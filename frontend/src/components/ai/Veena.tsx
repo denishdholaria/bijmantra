@@ -82,6 +82,21 @@ interface VeenaProps {
   position?: 'bottom-right' | 'bottom-left' | 'sidebar'
 }
 
+// Mode types
+type VeenaMode = 'assistant' | 'devguru'
+
+interface DevGuruProject {
+  id: string
+  title: string
+  student_name: string
+  current_phase: string
+  progress: {
+    completed: number
+    total: number
+    percent: number
+  }
+}
+
 // Storage key for conversation history
 const STORAGE_KEY = 'veena_conversation_history'
 const MAX_STORED_MESSAGES = 50
@@ -265,6 +280,15 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>({ available: false, voices: [], defaultVoice: null })
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null)
   const [showVoiceSelector, setShowVoiceSelector] = useState(false)
+  const [llmStatus, setLlmStatus] = useState<{ provider: string; model: string; available: boolean }>({ 
+    provider: 'checking...', 
+    model: '', 
+    available: false 
+  })
+  // DevGuru mode state
+  const [mode, setMode] = useState<VeenaMode>('assistant')
+  const [devguruProject, setDevguruProject] = useState<DevGuruProject | null>(null)
+  const [showModeSelector, setShowModeSelector] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -285,6 +309,68 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     })
   }, [])
 
+  // Check LLM status on mount
+  useEffect(() => {
+    const checkLlmStatus = async () => {
+      try {
+        const token = apiClient.getToken()
+        const response = await fetch('/api/v2/chat/status', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setLlmStatus({
+            provider: data.active_provider,
+            model: data.active_model,
+            available: data.active_provider !== 'template'
+          })
+          console.log('[Veena] LLM status:', data.active_provider, data.active_model)
+        }
+      } catch (error) {
+        console.log('[Veena] Could not check LLM status:', error)
+        setLlmStatus({ provider: 'offline', model: '', available: false })
+      }
+    }
+    checkLlmStatus()
+  }, [])
+
+  // Load DevGuru project when mode changes
+  useEffect(() => {
+    if (mode === 'devguru' && !devguruProject) {
+      const loadDevGuruProject = async () => {
+        try {
+          const token = apiClient.getToken()
+          const response = await fetch('/api/v2/devguru/projects', {
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+          })
+          if (response.ok) {
+            const data = await response.json()
+            if (data.projects && data.projects.length > 0) {
+              const project = data.projects[0]
+              // Get timeline analysis for progress
+              const timelineRes = await fetch(`/api/v2/devguru/projects/${project.id}/timeline`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+              })
+              if (timelineRes.ok) {
+                const timeline = await timelineRes.json()
+                setDevguruProject({
+                  id: project.id,
+                  title: project.title,
+                  student_name: project.student_name,
+                  current_phase: project.current_phase,
+                  progress: timeline.progress
+                })
+              }
+            }
+          }
+        } catch (error) {
+          console.log('[DevGuru] Could not load project:', error)
+        }
+      }
+      loadDevGuruProject()
+    }
+  }, [mode, devguruProject])
+
   // Save messages to localStorage
   useEffect(() => {
     try {
@@ -300,6 +386,14 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     document.addEventListener('click', handleClick)
     return () => document.removeEventListener('click', handleClick)
   }, [showVoiceSelector])
+
+  // Close mode selector when clicking outside
+  useEffect(() => {
+    if (!showModeSelector) return
+    const handleClick = () => setShowModeSelector(false)
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [showModeSelector])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -406,15 +500,30 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     const initialMessage: Message = {
       id: Date.now().toString(),
       role: 'assistant',
-      content: 'Conversation cleared. How can I help you today?',
+      content: mode === 'devguru' 
+        ? 'Conversation cleared. As your PhD mentor, I\'m here to guide you through your research journey. What would you like to discuss?'
+        : 'Conversation cleared. How can I help you today?',
       timestamp: new Date()
     }
     setMessages([initialMessage])
     localStorage.removeItem(STORAGE_KEY)
-  }, [])
+  }, [mode])
+
+  // Update welcome message when mode changes
+  useEffect(() => {
+    const welcomeMessage: Message = {
+      id: Date.now().toString(),
+      role: 'assistant',
+      content: mode === 'devguru'
+        ? '🎓 Namaste! I\'m DevGuru, your AI PhD mentor. Named after Brihaspati, the divine teacher of the gods, I\'m here to guide you through your research journey.\n\nI can help with:\n• Research planning & experiment design\n• PhD timeline & milestone tracking\n• Literature review guidance\n• Data analysis strategies\n• Thesis writing assistance\n\nWhat aspect of your research would you like to discuss?'
+        : '🪷 Namaste! I\'m Veena, your intelligent breeding assistant. How may I assist you today?',
+      timestamp: new Date()
+    }
+    setMessages([welcomeMessage])
+  }, [mode])
 
 
-  // Send message with backend integration
+  // Send message with backend LLM integration
   const sendMessage = async () => {
     if (!input.trim() || isProcessing) return
 
@@ -432,43 +541,108 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
     setIsProcessing(true)
 
     try {
-      const [contextResponse, insightsResponse] = await Promise.all([
-        veenaService.getContext(query),
-        veenaService.getInsights()
-      ])
+      // Get conversation history for context (last 10 messages)
+      const conversationHistory = messages.slice(-10).map(m => ({
+        role: m.role,
+        content: m.content,
+        timestamp: m.timestamp.toISOString()
+      }))
 
-      const response = generateResponse(query, contextResponse, insightsResponse)
+      const token = apiClient.getToken()
+      let data: any
+
+      if (mode === 'devguru') {
+        // Use DevGuru API for PhD mentoring mode
+        const response = await fetch('/api/v2/devguru/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            message: query,
+            project_id: devguruProject?.id || null,
+            conversation_history: conversationHistory
+          })
+        })
+
+        if (!response.ok) {
+          throw new Error('DevGuru API error')
+        }
+
+        data = await response.json()
+      } else {
+        // Use regular Veena chat API
+        const response = await fetch('/api/v2/chat/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            message: query,
+            conversation_history: conversationHistory,
+            include_context: true,
+            context_limit: 5
+          })
+        })
+
+        if (!response.ok) {
+          throw new Error('Chat API error')
+        }
+
+        data = await response.json()
+      }
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.content,
+        content: data.message,
         timestamp: new Date(),
-        metadata: response.metadata
+        metadata: {
+          confidence: data.cached ? 0.95 : 0.9,
+          sources: data.context?.map((c: any) => ({
+            doc_id: c.doc_id,
+            doc_type: c.doc_type,
+            title: c.title,
+            similarity: c.similarity
+          })),
+          action: mode === 'devguru' ? `devguru_${data.provider}` : `llm_response_${data.provider}`
+        }
       }
       setMessages(prev => [...prev, assistantMessage])
 
       // Auto-speak response if voice is enabled
       if (voiceEnabled && voiceStatus.available) {
-        speak(response.content)
+        speak(data.message)
       }
-    } catch {
-      const response = generateResponse(query, null, null)
-      const assistantMessage: Message = {
+    } catch (error) {
+      console.error(`[${mode === 'devguru' ? 'DevGuru' : 'Veena'}] Chat error:`, error)
+      // Fallback to local template response
+      const fallbackMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.content,
+        content: mode === 'devguru' 
+          ? "I'm having trouble connecting to the DevGuru service. Please check if the backend is running and an LLM provider is configured. As your PhD mentor, I'm here to help once the connection is restored."
+          : "I'm having trouble connecting to the AI service. Please check if the backend is running and an LLM provider is configured (Ollama, Groq, or Google AI). You can still browse the app manually.",
         timestamp: new Date(),
-        metadata: response.metadata
+        metadata: { action: 'error_fallback' }
       }
-      setMessages(prev => [...prev, assistantMessage])
+      setMessages(prev => [...prev, fallbackMessage])
     } finally {
       setIsProcessing(false)
     }
   }
 
-  // Quick actions
-  const quickActions = [
+  // Quick actions - different for each mode
+  const quickActions = mode === 'devguru' ? [
+    { label: '📅 Timeline Check', action: 'How is my PhD timeline looking?', icon: '📅' },
+    { label: '📝 Next Steps', action: 'What should I focus on next?', icon: '📝' },
+    { label: '📚 Literature Help', action: 'Help me with my literature review', icon: '📚' },
+    { label: '📊 Data Analysis', action: 'How should I analyze my data?', icon: '📊' },
+    { label: '✍️ Writing Tips', action: 'Tips for writing my thesis', icon: '✍️' },
+    { label: '🎯 Research Design', action: 'Help me design my experiment', icon: '🎯' },
+  ] : [
     { label: '📊 Trial Summary', action: 'Show me a summary of active trials', icon: '📊' },
     { label: '🏆 Top Performers', action: 'Which germplasm has the best yield?', icon: '🏆' },
     { label: '⚠️ Weather Alert', action: 'Any weather concerns for my locations?', icon: '⚠️' },
@@ -507,19 +681,73 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+      <div className={cn(
+        "flex items-center justify-between px-4 py-3 text-white",
+        mode === 'devguru' 
+          ? "bg-gradient-to-r from-purple-600 to-indigo-700" 
+          : "bg-gradient-to-r from-amber-500 to-orange-600"
+      )}>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <span className="text-xl">🪷</span>
+            <span className="text-xl">{mode === 'devguru' ? '🎓' : '🪷'}</span>
             <span className={cn(
-              'absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-amber-500',
+              'absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2',
+              mode === 'devguru' ? 'border-purple-600' : 'border-amber-500',
               isProcessing ? 'bg-yellow-300 animate-pulse' : 'bg-green-400'
             )} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold">Veena</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold">{mode === 'devguru' ? 'DevGuru' : 'Veena'}</h3>
+              {/* Mode Toggle Button */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowModeSelector(!showModeSelector)}
+                  className="px-1.5 py-0.5 text-[9px] bg-white/20 rounded hover:bg-white/30 transition-colors"
+                  title="Switch mode"
+                >
+                  {mode === 'devguru' ? '🎓 PhD' : '🪷 AI'} ▾
+                </button>
+                {showModeSelector && (
+                  <div className="absolute top-full left-0 mt-1 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
+                    <button
+                      onClick={() => { setMode('assistant'); setShowModeSelector(false) }}
+                      className={cn(
+                        'w-full px-3 py-2 text-left text-xs flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700',
+                        mode === 'assistant' && 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
+                      )}
+                    >
+                      <span>🪷</span>
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">Veena</div>
+                        <div className="text-[10px] text-gray-500">Breeding Assistant</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => { setMode('devguru'); setShowModeSelector(false) }}
+                      className={cn(
+                        'w-full px-3 py-2 text-left text-xs flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700',
+                        mode === 'devguru' && 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400'
+                      )}
+                    >
+                      <span>🎓</span>
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">DevGuru</div>
+                        <div className="text-[10px] text-gray-500">PhD Mentor</div>
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
             <p className="text-[10px] opacity-80">
-              {isProcessing ? 'Contemplating...' : isSpeaking ? '🔊 Speaking...' : 'Ready to assist • Ctrl+/'}
+              {isProcessing ? 'Contemplating...' : isSpeaking ? '🔊 Speaking...' : (
+                mode === 'devguru' 
+                  ? (devguruProject ? `📚 ${devguruProject.current_phase.replace('_', ' ')}` : '📚 PhD Mentor Mode')
+                  : (llmStatus.available 
+                      ? `🧠 ${llmStatus.provider} • Ctrl+/` 
+                      : '⚠️ No LLM configured • Ctrl+/')
+              )}
             </p>
           </div>
         </div>
@@ -617,6 +845,36 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
           </div>
 
 
+          {/* DevGuru Project Info (when in DevGuru mode) */}
+          {mode === 'devguru' && devguruProject && (
+            <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs">📚</span>
+                  <div>
+                    <p className="text-[10px] font-medium text-purple-800 dark:text-purple-300 truncate max-w-[200px]">
+                      {devguruProject.title}
+                    </p>
+                    <p className="text-[9px] text-purple-600 dark:text-purple-400">
+                      {devguruProject.current_phase.replace('_', ' ')} • {devguruProject.progress.completed}/{devguruProject.progress.total} milestones
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-16 h-1.5 bg-purple-200 dark:bg-purple-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-purple-600 dark:bg-purple-400 rounded-full transition-all"
+                      style={{ width: `${devguruProject.progress.percent}%` }}
+                    />
+                  </div>
+                  <span className="text-[9px] text-purple-600 dark:text-purple-400">
+                    {devguruProject.progress.percent}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Quick Actions */}
           <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -627,7 +885,12 @@ export function Veena({ className, defaultOpen = false, position = 'bottom-right
                     setInput(action.action)
                     inputRef.current?.focus()
                   }}
-                  className="flex-shrink-0 px-3 py-1.5 text-[10px] font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
+                  className={cn(
+                    "flex-shrink-0 px-3 py-1.5 text-[10px] font-medium rounded-full transition-colors",
+                    mode === 'devguru'
+                      ? "text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+                      : "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                  )}
                 >
                   {action.label}
                 </button>

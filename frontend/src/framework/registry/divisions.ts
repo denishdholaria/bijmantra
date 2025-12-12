@@ -40,6 +40,7 @@ export const divisions: Division[] = [
           { id: 'trials', name: 'Trials', route: '/trials', isAbsolute: true },
           { id: 'studies', name: 'Studies', route: '/studies', isAbsolute: true },
           { id: 'germplasm', name: 'Germplasm', route: '/germplasm', isAbsolute: true },
+          { id: 'germplasm-comparison', name: 'Compare Germplasm', route: '/germplasm-comparison', isAbsolute: true },
           { id: 'pipeline', name: 'Pipeline', route: '/pipeline', isAbsolute: true },
           { id: 'locations', name: 'Locations', route: '/locations', isAbsolute: true },
           { id: 'seasons', name: 'Seasons', route: '/seasons', isAbsolute: true },
@@ -189,6 +190,7 @@ export const divisions: Division[] = [
           { id: 'wasm-gblup', name: 'Genomic BLUP', route: '/wasm-gblup', isAbsolute: true },
           { id: 'wasm-popgen', name: 'Population Genetics', route: '/wasm-popgen', isAbsolute: true },
           { id: 'plant-vision', name: 'Plant Vision', route: '/plant-vision', isAbsolute: true },
+          { id: 'vision-strategy', name: 'Vision Strategy', route: '/plant-vision/strategy', isAbsolute: true },
           { id: 'disease-atlas', name: 'Disease Atlas', route: '/disease-atlas', isAbsolute: true },
           { id: 'crop-health', name: 'Crop Health', route: '/crop-health', isAbsolute: true },
           { id: 'yield-predictor', name: 'Yield Predictor', route: '/yield-predictor', isAbsolute: true },
@@ -237,6 +239,8 @@ export const divisions: Division[] = [
         items: [
           { id: 'dashboard', name: 'Dashboard', route: '/seed-bank', isAbsolute: true },
           { id: 'vault', name: 'Vault Management', route: '/seed-bank/vault', isAbsolute: true },
+          { id: 'monitoring', name: 'Vault Monitoring', route: '/seed-bank/monitoring', isAbsolute: true },
+          { id: 'offline', name: 'Offline Data Entry', route: '/seed-bank/offline', isAbsolute: true },
         ],
       },
       {
@@ -271,6 +275,18 @@ export const divisions: Division[] = [
         items: [
           { id: 'germplasm-exchange', name: 'Germplasm Exchange', route: '/seed-bank/exchange', isAbsolute: true },
           { id: 'mcpd', name: 'MCPD Exchange', route: '/seed-bank/mcpd', isAbsolute: true },
+          { id: 'mta', name: 'MTA Management', route: '/seed-bank/mta', isAbsolute: true },
+        ],
+      },
+      {
+        id: 'integration',
+        name: 'Global Integration',
+        route: '/seed-bank/grin-search',
+        icon: 'Globe',
+        isAbsolute: true,
+        items: [
+          { id: 'grin-search', name: 'GRIN/Genesys Search', route: '/seed-bank/grin-search', isAbsolute: true },
+          { id: 'taxonomy', name: 'Taxonomy Validator', route: '/seed-bank/taxonomy', isAbsolute: true },
         ],
       },
     ],
@@ -424,6 +440,7 @@ export const divisions: Division[] = [
         items: [
           { id: 'track', name: 'Track Lot', route: '/seed-operations/track', isAbsolute: true },
           { id: 'lineage', name: 'Lineage', route: '/seed-operations/lineage', isAbsolute: true },
+          { id: 'barcode', name: 'Barcode Scanner', route: '/barcode', isAbsolute: true },
         ],
       },
       {
@@ -435,7 +452,6 @@ export const divisions: Division[] = [
         items: [
           { id: 'varieties', name: 'Varieties', route: '/seed-operations/varieties', isAbsolute: true },
           { id: 'agreements', name: 'Agreements', route: '/seed-operations/agreements', isAbsolute: true },
-          { id: 'royalties', name: 'Royalties', route: '/seed-operations/royalties', isAbsolute: true },
         ],
       },
     ],
@@ -589,6 +605,7 @@ export const divisions: Division[] = [
       { id: 'offline', name: 'Offline Mode', route: '/offline', icon: 'WifiOff', isAbsolute: true },
       { id: 'mobile-app', name: 'Mobile App', route: '/mobile-app', icon: 'Smartphone', isAbsolute: true },
       { id: 'serverinfo', name: 'API Explorer', route: '/serverinfo', icon: 'Code', isAbsolute: true },
+      { id: 'barcode', name: 'Barcode Scanner', route: '/barcode', icon: 'QrCode', isAbsolute: true },
     ],
   },
 
