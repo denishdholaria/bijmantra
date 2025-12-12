@@ -6,12 +6,14 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
   SelectContent,
@@ -50,7 +52,10 @@ import {
   Dna,
   Target,
   TrendingUp,
+  Loader2,
+  Info,
 } from 'lucide-react';
+import { useDemoMode } from '@/hooks/useDemoMode';
 
 interface GermplasmEntry {
   id: string;
@@ -215,23 +220,89 @@ export function GermplasmComparison() {
   const [highlightBest, setHighlightBest] = useState(true);
   const [showMarkers, setShowMarkers] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const { isDemoMode } = useDemoMode();
 
-  const selectedGermplasm = DEMO_GERMPLASM.filter(g => selectedIds.includes(g.id));
-  const availableGermplasm = DEMO_GERMPLASM.filter(g => 
+  // Fetch germplasm list from API
+  const { data: germplasmData, isLoading: isLoadingList } = useQuery({
+    queryKey: ['germplasm-comparison-list', searchQuery],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      params.append('limit', '50');
+      const response = await fetch(`/api/v2/germplasm-comparison?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch germplasm');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
+
+  // Fetch comparison data from API
+  const { data: comparisonData, isLoading: isLoadingComparison, refetch: refetchComparison } = useQuery({
+    queryKey: ['germplasm-comparison', selectedIds],
+    queryFn: async () => {
+      if (selectedIds.length < 2) return null;
+      const response = await fetch('/api/v2/germplasm-comparison/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds }),
+      });
+      if (!response.ok) throw new Error('Failed to compare germplasm');
+      return response.json();
+    },
+    enabled: !isDemoMode && selectedIds.length >= 2,
+  });
+
+  // Use API data or fall back to demo data
+  const allGermplasm = isDemoMode ? DEMO_GERMPLASM : (germplasmData?.data || DEMO_GERMPLASM);
+  const selectedGermplasm = isDemoMode 
+    ? DEMO_GERMPLASM.filter(g => selectedIds.includes(g.id))
+    : (comparisonData?.entries || DEMO_GERMPLASM.filter(g => selectedIds.includes(g.id)));
+  
+  const availableGermplasm = allGermplasm.filter((g: GermplasmEntry) => 
     !selectedIds.includes(g.id) &&
     (g.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
      g.accession.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  // Get comparison traits and markers from API or demo
+  interface APITrait {
+    id: string;
+    name: string;
+    unit: string;
+    type: 'numeric' | 'categorical';
+    higher_is_better: boolean;
+    best?: { value: string | number; entry_id: string };
+  }
+  
+  const comparisonTraits = isDemoMode ? COMPARISON_TRAITS : (comparisonData?.traits?.map((t: APITrait) => ({
+    id: t.id,
+    name: t.name,
+    unit: t.unit,
+    type: t.type,
+    higherIsBetter: t.higher_is_better,
+    best: t.best,
+  })) || COMPARISON_TRAITS);
+
+  const comparisonMarkers = isDemoMode ? null : comparisonData?.markers;
+
   const addGermplasm = (id: string) => {
     if (selectedIds.length < 5) {
-      setSelectedIds([...selectedIds, id]);
+      const newIds = [...selectedIds, id];
+      setSelectedIds(newIds);
     }
   };
 
   const removeGermplasm = (id: string) => {
-    setSelectedIds(selectedIds.filter(i => i !== id));
+    const newIds = selectedIds.filter(i => i !== id);
+    setSelectedIds(newIds);
   };
+
+  // Refetch comparison when selectedIds change
+  useEffect(() => {
+    if (!isDemoMode && selectedIds.length >= 2) {
+      refetchComparison();
+    }
+  }, [selectedIds, isDemoMode]);
 
   const toggleFavorite = (id: string) => {
     setFavorites(prev => 
@@ -240,7 +311,12 @@ export function GermplasmComparison() {
   };
 
   const getBestValue = (traitId: string, trait: ComparisonTrait): string | number | null => {
-    const values = selectedGermplasm.map(g => g.traits[traitId]).filter(v => v !== undefined);
+    // If we have API comparison data with best values, use it
+    if (!isDemoMode && (trait as ComparisonTrait & { best?: { value: string | number } }).best) {
+      return (trait as ComparisonTrait & { best: { value: string | number } }).best.value;
+    }
+    
+    const values = selectedGermplasm.map((g: GermplasmEntry) => g.traits[traitId]).filter((v: string | number | undefined): v is string | number => v !== undefined);
     if (values.length === 0) return null;
     
     if (trait.type === 'numeric') {
@@ -251,7 +327,7 @@ export function GermplasmComparison() {
       const order = trait.higherIsBetter 
         ? ['R', 'T', 'MR', 'MT', 'MS', 'S', 'HS']
         : ['HS', 'S', 'MS', 'MT', 'MR', 'T', 'R'];
-      return values.sort((a, b) => order.indexOf(String(a)) - order.indexOf(String(b)))[0];
+      return values.sort((a: string | number, b: string | number) => order.indexOf(String(a)) - order.indexOf(String(b)))[0];
     }
   };
 
@@ -273,10 +349,10 @@ export function GermplasmComparison() {
   };
 
   const exportComparison = () => {
-    const headers = ['Trait', ...selectedGermplasm.map(g => g.name)];
+    const headers = ['Trait', ...selectedGermplasm.map((g: GermplasmEntry) => g.name)];
     const rows = COMPARISON_TRAITS.map(trait => [
       trait.name,
-      ...selectedGermplasm.map(g => `${g.traits[trait.id] || '-'} ${trait.unit}`.trim())
+      ...selectedGermplasm.map((g: GermplasmEntry) => `${g.traits[trait.id] || '-'} ${trait.unit}`.trim())
     ]);
     
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
@@ -296,6 +372,9 @@ export function GermplasmComparison() {
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Scale className="h-6 w-6" />
             Germplasm Comparison
+            {isDemoMode && (
+              <Badge variant="outline" className="ml-2 text-xs">Demo Mode</Badge>
+            )}
           </h1>
           <p className="text-muted-foreground">
             Compare germplasm entries side-by-side for selection decisions
@@ -328,7 +407,7 @@ export function GermplasmComparison() {
                   />
                 </div>
                 <div className="max-h-64 overflow-y-auto space-y-2">
-                  {availableGermplasm.map(g => (
+                  {availableGermplasm.map((g: GermplasmEntry) => (
                     <div
                       key={g.id}
                       className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted cursor-pointer"
@@ -388,7 +467,7 @@ export function GermplasmComparison() {
 
       {/* Selected Germplasm Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {selectedGermplasm.map(g => (
+        {selectedGermplasm.map((g: GermplasmEntry) => (
           <Card key={g.id} className="relative">
             <Button
               variant="ghost"
@@ -455,7 +534,7 @@ export function GermplasmComparison() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-48">Trait</TableHead>
-                  {selectedGermplasm.map(g => (
+                  {selectedGermplasm.map((g: GermplasmEntry) => (
                     <TableHead key={g.id} className="text-center">{g.name}</TableHead>
                   ))}
                 </TableRow>
@@ -472,7 +551,7 @@ export function GermplasmComparison() {
                         {trait.higherIsBetter ? '↑ Higher is better' : '↓ Lower is better'}
                       </div>
                     </TableCell>
-                    {selectedGermplasm.map(g => {
+                    {selectedGermplasm.map((g: GermplasmEntry) => {
                       const value = g.traits[trait.id];
                       const isBest = isBestValue(value, trait.id, trait);
                       
@@ -516,7 +595,7 @@ export function GermplasmComparison() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-48">Marker</TableHead>
-                  {selectedGermplasm.map(g => (
+                  {selectedGermplasm.map((g: GermplasmEntry) => (
                     <TableHead key={g.id} className="text-center">{g.name}</TableHead>
                   ))}
                 </TableRow>
@@ -525,7 +604,7 @@ export function GermplasmComparison() {
                 {MARKERS.map(marker => (
                   <TableRow key={marker}>
                     <TableCell className="font-medium font-mono">{marker}</TableCell>
-                    {selectedGermplasm.map(g => {
+                    {selectedGermplasm.map((g: GermplasmEntry) => {
                       const value = g.markers[marker];
                       return (
                         <TableCell key={g.id} className="text-center">
@@ -566,7 +645,7 @@ export function GermplasmComparison() {
               <div className="p-4 bg-green-50 rounded-lg">
                 <h4 className="font-medium text-green-800 mb-2">Best for Yield</h4>
                 {(() => {
-                  const best = selectedGermplasm.reduce((a, b) => 
+                  const best = selectedGermplasm.reduce((a: GermplasmEntry, b: GermplasmEntry) => 
                     (a.traits.yield as number) > (b.traits.yield as number) ? a : b
                   );
                   return (
@@ -583,7 +662,7 @@ export function GermplasmComparison() {
                 <h4 className="font-medium text-blue-800 mb-2">Best Disease Resistance</h4>
                 {(() => {
                   const order = ['R', 'MR', 'MS', 'S', 'HS'];
-                  const best = selectedGermplasm.reduce((a, b) => {
+                  const best = selectedGermplasm.reduce((a: GermplasmEntry, b: GermplasmEntry) => {
                     const aIdx = order.indexOf(String(a.traits.blast_resistance));
                     const bIdx = order.indexOf(String(b.traits.blast_resistance));
                     return aIdx < bIdx ? a : b;
@@ -602,7 +681,7 @@ export function GermplasmComparison() {
                 <h4 className="font-medium text-purple-800 mb-2">Best Stress Tolerance</h4>
                 {(() => {
                   const order = ['T', 'MT', 'MS', 'S', 'HS'];
-                  const best = selectedGermplasm.reduce((a, b) => {
+                  const best = selectedGermplasm.reduce((a: GermplasmEntry, b: GermplasmEntry) => {
                     const aIdx = order.indexOf(String(a.traits.drought_tolerance));
                     const bIdx = order.indexOf(String(b.traits.drought_tolerance));
                     return aIdx < bIdx ? a : b;
@@ -621,19 +700,19 @@ export function GermplasmComparison() {
             <div className="mt-4 p-4 bg-muted rounded-lg">
               <h4 className="font-medium mb-2">Marker-Assisted Selection Notes</h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                {selectedGermplasm.some(g => g.markers['Xa21'] === 'Present' && g.markers['xa13'] === 'Present') && (
+                {selectedGermplasm.some((g: GermplasmEntry) => g.markers['Xa21'] === 'Present' && g.markers['xa13'] === 'Present') && (
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     Gene pyramiding possible: Xa21 + xa13 for bacterial blight resistance
                   </li>
                 )}
-                {selectedGermplasm.some(g => g.markers['Sub1A'] === 'Present') && (
+                {selectedGermplasm.some((g: GermplasmEntry) => g.markers['Sub1A'] === 'Present') && (
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-blue-600" />
                     Sub1A available for submergence tolerance introgression
                   </li>
                 )}
-                {selectedGermplasm.every(g => g.markers['Pi-ta'] === 'Absent') && (
+                {selectedGermplasm.every((g: GermplasmEntry) => g.markers['Pi-ta'] === 'Absent') && (
                   <li className="flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 text-orange-600" />
                     Consider adding Pi-ta donor for blast resistance

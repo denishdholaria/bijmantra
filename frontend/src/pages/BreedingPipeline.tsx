@@ -6,11 +6,13 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
   SelectContent,
@@ -42,7 +44,10 @@ import {
   AlertCircle,
   TrendingUp,
   Calendar,
+  RefreshCw,
 } from 'lucide-react';
+import { useDemoMode } from '@/hooks/useDemoMode';
+import { toast } from 'sonner';
 
 interface PipelineEntry {
   id: string;
@@ -170,29 +175,93 @@ const DEMO_ENTRIES: PipelineEntry[] = [
 
 
 export function BreedingPipeline() {
-  const [entries, setEntries] = useState<PipelineEntry[]>(DEMO_ENTRIES);
+  const { isDemoMode } = useDemoMode();
   const [selectedStage, setSelectedStage] = useState<string>('all');
   const [selectedCrop, setSelectedCrop] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEntry, setSelectedEntry] = useState<PipelineEntry | null>(null);
 
-  // Calculate stage counts
-  const stageCounts = PIPELINE_STAGES.reduce((acc, stage) => {
-    acc[stage.id] = entries.filter(e => e.currentStage === stage.id && e.status === 'active').length;
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Filter entries
-  const filteredEntries = entries.filter(entry => {
-    if (selectedStage !== 'all' && entry.currentStage !== selectedStage) return false;
-    if (selectedCrop !== 'all' && entry.crop !== selectedCrop) return false;
-    if (searchQuery && !entry.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !entry.pedigree.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
+  // Fetch entries from API
+  const { data: entriesData, isLoading: isLoadingEntries, refetch: refetchEntries } = useQuery({
+    queryKey: ['breeding-pipeline-entries', selectedStage, selectedCrop, searchQuery],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedStage !== 'all') params.append('stage', selectedStage);
+      if (selectedCrop !== 'all') params.append('crop', selectedCrop);
+      if (searchQuery) params.append('search', searchQuery);
+      params.append('limit', '100');
+      
+      const response = await fetch(`/api/v2/breeding-pipeline?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch entries');
+      return response.json();
+    },
+    enabled: !isDemoMode,
   });
 
-  // Get unique crops
-  const crops = [...new Set(entries.map(e => e.crop))];
+  // Fetch statistics from API
+  const { data: statsData, isLoading: isLoadingStats } = useQuery({
+    queryKey: ['breeding-pipeline-stats'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/breeding-pipeline/statistics');
+      if (!response.ok) throw new Error('Failed to fetch statistics');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
+
+  // Fetch crops from API
+  const { data: cropsData } = useQuery({
+    queryKey: ['breeding-pipeline-crops'],
+    queryFn: async () => {
+      const response = await fetch('/api/v2/breeding-pipeline/crops');
+      if (!response.ok) throw new Error('Failed to fetch crops');
+      return response.json();
+    },
+    enabled: !isDemoMode,
+  });
+
+  // Use API data or fall back to demo data
+  const entries: PipelineEntry[] = isDemoMode 
+    ? DEMO_ENTRIES 
+    : (entriesData?.data || []).map((e: any) => ({
+        id: e.id,
+        name: e.name,
+        pedigree: e.pedigree,
+        currentStage: e.current_stage,
+        program: e.program_name,
+        crop: e.crop,
+        year: e.year,
+        status: e.status,
+        traits: e.traits || [],
+        notes: e.notes || '',
+        stageHistory: (e.stage_history || []).map((h: any) => ({
+          stage: h.stage,
+          date: h.date,
+          decision: h.decision,
+        })),
+      }));
+
+  const statistics = isDemoMode ? null : statsData?.data;
+  const crops = isDemoMode ? [...new Set(DEMO_ENTRIES.map(e => e.crop))] : (cropsData?.data || []);
+
+  // Calculate stage counts
+  const stageCounts = isDemoMode 
+    ? PIPELINE_STAGES.reduce((acc, stage) => {
+        acc[stage.id] = DEMO_ENTRIES.filter(e => e.currentStage === stage.id && e.status === 'active').length;
+        return acc;
+      }, {} as Record<string, number>)
+    : (statistics?.stage_counts || {});
+
+  // Filter entries (for demo mode, API already filters)
+  const filteredEntries = isDemoMode 
+    ? entries.filter(entry => {
+        if (selectedStage !== 'all' && entry.currentStage !== selectedStage) return false;
+        if (selectedCrop !== 'all' && entry.crop !== selectedCrop) return false;
+        if (searchQuery && !entry.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            !entry.pedigree.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        return true;
+      })
+    : entries;
 
   const getStageIndex = (stageId: string) => PIPELINE_STAGES.findIndex(s => s.id === stageId);
 
@@ -205,9 +274,15 @@ export function BreedingPipeline() {
     }
   };
 
-  const totalActive = entries.filter(e => e.status === 'active').length;
-  const totalReleased = entries.filter(e => e.status === 'released').length;
-  const avgPipelineTime = 5.2; // years (calculated from demo data)
+  const totalActive = isDemoMode 
+    ? entries.filter(e => e.status === 'active').length 
+    : (statistics?.active || 0);
+  const totalReleased = isDemoMode 
+    ? entries.filter(e => e.status === 'released').length 
+    : (statistics?.released || 0);
+  const avgPipelineTime = isDemoMode ? 5.2 : (statistics?.avg_years_to_release || 0);
+
+  const isLoading = !isDemoMode && (isLoadingEntries || isLoadingStats);
 
   return (
     <div className="p-6 space-y-6">
@@ -217,15 +292,26 @@ export function BreedingPipeline() {
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <GitBranch className="h-6 w-6" />
             Breeding Pipeline
+            {isDemoMode && (
+              <Badge variant="outline" className="ml-2 text-xs">Demo Mode</Badge>
+            )}
           </h1>
           <p className="text-muted-foreground">
             Track germplasm flow from crosses to variety release
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Entry
-        </Button>
+        <div className="flex gap-2">
+          {!isDemoMode && (
+            <Button variant="outline" onClick={() => refetchEntries()} disabled={isLoading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          )}
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Entry
+          </Button>
+        </div>
       </div>
 
       {/* Summary Stats */}
@@ -339,7 +425,7 @@ export function BreedingPipeline() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Crops</SelectItem>
-            {crops.map(crop => (
+            {crops.map((crop: string) => (
               <SelectItem key={crop} value={crop}>{crop}</SelectItem>
             ))}
           </SelectContent>
