@@ -191,7 +191,7 @@ async def serverinfo():
 from app.api import auth
 from app.api.v2.core import programs, locations, trials, studies, seasons
 from app.api.v2 import search, compute, audit, insights, vector, weather, chat, crosses, integrations, events, tasks, field_environment, voice, gxe, gwas, bioinformatics, pedigree, phenotype, mas, trial_design, seed_inventory, crop_calendar, export, quality, passport, ontology, nursery, traceability, licensing, selection, genetic_gain, harvest, spatial, breeding_value, disease, abiotic
-from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit, rls, grin, mta, barcode, vault_sensors, devguru, selection_decisions, parent_selection, performance_ranking, progeny, germplasm_comparison, breeding_pipeline, genetic_diversity, population_genetics, qtl_mapping, genomic_selection
+from app.api.v2 import dispatch, processing, sensors, forums, solar, space, dus, progress, rakshaka, vision, prahari, chaitanya, security_audit, rls, grin, mta, barcode, vault_sensors, devguru, selection_decisions, parent_selection, performance_ranking, progeny, germplasm_comparison, breeding_pipeline, genetic_diversity, population_genetics, qtl_mapping, genomic_selection, genotyping, crossing_planner, field_map, trial_planning, data_quality
 
 # Division modules
 from app.modules.seed_bank import router as seed_bank_router
@@ -299,6 +299,11 @@ app.include_router(genetic_diversity.router, prefix="/api/v2", tags=["Genetic Di
 app.include_router(population_genetics.router, prefix="/api/v2", tags=["Population Genetics"])
 app.include_router(qtl_mapping.router, prefix="/api/v2", tags=["QTL Mapping"])
 app.include_router(genomic_selection.router, prefix="/api/v2", tags=["Genomic Selection"])
+app.include_router(genotyping.router, prefix="/api/v2", tags=["BrAPI Genotyping"])
+app.include_router(crossing_planner.router, prefix="/api/v2", tags=["Crossing Planner"])
+app.include_router(field_map.router, prefix="/api/v2", tags=["Field Map"])
+app.include_router(trial_planning.router, prefix="/api/v2", tags=["Trial Planning"])
+app.include_router(data_quality.router, prefix="/api/v2", tags=["Data Quality"])
 
 # Division modules
 app.include_router(seed_bank_router, prefix="/api/v2", tags=["Seed Bank"])

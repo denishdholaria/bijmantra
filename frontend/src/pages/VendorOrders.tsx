@@ -3,7 +3,7 @@
  * Genotyping service orders management
  */
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -14,72 +14,71 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toast } from 'sonner'
+import { apiClient } from '@/lib/api-client'
 
 interface VendorOrder {
+  vendorOrderDbId: string
   orderId: string
   clientId: string
-  serviceId: string
-  serviceName: string
   numberOfSamples: number
-  status: 'submitted' | 'received' | 'inProgress' | 'completed' | 'rejected'
-  submittedDate: string
-  expectedDate?: string
-  completedDate?: string
+  status: string
+  submissionDate: string
+  resultDate?: string
+  requiredServiceInfo?: { serviceId: string; serviceName: string }
+  serviceIds?: string[]
 }
-
-const mockOrders: VendorOrder[] = [
-  { orderId: 'ORD-2024-001', clientId: 'CLIENT001', serviceId: 'GBS', serviceName: 'GBS Sequencing', numberOfSamples: 96, status: 'completed', submittedDate: '2024-01-10', expectedDate: '2024-02-10', completedDate: '2024-02-08' },
-  { orderId: 'ORD-2024-002', clientId: 'CLIENT001', serviceId: 'SNP', serviceName: 'SNP Array', numberOfSamples: 384, status: 'inProgress', submittedDate: '2024-02-01', expectedDate: '2024-03-01' },
-  { orderId: 'ORD-2024-003', clientId: 'CLIENT002', serviceId: 'WGS', serviceName: 'Whole Genome Seq', numberOfSamples: 24, status: 'received', submittedDate: '2024-02-15', expectedDate: '2024-04-15' },
-  { orderId: 'ORD-2024-004', clientId: 'CLIENT001', serviceId: 'GBS', serviceName: 'GBS Sequencing', numberOfSamples: 192, status: 'submitted', submittedDate: '2024-02-20', expectedDate: '2024-03-20' },
-]
 
 export function VendorOrders() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [newOrder, setNewOrder] = useState({ clientId: 'client001', numberOfSamples: 96, serviceIds: ['GBS'] })
+  const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery({
-    queryKey: ['vendorOrders', search, statusFilter],
-    queryFn: async () => {
-      await new Promise(r => setTimeout(r, 400))
-      let filtered = mockOrders
-      if (search) {
-        filtered = filtered.filter(o => 
-          o.orderId.toLowerCase().includes(search.toLowerCase()) ||
-          o.serviceName.toLowerCase().includes(search.toLowerCase())
-        )
-      }
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter(o => o.status === statusFilter)
-      }
-      return { result: { data: filtered } }
+    queryKey: ['vendorOrders', statusFilter],
+    queryFn: () => apiClient.getVendorOrders({
+      status: statusFilter !== 'all' ? statusFilter : undefined,
+      pageSize: 100,
+    }),
+  })
+
+  const createMutation = useMutation({
+    mutationFn: (data: typeof newOrder) => apiClient.createVendorOrder(data),
+    onSuccess: () => {
+      toast.success('Order submitted')
+      setIsCreateOpen(false)
+      setNewOrder({ clientId: 'client001', numberOfSamples: 96, serviceIds: ['GBS'] })
+      queryClient.invalidateQueries({ queryKey: ['vendorOrders'] })
+    },
+    onError: () => toast.error('Failed to submit order'),
+  })
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => apiClient.updateVendorOrderStatus(id, status),
+    onSuccess: () => {
+      toast.success('Status updated')
+      queryClient.invalidateQueries({ queryKey: ['vendorOrders'] })
     },
   })
 
-  const orders = data?.result?.data || []
+  const orders: VendorOrder[] = data?.result?.data || []
+  const filteredOrders = search ? orders.filter(o => o.orderId.toLowerCase().includes(search.toLowerCase())) : orders
 
-  const getStatusBadge = (status: VendorOrder['status']) => {
+  const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
       submitted: 'bg-blue-100 text-blue-800',
-      received: 'bg-yellow-100 text-yellow-800',
-      inProgress: 'bg-purple-100 text-purple-800',
+      in_progress: 'bg-purple-100 text-purple-800',
       completed: 'bg-green-100 text-green-800',
-      rejected: 'bg-red-100 text-red-800',
     }
-    const labels: Record<string, string> = {
-      submitted: 'Submitted',
-      received: 'Received',
-      inProgress: 'In Progress',
-      completed: 'Completed',
-      rejected: 'Rejected',
-    }
-    return <Badge className={styles[status]}>{labels[status]}</Badge>
+    return <Badge className={styles[status] || 'bg-gray-100'}>{status}</Badge>
   }
 
-  const handleCreate = () => {
-    toast.success('Order submitted (demo)')
-    setIsCreateOpen(false)
+  const stats = {
+    total: orders.length,
+    inProgress: orders.filter(o => o.status === 'in_progress').length,
+    completed: orders.filter(o => o.status === 'completed').length,
+    totalSamples: orders.reduce((a, o) => a + o.numberOfSamples, 0),
   }
 
   return (
@@ -90,45 +89,28 @@ export function VendorOrders() {
           <p className="text-muted-foreground mt-1">Genotyping service orders</p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button>📦 New Order</Button>
-          </DialogTrigger>
+          <DialogTrigger asChild><Button>📦 New Order</Button></DialogTrigger>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Submit New Order</DialogTitle>
-              <DialogDescription>Create a genotyping service order</DialogDescription>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>Submit New Order</DialogTitle><DialogDescription>Create a genotyping service order</DialogDescription></DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label>Service Type</Label>
-                <Select defaultValue="GBS">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <Select value={newOrder.serviceIds[0]} onValueChange={(v) => setNewOrder({ ...newOrder, serviceIds: [v] })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="GBS">GBS Sequencing</SelectItem>
-                    <SelectItem value="SNP">SNP Array</SelectItem>
+                    <SelectItem value="SNP_ARRAY">SNP Array</SelectItem>
                     <SelectItem value="WGS">Whole Genome Sequencing</SelectItem>
                     <SelectItem value="KASP">KASP Genotyping</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>Number of Samples</Label>
-                <Input type="number" placeholder="96" />
-              </div>
-              <div className="space-y-2">
-                <Label>Plate IDs (comma-separated)</Label>
-                <Input placeholder="PLATE_001, PLATE_002" />
-              </div>
-              <div className="space-y-2">
-                <Label>Notes</Label>
-                <Input placeholder="Special instructions..." />
-              </div>
+              <div className="space-y-2"><Label>Number of Samples</Label><Input type="number" value={newOrder.numberOfSamples} onChange={(e) => setNewOrder({ ...newOrder, numberOfSamples: parseInt(e.target.value) || 0 })} /></div>
+              <div className="space-y-2"><Label>Client ID</Label><Input value={newOrder.clientId} onChange={(e) => setNewOrder({ ...newOrder, clientId: e.target.value })} /></div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreate}>Submit Order</Button>
+              <Button onClick={() => createMutation.mutate(newOrder)}>Submit Order</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -137,24 +119,14 @@ export function VendorOrders() {
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <Input
-                placeholder="Search orders..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+            <Input placeholder="Search orders..." value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1" />
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
+              <SelectTrigger className="w-[150px]"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="submitted">Submitted</SelectItem>
-                <SelectItem value="received">Received</SelectItem>
-                <SelectItem value="inProgress">In Progress</SelectItem>
+                <SelectItem value="in_progress">In Progress</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -162,64 +134,35 @@ export function VendorOrders() {
       </Card>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockOrders.length}</div>
-            <p className="text-sm text-muted-foreground">Total Orders</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockOrders.filter(o => o.status === 'inProgress').length}</div>
-            <p className="text-sm text-muted-foreground">In Progress</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockOrders.reduce((a, o) => a + o.numberOfSamples, 0)}</div>
-            <p className="text-sm text-muted-foreground">Total Samples</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockOrders.filter(o => o.status === 'completed').length}</div>
-            <p className="text-sm text-muted-foreground">Completed</p>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{stats.total}</div><p className="text-sm text-muted-foreground">Total Orders</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{stats.inProgress}</div><p className="text-sm text-muted-foreground">In Progress</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{stats.totalSamples}</div><p className="text-sm text-muted-foreground">Total Samples</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{stats.completed}</div><p className="text-sm text-muted-foreground">Completed</p></CardContent></Card>
       </div>
 
-      {isLoading ? (
-        <Skeleton className="h-64 w-full" />
-      ) : (
+      {isLoading ? <Skeleton className="h-64 w-full" /> : (
         <Card>
-          <CardHeader>
-            <CardTitle>Orders</CardTitle>
-            <CardDescription>{orders.length} orders found</CardDescription>
-          </CardHeader>
+          <CardHeader><CardTitle>Orders</CardTitle><CardDescription>{filteredOrders.length} orders</CardDescription></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Service</TableHead>
-                  <TableHead>Samples</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Submitted</TableHead>
-                  <TableHead>Expected</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Order ID</TableHead><TableHead>Service</TableHead><TableHead>Samples</TableHead><TableHead>Status</TableHead><TableHead>Submitted</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.orderId}>
+                {filteredOrders.map((order) => (
+                  <TableRow key={order.vendorOrderDbId}>
                     <TableCell className="font-medium">{order.orderId}</TableCell>
-                    <TableCell>{order.serviceName}</TableCell>
+                    <TableCell>{order.requiredServiceInfo?.serviceName || order.serviceIds?.join(', ')}</TableCell>
                     <TableCell>{order.numberOfSamples}</TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
-                    <TableCell>{order.submittedDate}</TableCell>
-                    <TableCell>{order.expectedDate || '-'}</TableCell>
+                    <TableCell>{order.submissionDate}</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="ghost">View</Button>
+                      <Select value={order.status} onValueChange={(v) => updateStatusMutation.mutate({ id: order.vendorOrderDbId, status: v })}>
+                        <SelectTrigger className="w-28 h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="submitted">Submitted</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </TableCell>
                   </TableRow>
                 ))}

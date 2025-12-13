@@ -11,42 +11,47 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { apiClient } from '@/lib/api-client'
 
 interface CallSet {
   callSetDbId: string
   callSetName: string
   sampleDbId: string
   variantSetDbIds: string[]
+  studyDbId?: string
   created?: string
-  updated?: string
 }
-
-const mockCallSets: CallSet[] = [
-  { callSetDbId: 'cs001', callSetName: 'Sample_001_GBS', sampleDbId: 'sample001', variantSetDbIds: ['vs001'], created: '2024-01-15' },
-  { callSetDbId: 'cs002', callSetName: 'Sample_002_GBS', sampleDbId: 'sample002', variantSetDbIds: ['vs001'], created: '2024-01-15' },
-  { callSetDbId: 'cs003', callSetName: 'Sample_003_GBS', sampleDbId: 'sample003', variantSetDbIds: ['vs001'], created: '2024-01-15' },
-  { callSetDbId: 'cs004', callSetName: 'Sample_001_SNPArray', sampleDbId: 'sample001', variantSetDbIds: ['vs002'], created: '2024-02-01' },
-  { callSetDbId: 'cs005', callSetName: 'Sample_004_WGS', sampleDbId: 'sample004', variantSetDbIds: ['vs003'], created: '2024-02-20' },
-]
 
 export function CallSets() {
   const [search, setSearch] = useState('')
+  const [variantSetFilter, setVariantSetFilter] = useState<string>('all')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['callSets', search],
-    queryFn: async () => {
-      await new Promise(r => setTimeout(r, 400))
-      let filtered = mockCallSets
-      if (search) {
-        filtered = filtered.filter(cs => 
-          cs.callSetName.toLowerCase().includes(search.toLowerCase())
-        )
-      }
-      return { result: { data: filtered } }
-    },
+    queryKey: ['callSets', variantSetFilter],
+    queryFn: () => apiClient.getCallSets({
+      variantSetDbId: variantSetFilter !== 'all' ? variantSetFilter : undefined,
+      pageSize: 100,
+    }),
   })
 
-  const callSets = data?.result?.data || []
+  const { data: variantSetsData } = useQuery({
+    queryKey: ['variantSets-for-filter'],
+    queryFn: () => apiClient.getVariantSets(),
+  })
+
+  const { data: summaryData } = useQuery({
+    queryKey: ['genotyping-summary'],
+    queryFn: () => apiClient.getGenotypingSummary(),
+  })
+
+  const callSets: CallSet[] = data?.result?.data || []
+  const variantSets = variantSetsData?.result?.data || []
+  const summary = summaryData?.result || {}
+
+  const filteredCallSets = search
+    ? callSets.filter(cs => cs.callSetName.toLowerCase().includes(search.toLowerCase()))
+    : callSets
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -56,98 +61,52 @@ export function CallSets() {
           <p className="text-muted-foreground mt-1">Sample-level genotype data containers</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link to="/allelematrix">📊 View Matrix</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to="/calls">🧬 View Calls</Link>
-          </Button>
+          <Button variant="outline" asChild><Link to="/allelematrix">📊 View Matrix</Link></Button>
+          <Button variant="outline" asChild><Link to="/calls">🧬 View Calls</Link></Button>
         </div>
       </div>
 
       <Card>
         <CardContent className="pt-6">
-          <Input
-            placeholder="Search call sets..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-md"
-          />
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Input placeholder="Search call sets..." value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1" />
+            <Select value={variantSetFilter} onValueChange={setVariantSetFilter}>
+              <SelectTrigger className="w-[200px]"><SelectValue placeholder="Variant Set" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Variant Sets</SelectItem>
+                {variantSets.map((vs: any) => <SelectItem key={vs.variantSetDbId} value={vs.variantSetDbId}>{vs.variantSetName}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockCallSets.length}</div>
-            <p className="text-sm text-muted-foreground">Call Sets</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{new Set(mockCallSets.map(cs => cs.sampleDbId)).size}</div>
-            <p className="text-sm text-muted-foreground">Unique Samples</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{new Set(mockCallSets.flatMap(cs => cs.variantSetDbIds)).size}</div>
-            <p className="text-sm text-muted-foreground">Variant Sets</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">98.5%</div>
-            <p className="text-sm text-muted-foreground">Avg Call Rate</p>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{summary.callSets || filteredCallSets.length}</div><p className="text-sm text-muted-foreground">Call Sets</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{new Set(filteredCallSets.map(cs => cs.sampleDbId)).size}</div><p className="text-sm text-muted-foreground">Unique Samples</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{summary.variantSets || variantSets.length}</div><p className="text-sm text-muted-foreground">Variant Sets</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{summary.callsStatistics?.heterozygosityRate || 0}%</div><p className="text-sm text-muted-foreground">Heterozygosity</p></CardContent></Card>
       </div>
 
-      {isLoading ? (
-        <Skeleton className="h-64 w-full" />
-      ) : (
+      {isLoading ? <Skeleton className="h-64 w-full" /> : (
         <Card>
-          <CardHeader>
-            <CardTitle>Call Sets</CardTitle>
-            <CardDescription>{callSets.length} call sets found</CardDescription>
-          </CardHeader>
+          <CardHeader><CardTitle>Call Sets</CardTitle><CardDescription>{filteredCallSets.length} call sets</CardDescription></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Call Set Name</TableHead>
-                  <TableHead>Sample ID</TableHead>
-                  <TableHead>Variant Sets</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Call Set Name</TableHead><TableHead>Sample ID</TableHead><TableHead>Variant Sets</TableHead><TableHead>Created</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
               <TableBody>
-                {callSets.map((cs) => (
+                {filteredCallSets.slice(0, 50).map((cs) => (
                   <TableRow key={cs.callSetDbId}>
                     <TableCell className="font-medium">{cs.callSetName}</TableCell>
-                    <TableCell>
-                      <Link to={`/samples/${cs.sampleDbId}`} className="text-primary hover:underline">
-                        {cs.sampleDbId}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        {cs.variantSetDbIds.map(vsId => (
-                          <Badge key={vsId} variant="outline">{vsId}</Badge>
-                        ))}
-                      </div>
-                    </TableCell>
+                    <TableCell><Link to={`/samples/${cs.sampleDbId}`} className="text-primary hover:underline">{cs.sampleDbId}</Link></TableCell>
+                    <TableCell><div className="flex gap-1">{cs.variantSetDbIds?.map(vsId => <Badge key={vsId} variant="outline">{vsId}</Badge>)}</div></TableCell>
                     <TableCell>{cs.created}</TableCell>
-                    <TableCell>
-                      <Button size="sm" variant="ghost" asChild>
-                        <Link to={`/calls?callSetDbId=${cs.callSetDbId}`}>View Calls</Link>
-                      </Button>
-                    </TableCell>
+                    <TableCell><Button size="sm" variant="ghost" asChild><Link to={`/calls?callSetDbId=${cs.callSetDbId}`}>View Calls</Link></Button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            {filteredCallSets.length > 50 && <p className="text-sm text-muted-foreground mt-4 text-center">Showing first 50 of {filteredCallSets.length}</p>}
           </CardContent>
         </Card>
       )}

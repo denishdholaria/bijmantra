@@ -406,3 +406,239 @@ def get_gwas_service() -> GWASService:
     if _gwas_service is None:
         _gwas_service = GWASService()
     return _gwas_service
+
+
+    def calculate_ld(
+        self,
+        genotypes: np.ndarray,
+        marker_names: List[str],
+        chromosomes: List[str],
+        positions: List[int],
+        max_distance: int = 50000,
+        r2_threshold: float = 0.0,
+    ) -> Dict[str, Any]:
+        """
+        Calculate pairwise Linkage Disequilibrium (LD)
+        
+        Args:
+            genotypes: Marker matrix (n_samples × n_markers), coded 0/1/2
+            marker_names: SNP names
+            chromosomes: Chromosome for each marker
+            positions: Position for each marker
+            max_distance: Maximum distance (bp) to calculate LD
+            r2_threshold: Minimum r² to include in results
+            
+        Returns:
+            LD statistics including r², D', and decay data
+        """
+        n_samples, n_markers = genotypes.shape
+        
+        ld_pairs = []
+        r2_by_distance = {}
+        
+        for i in range(n_markers):
+            for j in range(i + 1, n_markers):
+                # Only calculate within chromosome
+                if chromosomes[i] != chromosomes[j]:
+                    continue
+                
+                distance = abs(positions[j] - positions[i])
+                if distance > max_distance:
+                    continue
+                
+                # Get genotypes
+                g1 = genotypes[:, i]
+                g2 = genotypes[:, j]
+                
+                # Calculate r²
+                r2 = self._calculate_r2(g1, g2)
+                dprime = self._calculate_dprime(g1, g2)
+                
+                if r2 >= r2_threshold:
+                    ld_pairs.append({
+                        "marker1": marker_names[i],
+                        "marker2": marker_names[j],
+                        "chromosome": chromosomes[i],
+                        "distance": distance / 1000,  # Convert to kb
+                        "r2": float(r2),
+                        "dprime": float(dprime),
+                    })
+                
+                # Bin by distance for decay curve
+                dist_bin = int(distance / 1000)  # 1kb bins
+                if dist_bin not in r2_by_distance:
+                    r2_by_distance[dist_bin] = []
+                r2_by_distance[dist_bin].append(r2)
+        
+        # Calculate LD decay curve
+        decay_data = []
+        for dist, r2_values in sorted(r2_by_distance.items()):
+            decay_data.append({
+                "distance": dist,
+                "mean_r2": float(np.mean(r2_values)),
+                "n_pairs": len(r2_values),
+            })
+        
+        # Calculate LD decay distance (distance where r² = 0.2)
+        ld_decay_distance = self._estimate_ld_decay(decay_data)
+        
+        # Statistics
+        all_r2 = [p["r2"] for p in ld_pairs]
+        high_ld_pairs = [p for p in ld_pairs if p["r2"] >= 0.8]
+        
+        return {
+            "n_markers": n_markers,
+            "n_pairs": len(ld_pairs),
+            "n_high_ld": len(high_ld_pairs),
+            "mean_r2": float(np.mean(all_r2)) if all_r2 else 0,
+            "ld_decay_distance": ld_decay_distance,
+            "pairs": sorted(ld_pairs, key=lambda x: -x["r2"])[:1000],  # Top 1000
+            "decay_curve": decay_data,
+            "chromosome_stats": self._ld_by_chromosome(ld_pairs, chromosomes),
+        }
+    
+    def _calculate_r2(self, g1: np.ndarray, g2: np.ndarray) -> float:
+        """Calculate r² between two markers"""
+        # Remove missing values
+        valid = ~(np.isnan(g1) | np.isnan(g2))
+        if np.sum(valid) < 10:
+            return 0.0
+        
+        g1_v = g1[valid]
+        g2_v = g2[valid]
+        
+        # Correlation coefficient squared
+        if np.std(g1_v) == 0 or np.std(g2_v) == 0:
+            return 0.0
+        
+        r = np.corrcoef(g1_v, g2_v)[0, 1]
+        return r ** 2 if not np.isnan(r) else 0.0
+    
+    def _calculate_dprime(self, g1: np.ndarray, g2: np.ndarray) -> float:
+        """Calculate D' between two markers"""
+        valid = ~(np.isnan(g1) | np.isnan(g2))
+        if np.sum(valid) < 10:
+            return 0.0
+        
+        g1_v = g1[valid]
+        g2_v = g2[valid]
+        n = len(g1_v)
+        
+        # Allele frequencies
+        p1 = np.mean(g1_v) / 2
+        p2 = np.mean(g2_v) / 2
+        
+        if p1 == 0 or p1 == 1 or p2 == 0 or p2 == 1:
+            return 0.0
+        
+        # Haplotype frequency estimation (EM simplified)
+        # Count haplotypes from diploid data
+        p11 = np.mean((g1_v == 2) & (g2_v == 2)) + 0.5 * np.mean((g1_v == 1) & (g2_v == 2)) + \
+              0.5 * np.mean((g1_v == 2) & (g2_v == 1)) + 0.25 * np.mean((g1_v == 1) & (g2_v == 1))
+        
+        # D coefficient
+        D = p11 - p1 * p2
+        
+        # D' normalization
+        if D > 0:
+            Dmax = min(p1 * (1 - p2), (1 - p1) * p2)
+        else:
+            Dmax = min(p1 * p2, (1 - p1) * (1 - p2))
+        
+        if Dmax == 0:
+            return 0.0
+        
+        return abs(D / Dmax)
+    
+    def _estimate_ld_decay(self, decay_data: List[Dict]) -> float:
+        """Estimate distance where r² drops to 0.2"""
+        for point in decay_data:
+            if point["mean_r2"] <= 0.2:
+                return float(point["distance"])
+        return float(decay_data[-1]["distance"]) if decay_data else 0.0
+    
+    def _ld_by_chromosome(self, ld_pairs: List[Dict], chromosomes: List[str]) -> List[Dict]:
+        """Calculate average LD by chromosome"""
+        chr_r2 = {}
+        for pair in ld_pairs:
+            chr_name = pair["chromosome"]
+            if chr_name not in chr_r2:
+                chr_r2[chr_name] = []
+            chr_r2[chr_name].append(pair["r2"])
+        
+        return [
+            {"chromosome": chr_name, "mean_r2": float(np.mean(r2_list)), "n_pairs": len(r2_list)}
+            for chr_name, r2_list in sorted(chr_r2.items())
+        ]
+    
+    def ld_pruning(
+        self,
+        genotypes: np.ndarray,
+        marker_names: List[str],
+        chromosomes: List[str],
+        positions: List[int],
+        r2_threshold: float = 0.5,
+        window_size: int = 50000,
+    ) -> Dict[str, Any]:
+        """
+        LD-based marker pruning
+        
+        Removes markers in high LD to create independent marker set.
+        
+        Args:
+            genotypes: Marker matrix
+            marker_names: SNP names
+            chromosomes: Chromosome for each marker
+            positions: Position for each marker
+            r2_threshold: r² threshold for pruning
+            window_size: Window size in bp
+            
+        Returns:
+            Pruned marker set
+        """
+        n_markers = len(marker_names)
+        keep = np.ones(n_markers, dtype=bool)
+        
+        for i in range(n_markers):
+            if not keep[i]:
+                continue
+            
+            for j in range(i + 1, n_markers):
+                if not keep[j]:
+                    continue
+                
+                # Only within chromosome
+                if chromosomes[i] != chromosomes[j]:
+                    continue
+                
+                # Within window
+                if abs(positions[j] - positions[i]) > window_size:
+                    continue
+                
+                # Calculate r²
+                r2 = self._calculate_r2(genotypes[:, i], genotypes[:, j])
+                
+                if r2 >= r2_threshold:
+                    # Remove marker with lower MAF
+                    maf_i = min(np.mean(genotypes[:, i]) / 2, 1 - np.mean(genotypes[:, i]) / 2)
+                    maf_j = min(np.mean(genotypes[:, j]) / 2, 1 - np.mean(genotypes[:, j]) / 2)
+                    
+                    if maf_i >= maf_j:
+                        keep[j] = False
+                    else:
+                        keep[i] = False
+                        break
+        
+        kept_indices = np.where(keep)[0]
+        removed_indices = np.where(~keep)[0]
+        
+        return {
+            "original_markers": n_markers,
+            "kept_markers": len(kept_indices),
+            "removed_markers": len(removed_indices),
+            "removal_rate": float(len(removed_indices) / n_markers * 100),
+            "r2_threshold": r2_threshold,
+            "window_size": window_size,
+            "kept_marker_names": [marker_names[i] for i in kept_indices],
+            "removed_marker_names": [marker_names[i] for i in removed_indices[:100]],  # First 100
+        }

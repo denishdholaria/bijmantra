@@ -6,7 +6,7 @@ React Progressive Web Application for plant breeding data management with AI-pow
 
 | Metric | Count |
 |--------|-------|
-| **Total Pages** | 141 |
+| **Total Pages** | 298 |
 | **AI Tools** | 8 |
 | **Genomic Tools** | 16 |
 | **Breeding Tools** | 25+ |

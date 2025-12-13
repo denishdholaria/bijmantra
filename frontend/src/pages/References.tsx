@@ -4,56 +4,52 @@
  */
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { toast } from 'sonner'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { apiClient } from '@/lib/api-client'
 
 interface Reference {
   referenceDbId: string
   referenceName: string
   referenceSetDbId: string
-  referenceSetName: string
   length: number
   md5checksum?: string
-  sourceURI?: string
+}
+
+interface ReferenceSet {
+  referenceSetDbId: string
+  referenceSetName: string
+  description?: string
   species?: { genus: string; species: string }
 }
 
-const mockReferences: Reference[] = [
-  { referenceDbId: 'ref001', referenceName: 'Chr1', referenceSetDbId: 'rs001', referenceSetName: 'IRGSP-1.0', length: 43270923, md5checksum: 'abc123...', species: { genus: 'Oryza', species: 'sativa' } },
-  { referenceDbId: 'ref002', referenceName: 'Chr2', referenceSetDbId: 'rs001', referenceSetName: 'IRGSP-1.0', length: 35937250, md5checksum: 'def456...', species: { genus: 'Oryza', species: 'sativa' } },
-  { referenceDbId: 'ref003', referenceName: 'Chr3', referenceSetDbId: 'rs001', referenceSetName: 'IRGSP-1.0', length: 36413819, md5checksum: 'ghi789...', species: { genus: 'Oryza', species: 'sativa' } },
-  { referenceDbId: 'ref004', referenceName: '1A', referenceSetDbId: 'rs002', referenceSetName: 'IWGSC RefSeq v2.1', length: 594102056, md5checksum: 'jkl012...', species: { genus: 'Triticum', species: 'aestivum' } },
-  { referenceDbId: 'ref005', referenceName: '1B', referenceSetDbId: 'rs002', referenceSetName: 'IWGSC RefSeq v2.1', length: 689851870, md5checksum: 'mno345...', species: { genus: 'Triticum', species: 'aestivum' } },
-]
-
 export function References() {
   const [search, setSearch] = useState('')
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [refSetFilter, setRefSetFilter] = useState<string>('all')
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['references', search],
-    queryFn: async () => {
-      await new Promise(r => setTimeout(r, 400))
-      let filtered = mockReferences
-      if (search) {
-        filtered = filtered.filter(r => 
-          r.referenceName.toLowerCase().includes(search.toLowerCase()) ||
-          r.referenceSetName.toLowerCase().includes(search.toLowerCase())
-        )
-      }
-      return { result: { data: filtered } }
-    },
+  const { data: refsData, isLoading } = useQuery({
+    queryKey: ['references', refSetFilter],
+    queryFn: () => apiClient.getReferences({
+      referenceSetDbId: refSetFilter !== 'all' ? refSetFilter : undefined,
+      pageSize: 100,
+    }),
   })
 
-  const references = data?.result?.data || []
-  const referenceSets = [...new Set(mockReferences.map(r => r.referenceSetName))]
+  const { data: refSetsData } = useQuery({
+    queryKey: ['referenceSets'],
+    queryFn: () => apiClient.getReferenceSets(),
+  })
+
+  const references: Reference[] = refsData?.result?.data || []
+  const referenceSets: ReferenceSet[] = refSetsData?.result?.data || []
+
+  const filteredRefs = search
+    ? references.filter(r => r.referenceName.toLowerCase().includes(search.toLowerCase()))
+    : references
 
   const formatLength = (length: number) => {
     if (length >= 1e9) return `${(length / 1e9).toFixed(2)} Gb`
@@ -62,10 +58,7 @@ export function References() {
     return `${length} bp`
   }
 
-  const handleCreate = () => {
-    toast.success('Reference added (demo)')
-    setIsCreateOpen(false)
-  }
+  const getRefSetName = (refSetId: string) => referenceSets.find(r => r.referenceSetDbId === refSetId)?.referenceSetName || refSetId
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -74,114 +67,50 @@ export function References() {
           <h1 className="text-2xl lg:text-3xl font-bold">Genome References</h1>
           <p className="text-muted-foreground mt-1">Reference sequences for variant calling</p>
         </div>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button>🧬 Add Reference</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Reference Sequence</DialogTitle>
-              <DialogDescription>Register a new genome reference</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label>Reference Name</Label>
-                <Input placeholder="Chr1" />
-              </div>
-              <div className="space-y-2">
-                <Label>Reference Set</Label>
-                <Input placeholder="IRGSP-1.0" />
-              </div>
-              <div className="space-y-2">
-                <Label>Length (bp)</Label>
-                <Input type="number" placeholder="43270923" />
-              </div>
-              <div className="space-y-2">
-                <Label>Source URI</Label>
-                <Input placeholder="https://..." />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreate}>Add Reference</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
 
       <Card>
         <CardContent className="pt-6">
-          <Input
-            placeholder="Search references..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-md"
-          />
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Input placeholder="Search references..." value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1" />
+            <Select value={refSetFilter} onValueChange={setRefSetFilter}>
+              <SelectTrigger className="w-[200px]"><SelectValue placeholder="Reference Set" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Reference Sets</SelectItem>
+                {referenceSets.map(rs => <SelectItem key={rs.referenceSetDbId} value={rs.referenceSetDbId}>{rs.referenceSetName}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockReferences.length}</div>
-            <p className="text-sm text-muted-foreground">References</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{referenceSets.length}</div>
-            <p className="text-sm text-muted-foreground">Reference Sets</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{formatLength(mockReferences.reduce((a, r) => a + r.length, 0))}</div>
-            <p className="text-sm text-muted-foreground">Total Length</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{new Set(mockReferences.map(r => `${r.species?.genus} ${r.species?.species}`)).size}</div>
-            <p className="text-sm text-muted-foreground">Species</p>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{filteredRefs.length}</div><p className="text-sm text-muted-foreground">References</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{referenceSets.length}</div><p className="text-sm text-muted-foreground">Reference Sets</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{formatLength(filteredRefs.reduce((a, r) => a + r.length, 0))}</div><p className="text-sm text-muted-foreground">Total Length</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{new Set(referenceSets.map(rs => rs.species?.genus)).size}</div><p className="text-sm text-muted-foreground">Species</p></CardContent></Card>
       </div>
 
       {/* Reference Sets */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {referenceSets.map(setName => {
-          const setRefs = mockReferences.filter(r => r.referenceSetName === setName)
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {referenceSets.map(rs => {
+          const setRefs = references.filter(r => r.referenceSetDbId === rs.referenceSetDbId)
           const totalLength = setRefs.reduce((a, r) => a + r.length, 0)
-          const species = setRefs[0]?.species
           return (
-            <Card key={setName}>
+            <Card key={rs.referenceSetDbId} className="hover:shadow-md transition-shadow">
               <CardHeader>
-                <CardTitle className="text-lg">{setName}</CardTitle>
-                <CardDescription>
-                  {species && <em>{species.genus} {species.species}</em>}
-                </CardDescription>
+                <CardTitle className="text-lg">{rs.referenceSetName}</CardTitle>
+                <CardDescription>{rs.species && <em>{rs.species.genus} {rs.species.species}</em>}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Chromosomes</p>
-                    <p className="font-semibold">{setRefs.length}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Total Size</p>
-                    <p className="font-semibold">{formatLength(totalLength)}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Avg Size</p>
-                    <p className="font-semibold">{formatLength(totalLength / setRefs.length)}</p>
-                  </div>
+                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div><p className="text-muted-foreground">Chromosomes</p><p className="font-semibold">{setRefs.length}</p></div>
+                  <div><p className="text-muted-foreground">Total Size</p><p className="font-semibold">{formatLength(totalLength)}</p></div>
                 </div>
+                {rs.description && <p className="text-sm text-muted-foreground mb-2">{rs.description}</p>}
                 <div className="flex flex-wrap gap-1">
-                  {setRefs.map(ref => (
-                    <Badge key={ref.referenceDbId} variant="outline" className="text-xs">
-                      {ref.referenceName}
-                    </Badge>
-                  ))}
+                  {setRefs.slice(0, 6).map(ref => <Badge key={ref.referenceDbId} variant="outline" className="text-xs">{ref.referenceName}</Badge>)}
+                  {setRefs.length > 6 && <Badge variant="outline" className="text-xs">+{setRefs.length - 6} more</Badge>}
                 </div>
               </CardContent>
             </Card>
@@ -189,33 +118,19 @@ export function References() {
         })}
       </div>
 
-      {isLoading ? (
-        <Skeleton className="h-64 w-full" />
-      ) : (
+      {isLoading ? <Skeleton className="h-64 w-full" /> : (
         <Card>
-          <CardHeader>
-            <CardTitle>All References</CardTitle>
-            <CardDescription>{references.length} reference sequences</CardDescription>
-          </CardHeader>
+          <CardHeader><CardTitle>All References</CardTitle><CardDescription>{filteredRefs.length} reference sequences</CardDescription></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Reference Set</TableHead>
-                  <TableHead>Species</TableHead>
-                  <TableHead className="text-right">Length</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Reference Set</TableHead><TableHead className="text-right">Length</TableHead><TableHead>MD5</TableHead></TableRow></TableHeader>
               <TableBody>
-                {references.map((ref) => (
+                {filteredRefs.slice(0, 50).map((ref) => (
                   <TableRow key={ref.referenceDbId}>
                     <TableCell className="font-medium">{ref.referenceName}</TableCell>
-                    <TableCell>{ref.referenceSetName}</TableCell>
-                    <TableCell>
-                      {ref.species && <em>{ref.species.genus} {ref.species.species}</em>}
-                    </TableCell>
+                    <TableCell>{getRefSetName(ref.referenceSetDbId)}</TableCell>
                     <TableCell className="text-right font-mono">{formatLength(ref.length)}</TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{ref.md5checksum?.slice(0, 8)}...</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

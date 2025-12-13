@@ -245,3 +245,147 @@ async def list_methods():
             "description": "Bonferroni correction for multiple testing",
         },
     }
+
+
+
+# ============================================
+# LD ANALYSIS ENDPOINTS
+# ============================================
+
+class LDRequest(BaseModel):
+    """Request for LD analysis"""
+    genotypes: List[List[float]] = Field(..., description="Genotype matrix (samples × markers)")
+    markers: List[MarkerInfo] = Field(..., description="Marker information")
+    max_distance: int = Field(50000, description="Maximum distance in bp")
+    r2_threshold: float = Field(0.0, ge=0, le=1, description="Minimum r² to include")
+
+
+class LDPruningRequest(BaseModel):
+    """Request for LD pruning"""
+    genotypes: List[List[float]]
+    markers: List[MarkerInfo]
+    r2_threshold: float = Field(0.5, ge=0, le=1)
+    window_size: int = Field(50000, description="Window size in bp")
+
+
+@router.post("/ld")
+async def calculate_ld(request: LDRequest):
+    """
+    Calculate Linkage Disequilibrium (LD)
+    
+    Computes pairwise LD statistics (r², D') between markers.
+    Returns LD decay curve and chromosome-wise statistics.
+    
+    Use for:
+    - Understanding LD structure in population
+    - Determining marker density requirements
+    - Identifying haplotype blocks
+    """
+    service = get_gwas_service()
+    
+    try:
+        genotypes = np.array(request.genotypes)
+        
+        if genotypes.shape[1] != len(request.markers):
+            raise HTTPException(400, "Number of markers must match marker info")
+        
+        result = service.calculate_ld(
+            genotypes=genotypes,
+            marker_names=[m.name for m in request.markers],
+            chromosomes=[m.chromosome for m in request.markers],
+            positions=[m.position for m in request.markers],
+            max_distance=request.max_distance,
+            r2_threshold=request.r2_threshold,
+        )
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(500, f"LD calculation failed: {str(e)}")
+
+
+@router.post("/ld/pruning")
+async def ld_pruning(request: LDPruningRequest):
+    """
+    LD-based marker pruning
+    
+    Removes markers in high LD to create independent marker set.
+    Useful for:
+    - GWAS (reduce multiple testing)
+    - Population structure analysis
+    - Diversity analysis
+    """
+    service = get_gwas_service()
+    
+    try:
+        genotypes = np.array(request.genotypes)
+        
+        result = service.ld_pruning(
+            genotypes=genotypes,
+            marker_names=[m.name for m in request.markers],
+            chromosomes=[m.chromosome for m in request.markers],
+            positions=[m.position for m in request.markers],
+            r2_threshold=request.r2_threshold,
+            window_size=request.window_size,
+        )
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(500, f"LD pruning failed: {str(e)}")
+
+
+@router.get("/ld/demo")
+async def get_ld_demo_data():
+    """
+    Get demo LD data for testing
+    
+    Returns pre-computed LD statistics for demonstration.
+    """
+    # Generate demo data
+    np.random.seed(42)
+    
+    # Simulate LD decay
+    decay_curve = []
+    for dist in [0, 0.5, 1, 2, 5, 10, 20, 50, 100]:
+        r2 = max(0.02, 1.0 * np.exp(-dist / 10) + np.random.normal(0, 0.05))
+        decay_curve.append({
+            "distance": dist,
+            "mean_r2": min(1.0, max(0, r2)),
+            "n_pairs": int(1000 * np.exp(-dist / 50)),
+        })
+    
+    # Demo LD pairs
+    pairs = []
+    for i in range(50):
+        chr_num = str(np.random.randint(1, 11))
+        dist = np.random.exponential(5)
+        r2 = max(0.1, 1.0 * np.exp(-dist / 8) + np.random.normal(0, 0.1))
+        pairs.append({
+            "marker1": f"SNP_{chr_num}_{i*10}",
+            "marker2": f"SNP_{chr_num}_{i*10 + int(dist*2)}",
+            "chromosome": chr_num,
+            "distance": round(dist, 2),
+            "r2": round(min(1.0, max(0, r2)), 3),
+            "dprime": round(min(1.0, r2 + np.random.uniform(0, 0.2)), 3),
+        })
+    
+    # Chromosome stats
+    chr_stats = []
+    for c in range(1, 11):
+        chr_stats.append({
+            "chromosome": str(c),
+            "mean_r2": round(0.3 + np.random.uniform(-0.1, 0.1), 3),
+            "n_pairs": np.random.randint(500, 2000),
+        })
+    
+    return {
+        "n_markers": 12500,
+        "n_pairs": 125000,
+        "n_high_ld": 2845,
+        "mean_r2": 0.42,
+        "ld_decay_distance": 15.0,
+        "pairs": sorted(pairs, key=lambda x: -x["r2"]),
+        "decay_curve": decay_curve,
+        "chromosome_stats": chr_stats,
+    }

@@ -1350,6 +1350,326 @@ class APIClient {
   async getLicensingStatistics() {
     return this.request<any>('/api/v2/licensing/statistics')
   }
+
+  // ============================================
+  // GENOTYPING (BrAPI)
+  // ============================================
+
+  async getVariantSets(params?: { studyDbId?: string; referenceSetDbId?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.studyDbId) searchParams.append('studyDbId', params.studyDbId)
+    if (params?.referenceSetDbId) searchParams.append('referenceSetDbId', params.referenceSetDbId)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/variantsets?${searchParams}`)
+  }
+
+  async createVariantSet(data: { variantSetName: string; studyDbId?: string; studyName?: string; referenceSetDbId?: string }) {
+    return this.request<any>('/api/v2/genotyping/variantsets', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async getCallSets(params?: { callSetName?: string; variantSetDbId?: string; sampleDbId?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.callSetName) searchParams.append('callSetName', params.callSetName)
+    if (params?.variantSetDbId) searchParams.append('variantSetDbId', params.variantSetDbId)
+    if (params?.sampleDbId) searchParams.append('sampleDbId', params.sampleDbId)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/callsets?${searchParams}`)
+  }
+
+  async getCalls(params?: { callSetDbId?: string; variantDbId?: string; variantSetDbId?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.callSetDbId) searchParams.append('callSetDbId', params.callSetDbId)
+    if (params?.variantDbId) searchParams.append('variantDbId', params.variantDbId)
+    if (params?.variantSetDbId) searchParams.append('variantSetDbId', params.variantSetDbId)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/calls?${searchParams}`)
+  }
+
+  async getCallsStatistics(variantSetDbId?: string) {
+    const params = variantSetDbId ? `?variantSetDbId=${variantSetDbId}` : ''
+    return this.request<any>(`/api/v2/genotyping/calls/statistics${params}`)
+  }
+
+  async getReferences(params?: { referenceSetDbId?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.referenceSetDbId) searchParams.append('referenceSetDbId', params.referenceSetDbId)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/references?${searchParams}`)
+  }
+
+  async getReferenceSets(params?: { page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/referencesets?${searchParams}`)
+  }
+
+  async getMarkerPositions(params?: { mapDbId?: string; linkageGroupName?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.mapDbId) searchParams.append('mapDbId', params.mapDbId)
+    if (params?.linkageGroupName) searchParams.append('linkageGroupName', params.linkageGroupName)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/markerpositions?${searchParams}`)
+  }
+
+  async getVendorOrders(params?: { status?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.status) searchParams.append('status', params.status)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/genotyping/vendor/orders?${searchParams}`)
+  }
+
+  async createVendorOrder(data: { clientId: string; numberOfSamples: number; serviceIds: string[] }) {
+    return this.request<any>('/api/v2/genotyping/vendor/orders', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async updateVendorOrderStatus(vendorOrderDbId: string, status: string) {
+    return this.request<any>(`/api/v2/genotyping/vendor/orders/${vendorOrderDbId}/status`, { method: 'PUT', body: JSON.stringify({ status }) })
+  }
+
+  async getGenotypingSummary() {
+    return this.request<any>('/api/v2/genotyping/summary')
+  }
+
+  // ============================================
+  // CROSSING PLANNER
+  // ============================================
+
+  async getPlannedCrosses(params?: { status?: string; priority?: string; season?: string; page?: number; pageSize?: number }) {
+    const searchParams = new URLSearchParams()
+    if (params?.status) searchParams.append('status', params.status)
+    if (params?.priority) searchParams.append('priority', params.priority)
+    if (params?.season) searchParams.append('season', params.season)
+    if (params?.page !== undefined) searchParams.append('page', String(params.page))
+    if (params?.pageSize) searchParams.append('pageSize', String(params.pageSize))
+    return this.request<any>(`/api/v2/crossing-planner?${searchParams}`)
+  }
+
+  async createPlannedCross(data: { femaleParentId: string; maleParentId: string; objective?: string; priority?: string; targetDate?: string; expectedProgeny?: number }) {
+    return this.request<any>('/api/v2/crossing-planner', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async updatePlannedCrossStatus(crossId: string, status: string, actualProgeny?: number) {
+    return this.request<any>(`/api/v2/crossing-planner/${crossId}/status`, { method: 'PUT', body: JSON.stringify({ status, actualProgeny }) })
+  }
+
+  async getCrossingPlannerStats() {
+    return this.request<any>('/api/v2/crossing-planner/statistics')
+  }
+
+  async getCrossingPlannerGermplasm(search?: string) {
+    const params = search ? `?search=${encodeURIComponent(search)}` : ''
+    return this.request<any>(`/api/v2/crossing-planner/germplasm${params}`)
+  }
+
+  // ============================================
+  // FIELD MAP
+  // ============================================
+
+  async getFields(params?: { station?: string; status?: string; search?: string }) {
+    const searchParams = new URLSearchParams()
+    if (params?.station) searchParams.append('station', params.station)
+    if (params?.status) searchParams.append('status', params.status)
+    if (params?.search) searchParams.append('search', params.search)
+    return this.request<any>(`/api/v2/field-map?${searchParams}`)
+  }
+
+  async getField(fieldId: string) {
+    return this.request<any>(`/api/v2/field-map/${fieldId}`)
+  }
+
+  async createField(data: { name: string; location: string; station?: string; area: number; plots: number; status?: string; coordinates?: { lat: number; lng: number }; soilType?: string; irrigationType?: string }) {
+    return this.request<any>('/api/v2/field-map', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async updateField(fieldId: string, data: Record<string, any>) {
+    return this.request<any>(`/api/v2/field-map/${fieldId}`, { method: 'PUT', body: JSON.stringify(data) })
+  }
+
+  async deleteField(fieldId: string) {
+    return this.request<any>(`/api/v2/field-map/${fieldId}`, { method: 'DELETE' })
+  }
+
+  async getFieldMapSummary() {
+    return this.request<any>('/api/v2/field-map/summary')
+  }
+
+  async getFieldMapStations() {
+    return this.request<any>('/api/v2/field-map/stations')
+  }
+
+  async getFieldMapStatuses() {
+    return this.request<any>('/api/v2/field-map/statuses')
+  }
+
+  async getFieldPlots(fieldId: string, params?: { status?: string; trialId?: string }) {
+    const searchParams = new URLSearchParams()
+    if (params?.status) searchParams.append('status', params.status)
+    if (params?.trialId) searchParams.append('trial_id', params.trialId)
+    return this.request<any>(`/api/v2/field-map/${fieldId}/plots?${searchParams}`)
+  }
+
+  async updateFieldPlot(fieldId: string, plotId: string, data: Record<string, any>) {
+    return this.request<any>(`/api/v2/field-map/${fieldId}/plots/${plotId}`, { method: 'PUT', body: JSON.stringify(data) })
+  }
+
+  // ============================================
+  // TRIAL PLANNING
+  // ============================================
+
+  async getPlannedTrials(params?: { status?: string; type?: string; season?: string; year?: number; crop?: string; search?: string }) {
+    const searchParams = new URLSearchParams()
+    if (params?.status) searchParams.append('status', params.status)
+    if (params?.type) searchParams.append('type', params.type)
+    if (params?.season) searchParams.append('season', params.season)
+    if (params?.year) searchParams.append('year', String(params.year))
+    if (params?.crop) searchParams.append('crop', params.crop)
+    if (params?.search) searchParams.append('search', params.search)
+    return this.request<any>(`/api/v2/trial-planning?${searchParams}`)
+  }
+
+  async getPlannedTrial(trialId: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}`)
+  }
+
+  async createPlannedTrial(data: { name: string; type: string; season: string; locations: string[]; entries: number; reps: number; startDate: string; endDate?: string; design?: string; crop?: string; objectives?: string }) {
+    return this.request<any>('/api/v2/trial-planning', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async updatePlannedTrial(trialId: string, data: Record<string, any>) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}`, { method: 'PUT', body: JSON.stringify(data) })
+  }
+
+  async deletePlannedTrial(trialId: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}`, { method: 'DELETE' })
+  }
+
+  async approvePlannedTrial(trialId: string, approvedBy: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}/approve?approved_by=${encodeURIComponent(approvedBy)}`, { method: 'POST' })
+  }
+
+  async startPlannedTrial(trialId: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}/start`, { method: 'POST' })
+  }
+
+  async completePlannedTrial(trialId: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}/complete`, { method: 'POST' })
+  }
+
+  async cancelPlannedTrial(trialId: string, reason: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}/cancel?reason=${encodeURIComponent(reason)}`, { method: 'POST' })
+  }
+
+  async getTrialPlanningStatistics() {
+    return this.request<any>('/api/v2/trial-planning/statistics')
+  }
+
+  async getTrialPlanningTimeline(year?: number) {
+    const params = year ? `?year=${year}` : ''
+    return this.request<any>(`/api/v2/trial-planning/timeline${params}`)
+  }
+
+  async getTrialPlanningTypes() {
+    return this.request<any>('/api/v2/trial-planning/types')
+  }
+
+  async getTrialPlanningSeasons() {
+    return this.request<any>('/api/v2/trial-planning/seasons')
+  }
+
+  async getTrialPlanningDesigns() {
+    return this.request<any>('/api/v2/trial-planning/designs')
+  }
+
+  async getTrialResources(trialId: string) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}/resources`)
+  }
+
+  async addTrialResource(trialId: string, data: { resourceType: string; resourceName: string; quantity: number; unit: string; estimatedCost?: number }) {
+    return this.request<any>(`/api/v2/trial-planning/${trialId}/resources`, { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  // ============================================
+  // DATA QUALITY
+  // ============================================
+
+  async getQualityIssues(params?: { status?: string; severity?: string; entity?: string; issueType?: string }) {
+    const searchParams = new URLSearchParams()
+    if (params?.status) searchParams.append('status', params.status)
+    if (params?.severity) searchParams.append('severity', params.severity)
+    if (params?.entity) searchParams.append('entity', params.entity)
+    if (params?.issueType) searchParams.append('issueType', params.issueType)
+    return this.request<any>(`/api/v2/data-quality/issues?${searchParams}`)
+  }
+
+  async getQualityIssue(issueId: string) {
+    return this.request<any>(`/api/v2/data-quality/issues/${issueId}`)
+  }
+
+  async createQualityIssue(data: { entity: string; entityId: string; entityName: string; issueType: string; field: string; description: string; severity?: string }) {
+    return this.request<any>('/api/v2/data-quality/issues', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async resolveQualityIssue(issueId: string, resolvedBy: string, notes?: string) {
+    return this.request<any>(`/api/v2/data-quality/issues/${issueId}/resolve`, { method: 'POST', body: JSON.stringify({ resolvedBy, notes }) })
+  }
+
+  async ignoreQualityIssue(issueId: string, reason: string) {
+    return this.request<any>(`/api/v2/data-quality/issues/${issueId}/ignore?reason=${encodeURIComponent(reason)}`, { method: 'POST' })
+  }
+
+  async reopenQualityIssue(issueId: string) {
+    return this.request<any>(`/api/v2/data-quality/issues/${issueId}/reopen`, { method: 'POST' })
+  }
+
+  async getQualityMetrics() {
+    return this.request<any>('/api/v2/data-quality/metrics')
+  }
+
+  async getQualityScore() {
+    return this.request<any>('/api/v2/data-quality/score')
+  }
+
+  async runDataValidation(entity?: string) {
+    const params = entity ? `?entity=${encodeURIComponent(entity)}` : ''
+    return this.request<any>(`/api/v2/data-quality/validate${params}`, { method: 'POST' })
+  }
+
+  async getValidationHistory(limit?: number) {
+    const params = limit ? `?limit=${limit}` : ''
+    return this.request<any>(`/api/v2/data-quality/validation-history${params}`)
+  }
+
+  async getQualityRules(entity?: string) {
+    const params = entity ? `?entity=${encodeURIComponent(entity)}` : ''
+    return this.request<any>(`/api/v2/data-quality/rules${params}`)
+  }
+
+  async createQualityRule(data: { entity: string; field: string; ruleType: string; ruleConfig?: Record<string, any>; severity?: string }) {
+    return this.request<any>('/api/v2/data-quality/rules', { method: 'POST', body: JSON.stringify(data) })
+  }
+
+  async toggleQualityRule(ruleId: string, enabled: boolean) {
+    return this.request<any>(`/api/v2/data-quality/rules/${ruleId}/toggle?enabled=${enabled}`, { method: 'PUT' })
+  }
+
+  async getDataQualityStatistics() {
+    return this.request<any>('/api/v2/data-quality/statistics')
+  }
+
+  async getQualityIssueTypes() {
+    return this.request<any>('/api/v2/data-quality/issue-types')
+  }
+
+  async getQualitySeverities() {
+    return this.request<any>('/api/v2/data-quality/severities')
+  }
 }
 
 export const apiClient = new APIClient()
