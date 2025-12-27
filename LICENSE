@@ -1,0 +1,473 @@
+Bijmantra Source Available License (BSAL)
+Version 2.1
+
+Copyright (c) 2025 Denish Dholaria / R.E.E.V.A.i
+Supported by Solar Agrotech Private Limited
+
+================================================================================
+                              TERMS AND CONDITIONS
+================================================================================
+
+1. DEFINITIONS
+
+   "Software" refers to Bijmantra, including all source code, documentation,
+   assets, and associated files in this repository.
+   
+   "Creator" refers to Denish Dholaria and R.E.E.V.A.i (Rural Empowerment 
+   through Emerging Value-driven Agro-Intelligence).
+   
+   "You" refers to any individual or organization using, copying, modifying,
+   or distributing the Software.
+   
+   "Commercial Use" means any use of the Software where the Software itself,
+   or access to the Software, is sold, licensed for a fee, or bundled with
+   products or services sold for profit.
+   
+   "Internal Use" means use of the Software within an organization for that
+   organization's own operations, regardless of whether the organization is
+   for-profit or non-profit.
+   
+   "For-Profit Agricultural Company" means any corporation, partnership, or
+   business entity engaged in commercial seed production, seed sales, crop
+   breeding for profit, agricultural biotechnology, or related agribusiness
+   activities that generates revenue exceeding $1,000,000 USD annually.
+   
+   "Well-Funded Institution" means any university, research institution, or
+   organization with an annual operating budget or endowment exceeding
+   $100,000,000 USD.
+
+================================================================================
+                         SECTION 1: FREE USE GRANT
+================================================================================
+
+Subject to the terms of this license, the Creator grants You a worldwide,
+royalty-free, non-exclusive license to use, copy, modify, and distribute
+the Software for the following purposes WITHOUT payment or permission:
+
+   a) PERSONAL USE: Individual use for learning, research, or personal projects
+   
+   b) EDUCATIONAL USE: Use by students, teachers, and educational institutions
+      for teaching, learning, coursework, and academic research
+   
+   c) RESEARCH USE: Use by universities, research institutions, and scientists
+      for non-commercial research and publication
+   
+   d) NON-PROFIT USE: Use by registered non-profit organizations, NGOs, and
+      charitable foundations for their mission-related activities
+   
+   e) GOVERNMENT USE: Use by government agencies, public agricultural
+      departments, and publicly-funded breeding programs
+   
+   f) INTERNAL ORGANIZATIONAL USE: Organizations may deploy and use the
+      Software internally for their own breeding operations, data management,
+      and research — subject to the provisions in Section 2A regarding
+      For-Profit Agricultural Companies
+   
+   g) FARMER COOPERATIVES: Use by farmer cooperatives, farmer producer
+      organizations, and agricultural collectives — even if they charge
+      nominal membership fees to their members
+   
+   h) CONSULTING SERVICES: Consultants may deploy the Software for clients
+      and charge for their expertise, training, customization, and support
+      services — provided they do not charge for the Software itself
+   
+   i) DEVELOPMENT AND TESTING: Use for developing, testing, and evaluating
+      the Software, including by commercial entities considering adoption
+   
+   j) SMALL AGRICULTURAL BUSINESSES: Agricultural companies with annual
+      revenue below $1,000,000 USD may use the Software freely for internal
+      operations without a Commercial License
+
+================================================================================
+              SECTION 2: COMMERCIAL LICENSE REQUIRED
+================================================================================
+
+A Commercial License from the Creator is REQUIRED for the following uses:
+
+   a) SELLING THE SOFTWARE: Selling, licensing for a fee, or otherwise
+      commercially distributing the Software or any derivative work
+   
+   b) SAAS/HOSTED SERVICES: Offering the Software as a paid hosted service,
+      cloud service, or software-as-a-service where users pay for access
+   
+   c) BUNDLING FOR SALE: Including the Software as part of a commercial
+      product, platform, or service that is sold to customers
+   
+   d) WHITE-LABELING: Rebranding the Software and selling it under a
+      different name
+   
+   e) OEM LICENSING: Licensing the Software to third parties for inclusion
+      in their commercial products
+
+If You are unsure whether Your use requires a Commercial License, contact
+the Creator at denishdholaria@gmail.com for clarification.
+
+================================================================================
+       SECTION 2A: FOR-PROFIT AGRICULTURAL COMPANY REQUIREMENTS
+================================================================================
+
+For-Profit Agricultural Companies (as defined in Section 1) are subject to
+the following additional requirements:
+
+2A.1 COMMERCIAL LICENSE OBLIGATION
+
+   For-Profit Agricultural Companies with annual revenue exceeding
+   $1,000,000 USD that use the Software for ANY purpose — including
+   internal breeding operations, research, data management, or product
+   development — MUST obtain a Commercial License within one hundred
+   eighty (180) days of first deployment.
+
+2A.2 RATIONALE
+
+   Large agricultural corporations derive substantial commercial benefit
+   from breeding software, even when used internally. The varieties they
+   develop using such tools generate significant profits. This provision
+   ensures that those who profit most from agricultural innovation
+   contribute fairly to the tools that enable their success.
+
+2A.3 REVENUE THRESHOLDS
+
+   (a) $1,000,000 - $10,000,000 USD annual revenue:
+       Commercial License fee of $2,500 USD per year
+   
+   (b) $10,000,000 - $100,000,000 USD annual revenue:
+       Commercial License fee of $10,000 USD per year
+   
+   (c) $100,000,000 - $1,000,000,000 USD annual revenue:
+       Commercial License fee of $25,000 USD per year
+   
+   (d) Over $1,000,000,000 USD annual revenue:
+       Commercial License fee of $50,000 USD per year OR 0.01% of
+       annual revenue attributable to breeding operations, whichever
+       is greater
+
+2A.4 EXEMPTIONS
+
+   The following For-Profit Agricultural Companies are EXEMPT from
+   Section 2A requirements:
+   
+   (a) Companies headquartered in countries classified as "Low Income"
+       or "Lower Middle Income" by the World Bank
+   
+   (b) Companies where more than 50% of revenue is derived from sales
+       to smallholder farmers (defined as farms under 5 hectares)
+   
+   (c) Companies that have made qualifying donations under Section 3A
+
+================================================================================
+                      SECTION 3: COMMERCIAL LICENSE TERMS
+================================================================================
+
+3.1 EVALUATION PERIOD
+
+   Commercial entities may evaluate the Software for up to ninety (90) days
+   without a Commercial License. After the evaluation period, You must either:
+   
+   (a) Cease Commercial Use, or
+   (b) Obtain a Commercial License from the Creator
+
+3.2 COMMERCIAL LICENSE FEES (General)
+
+   For uses described in Section 2 (excluding Section 2A):
+   
+   (a) SAAS/HOSTED SERVICES: 10% of gross subscription revenue attributable
+       to the Software
+   
+   (b) SOFTWARE SALES: 15% of gross revenue from sales of the Software or
+       derivative works
+   
+   (c) BUNDLED PRODUCTS: Negotiated on a case-by-case basis
+   
+   (d) MINIMUM ANNUAL FEE: $1,000 USD per year (or equivalent in local
+       currency), regardless of revenue
+
+3.3 STARTUP GRACE PERIOD
+
+   Startups with less than $100,000 USD in annual revenue may use the
+   Software commercially for up to two (2) years without payment. After
+   the grace period, or upon exceeding the revenue threshold, standard
+   Commercial License terms apply.
+
+3.4 DISCOUNTS
+
+   (a) DEVELOPING COUNTRIES: Organizations headquartered in countries
+       classified as "Low Income" or "Lower Middle Income" by the World
+       Bank receive a 50% discount on Commercial License fees
+   
+   (b) PUBLIC BREEDING PROGRAMS: Government-funded and CGIAR breeding
+       programs are exempt from Commercial License requirements
+
+3.5 HOW TO OBTAIN A COMMERCIAL LICENSE
+
+   Contact the Creator:
+   
+   Email: denishdholaria@gmail.com
+   Subject: "Bijmantra Commercial License Inquiry"
+   
+   Include: Your organization name, intended use, and estimated revenue
+
+================================================================================
+         SECTION 3A: VOLUNTARY DONATIONS AND SPONSORSHIP
+================================================================================
+
+3A.1 SUSTAINABILITY STATEMENT
+
+   Bijmantra is developed and maintained by an independent creator who
+   depends on this work for livelihood. Continued development, bug fixes,
+   security updates, and new features require sustained financial support.
+   
+   While the Software is freely available for many uses, the Creator
+   encourages organizations that benefit from the Software to consider
+   voluntary financial contributions to ensure its long-term sustainability.
+
+3A.2 DONATION ENCOURAGEMENT FOR WELL-FUNDED INSTITUTIONS
+
+   Well-Funded Institutions (as defined in Section 1) — including major
+   universities, agricultural research centers, and foundations — are
+   STRONGLY ENCOURAGED to make voluntary donations commensurate with
+   their financial capacity and the value derived from the Software.
+   
+   Suggested donation levels for Well-Funded Institutions:
+   
+   (a) Institutions with $100M - $500M annual budget:
+       Suggested donation of $1,000 - $5,000 USD per year
+   
+   (b) Institutions with $500M - $1B annual budget:
+       Suggested donation of $5,000 - $15,000 USD per year
+   
+   (c) Institutions with over $1B annual budget or endowment:
+       Suggested donation of $15,000 - $50,000 USD per year
+   
+   These are VOLUNTARY suggestions, not requirements. However, institutions
+   that make qualifying donations will receive:
+   
+   • Priority support and feature requests
+   • Recognition on the Bijmantra website and documentation
+   • Early access to new features and releases
+   • Direct communication channel with the Creator
+
+3A.3 CORPORATE SPONSORSHIP
+
+   For-Profit Agricultural Companies may offset Commercial License fees
+   through corporate sponsorship arrangements, including:
+   
+   (a) Direct financial sponsorship
+   (b) Developer time contributions (valued at market rates)
+   (c) Infrastructure support (hosting, CI/CD, etc.)
+   (d) Research partnerships
+   
+   Contact the Creator to discuss sponsorship arrangements.
+
+3A.4 DONATION METHODS
+
+   Donations may be made via:
+   
+   • GitHub Sponsors: https://github.com/sponsors/denishdholaria
+   • Direct bank transfer (contact for details)
+   • Cryptocurrency (contact for wallet addresses)
+   • Institutional grants or research funding allocations
+   
+   All donations are gratefully acknowledged unless anonymity is requested.
+
+3A.5 TRANSPARENCY
+
+   The Creator commits to publishing an annual transparency report
+   detailing:
+   
+   • Total donations and sponsorships received
+   • How funds were used (development, infrastructure, etc.)
+   • Roadmap priorities influenced by sponsors
+   
+   This report will be published on the project website and repository.
+
+================================================================================
+                    SECTION 4: ATTRIBUTION REQUIREMENTS
+================================================================================
+
+All use of the Software, whether free or commercial, MUST include clear
+and visible attribution to the Creator:
+
+   a) VISIBLE CREDIT: Display the following in a reasonably prominent
+      location within any application or service using the Software:
+      
+      "Powered by Bijmantra - Created by Denish Dholaria / R.E.E.V.A.i"
+      
+      OR
+      
+      "Built with Bijmantra"
+   
+   b) DOCUMENTATION: Include attribution in README files, documentation,
+      and about pages of any deployment or derivative work
+   
+   c) SOURCE CODE: Retain all copyright notices, this license file, and
+      attribution comments in the source code
+   
+   d) ACADEMIC USE: If used in academic papers or publications, cite:
+      
+      Dholaria, D. (2025). Bijmantra: Plant Breeding Information Management
+      System. R.E.E.V.A.i. https://github.com/denishdholaria/bijmantra
+
+================================================================================
+                 SECTION 5: ETHICAL USE RESTRICTIONS (ABSOLUTE)
+================================================================================
+
+The use of this Software is STRICTLY PROHIBITED for:
+
+   a) GENETIC USE RESTRICTION TECHNOLOGIES (GURTs): Any breeding activity
+      involving technologies that render seeds sterile, non-viable, or
+      dependent on proprietary chemical inducers
+   
+   b) TERMINATOR TECHNOLOGY: Any technology that produces sterile seeds,
+      preventing farmers from saving and replanting seeds
+   
+   c) TRAITOR TECHNOLOGY: Any technology requiring chemical application
+      to activate or maintain genetic traits in plants
+   
+   d) SEED TERMINATION: Any method that prevents seeds from being saved,
+      replanted, or used for subsequent generations
+
+This prohibition is ABSOLUTE and admits NO EXCEPTIONS. Violation results
+in immediate and automatic termination of all license rights, including
+any Commercial License.
+
+For complete ethical use terms, see ETHICAL_USE_POLICY.md which is
+incorporated herein by reference.
+
+================================================================================
+                         SECTION 6: RESTRICTIONS
+================================================================================
+
+   a) You may NOT remove, alter, or obscure any attribution, copyright
+      notices, or license information from the Software
+   
+   b) You may NOT claim that You created the original Software
+   
+   c) You may NOT use the names "Bijmantra", "R.E.E.V.A.i", or
+      "Denish Dholaria" to endorse products without written permission
+   
+   d) You may NOT sublicense the Software under different terms that
+      would permit Commercial Use without a Commercial License
+
+================================================================================
+                           SECTION 7: CONTRIBUTIONS
+================================================================================
+
+Contributions to this project are welcome and appreciated. By submitting
+contributions, You agree that:
+
+   a) Your contributions are licensed under the same terms as this license
+   b) You have the right to submit the contributions
+   c) The Creator may use Your contributions in commercial offerings
+
+================================================================================
+                            SECTION 8: NO WARRANTY
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+================================================================================
+                      SECTION 9: LIMITATION OF LIABILITY
+================================================================================
+
+IN NO EVENT SHALL THE CREATOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+================================================================================
+                           SECTION 10: TERMINATION
+================================================================================
+
+   a) This license automatically terminates if You fail to comply with
+      any of its terms
+   
+   b) Violation of the Ethical Use Restrictions (Section 5) results in
+      immediate termination with no cure period
+   
+   c) For other violations, You have thirty (30) days to cure the breach
+      after receiving written notice from the Creator
+   
+   d) Upon termination, You must cease all use and distribution of the
+      Software
+
+================================================================================
+                          SECTION 11: GENERAL
+================================================================================
+
+   a) SEVERABILITY: If any provision is held invalid, the remaining
+      provisions continue in full force
+   
+   b) ENTIRE AGREEMENT: This license constitutes the entire agreement
+      regarding the Software
+   
+   c) AMENDMENTS: The Creator may publish updated versions of this license;
+      You may choose to use the Software under any version that was in
+      effect when You obtained the Software
+   
+   d) GOVERNING LAW: This license shall be governed by applicable laws
+
+================================================================================
+                                 SUMMARY
+================================================================================
+
+✅ FREE USE (No payment, no permission needed):
+   • Personal, educational, and research use
+   • Non-profit and government use
+   • Small agricultural businesses (< $1M revenue)
+   • Farmer cooperatives
+   • Consulting services (selling expertise, not software)
+   • Self-hosted deployments for internal use
+
+💰 COMMERCIAL LICENSE REQUIRED:
+   • Selling the software or derivatives
+   • Offering as paid SaaS/hosted service
+   • White-labeling or OEM licensing
+   • Bundling with commercial products
+   • For-profit agro-companies with > $1M revenue (for ANY use)
+
+📋 COMMERCIAL TERMS:
+   • 90-day free evaluation
+   • Tiered pricing for agro-companies ($2,500 - $50,000/year)
+   • 10-15% of revenue for SaaS/sales
+   • 50% discount for developing countries
+   • Public breeding programs exempt
+
+🤝 DONATIONS ENCOURAGED:
+   • Well-funded universities and institutions
+   • Research centers benefiting from the Software
+   • Foundations supporting agricultural innovation
+   • Sponsors receive priority support and recognition
+
+⚠️ ALWAYS REQUIRED:
+   • Attribution to Denish Dholaria / R.E.E.V.A.i
+   • Retain license and copyright notices
+
+🚫 ABSOLUTELY PROHIBITED:
+   • Terminator/GURT seed technologies
+   • Any seed termination technology
+   • Removing attribution
+
+================================================================================
+                          SUPPORT THE PROJECT
+================================================================================
+
+Bijmantra is built by an independent developer who relies on this work.
+Your support ensures continued development, security updates, and new
+features that benefit the entire agricultural community.
+
+Ways to support:
+   • GitHub Sponsors: https://github.com/sponsors/denishdholaria
+   • Commercial License: denishdholaria@gmail.com
+   • Institutional Donation: Contact for arrangements
+   • Code Contributions: Pull requests welcome!
+
+================================================================================
+
+For questions: denishdholaria@gmail.com
+
+"The seeds we plant today determine the harvest our children will reap tomorrow.
+ And the tools we build today determine what seeds we can plant."
+                                                    — Denish Dholaria
+

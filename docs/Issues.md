@@ -1,0 +1,4 @@
+- http://localhost:5173/earth-systems/gdd
+- http://localhost:5173/earth-systems/map
+- http://localhost:5173/commercial/dus/crops
+-
