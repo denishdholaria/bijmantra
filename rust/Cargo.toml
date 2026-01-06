@@ -22,7 +22,7 @@ numpy = { version = "0.20", optional = true }
 
 # Shared dependencies
 ndarray = "0.15"
-rand = "0.8"
+rand = "0.9"
 statrs = "0.16"
 
 # WASM dependencies
