@@ -21,7 +21,7 @@ pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
 numpy = { version = "0.20", optional = true }
 
 # Shared dependencies
-ndarray = "0.15"
+ndarray = "0.17"
 rand = "0.8"
 statrs = "0.16"
 
