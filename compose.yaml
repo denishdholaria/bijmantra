@@ -1,0 +1,143 @@
+services:
+  # PostgreSQL with PostGIS + pgvector extensions
+  # Custom build includes both spatial and vector capabilities
+  postgres:
+    build:
+      context: ./docker/postgres
+      dockerfile: Containerfile
+    image: bijmantra-postgres:latest
+    container_name: bijmantra-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bijmantra_db}
+      POSTGRES_USER: ${POSTGRES_USER:-bijmantra_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_in_production}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bijmantra_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: bijmantra-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  # MinIO for object storage (plant images)
+  minio:
+    image: minio/minio:latest
+    container_name: bijmantra-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - bijmantra-network
+
+  # Meilisearch for instant search (hybrid + semantic search)
+  meilisearch:
+    image: getmeili/meilisearch:v1.28  # Data volume requires v1.28+
+    container_name: bijmantra-meilisearch
+    environment:
+      MEILI_ENV: ${MEILI_ENV:-development}
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-}
+    volumes:
+      - meilisearch_data:/meili_data
+    ports:
+      - "${MEILISEARCH_PORT:-7700}:7700"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  # FastAPI Backend (uncomment when ready)
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Containerfile
+  #   container_name: bijmantra-backend
+  #   environment:
+  #     - DATABASE_URL=postgresql://${POSTGRES_USER:-bijmantra_user}:${POSTGRES_PASSWORD:-changeme_in_production}@postgres:5432/${POSTGRES_DB:-bijmantra_db}
+  #     - REDIS_URL=redis://redis:6379
+  #     - MINIO_ENDPOINT=minio:9000
+  #     - SECRET_KEY=${SECRET_KEY}
+  #   ports:
+  #     - "${BACKEND_PORT:-8000}:8000"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./backend:/app
+  #   networks:
+  #     - bijmantra-network
+  #   command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Caddy Reverse Proxy (uncomment for production)
+  # caddy:
+  #   image: caddy:2-alpine
+  #   container_name: bijmantra-caddy
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile
+  #     - ./frontend/dist:/srv/frontend
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - bijmantra-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  meilisearch_data:
+    driver: local
+  # caddy_data:
+  #   driver: local
+  # caddy_config:
+  #   driver: local
+
+networks:
+  bijmantra-network:
+    driver: bridge

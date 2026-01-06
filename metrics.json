@@ -1,0 +1,142 @@
+{
+  "$schema": "https://bijmantra.org/schemas/metrics.json",
+  "lastUpdated": "2026-01-06",
+  "updatedBy": "Kiro (Session 64 - Bundle Size Optimization)",
+  "session": 64,
+
+  "version": {
+    "app": "1.0.0-beta.1",
+    "brapi": "2.1",
+    "schema": "1.0.0",
+    "codename": "Prathama (प्रथम)",
+    "releaseDate": "2025-12-30",
+    "prerelease": "beta",
+    "prereleaseVersion": 1,
+    "note": "v1.0.0-beta.1 Prathama - Feature-complete, entering beta testing phase. No new features - focus on QA, bug fixes, and documentation. Stable 1.0.0 after validation."
+  },
+
+  "pages": {
+    "total": 221,
+    "functional": 213,
+    "experimental": 0,
+    "demo": 0,
+    "uiOnly": 0,
+    "removed": 12,
+    "note": "All pages now production-ready. Zero Mock Data Policy enforced - 8 components fixed to fetch from API or show empty state instead of fake data."
+  },
+
+  "api": {
+    "totalEndpoints": 1372,
+    "brapiEndpoints": 201,
+    "brapiCoverage": 100,
+    "customEndpoints": 1169,
+    "note": "DevGuru now has 36 endpoints (Phases 1-5 complete). Added 21 new endpoints for Literature, Writing, Collaboration."
+  },
+
+  "database": {
+    "models": 110,
+    "migrations": 26,
+    "seeders": 15,
+    "tables": 120,
+    "seededRecords": 413,
+    "rlsEnabledTables": 90,
+    "rlsCoverage": "100%",
+    "note": "Migrations 022-026 add RBAC, RLS coverage, system_settings, cross_id to germplasm, and chat tables. Jules integration Session 60."
+  },
+
+  "tests": {
+    "unit": 51,
+    "integration": 18,
+    "e2e": 229,
+    "e2eSkipped": 3,
+    "accessibility": 17,
+    "total": 315,
+    "note": "Session 62: Added 18 live BrAPI integration tests against test-server.brapi.org, 15 RBAC unit tests (13 + 2 cherry-picked), 13 schema validation tests, 5 germplasm API tests."
+  },
+
+  "modules": {
+    "total": 8,
+    "list": [
+      { "name": "Breeding", "pages": 35, "endpoints": 120 },
+      { "name": "Phenotyping", "pages": 25, "endpoints": 85 },
+      { "name": "Genomics", "pages": 35, "endpoints": 107 },
+      { "name": "Seed Bank", "pages": 15, "endpoints": 59 },
+      { "name": "Environment", "pages": 20, "endpoints": 97 },
+      { "name": "Seed Operations", "pages": 22, "endpoints": 96 },
+      { "name": "Knowledge", "pages": 5, "endpoints": 35 },
+      { "name": "Settings & Admin", "pages": 35, "endpoints": 79 }
+    ]
+  },
+
+  "workspaces": {
+    "total": 5,
+    "list": [
+      { "id": "breeding", "name": "Plant Breeding", "pages": 83 },
+      { "id": "seed-ops", "name": "Seed Business", "pages": 22 },
+      { "id": "research", "name": "Innovation Lab", "pages": 28 },
+      { "id": "genebank", "name": "Gene Bank", "pages": 34 },
+      { "id": "admin", "name": "Administration", "pages": 25 }
+    ],
+    "customWorkspaces": {
+      "enabled": true,
+      "maxWorkspaces": 10,
+      "maxPagesPerWorkspace": 50,
+      "templates": 10
+    }
+  },
+
+  "build": {
+    "status": "passing",
+    "pwaEntries": 49,
+    "sizeKB": 7028,
+    "sizeMB": "6.9MB",
+    "optimization": {
+      "iconTreeShaking": true,
+      "echartsModular": true,
+      "divisionCodeSplitting": true,
+      "savings": "1.2MB (14%)"
+    }
+  },
+
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "productionReady": "2025-12-25",
+    "mockDataMigration": "2025-12-26",
+    "adminDemoSeparation": "2025-12-29",
+    "myWorkspaceComplete": "2025-12-29",
+    "gatewayRefinements": "2025-12-29",
+    "metricsUnification": "2025-12-29",
+    "devguruBrapiIntegration": "2025-12-29",
+    "devguruAllPhasesComplete": "2025-12-30",
+    "allPagesFunctional": "2025-12-30",
+    "v1_0_0_beta1_release": "2025-12-30",
+    "globalTeamPlanPublished": "2026-01-01",
+    "securityAuditComplete": "2026-01-01",
+    "brapiLiveTestsAdded": "2026-01-05",
+    "zeroMockDataEnforced": "2026-01-06",
+    "gitRemotesSimplified": "2026-01-06",
+    "bundleOptimization": "2026-01-06"
+  },
+
+  "releaseInfo": {
+    "currentRelease": "v1.0.0-beta.1",
+    "codename": "Prathama (प्रथम)",
+    "releaseDate": "2025-12-30",
+    "phase": "beta",
+    "status": "feature-freeze",
+    "nextMilestone": "v1.0.0-rc.1",
+    "stableTarget": "v1.0.0",
+    "publicRepoPolicy": "Bug fixes, security patches, and documentation. Community contributions welcome.",
+    "seekingCollaborators": "Domain experts, grant writers, beta testers, institutional partners",
+    "versionProgression": ["1.0.0-beta.1", "1.0.0-beta.2", "1.0.0-rc.1", "1.0.0"]
+  },
+
+  "techStack": {
+    "frontend": ["React 18", "TypeScript 5", "Vite 5", "Tailwind CSS", "TanStack Query"],
+    "backend": ["Python 3.11", "FastAPI", "SQLAlchemy 2.0", "Pydantic 2"],
+    "database": ["PostgreSQL 15", "PostGIS", "pgvector", "Redis"],
+    "compute": ["Rust/WASM", "Fortran"]
+  }
+}

@@ -1,0 +1,419 @@
+                    BIJMANTRA SOFTWARE LICENSE
+                    Version 3.0, January 2025
+
+    Copyright (c) 2025 Denish Dholaria
+    
+    Development supported by Solar Agrotech Private Limited
+
+================================================================================
+                         LICENSING OVERVIEW
+================================================================================
+
+This software is made available under a dual-licensing model:
+
+1. OPEN SOURCE LICENSE (AGPL-3.0)
+   For individuals, researchers, educational institutions, non-profits,
+   and organizations willing to comply with AGPL-3.0 copyleft requirements.
+
+2. COMMERCIAL LICENSE
+   For organizations that cannot or do not wish to comply with AGPL-3.0,
+   or that meet the Commercial License Requirement thresholds defined herein.
+
+Additionally, ALL use of this software is subject to the ETHICAL USE POLICY
+set forth in ETHICAL_USE_POLICY.md, which prohibits use in connection with
+genetic use restriction technologies (GURTs), terminator seeds, and related
+technologies.
+
+================================================================================
+                    SECTION 1: DEFINITIONS
+================================================================================
+
+"Software" means Bijmantra, including all source code, object code,
+documentation, configuration files, assets, and associated materials
+contained in this repository and any official distributions.
+
+"Licensor" means Denish Dholaria and his successors and assigns.
+
+"You" (or "Your") means the individual or Legal Entity exercising
+permissions granted by this License.
+
+"Legal Entity" means the union of the acting entity and all other entities
+that control, are controlled by, or are under common control with that
+entity. "Control" means (i) the power to direct the affairs of such entity,
+or (ii) ownership of fifty percent (50%) or more of the outstanding shares
+or beneficial ownership of such entity.
+
+"Commercial Use" means any use of the Software where:
+  (a) The Software or access thereto is sold, licensed for a fee, or
+      otherwise commercially distributed; or
+  (b) The Software is used to provide paid services to third parties; or
+  (c) The Software is bundled with or incorporated into products or
+      services that are sold or licensed for a fee.
+
+"Network Use" means making the functionality of the Software available to
+third parties over a computer network, including but not limited to use as
+a software-as-a-service (SaaS), platform-as-a-service (PaaS), or any hosted
+or cloud-based offering.
+
+"Derivative Work" means any work that is based on or derived from the
+Software, including any modification, enhancement, translation, abridgment,
+condensation, expansion, or any other form in which the Software may be
+recast, transformed, or adapted.
+
+"Annual Revenue" means the total gross revenue of a Legal Entity and all
+its Affiliates during the most recently completed fiscal year, calculated
+in accordance with generally accepted accounting principles.
+
+"For-Profit Agricultural Enterprise" means any Legal Entity engaged in
+commercial seed production, seed sales, crop breeding for profit,
+agricultural biotechnology, agrochemicals, or related agribusiness
+activities.
+
+================================================================================
+                    SECTION 2: OPEN SOURCE LICENSE GRANT
+================================================================================
+
+Subject to the terms and conditions of this License, including the Ethical
+Use Policy, the Licensor hereby grants You a worldwide, royalty-free,
+non-exclusive license to use, copy, modify, and distribute the Software
+under the terms of the GNU Affero General Public License version 3
+(AGPL-3.0), the full text of which is incorporated herein by reference and
+attached as Appendix A.
+
+2.1 AGPL-3.0 KEY REQUIREMENTS
+
+The AGPL-3.0 is a strong copyleft license. Key requirements include:
+
+  (a) SOURCE CODE DISCLOSURE: If You distribute the Software or any
+      Derivative Work, You must make the complete corresponding source
+      code available under AGPL-3.0.
+
+  (b) NETWORK USE DISCLOSURE: If You make the Software available over a
+      network (including SaaS, hosted services, or APIs), You must make
+      the complete corresponding source code available to users of that
+      service under AGPL-3.0.
+
+  (c) LICENSE PRESERVATION: Any Derivative Work must be licensed under
+      AGPL-3.0 and include prominent notice of the license terms.
+
+  (d) ATTRIBUTION: You must retain all copyright notices, license notices,
+      and attribution statements in the Software and any Derivative Works.
+
+2.2 ADDITIONAL ATTRIBUTION REQUIREMENTS
+
+In addition to AGPL-3.0 requirements, You must:
+
+  (a) Display the following attribution in a reasonably prominent location
+      within any application, service, or Derivative Work:
+
+      "Powered by Bijmantra - Created by Denish Dholaria"
+
+  (b) Include attribution in documentation, README files, and about pages.
+
+  (c) If used in academic publications, cite as:
+
+      Dholaria, D. (2025). Bijmantra: Plant Breeding Information Management
+      System. https://bijmantra.org
+
+================================================================================
+                    SECTION 3: COMMERCIAL LICENSE REQUIREMENT
+================================================================================
+
+Notwithstanding the Open Source License Grant in Section 2, a Commercial
+License is REQUIRED in the following circumstances:
+
+3.1 MANDATORY COMMERCIAL LICENSE
+
+A Commercial License is required if:
+
+  (a) REVENUE THRESHOLD: You are a For-Profit Agricultural Enterprise with
+      Annual Revenue exceeding One Million United States Dollars
+      (USD $1,000,000) or equivalent in local currency; OR
+
+  (b) PROPRIETARY DERIVATIVES: You wish to create Derivative Works that
+      are not licensed under AGPL-3.0; OR
+
+  (c) SAAS WITHOUT SOURCE DISCLOSURE: You wish to offer the Software as a
+      Network Use service without disclosing Your source code; OR
+
+  (d) WHITE-LABELING: You wish to rebrand, white-label, or remove
+      attribution from the Software; OR
+
+  (e) OEM/EMBEDDED USE: You wish to embed the Software in proprietary
+      products distributed to third parties.
+
+3.2 COMMERCIAL LICENSE EXEMPTIONS
+
+The following are EXEMPT from Commercial License requirements, even if
+they would otherwise qualify under Section 3.1:
+
+  (a) Government agencies and publicly-funded breeding programs;
+
+  (b) CGIAR centers and their affiliated programs;
+
+  (c) Registered non-profit organizations and NGOs;
+
+  (d) Educational institutions for teaching and research;
+
+  (e) Farmer cooperatives and farmer producer organizations;
+
+  (f) For-Profit Agricultural Enterprises headquartered in countries
+      classified as "Low Income" or "Lower Middle Income" by the
+      World Bank, provided Annual Revenue does not exceed Ten Million
+      United States Dollars (USD $10,000,000).
+
+3.3 EVALUATION PERIOD
+
+Commercial entities may evaluate the Software for up to ninety (90) days
+without a Commercial License. Evaluation use must be limited to internal
+testing and assessment and may not include production deployment or
+Network Use.
+
+3.4 OBTAINING A COMMERCIAL LICENSE
+
+To obtain a Commercial License, contact:
+
+  Email: denishdholaria@gmail.com
+  Subject: "Bijmantra Commercial License Inquiry"
+
+Commercial License terms, including fees, are set forth in
+COMMERCIAL_LICENSE.md and are subject to negotiation based on use case,
+organization size, and other factors.
+
+================================================================================
+                    SECTION 4: ETHICAL USE RESTRICTIONS
+================================================================================
+
+4.1 PROHIBITED USES
+
+ALL use of the Software, whether under the Open Source License or a
+Commercial License, is subject to the Ethical Use Policy set forth in
+ETHICAL_USE_POLICY.md, which is incorporated herein by reference.
+
+The Software may NOT be used, directly or indirectly, in connection with:
+
+  (a) GENETIC USE RESTRICTION TECHNOLOGIES (GURTs): Any technology that
+      restricts the use of genetic material, including but not limited to
+      technologies that render seeds or plant genetic material sterile,
+      non-viable, or dependent on proprietary chemical inducers.
+
+  (b) TERMINATOR TECHNOLOGY: Any technology designed to produce sterile
+      seeds or prevent farmers from saving, replanting, or sharing seeds.
+
+  (c) TRAITOR TECHNOLOGY: Any technology requiring application of
+      proprietary chemicals to activate, maintain, or express genetic
+      traits in plants.
+
+  (d) SEED TERMINATION: Any method, technology, or practice designed to
+      prevent seeds from being saved, replanted, shared, or used for
+      subsequent generations.
+
+4.2 AUTOMATIC TERMINATION
+
+Any use of the Software in violation of Section 4.1 results in IMMEDIATE
+and AUTOMATIC termination of all license rights, including any Commercial
+License, without notice and without opportunity to cure.
+
+4.3 CERTIFICATION
+
+By using the Software, You certify that:
+
+  (a) You are not currently engaged in developing, producing, or deploying
+      any technology described in Section 4.1;
+
+  (b) You will not use the Software or any Derivative Work in connection
+      with any technology described in Section 4.1;
+
+  (c) You will not transfer, license, or otherwise make the Software
+      available to any party that You know or have reason to believe is
+      engaged in activities described in Section 4.1.
+
+================================================================================
+                    SECTION 5: TRADEMARK AND BRANDING
+================================================================================
+
+5.1 TRADEMARK NOTICE
+
+"Bijmantra" is a trademark of Denish Dholaria. The Bijmantra logo and
+associated visual identity are protected intellectual property.
+
+5.2 PERMITTED TRADEMARK USE
+
+You may use the Bijmantra name and logo solely to:
+
+  (a) Accurately identify the Software as the source of Your Derivative
+      Work or service;
+
+  (b) Provide attribution as required by this License;
+
+  (c) Link to the official Bijmantra repository or website.
+
+5.3 PROHIBITED TRADEMARK USE
+
+Without prior written permission from the Licensor, You may NOT:
+
+  (a) Use "Bijmantra" in the name of Your product, service, or organization;
+
+  (b) Use the Bijmantra logo or visual identity in a manner that suggests
+      endorsement, sponsorship, or affiliation;
+
+  (c) Register any trademark, domain name, or social media account
+      containing "Bijmantra" or confusingly similar terms.
+
+================================================================================
+                    SECTION 6: DISCLAIMER OF WARRANTY
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+THE LICENSOR DOES NOT WARRANT THAT THE SOFTWARE WILL MEET YOUR REQUIREMENTS,
+THAT OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE, OR THAT
+DEFECTS IN THE SOFTWARE WILL BE CORRECTED.
+
+YOU ASSUME ALL RISK ASSOCIATED WITH THE USE, QUALITY, AND PERFORMANCE OF
+THE SOFTWARE.
+
+================================================================================
+                    SECTION 7: LIMITATION OF LIABILITY
+================================================================================
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
+LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL,
+PUNITIVE, OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO DAMAGES FOR
+LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES, ARISING
+OUT OF OR IN CONNECTION WITH THIS LICENSE OR THE USE OR INABILITY TO USE
+THE SOFTWARE, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+IN NO EVENT SHALL THE LICENSOR'S TOTAL LIABILITY TO YOU FOR ALL DAMAGES
+EXCEED THE AMOUNT OF FIFTY UNITED STATES DOLLARS (USD $50.00).
+
+================================================================================
+                    SECTION 8: TERMINATION
+================================================================================
+
+8.1 TERMINATION FOR BREACH
+
+This License and all rights granted hereunder will terminate automatically
+if You fail to comply with any term hereof. Upon termination, You must:
+
+  (a) Cease all use of the Software;
+  (b) Destroy all copies of the Software in Your possession or control;
+  (c) Cease all distribution of the Software and Derivative Works.
+
+8.2 CURE PERIOD
+
+For breaches other than violations of Section 4 (Ethical Use Restrictions),
+You shall have thirty (30) days from receipt of written notice to cure the
+breach. If the breach is cured within such period, this License shall be
+reinstated.
+
+8.3 SURVIVAL
+
+Sections 5 (Trademark), 6 (Disclaimer), 7 (Limitation of Liability), and
+this Section 8 shall survive any termination of this License.
+
+================================================================================
+                    SECTION 9: GENERAL PROVISIONS
+================================================================================
+
+9.1 ENTIRE AGREEMENT
+
+This License, together with COMMERCIAL_LICENSE.md and ETHICAL_USE_POLICY.md,
+constitutes the entire agreement between You and the Licensor concerning
+the Software and supersedes all prior agreements and understandings.
+
+9.2 SEVERABILITY
+
+If any provision of this License is held to be invalid or unenforceable,
+such provision shall be modified to the minimum extent necessary to make
+it valid and enforceable, and the remaining provisions shall continue in
+full force and effect.
+
+9.3 WAIVER
+
+No waiver of any term of this License shall be deemed a further or
+continuing waiver of such term or any other term.
+
+9.4 ASSIGNMENT
+
+You may not assign or transfer this License or any rights hereunder without
+the prior written consent of the Licensor. The Licensor may assign this
+License without restriction.
+
+9.5 GOVERNING LAW
+
+This License shall be governed by and construed in accordance with the
+laws of India, without regard to its conflict of laws principles. Any
+dispute arising under this License shall be subject to the exclusive
+jurisdiction of the courts located in Gujarat, India.
+
+9.6 AMENDMENTS
+
+The Licensor may publish revised versions of this License. You may choose
+to use the Software under any version of this License that was in effect
+at the time You obtained the Software.
+
+================================================================================
+                    SECTION 10: CONTACT INFORMATION
+================================================================================
+
+For questions regarding this License, Commercial Licensing, or any other
+matter:
+
+  Denish Dholaria
+  Email: denishdholaria@gmail.com
+  Website: https://bijmantra.org
+
+================================================================================
+                    QUICK REFERENCE SUMMARY
+================================================================================
+
+This summary is for convenience only and does not modify the License terms.
+
+✅ FREE USE UNDER AGPL-3.0:
+   • Personal, educational, and research use
+   • Non-profit and government use
+   • Small agricultural businesses (< $1M revenue)
+   • Any use where You comply with AGPL-3.0 (including source disclosure)
+
+💰 COMMERCIAL LICENSE REQUIRED:
+   • For-profit agro-companies with > $1M revenue
+   • SaaS/hosted services without source disclosure
+   • Proprietary derivatives (closed-source modifications)
+   • White-labeling or removing attribution
+
+📋 ALWAYS REQUIRED:
+   • Attribution to Denish Dholaria
+   • Compliance with Ethical Use Policy
+
+🚫 ABSOLUTELY PROHIBITED (NO EXCEPTIONS):
+   • Terminator/GURT seed technologies
+   • Any seed termination technology
+   • Traitor technology
+
+================================================================================
+
+"The seeds we plant today determine the harvest our children will reap.
+ Let us ensure those seeds remain free."
+                                                    — Denish Dholaria
+
+================================================================================
+                    APPENDIX A: GNU AFFERO GENERAL PUBLIC LICENSE
+================================================================================
+
+The full text of the GNU Affero General Public License version 3 (AGPL-3.0)
+follows. This License incorporates AGPL-3.0 by reference for the Open Source
+License Grant in Section 2.
+
+[The complete AGPL-3.0 text is available at:
+https://www.gnu.org/licenses/agpl-3.0.txt]
+
+For convenience, the AGPL-3.0 is also provided in the file AGPL-3.0.txt
+in this repository.
+
+================================================================================
+                    END OF LICENSE
+================================================================================

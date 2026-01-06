@@ -1,0 +1,721 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import './styles/field-mode.css';
+@import './styles/typography.css';
+@import './styles/design-tokens.css';
+@import './styles/prakruti.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   BIJMANTRA THEME SYSTEM
+   Comprehensive Light & Dark Mode Support
+   ============================================ */
+
+@layer base {
+  /* ========== LIGHT THEME ========== */
+  :root {
+    /* Core colors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    
+    /* Card & surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    
+    /* Popover & dropdowns - SOLID backgrounds for readability */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    
+    /* Primary (green for Bijmantra) - WCAG 2 AA Compliant (4.5:1 on white) */
+    --primary: 142 76% 29%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary */
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    
+    /* Muted */
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 40%;  /* Darkened from 45.1% for WCAG AA (4.5:1) */
+    
+    /* Accent */
+    --accent: 142 76% 96%;
+    --accent-foreground: 142 76% 36%;
+    
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders & inputs */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 142 76% 36%;
+    
+    /* Radius */
+    --radius: 0.5rem;
+    
+    /* Charts */
+    --chart-1: 142 76% 36%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    
+    /* Glass effect - Light mode */
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    
+    /* Dropdown specific - SOLID for readability */
+    --dropdown-bg: 255, 255, 255;
+    --dropdown-hover: 249, 250, 251;
+    --dropdown-border: 229, 231, 235;
+  }
+
+  /* ========== DARK THEME ========== */
+  .dark {
+    /* Core colors */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    
+    /* Card & surfaces - slightly lighter than background */
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    
+    /* Popover & dropdowns - SOLID dark backgrounds */
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary (green) - WCAG 2 AA Compliant on dark backgrounds */
+    --primary: 142 76% 50%;
+    --primary-foreground: 0 0% 0%;
+    
+    /* Secondary */
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* Muted */
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Accent */
+    --accent: 142 50% 20%;
+    --accent-foreground: 142 76% 70%;
+    
+    /* Destructive */
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders & inputs */
+    --border: 217 33% 25%;
+    --input: 217 33% 20%;
+    --ring: 142 76% 46%;
+    
+    /* Charts - brighter for dark mode */
+    --chart-1: 142 76% 50%;
+    --chart-2: 173 70% 50%;
+    --chart-3: 197 60% 50%;
+    --chart-4: 43 90% 60%;
+    --chart-5: 27 95% 60%;
+    
+    /* Glass effect - Dark mode */
+    --glass-bg: rgba(30, 41, 59, 0.85);
+    --glass-border: rgba(71, 85, 105, 0.4);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    
+    /* Dropdown specific - SOLID dark for readability */
+    --dropdown-bg: 30, 41, 59;
+    --dropdown-hover: 51, 65, 85;
+    --dropdown-border: 71, 85, 105;
+  }
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ============================================
+   SCROLLBAR - Light & Dark
+   ============================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* ============================================
+   INPUT FIELDS - Light & Dark
+   ============================================ */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-gray-700;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ring-green-500 dark:ring-green-400 border-green-500 dark:border-green-400;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out both;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out both;
+}
+
+.animate-bounce-gentle {
+  animation: bounceGentle 2s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 4s ease-in-out infinite;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+/* ============================================
+   COMMAND PALETTE - Light & Dark
+   ============================================ */
+[cmdk-root] {
+  font-family: inherit;
+}
+
+[cmdk-input] {
+  font-size: 16px;
+  width: 100%;
+  @apply bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500;
+}
+
+[cmdk-item] {
+  cursor: pointer;
+  user-select: none;
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+[cmdk-item][data-selected="true"] {
+  @apply bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300;
+}
+
+[cmdk-group-heading] {
+  @apply text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 py-1.5;
+}
+
+[cmdk-empty] {
+  @apply py-6 text-center text-gray-500 dark:text-gray-400;
+}
+
+/* Command palette animation */
+@keyframes commandPaletteIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+[cmdk-dialog] > div:last-child {
+  animation: commandPaletteIn 0.15s ease-out;
+}
+
+/* Keyboard shortcut styling */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  @apply bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600;
+}
+
+/* ============================================
+   GLASSMORPHISM - Proper Light & Dark
+   NO transparency on dropdowns/popovers
+   ============================================ */
+
+/* Glass panels - for decorative elements only */
+.glass-panel {
+  @apply bg-white/80 dark:bg-slate-800/90 backdrop-blur-md border border-white/20 dark:border-slate-700/50;
+}
+
+/* SOLID backgrounds for dropdowns - NO glass effect */
+.dropdown-solid {
+  background-color: rgb(var(--dropdown-bg));
+  border-color: rgb(var(--dropdown-border));
+  @apply shadow-xl;
+}
+
+.dropdown-solid:hover {
+  background-color: rgb(var(--dropdown-hover));
+}
+
+/* ============================================
+   DROPDOWN & POPOVER OVERRIDES
+   Force solid backgrounds for readability
+   ============================================ */
+
+/* Radix UI Dropdown Menu */
+[data-radix-popper-content-wrapper] {
+  z-index: 100 !important;
+}
+
+[role="menu"],
+[role="listbox"],
+[data-radix-menu-content],
+[data-radix-dropdown-menu-content],
+[data-radix-select-content],
+[data-radix-popover-content] {
+  @apply bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-xl !important;
+  backdrop-filter: none !important;
+}
+
+[role="menuitem"],
+[role="option"],
+[data-radix-menu-item],
+[data-radix-dropdown-menu-item],
+[data-radix-select-item] {
+  @apply text-gray-700 dark:text-gray-200 !important;
+}
+
+[role="menuitem"]:hover,
+[role="option"]:hover,
+[role="menuitem"][data-highlighted],
+[role="option"][data-highlighted],
+[data-radix-menu-item]:hover,
+[data-radix-dropdown-menu-item]:hover,
+[data-radix-select-item]:hover {
+  @apply bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white !important;
+}
+
+/* ============================================
+   CARD & SURFACE STYLES
+   ============================================ */
+
+/* Solid cards - no transparency */
+.card-solid {
+  @apply bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700;
+}
+
+/* Elevated cards */
+.card-elevated {
+  @apply bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-lg;
+}
+
+/* ============================================
+   TEXT CONTRAST HELPERS
+   Use these instead of hardcoded gray colors!
+   ============================================ */
+
+.text-primary-contrast {
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.text-secondary-contrast {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+.text-muted-contrast {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+/* Page titles and headings */
+.text-heading {
+  @apply text-gray-900 dark:text-white;
+}
+
+/* Body text */
+.text-body {
+  @apply text-gray-700 dark:text-gray-200;
+}
+
+/* Subtle/secondary text */
+.text-subtle {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+/* Muted/placeholder text */
+.text-muted-safe {
+  @apply text-gray-500 dark:text-gray-500;
+}
+
+/* ============================================
+   BACKGROUND HELPERS - Dark Mode Safe
+   ============================================ */
+
+.bg-surface {
+  @apply bg-white dark:bg-slate-800;
+}
+
+.bg-surface-elevated {
+  @apply bg-white dark:bg-slate-700;
+}
+
+.bg-surface-muted {
+  @apply bg-gray-50 dark:bg-slate-900;
+}
+
+.bg-surface-hover {
+  @apply hover:bg-gray-100 dark:hover:bg-slate-700;
+}
+
+/* ============================================
+   BADGE & STATUS COLORS - Dark Mode Safe
+   ============================================ */
+
+.badge-success {
+  @apply bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800;
+}
+
+.badge-warning {
+  @apply bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800;
+}
+
+.badge-error {
+  @apply bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800;
+}
+
+.badge-info {
+  @apply bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800;
+}
+
+.badge-neutral {
+  @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600;
+}
+
+.badge-purple {
+  @apply bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800;
+}
+
+.badge-pink {
+  @apply bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800;
+}
+
+.badge-cyan {
+  @apply bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800;
+}
+
+.badge-orange {
+  @apply bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800;
+}
+
+.badge-indigo {
+  @apply bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800;
+}
+
+/* ============================================
+   GLOBAL DARK MODE OVERRIDES
+   Fix common patterns that break in dark mode
+   ============================================ */
+
+/* Fix hardcoded gray text colors */
+.dark .text-gray-900:not(.dark\:text-white):not(.dark\:text-gray-100):not([class*="dark:"]) {
+  color: rgb(243 244 246) !important; /* gray-100 */
+}
+
+.dark .text-gray-800:not([class*="dark:"]) {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+.dark .text-gray-700:not([class*="dark:"]) {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark .text-gray-600:not([class*="dark:"]) {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+/* Fix hardcoded light backgrounds */
+.dark .bg-gray-50:not([class*="dark:"]) {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+}
+
+.dark .bg-gray-100:not([class*="dark:"]) {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+/* Fix status badge colors in dark mode */
+.dark .bg-green-100:not([class*="dark:"]) {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+}
+.dark .text-green-800:not([class*="dark:"]),
+.dark .text-green-700:not([class*="dark:"]) {
+  color: rgb(134 239 172) !important; /* green-300 */
+}
+
+.dark .bg-blue-100:not([class*="dark:"]) {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+.dark .text-blue-800:not([class*="dark:"]),
+.dark .text-blue-700:not([class*="dark:"]) {
+  color: rgb(147 197 253) !important; /* blue-300 */
+}
+
+.dark .bg-yellow-100:not([class*="dark:"]) {
+  background-color: rgba(234, 179, 8, 0.2) !important;
+}
+.dark .text-yellow-800:not([class*="dark:"]),
+.dark .text-yellow-700:not([class*="dark:"]) {
+  color: rgb(253 224 71) !important; /* yellow-300 */
+}
+
+.dark .bg-red-100:not([class*="dark:"]) {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+}
+.dark .text-red-800:not([class*="dark:"]),
+.dark .text-red-700:not([class*="dark:"]) {
+  color: rgb(252 165 165) !important; /* red-300 */
+}
+
+.dark .bg-purple-100:not([class*="dark:"]) {
+  background-color: rgba(168, 85, 247, 0.2) !important;
+}
+.dark .text-purple-800:not([class*="dark:"]),
+.dark .text-purple-700:not([class*="dark:"]) {
+  color: rgb(216 180 254) !important; /* purple-300 */
+}
+
+.dark .bg-orange-100:not([class*="dark:"]) {
+  background-color: rgba(249, 115, 22, 0.2) !important;
+}
+.dark .text-orange-800:not([class*="dark:"]),
+.dark .text-orange-700:not([class*="dark:"]) {
+  color: rgb(253 186 116) !important; /* orange-300 */
+}
+
+.dark .bg-pink-100:not([class*="dark:"]) {
+  background-color: rgba(236, 72, 153, 0.2) !important;
+}
+.dark .text-pink-800:not([class*="dark:"]),
+.dark .text-pink-700:not([class*="dark:"]) {
+  color: rgb(249 168 212) !important; /* pink-300 */
+}
+
+.dark .bg-cyan-100:not([class*="dark:"]) {
+  background-color: rgba(6, 182, 212, 0.2) !important;
+}
+.dark .text-cyan-800:not([class*="dark:"]),
+.dark .text-cyan-700:not([class*="dark:"]) {
+  color: rgb(103 232 249) !important; /* cyan-300 */
+}
+
+.dark .bg-indigo-100:not([class*="dark:"]) {
+  background-color: rgba(99, 102, 241, 0.2) !important;
+}
+.dark .text-indigo-800:not([class*="dark:"]),
+.dark .text-indigo-700:not([class*="dark:"]) {
+  color: rgb(165 180 252) !important; /* indigo-300 */
+}
+
+.dark .bg-amber-100:not([class*="dark:"]) {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+}
+.dark .text-amber-800:not([class*="dark:"]),
+.dark .text-amber-700:not([class*="dark:"]) {
+  color: rgb(252 211 77) !important; /* amber-300 */
+}
+
+/* Fix borders in dark mode */
+.dark .border-gray-200:not([class*="dark:"]),
+.dark .border-gray-300:not([class*="dark:"]) {
+  border-color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+/* Fix table headers */
+.dark thead.bg-gray-50:not([class*="dark:"]),
+.dark .bg-gray-50.border-b:not([class*="dark:"]) {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+}
+
+/* Fix hover states */
+.dark .hover\:bg-gray-100:hover:not([class*="dark:"]) {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .hover\:bg-gray-50:hover:not([class*="dark:"]) {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+}
+
+/* ============================================
+   BUTTON VARIANTS - Dark Mode
+   ============================================ */
+
+.btn-primary {
+  @apply bg-green-600 hover:bg-green-700 text-white dark:bg-green-600 dark:hover:bg-green-500;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-gray-200;
+}
+
+.btn-ghost {
+  @apply hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300;
+}
+
+/* ============================================
+   SIDEBAR & NAVIGATION - Dark Mode
+   ============================================ */
+
+.sidebar-bg {
+  @apply bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800;
+}
+
+.nav-item {
+  @apply text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800;
+}
+
+.nav-item-active {
+  @apply bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400;
+}
+
+/* ============================================
+   HEADER & FOOTER - Dark Mode
+   ============================================ */
+
+.header-bg {
+  @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800;
+}
+
+.footer-bg {
+  @apply bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800;
+}
+
+/* ============================================
+   MOBILE SAFE AREA - For notched phones
+   ============================================ */
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Mobile bottom nav specific */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+}

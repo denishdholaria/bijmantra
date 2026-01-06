@@ -1,0 +1,96 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+dist-ssr/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Kiro AI steering
+# NOTE: .kiro/ is now tracked in private repo (bijmantraorg)
+# It gets filtered out when syncing to public repo via GitHub Action
+# See .github/sync-to-public-exclude.txt
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Podman/Docker
+.containerignore
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Rust
+rust/target/
+rust/Cargo.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Development tracking
+# NOTE: docs/confidential/ is now tracked in private repo (bijmantraorg)
+# It gets filtered out when syncing to public repo via GitHub Action
+# See .github/sync-to-public-exclude.txt
+
+# Reference/backup folders
+proqrt-reference.bak/
+VibeVoice/
+
+
+
