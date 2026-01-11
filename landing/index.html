@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bijmantra — One Seed. Infinite Worlds.</title>
+  <meta name="description" content="Open-source breeding management platform for plant scientists worldwide. 100% BrAPI v2.1 compliant. Free for research and education.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bijmantra — One Seed. Infinite Worlds.">
+  <meta property="og:description" content="Open-source breeding management platform for plant scientists worldwide. 100% BrAPI v2.1 compliant.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bijmantra.org">
+  <meta property="og:image" content="https://bijmantra.org/og-image.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bijmantra — One Seed. Infinite Worlds.">
+  <meta name="twitter:description" content="Open-source breeding management platform for plant scientists worldwide.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Prakruti Design System - Inline for single-file deployment */
+    :root {
+      --patta: #2D5A27;
+      --patta-light: #4A9B3F;
+      --patta-dark: #1A3A16;
+      --patta-pale: #E8F5E9;
+      --mitti: #8B5A2B;
+      --mitti-light: #D4A574;
+      --sona: #D4A012;
+      --sona-light: #F5D742;
+      --neela: #1E6091;
+      --dhool-50: #FAFAF8;
+      --dhool-100: #F5F5F0;
+      --dhool-200: #E8E8E0;
+      --dhool-400: #A8A898;
+      --dhool-600: #585848;
+      --dhool-800: #282820;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--dhool-50);
+      color: var(--dhool-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, var(--dhool-50) 0%, var(--patta-pale) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 70%, rgba(45, 90, 39, 0.05) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(212, 160, 18, 0.05) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-2%, 2%) rotate(1deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .logo {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: sprout 0.8s ease-out;
+    }
+
+    @keyframes sprout {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--patta-dark);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      color: var(--mitti);
+      font-weight: 500;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .description {
+      font-size: 1.125rem;
+      color: var(--dhool-600);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    /* Buttons */
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--patta);
+      color: white;
+      box-shadow: 0 4px 14px rgba(45, 90, 39, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--patta-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(45, 90, 39, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--dhool-800);
+      border: 2px solid var(--dhool-200);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--patta);
+      color: var(--patta);
+      transform: translateY(-2px);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--patta);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--dhool-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 5rem 2rem;
+      background: white;
+    }
+
+    .features-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--dhool-800);
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature {
+      padding: 1.5rem;
+      border-radius: 1rem;
+      background: var(--dhool-50);
+      border: 1px solid var(--dhool-200);
+      transition: all 0.25s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border-color: var(--patta-light);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--dhool-800);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-desc {
+      font-size: 0.9375rem;
+      color: var(--dhool-600);
+      line-height: 1.6;
+    }
+
+    /* Email Signup */
+    .signup {
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, var(--patta-dark) 0%, var(--patta) 100%);
+      color: white;
+      text-align: center;
+    }
+
+    .signup-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .signup h2 {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .signup p {
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .signup-form {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .signup-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.875rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .signup-form input:focus {
+      outline: 2px solid var(--sona);
+      outline-offset: 2px;
+    }
+
+    .signup-form button {
+      padding: 0.875rem 1.5rem;
+      background: var(--sona);
+      color: var(--dhool-800);
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .signup-form button:hover {
+      background: var(--sona-light);
+      transform: translateY(-2px);
+    }
+
+    .signup-note {
+      font-size: 0.8125rem;
+      opacity: 0.7;
+      margin-top: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 2rem;
+      background: var(--dhool-800);
+      color: var(--dhool-200);
+      text-align: center;
+    }
+
+    .footer-quote {
+      font-style: italic;
+      color: var(--dhool-400);
+      margin-bottom: 1.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--dhool-200);
+      text-decoration: none;
+      transition: color 0.25s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--patta-light);
+    }
+
+    .footer-made {
+      font-size: 0.875rem;
+      color: var(--dhool-400);
+    }
+
+    .footer-made span {
+      color: #e25555;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.75rem;
+      background: var(--sona-light);
+      color: var(--dhool-800);
+      border-radius: 9999px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .stats {
+        gap: 1.5rem;
+        padding: 1.25rem 1rem;
+      }
+      
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+
+      .signup-form {
+        flex-direction: column;
+      }
+
+      .signup-form input,
+      .signup-form button {
+        width: 100%;
+      }
+    }
+
+    /* Success message */
+    .success-message {
+      display: none;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="logo">🌱</div>
+      <span class="badge">✨ Coming Soon</span>
+      <h1>Bijmantra</h1>
+      <p class="tagline">One Seed. Infinite Worlds.</p>
+      <p class="description">
+        Open-source breeding management platform for plant scientists worldwide. 
+        Built with 100% BrAPI v2.1 compliance, offline-first design, and AI-powered analytics. 
+        Free for research, education, and smallholder farmers.
+      </p>
+      
+      <div class="buttons">
+        <a href="#signup" class="btn btn-primary">
+          🌾 Get Early Access
+        </a>
+        <a href="https://github.com/denishdholaria/bijmantra" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">220</div>
+          <div class="stat-label">Pages</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">1,340+</div>
+          <div class="stat-label">API Endpoints</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">BrAPI v2.1</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">8</div>
+          <div class="stat-label">Modules</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="features-container">
+      <h2 class="section-title">Why Bijmantra?</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">🔗</div>
+          <h3 class="feature-title">100% BrAPI v2.1 Compliant</h3>
+          <p class="feature-desc">First open-source platform with complete BrAPI coverage. Seamless integration with CGIAR systems and other breeding tools.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📱</div>
+          <h3 class="feature-title">Offline-First PWA</h3>
+          <p class="feature-desc">Works in field conditions without internet. Collect data offline, sync when connected. Built for real agricultural environments.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🤖</div>
+          <h3 class="feature-title">AI-Powered Analytics</h3>
+          <p class="feature-desc">Veena AI assistant for natural language queries. GBLUP, genomic selection, and predictive breeding tools built-in.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🌍</div>
+          <h3 class="feature-title">Affordable & Accessible</h3>
+          <p class="feature-desc">Low-cost managed hosting so you can focus on breeding, not IT. Source code available for transparency. No technical expertise required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Email Signup -->
+  <section class="signup" id="signup">
+    <div class="signup-container">
+      <h2>🌾 Get Early Access</h2>
+      <p>Be among the first to try Bijmantra when we launch.</p>
+      
+      <form class="signup-form" action="https://formspree.io/f/xdaoowvj" method="POST" id="waitlist-form">
+        <input type="email" name="email" placeholder="your@email.com" required>
+        <button type="submit">Join Waitlist</button>
+      </form>
+      
+      <p class="signup-note">No spam. Just launch updates and early access.</p>
+      
+      <div class="success-message" id="success-message">
+        ✅ Thanks! We'll notify you when Bijmantra launches.
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p class="footer-quote">"Thank you to all those who work in acres, not in hours."</p>
+    
+    <div class="footer-links">
+      <a href="https://github.com/denishdholaria/bijmantra" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://brapi.org" target="_blank" rel="noopener">BrAPI</a>
+      <a href="mailto:hello@bijmantra.org">Contact</a>
+    </div>
+    
+    <p class="footer-made">© 2025 Bijmantra</p>
+  </footer>
+
+  <script>
+    // Simple form handling (replace with Formspree or similar)
+    document.getElementById('waitlist-form').addEventListener('submit', function(e) {
+      // If using Formspree, remove this preventDefault
+      // e.preventDefault();
+      
+      // Show success message after submission
+      // This will work with Formspree's redirect
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

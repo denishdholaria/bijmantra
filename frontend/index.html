@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Bijmantra - One Seed. Infinite Worlds. Open-source plant breeding platform with 100% BrAPI v2.1 compliance." />
+    <meta name="theme-color" content="#10b981" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Bijmantra - One Seed. Infinite Worlds.</title>
+    <!-- Initialize theme BEFORE React loads to prevent flash -->
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('bijmantra-theme');
+          // Handle legacy 'nasa' theme
+          if (theme === 'nasa') {
+            theme = 'dark';
+            localStorage.setItem('bijmantra-theme', 'dark');
+          }
+          // Default to light if no theme set
+          if (theme !== 'light' && theme !== 'dark') {
+            theme = 'light';
+          }
+          // Apply theme class immediately
+          document.documentElement.classList.add(theme);
+        } catch (e) {
+          // If localStorage fails, default to light
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Early error catcher for debugging white screen issues -->
+    <script>
+      window.__BIJMANTRA_ERRORS = [];
+      window.onerror = function(msg, url, line, col, error) {
+        window.__BIJMANTRA_ERRORS.push({msg, url, line, col, stack: error?.stack});
+        var root = document.getElementById('root');
+        if (root && !root.innerHTML.trim()) {
+          root.innerHTML = '<div style="padding:20px;font-family:system-ui;background:#fee;border:2px solid red;margin:20px;border-radius:8px;">' +
+            '<h2 style="color:red;margin:0 0 10px">⚠️ JavaScript Error</h2>' +
+            '<p><b>Message:</b> ' + msg + '</p>' +
+            '<p><b>Location:</b> ' + url + ':' + line + ':' + col + '</p>' +
+            '<pre style="background:#fff;padding:10px;overflow:auto;font-size:12px;max-height:300px">' + (error?.stack || 'No stack') + '</pre>' +
+            '<button onclick="location.reload()" style="margin-top:10px;padding:8px 16px;cursor:pointer">Reload</button>' +
+            '</div>';
+        }
+        return false;
+      };
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

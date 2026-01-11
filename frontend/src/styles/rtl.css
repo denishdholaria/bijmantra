@@ -1,0 +1,307 @@
+/**
+ * RTL (Right-to-Left) Support Styles
+ * Applied when html[dir="rtl"] is set
+ */
+
+/* Base RTL direction */
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Flip horizontal margins and paddings */
+html.rtl .ml-auto { margin-right: auto; margin-left: 0; }
+html.rtl .mr-auto { margin-left: auto; margin-right: 0; }
+
+/* Flip flex direction for navigation */
+html.rtl .flex-row { flex-direction: row-reverse; }
+html.rtl .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+html.rtl .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Sidebar positioning */
+html.rtl .sidebar-left {
+  left: auto;
+  right: 0;
+}
+
+html.rtl .sidebar-right {
+  right: auto;
+  left: 0;
+}
+
+/* Icon positioning */
+html.rtl .icon-left {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+html.rtl .icon-right {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Chevron/Arrow icons - flip horizontally */
+html.rtl .chevron-right,
+html.rtl .arrow-right,
+html.rtl [data-icon="chevron-right"],
+html.rtl [data-icon="arrow-right"] {
+  transform: scaleX(-1);
+}
+
+html.rtl .chevron-left,
+html.rtl .arrow-left,
+html.rtl [data-icon="chevron-left"],
+html.rtl [data-icon="arrow-left"] {
+  transform: scaleX(-1);
+}
+
+/* Form elements */
+html.rtl input,
+html.rtl textarea,
+html.rtl select {
+  text-align: right;
+}
+
+html.rtl input[type="number"] {
+  text-align: left; /* Numbers should remain LTR */
+  direction: ltr;
+}
+
+/* Tables */
+html.rtl table {
+  direction: rtl;
+}
+
+html.rtl th,
+html.rtl td {
+  text-align: right;
+}
+
+html.rtl th:first-child,
+html.rtl td:first-child {
+  text-align: right;
+}
+
+html.rtl th:last-child,
+html.rtl td:last-child {
+  text-align: left;
+}
+
+/* Dropdown menus */
+html.rtl [data-radix-popper-content-wrapper] {
+  direction: rtl;
+}
+
+html.rtl .dropdown-menu {
+  text-align: right;
+}
+
+/* Breadcrumbs */
+html.rtl .breadcrumb {
+  flex-direction: row-reverse;
+}
+
+html.rtl .breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+/* Progress bars */
+html.rtl .progress-bar {
+  direction: ltr; /* Progress should fill from left */
+}
+
+/* Sliders */
+html.rtl input[type="range"] {
+  direction: ltr;
+}
+
+/* Checkboxes and radio buttons */
+html.rtl .checkbox-label,
+html.rtl .radio-label {
+  flex-direction: row-reverse;
+}
+
+/* Cards with actions */
+html.rtl .card-actions {
+  flex-direction: row-reverse;
+}
+
+/* Dialog/Modal positioning */
+html.rtl .dialog-close {
+  left: 1rem;
+  right: auto;
+}
+
+/* Toast notifications */
+html.rtl .toast-container {
+  left: 1rem;
+  right: auto;
+}
+
+/* Scrollbars */
+html.rtl ::-webkit-scrollbar {
+  direction: ltr;
+}
+
+/* Code blocks - always LTR */
+html.rtl pre,
+html.rtl code,
+html.rtl .code-block {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Numbers and scientific notation - always LTR */
+html.rtl .numeric,
+html.rtl .scientific,
+html.rtl .text-data-mono {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Charts and visualizations - keep LTR */
+html.rtl .chart-container,
+html.rtl .echarts-container,
+html.rtl canvas {
+  direction: ltr;
+}
+
+/* Navigation items */
+html.rtl .nav-item {
+  flex-direction: row-reverse;
+}
+
+html.rtl .nav-item .nav-icon {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* Search input with icon */
+html.rtl .search-input-wrapper {
+  flex-direction: row-reverse;
+}
+
+html.rtl .search-icon {
+  left: auto;
+  right: 0.75rem;
+}
+
+html.rtl .search-input {
+  padding-left: 0.75rem;
+  padding-right: 2.5rem;
+}
+
+/* Badges with icons */
+html.rtl .badge-with-icon {
+  flex-direction: row-reverse;
+}
+
+/* List items with bullets */
+html.rtl ul {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+html.rtl ol {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* Tabs */
+html.rtl .tabs-list {
+  flex-direction: row-reverse;
+}
+
+/* Accordion */
+html.rtl .accordion-trigger {
+  flex-direction: row-reverse;
+}
+
+html.rtl .accordion-chevron {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* Avatar with text */
+html.rtl .avatar-with-text {
+  flex-direction: row-reverse;
+}
+
+/* Timeline */
+html.rtl .timeline {
+  border-left: none;
+  border-right: 2px solid var(--border);
+  padding-left: 0;
+  padding-right: 1.5rem;
+}
+
+html.rtl .timeline-dot {
+  left: auto;
+  right: -0.5rem;
+}
+
+/* Stepper */
+html.rtl .stepper {
+  flex-direction: row-reverse;
+}
+
+/* Pagination */
+html.rtl .pagination {
+  flex-direction: row-reverse;
+}
+
+/* Button groups */
+html.rtl .button-group {
+  flex-direction: row-reverse;
+}
+
+html.rtl .button-group > button:first-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+html.rtl .button-group > button:last-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+/* Input groups */
+html.rtl .input-group {
+  flex-direction: row-reverse;
+}
+
+html.rtl .input-group-prepend {
+  border-radius: 0 var(--radius) var(--radius) 0;
+  border-left: 1px solid var(--border);
+  border-right: none;
+}
+
+html.rtl .input-group-append {
+  border-radius: var(--radius) 0 0 var(--radius);
+  border-right: 1px solid var(--border);
+  border-left: none;
+}
+
+/* Utility classes for manual RTL control */
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+.rtl-ignore {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+}
+
+.rtl-force {
+  direction: rtl !important;
+}
+
+/* Logical properties (modern approach) */
+@supports (margin-inline-start: 0) {
+  html.rtl .ms-auto { margin-inline-start: auto; }
+  html.rtl .me-auto { margin-inline-end: auto; }
+  html.rtl .ps-4 { padding-inline-start: 1rem; }
+  html.rtl .pe-4 { padding-inline-end: 1rem; }
+}

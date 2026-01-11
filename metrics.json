@@ -1,0 +1,172 @@
+{
+  "$schema": "https://bijmantra.org/schemas/metrics.json",
+  "lastUpdated": "2026-01-10",
+  "updatedBy": "Kiro (Session 76 - ASTRA Agent Arsenal & Veena Fixes)",
+  "session": 76,
+  "sessionStatus": "Complete - ASTRA sidebar implemented, Veena template fix, Mahasarthi colors restored",
+
+  "version": {
+    "app": "preview-1",
+    "brapi": "2.1",
+    "schema": "1.0.0",
+    "codename": "Prathama (प्रथम)",
+    "releaseDate": "2026-01-09",
+    "prerelease": "preview",
+    "prereleaseVersion": 1,
+    "note": "Preview release - early access for evaluation. CALF assessment identified areas for improvement."
+  },
+
+  "calf": {
+    "assessmentDate": "2026-01-09",
+    "documentPath": "docs/CALF.md",
+    "summary": {
+      "calf0_displayOnly": { "count": 89, "percent": 40, "status": "acceptable" },
+      "calf1_clientSide": { "count": 67, "percent": 30, "status": "needs_backend" },
+      "calf2_demoData": { "count": 42, "percent": 19, "status": "critical" },
+      "calf3_realComputation": { "count": 18, "percent": 8, "status": "mixed" },
+      "calf4_wasm": { "count": 5, "percent": 2, "status": "excellent" }
+    },
+    "criticalFinding": "Only 8 pages (4%) perform real scientific computations with real data",
+    "estimatedEffortToProduction": "12-16 weeks"
+  },
+
+  "pages": {
+    "total": 221,
+    "functional": 23,
+    "displayOnly": 89,
+    "clientSideOnly": 67,
+    "demoDataViolation": 42,
+    "wasmCompute": 5,
+    "note": "CALF assessment reveals only 23 pages (10%) are truly functional with real computation. 42 pages (19%) violate Zero Mock Data Policy."
+  },
+
+  "api": {
+    "totalEndpoints": 1382,
+    "brapiEndpoints": 201,
+    "brapiCoverage": 100,
+    "customEndpoints": 1181,
+    "documentedEndpoints": 1382,
+    "endpointsReturningDemoData": 42,
+    "note": "42 endpoints return hardcoded DEMO_* arrays instead of database queries."
+  },
+
+  "database": {
+    "models": 111,
+    "migrations": 28,
+    "seeders": 15,
+    "tables": 121,
+    "seededRecords": 413,
+    "rlsEnabledTables": 87,
+    "rlsCoverage": "100%",
+    "note": "Database infrastructure is solid. Issue is services returning demo data instead of querying database."
+  },
+
+  "tests": {
+    "unit": 88,
+    "integration": 18,
+    "e2e": 229,
+    "e2eSkipped": 3,
+    "accessibility": 17,
+    "total": 352,
+    "note": "Tests pass but do not verify computational correctness of demo data pages."
+  },
+
+  "modules": {
+    "total": 8,
+    "list": [
+      { "name": "Breeding", "pages": 35, "endpoints": 120, "calfStatus": "mixed" },
+      { "name": "Phenotyping", "pages": 25, "endpoints": 85, "calfStatus": "partial" },
+      { "name": "Genomics", "pages": 35, "endpoints": 107, "calfStatus": "mostly_demo" },
+      { "name": "Seed Bank", "pages": 15, "endpoints": 59, "calfStatus": "display_only" },
+      { "name": "Environment", "pages": 20, "endpoints": 97, "calfStatus": "display_only" },
+      { "name": "Seed Operations", "pages": 22, "endpoints": 96, "calfStatus": "display_only" },
+      { "name": "Knowledge", "pages": 5, "endpoints": 35, "calfStatus": "display_only" },
+      { "name": "Settings & Admin", "pages": 35, "endpoints": 79, "calfStatus": "functional" }
+    ]
+  },
+
+  "workspaces": {
+    "total": 5,
+    "list": [
+      { "id": "breeding", "name": "Plant Breeding", "pages": 83 },
+      { "id": "seed-ops", "name": "Seed Industry", "pages": 22 },
+      { "id": "research", "name": "Innovation Lab", "pages": 28 },
+      { "id": "genebank", "name": "Gene Bank", "pages": 34 },
+      { "id": "admin", "name": "Administration", "pages": 25 }
+    ]
+  },
+
+  "zeroMockDataPolicy": {
+    "status": "violated",
+    "servicesWithDemoData": [
+      "genomic_selection.py",
+      "stability_analysis.py",
+      "genetic_gain.py",
+      "trial_network.py",
+      "speed_breeding.py",
+      "data_quality.py",
+      "germplasm_search.py",
+      "parentage_analysis.py",
+      "qtl_mapping.py",
+      "phenology.py",
+      "population_genetics.py",
+      "haplotype_analysis.py",
+      "linkage_disequilibrium.py"
+    ],
+    "totalViolatingServices": 13,
+    "note": "Session 75 CALF audit identified 13 services returning DEMO_* arrays instead of database queries."
+  },
+
+  "build": {
+    "status": "passing",
+    "pwaEntries": 56,
+    "sizeKB": 8276,
+    "sizeMB": "8.3MB"
+  },
+
+  "pathToProduction": {
+    "priority1": {
+      "task": "Fix Demo Data (42 pages)",
+      "timeline": "2-3 weeks",
+      "status": "not_started"
+    },
+    "priority2": {
+      "task": "Implement Missing Algorithms (8 pages)",
+      "timeline": "4-6 weeks",
+      "status": "not_started"
+    },
+    "priority3": {
+      "task": "Move Calculations to Backend (67 pages)",
+      "timeline": "6-8 weeks",
+      "status": "not_started"
+    },
+    "totalEstimate": "12-16 weeks"
+  },
+
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "mahasarthiNavigation": "2026-01-07",
+    "calfAssessmentComplete": "2026-01-09",
+    "versionDowngraded": "2026-01-09",
+    "astraAgentArsenal": "2026-01-10"
+  },
+
+  "releaseInfo": {
+    "currentRelease": "preview-1",
+    "codename": "Prathama (प्रथम)",
+    "phase": "preview",
+    "status": "early-access",
+    "nextMilestone": "preview-2 (Fix demo data pages)",
+    "stableTarget": "v1.0.0",
+    "versionProgression": ["preview-1", "preview-2", "preview-3", "1.0.0-rc", "1.0.0"]
+  },
+
+  "techStack": {
+    "frontend": ["React 18", "TypeScript 5", "Vite 5", "Tailwind CSS", "TanStack Query"],
+    "backend": ["Python 3.11", "FastAPI", "SQLAlchemy 2.0", "Pydantic 2"],
+    "database": ["PostgreSQL 15", "PostGIS", "pgvector", "Redis"],
+    "compute": ["Rust/WASM", "Fortran"]
+  }
+}
