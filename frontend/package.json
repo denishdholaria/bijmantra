@@ -48,7 +48,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@react-three/drei": "^9.99.0",
     "@react-three/fiber": "^8.15.19",
-    "@sentry/react": "^10.28.0",
+    "@sentry/react": "^10.32.1",
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-table": "^8.12.0",
     "@tanstack/react-virtual": "^3.13.17",
