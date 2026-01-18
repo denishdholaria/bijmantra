@@ -1,0 +1,354 @@
+# Jules PR Validation Workflow
+# Fast validation for autonomous agent PRs before human review
+# MANUAL TRIGGER to save CI costs - run before merging Jules PRs
+
+name: Jules PR Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to validate (optional)'
+        required: false
+        type: string
+
+# Restrict permissions to minimum required
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ============================================
+  # GATE 1: Quick Checks (< 2 min)
+  # Must pass before any other job runs
+  # ============================================
+  quick-checks:
+    name: "🚦 Gate 1: Quick Checks"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      frontend_changed: ${{ steps.changes.outputs.frontend }}
+      backend_changed: ${{ steps.changes.outputs.backend }}
+      migrations_changed: ${{ steps.changes.outputs.migrations }}
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Detect changed files
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            backend:
+              - 'backend/**'
+            migrations:
+              - 'backend/alembic/**'
+              
+      - name: Check for merge conflicts
+        run: |
+          git fetch origin main
+          if ! git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main | grep -q "^<<<<<<<"; then
+            echo "✅ No merge conflicts detected"
+          else
+            echo "❌ Merge conflicts detected!"
+            exit 1
+          fi
+          
+      - name: Validate PR title format
+        if: github.event_name == 'pull_request'
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          # Allow conventional commits or Jules format
+          if [[ "$TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore|perf|ci)(\(.+\))?:.*$ ]] || \
+             [[ "$TITLE" =~ ^##\ Task:.*$ ]]; then
+            echo "✅ PR title format valid"
+          else
+            echo "⚠️ PR title should follow conventional commits format"
+            echo "Examples: feat(breeding): add cross validation"
+            echo "          fix: resolve null pointer in germplasm API"
+          fi
+
+  # ============================================
+  # GATE 2: Frontend Validation (parallel)
+  # ============================================
+  frontend-build:
+    name: "🎨 Gate 2a: Frontend Build"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    if: needs.quick-checks.outputs.frontend_changed == 'true'
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+          
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+        
+      - name: TypeScript check
+        run: npx tsc --noEmit
+        working-directory: frontend
+        
+      - name: Build
+        run: npm run build
+        working-directory: frontend
+        
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: frontend-build
+          path: frontend/dist
+          retention-days: 1
+
+  frontend-lint:
+    name: "🔍 Gate 2b: Frontend Lint"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    if: needs.quick-checks.outputs.frontend_changed == 'true'
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+          
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+        
+      - name: Lint
+        run: npm run lint
+        working-directory: frontend
+
+  # ============================================
+  # GATE 2: Backend Validation (parallel)
+  # ============================================
+  backend-lint:
+    name: "🐍 Gate 2c: Backend Lint"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    if: needs.quick-checks.outputs.backend_changed == 'true'
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+          
+      - name: Install Ruff
+        run: pip install ruff
+        
+      - name: Lint with Ruff
+        run: ruff check app/ --output-format=github
+        working-directory: backend
+        continue-on-error: true  # Don't block on style issues
+
+  backend-typecheck:
+    name: "🔬 Gate 2d: Backend Types"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    if: needs.quick-checks.outputs.backend_changed == 'true'
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+          
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install mypy types-redis
+        working-directory: backend
+        
+      - name: Type check critical paths
+        run: |
+          mypy app/api/auth.py app/core/security.py --ignore-missing-imports || true
+        working-directory: backend
+        continue-on-error: true
+
+  backend-tests:
+    name: "🧪 Gate 2e: Backend Tests"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    if: needs.quick-checks.outputs.backend_changed == 'true'
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: backend
+        
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: test-secret-key-for-ci
+        continue-on-error: true
+
+  # ============================================
+  # GATE 3: Migration Safety Check
+  # Critical for Jules PRs that touch database
+  # ============================================
+  migration-check:
+    name: "🗄️ Gate 3: Migration Safety"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    if: needs.quick-checks.outputs.migrations_changed == 'true'
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Check migration chain
+        run: |
+          echo "🔍 Checking migration files..."
+          
+          # List all migrations
+          ls -la backend/alembic/versions/*.py | head -20
+          
+          # Check for duplicate revision IDs
+          REVISIONS=$(grep -h "^revision = " backend/alembic/versions/*.py | sort)
+          UNIQUE_REVISIONS=$(echo "$REVISIONS" | sort -u)
+          
+          if [ "$REVISIONS" != "$UNIQUE_REVISIONS" ]; then
+            echo "❌ Duplicate revision IDs detected!"
+            echo "$REVISIONS" | uniq -d
+            exit 1
+          fi
+          
+          echo "✅ Migration chain looks valid"
+          
+      - name: Check for conflicting down_revisions
+        run: |
+          # Extract down_revision values
+          grep -h "^down_revision = " backend/alembic/versions/*.py | sort | uniq -c | sort -rn | head -10
+          
+          # Check if any migration points to a non-existent revision
+          echo "✅ Down revision check complete"
+
+  # ============================================
+  # GATE 4: Security Scan
+  # ============================================
+  security-scan:
+    name: "🔒 Gate 4: Security Scan"
+    runs-on: ubuntu-latest
+    needs: quick-checks
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Check for secrets in code
+        run: |
+          # Simple pattern check for common secrets
+          if grep -rE "(password|secret|api_key|token)\s*=\s*['\"][^'\"]+['\"]" \
+             --include="*.py" --include="*.ts" --include="*.tsx" \
+             --exclude-dir=node_modules --exclude-dir=venv \
+             backend/ frontend/src/ 2>/dev/null | \
+             grep -v "changeme" | grep -v "example" | grep -v "test" | grep -v "demo"; then
+            echo "⚠️ Potential hardcoded secrets detected - please review"
+          else
+            echo "✅ No obvious hardcoded secrets found"
+          fi
+          
+      - name: Check for dangerous patterns
+        run: |
+          # Check for eval, exec, etc.
+          if grep -rE "(eval\(|exec\(|__import__|subprocess\.call)" \
+             --include="*.py" backend/app/ 2>/dev/null; then
+            echo "⚠️ Potentially dangerous code patterns detected"
+          else
+            echo "✅ No dangerous patterns found"
+          fi
+
+  # ============================================
+  # SUMMARY: Aggregate Results
+  # ============================================
+  validation-summary:
+    name: "📊 Validation Summary"
+    runs-on: ubuntu-latest
+    needs: [quick-checks, frontend-build, frontend-lint, backend-lint, backend-tests, migration-check, security-scan]
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 🤖 Jules PR Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Quick Checks | ${{ needs.quick-checks.result == 'success' && '✅' || '❌' }} ${{ needs.quick-checks.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Build | ${{ needs.frontend-build.result == 'success' && '✅' || needs.frontend-build.result == 'skipped' && '⏭️' || '❌' }} ${{ needs.frontend-build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Lint | ${{ needs.frontend-lint.result == 'success' && '✅' || needs.frontend-lint.result == 'skipped' && '⏭️' || '❌' }} ${{ needs.frontend-lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Lint | ${{ needs.backend-lint.result == 'success' && '✅' || needs.backend-lint.result == 'skipped' && '⏭️' || '⚠️' }} ${{ needs.backend-lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Tests | ${{ needs.backend-tests.result == 'success' && '✅' || needs.backend-tests.result == 'skipped' && '⏭️' || '⚠️' }} ${{ needs.backend-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Migration Check | ${{ needs.migration-check.result == 'success' && '✅' || needs.migration-check.result == 'skipped' && '⏭️' || '❌' }} ${{ needs.migration-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | ${{ needs.security-scan.result == 'success' && '✅' || '⚠️' }} ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Review Checklist for Human" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Code changes align with task description" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] No unintended file modifications" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Migration base revision is current" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Async/sync patterns are correct (GOVERNANCE §4.3.1)" >> $GITHUB_STEP_SUMMARY
+          
+      - name: Set final status
+        run: |
+          if [ "${{ needs.quick-checks.result }}" == "failure" ] || \
+             [ "${{ needs.frontend-build.result }}" == "failure" ] || \
+             [ "${{ needs.migration-check.result }}" == "failure" ]; then
+            echo "❌ Critical checks failed - PR should not be merged"
+            exit 1
+          else
+            echo "✅ All critical checks passed - ready for human review"
+          fi

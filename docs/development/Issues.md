@@ -1,0 +1,11 @@
+- http://localhost:5173/earth-systems/gdd
+- http://localhost:5173/earth-systems/map
+- http://localhost:5173/commercial/dus/crops
+- http://localhost:5173/genetic-diversity
+- http://localhost:5173/haplotype-analysis
+- http://localhost:5173/breeding-values
+- http://localhost:5173/genetic-gain-tracker
+- http://localhost:5173/earth-systems/map
+- http://localhost:5173/earth-systems/gdd
+- Google Earth/ALU/EarthEngine/Maps API connection
+- Check db connections
