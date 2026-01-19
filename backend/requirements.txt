@@ -17,7 +17,7 @@ ruff>=0.8.0
 geoalchemy2>=0.16.0
 minio>=7.2.10
 python-socketio>=5.10.0
-meilisearch==0.38.0
+meilisearch==0.40.0
 sentry-sdk[fastapi]>=1.38.0
 
 # Vector Store & Embeddings
