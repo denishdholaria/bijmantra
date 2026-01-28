@@ -1,0 +1,130 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "name": "Prakruti Design System",
+  "version": "1.0.0",
+  "description": "Color tokens for Bijmantra's agricultural design language",
+  "author": "Bijmantra Team",
+  "license": "MIT",
+  "colors": {
+    "mitti": {
+      "$description": "Earth (मिट्टी) - Primary brown palette",
+      "base": { "$value": "#8B5A2B", "$type": "color" },
+      "light": { "$value": "#D4A574", "$type": "color" },
+      "dark": { "$value": "#5D3A1A", "$type": "color" },
+      "50": { "$value": "#FAF6F1", "$type": "color" },
+      "100": { "$value": "#F0E6D9", "$type": "color" },
+      "200": { "$value": "#E0CCB3", "$type": "color" },
+      "900": { "$value": "#3D2510", "$type": "color" }
+    },
+    "patta": {
+      "$description": "Leaf (पत्ता) - Secondary green palette",
+      "base": { "$value": "#2D5A27", "$type": "color" },
+      "light": { "$value": "#4A9B3F", "$type": "color" },
+      "dark": { "$value": "#1A3A16", "$type": "color" },
+      "pale": { "$value": "#E8F5E9", "$type": "color" },
+      "50": { "$value": "#F1F8F1", "$type": "color" },
+      "100": { "$value": "#DCEFDC", "$type": "color" },
+      "200": { "$value": "#B8DFB8", "$type": "color" },
+      "900": { "$value": "#0D2A0A", "$type": "color" }
+    },
+    "sona": {
+      "$description": "Gold (सोना) - Accent yellow palette",
+      "base": { "$value": "#D4A012", "$type": "color" },
+      "light": { "$value": "#F5D742", "$type": "color" },
+      "dark": { "$value": "#9A7400", "$type": "color" },
+      "pale": { "$value": "#FFF8E1", "$type": "color" },
+      "50": { "$value": "#FFFBEB", "$type": "color" },
+      "100": { "$value": "#FEF3C7", "$type": "color" },
+      "200": { "$value": "#FDE68A", "$type": "color" }
+    },
+    "neela": {
+      "$description": "Sky (नीला) - Accent blue palette",
+      "base": { "$value": "#1E6091", "$type": "color" },
+      "light": { "$value": "#3B8AC4", "$type": "color" },
+      "dark": { "$value": "#0D4A6F", "$type": "color" },
+      "pale": { "$value": "#E3F2FD", "$type": "color" },
+      "50": { "$value": "#EFF6FF", "$type": "color" },
+      "100": { "$value": "#DBEAFE", "$type": "color" },
+      "200": { "$value": "#BFDBFE", "$type": "color" }
+    },
+    "laal": {
+      "$description": "Red (लाल) - Error/danger palette",
+      "base": { "$value": "#C62828", "$type": "color" },
+      "light": { "$value": "#EF5350", "$type": "color" },
+      "dark": { "$value": "#8E0000", "$type": "color" },
+      "pale": { "$value": "#FFEBEE", "$type": "color" }
+    },
+    "narangi": {
+      "$description": "Orange (नारंगी) - Warning palette",
+      "base": { "$value": "#E65100", "$type": "color" },
+      "light": { "$value": "#FF8A50", "$type": "color" },
+      "dark": { "$value": "#AC1900", "$type": "color" },
+      "pale": { "$value": "#FFF3E0", "$type": "color" }
+    },
+    "dhool": {
+      "$description": "Dust (धूल) - Neutral palette",
+      "50": { "$value": "#FAFAF8", "$type": "color" },
+      "100": { "$value": "#F5F5F0", "$type": "color" },
+      "200": { "$value": "#E8E8E0", "$type": "color" },
+      "300": { "$value": "#D4D4C8", "$type": "color" },
+      "400": { "$value": "#A8A898", "$type": "color" },
+      "500": { "$value": "#787868", "$type": "color" },
+      "600": { "$value": "#585848", "$type": "color" },
+      "700": { "$value": "#383830", "$type": "color" },
+      "800": { "$value": "#282820", "$type": "color" },
+      "900": { "$value": "#181810", "$type": "color" }
+    }
+  },
+  "semantic": {
+    "background": {
+      "primary": { "$value": "{colors.dhool.50}", "$type": "color" },
+      "secondary": { "$value": "{colors.dhool.100}", "$type": "color" },
+      "tertiary": { "$value": "{colors.dhool.200}", "$type": "color" },
+      "inverse": { "$value": "{colors.dhool.800}", "$type": "color" }
+    },
+    "text": {
+      "primary": { "$value": "{colors.dhool.800}", "$type": "color" },
+      "secondary": { "$value": "{colors.dhool.600}", "$type": "color" },
+      "tertiary": { "$value": "{colors.dhool.500}", "$type": "color" },
+      "muted": { "$value": "{colors.dhool.400}", "$type": "color" },
+      "inverse": { "$value": "{colors.dhool.50}", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "{colors.dhool.200}", "$type": "color" },
+      "strong": { "$value": "{colors.dhool.300}", "$type": "color" },
+      "focus": { "$value": "{colors.patta.base}", "$type": "color" }
+    },
+    "interactive": {
+      "default": { "$value": "{colors.patta.base}", "$type": "color" },
+      "hover": { "$value": "{colors.patta.dark}", "$type": "color" },
+      "active": { "$value": "{colors.patta.dark}", "$type": "color" }
+    },
+    "status": {
+      "success": { "$value": "{colors.patta.base}", "$type": "color" },
+      "warning": { "$value": "{colors.narangi.base}", "$type": "color" },
+      "error": { "$value": "{colors.laal.base}", "$type": "color" },
+      "info": { "$value": "{colors.neela.base}", "$type": "color" }
+    }
+  },
+  "darkMode": {
+    "background": {
+      "primary": { "$value": "#1A1A18", "$type": "color" },
+      "secondary": { "$value": "#242420", "$type": "color" },
+      "tertiary": { "$value": "#2E2E28", "$type": "color" }
+    },
+    "text": {
+      "primary": { "$value": "{colors.dhool.100}", "$type": "color" },
+      "secondary": { "$value": "{colors.dhool.300}", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "#383830", "$type": "color" },
+      "strong": { "$value": "#484840", "$type": "color" }
+    },
+    "adjustedColors": {
+      "patta": { "$value": "#4A9B3F", "$type": "color" },
+      "neela": { "$value": "#3B8AC4", "$type": "color" },
+      "sona": { "$value": "#F5D742", "$type": "color" },
+      "mitti": { "$value": "#D4A574", "$type": "color" }
+    }
+  }
+}

@@ -1,0 +1,140 @@
+/**
+ * Bijmantra Typography System
+ *
+ * Scientific document typography with tabular numbers
+ * and hierarchy for dense data interfaces.
+ */
+
+/* ============================================
+   MONOSPACE DATA TYPOGRAPHY
+   ============================================ */
+.text-data-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   HIERARCHY FOR DENSE DATA INTERFACES
+   ============================================ */
+
+/* Section headers */
+.text-section-header {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+/* Table headers */
+.text-table-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Data values (numbers, IDs) */
+.text-data-value {
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Data labels */
+.text-data-label {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Metric values (large numbers on dashboards) */
+.text-metric {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.text-metric-sm {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+/* Scientific notation */
+.text-scientific {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.875rem;
+}
+
+/* Gene/marker names */
+.text-gene {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+/* Accession numbers */
+.text-accession {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
+   RESPONSIVE TYPOGRAPHY
+   ============================================ */
+@media (max-width: 640px) {
+  .text-section-header {
+    font-size: 1rem;
+  }
+
+  .text-metric {
+    font-size: 1.5rem;
+  }
+
+  .text-metric-sm {
+    font-size: 1.25rem;
+  }
+}
+
+/* ============================================
+   FIELD MODE TYPOGRAPHY (Larger for outdoor use)
+   ============================================ */
+[data-field-mode="true"] .text-data-value,
+[data-field-mode="true"] .text-data-label {
+  font-size: 1rem;
+}
+
+[data-field-mode="true"] .text-table-header {
+  font-size: 0.875rem;
+}
+
+[data-field-mode="true"] .text-metric {
+  font-size: 2.5rem;
+}
+
+/* ============================================
+   TRUNCATION UTILITIES
+   ============================================ */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

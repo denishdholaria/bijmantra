@@ -1,0 +1,242 @@
+{
+  "$schema": "https://bijmantra.org/schemas/metrics.json",
+  "lastUpdated": "2026-01-22",
+  "updatedBy": "Kiro (Climate-Smart Agriculture - Unit Tests Complete)",
+  "session": 90,
+  "sessionStatus": "Complete - 50 unit tests passing for climate services (emissions, carbon monitoring)",
+
+  "veenaIntelligence": {
+    "status": "complete",
+    "functionsUsingRealDB": 32,
+    "functionsUsingServices": 32,
+    "functionsStillDemo": 0,
+    "searchServices": 8,
+    "domainsInCrossDomainQuery": 6,
+    "insightTypesImplemented": 5,
+    "services": [
+      "germplasm_search_service",
+      "trial_search_service",
+      "observation_search_service",
+      "cross_search_service",
+      "location_search_service",
+      "seedlot_search_service",
+      "program_search_service",
+      "trait_search_service",
+      "weather_service",
+      "breeding_value_service",
+      "gxe_service",
+      "data_export_service",
+      "genetic_diversity_service",
+      "kinship_service",
+      "spectral_indices_service",
+      "pedigree_service"
+    ],
+    "note": "Session 85: Added kinship_service (VanRaden), spectral_indices_service (NDVI/TGI/CCC), pedigree_service. Total 35 active services."
+  },
+
+  "version": {
+    "app": "preview-1",
+    "brapi": "2.1",
+    "schema": "1.0.0",
+    "codename": "Prathama (प्रथम)",
+    "releaseDate": "2026-01-09",
+    "prerelease": "preview",
+    "prereleaseVersion": 1,
+    "note": "Preview release - early access for evaluation. CALF assessment identified areas for improvement."
+  },
+
+  "calf": {
+    "assessmentDate": "2026-01-09",
+    "documentPath": "docs/CALF.md",
+    "summary": {
+      "calf0_displayOnly": { "count": 89, "percent": 40, "status": "acceptable" },
+      "calf1_clientSide": { "count": 67, "percent": 30, "status": "needs_backend" },
+      "calf2_demoData": { "count": 37, "percent": 17, "status": "improving" },
+      "calf3_realComputation": { "count": 23, "percent": 10, "status": "improving" },
+      "calf4_wasm": { "count": 5, "percent": 2, "status": "excellent" }
+    },
+    "criticalFinding": "Tasks 18, 21, 36 added 5 real computation pages. Total now 23 (10%).",
+    "estimatedEffortToProduction": "10-14 weeks"
+  },
+
+  "pages": {
+    "total": 235,
+    "functional": 28,
+    "displayOnly": 89,
+    "clientSideOnly": 67,
+    "demoDataViolation": 37,
+    "wasmCompute": 5,
+    "futureModulePages": 12,
+    "futureModulePagesWired": 10,
+    "note": "Added 2 climate pages (CarbonDashboard, SustainabilityMetrics). Session 87."
+  },
+
+  "api": {
+    "totalEndpoints": 1505,
+    "brapiEndpoints": 201,
+    "brapiCoverage": 100,
+    "customEndpoints": 1304,
+    "documentedEndpoints": 1505,
+    "endpointsReturningDemoData": 37,
+    "futureModuleEndpoints": 103,
+    "note": "Added 20 climate endpoints (carbon: 8, emissions: 6, impact: 6). Session 86."
+  },
+
+  "codebase": {
+    "backendPythonFiles": 16730,
+    "frontendTsxFiles": 643,
+    "apiRouterFiles": 193,
+    "serviceFiles": 130,
+    "verificationScripts": 7,
+    "juleslsTaskFiles": 103,
+    "mainPyLines": 327,
+    "note": "main.py reduced from 621 to 327 lines (47% reduction). Modular router architecture in place."
+  },
+
+  "database": {
+    "models": 127,
+    "migrations": 34,
+    "seeders": 16,
+    "tables": 147,
+    "seededRecords": 575,
+    "rlsEnabledTables": 103,
+    "rlsCoverage": "100%",
+    "note": "Added climate_demo_data_working.py seeder. 162 climate records created (carbon: 70, emissions: 67, impact: 12, sdg: 5, germplasm: 5, varieties: 5, policies: 3)."
+  },
+
+  "tests": {
+    "unit": 138,
+    "integration": 18,
+    "e2e": 229,
+    "e2eSkipped": 3,
+    "accessibility": 17,
+    "total": 402,
+    "verificationScripts": 7,
+    "note": "Added 50 climate unit tests (emissions: 23, carbon: 27). Session 90."
+  },
+
+  "modules": {
+    "total": 8,
+    "list": [
+      { "name": "Breeding", "pages": 35, "endpoints": 126, "calfStatus": "improving" },
+      { "name": "Phenotyping", "pages": 28, "endpoints": 88, "calfStatus": "partial" },
+      { "name": "Genomics", "pages": 35, "endpoints": 110, "calfStatus": "improving" },
+      { "name": "Seed Bank", "pages": 15, "endpoints": 59, "calfStatus": "display_only" },
+      { "name": "Environment", "pages": 22, "endpoints": 117, "calfStatus": "display_only" },
+      { "name": "Seed Operations", "pages": 22, "endpoints": 99, "calfStatus": "partial" },
+      { "name": "Knowledge", "pages": 5, "endpoints": 35, "calfStatus": "display_only" },
+      { "name": "Settings & Admin", "pages": 35, "endpoints": 79, "calfStatus": "functional" }
+    ]
+  },
+
+  "workspaces": {
+    "total": 5,
+    "list": [
+      { "id": "breeding", "name": "Plant Breeding", "pages": 86 },
+      { "id": "seed-ops", "name": "Seed Industry", "pages": 25 },
+      { "id": "research", "name": "Innovation Lab", "pages": 28 },
+      { "id": "genebank", "name": "Gene Bank", "pages": 34 },
+      { "id": "admin", "name": "Administration", "pages": 25 }
+    ]
+  },
+
+  "zeroMockDataPolicy": {
+    "status": "compliant",
+    "servicesWithDemoData": [],
+    "totalViolatingServices": 0,
+    "note": "Zero Mock Data Policy enforced. All new services use real computation."
+  },
+
+  "build": {
+    "status": "passing",
+    "pwaEntries": 148,
+    "sizeKB": 9450,
+    "sizeMB": "9.5MB"
+  },
+
+  "pathToProduction": {
+    "priority1": {
+      "task": "Fix Demo Data (37 pages remaining)",
+      "timeline": "2-3 weeks",
+      "status": "in_progress"
+    },
+    "priority2": {
+      "task": "Implement Missing Algorithms (13 pages)",
+      "timeline": "3-5 weeks",
+      "status": "in_progress"
+    },
+    "priority3": {
+      "task": "Move Calculations to Backend (67 pages)",
+      "timeline": "6-8 weeks",
+      "status": "not_started"
+    },
+    "totalEstimate": "10-14 weeks"
+  },
+
+  "julesFleet": {
+    "tasksTotal": 100,
+    "tasksCompleted": 19,
+    "tasksInProgress": 8,
+    "tasksPending": 73,
+    "localTasksCompleted": ["Task 18", "Task 21", "Task 36"],
+    "remoteTasksMerged": ["Task 11", "Task 12", "Task 15", "Task 17", "Task 10", "Task 13", "Task 20", "Task 21", "Task 19", "Task 07", "Task 08", "Task 18", "Soil Models Fleet"],
+    "remoteBranchesAvailable": [],
+    "note": "Wave 4 Complete. All Intelligence Models (Soil, Carbon, GDD, Pest) are PRESENT in codebase."
+  },
+
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "mahasarthiNavigation": "2026-01-07",
+    "calfAssessmentComplete": "2026-01-09",
+    "versionDowngraded": "2026-01-09",
+    "astraAgentArsenal": "2026-01-10",
+    "pyo3NumpyUpgradeComplete": "2026-01-10",
+    "p0DemoDataComplete": "2026-01-12",
+    "p05DemoDataComplete": "2026-01-12",
+    "themeSimplificationComplete": "2026-01-12",
+    "julesBatchCreated": "2026-01-12",
+    "referenceAppsAnalysis": "2026-01-13",
+    "baglamukhiPlanCreated": "2026-01-13",
+    "astraDeleted": "2026-01-13",
+    "setuProtocolEstablished": "2026-01-13",
+    "futureRoutersComplete": "2026-01-13",
+    "futureMigration029Complete": "2026-01-13",
+    "futureReactPagesComplete": "2026-01-13",
+    "thinkTankPhase1Complete": "2026-01-13",
+    "veenaChatFixed": "2026-01-13",
+    "veenaSearchServicesComplete": "2026-01-15",
+    "demoDataServicesComplete": "2026-01-15",
+    "errorHandlingImprovements": "2026-01-16",
+    "zeroMockDataPolicyEnforced": "2026-01-16",
+    "databaseMigrations030to034": "2026-01-17",
+    "postgresqlUpgradedTo17": "2026-01-17",
+    "futureModulesRoutingComplete": "2026-01-17",
+    "backendCoreRefactor": "2026-01-21",
+    "truthInUIPhase1": "2026-01-21",
+    "truthInUIPhase2": "2026-01-21",
+    "task18ImageAnalysis": "2026-01-21",
+    "task21GenomicKinship": "2026-01-21",
+    "task36GBLUPIntegration": "2026-01-21",
+    "task11PedigreeAnalysis": "2026-01-21"
+  },
+
+  "releaseInfo": {
+    "currentRelease": "preview-1",
+    "codename": "Prathama (प्रथम)",
+    "phase": "preview",
+    "status": "early-access",
+    "nextMilestone": "preview-2 (Complete Cherry-Pick of Jules Fleet)",
+    "stableTarget": "v1.0.0",
+    "versionProgression": ["preview-1", "preview-2", "preview-3", "1.0.0-rc", "1.0.0"]
+  },
+
+  "techStack": {
+    "frontend": ["React 18", "TypeScript 5", "Vite 5", "Tailwind CSS", "TanStack Query"],
+    "backend": ["Python 3.13", "FastAPI", "SQLAlchemy 2.0", "Pydantic 2"],
+    "database": ["PostgreSQL 17", "PostGIS 3.6", "pgvector 0.8", "Redis"],
+    "compute": ["Rust/WASM", "NumPy", "OpenCV"],
+    "ai": ["VanRaden Kinship", "GBLUP Solver", "Spectral Indices (NDVI/TGI/CCC)"]
+  }
+}
