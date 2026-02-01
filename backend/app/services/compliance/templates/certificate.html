@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Seed Analysis Certificate</title>
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 40px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 28px;
+        }
+        .header h2 {
+            color: #7f8c8d;
+            margin: 5px 0 0;
+            font-size: 18px;
+            font-weight: normal;
+        }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(200, 200, 200, 0.2);
+            z-index: -1;
+            white-space: nowrap;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .section h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .field {
+            margin-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+            color: #7f8c8d;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .value {
+            font-size: 16px;
+        }
+        .signature {
+            margin-top: 50px;
+            text-align: right;
+        }
+        .signature img {
+            max-height: 60px;
+        }
+        .signature .line {
+            border-top: 1px solid #333;
+            width: 200px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .verification {
+            text-align: center;
+            margin-top: 20px;
+            font-family: monospace;
+            background: #eee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="watermark">{{ compliance_type }} APPROVED</div>
+
+    <div class="header">
+        <h1>Seed Analysis Certificate</h1>
+        <h2>{{ compliance_type }} COMPLIANCE REPORT</h2>
+    </div>
+
+    <div class="section">
+        <h3>Batch Information</h3>
+        <div class="grid">
+            <div class="field">
+                <div class="label">Batch ID</div>
+                <div class="value">{{ batch.batch_id }}</div>
+            </div>
+            <div class="field">
+                <div class="label">Date of Issue</div>
+                <div class="value">{{ issue_date }}</div>
+            </div>
+            <div class="field">
+                <div class="label">Crop</div>
+                <div class="value">{{ batch.crop }}</div>
+            </div>
+            <div class="field">
+                <div class="label">Variety</div>
+                <div class="value">{{ batch.variety }}</div>
+            </div>
+            <div class="field">
+                <div class="label">Origin</div>
+                <div class="value">{{ batch.origin_country }}</div>
+            </div>
+            <div class="field">
+                <div class="label">Weight</div>
+                <div class="value">{{ batch.weight_kg }} kg</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Analysis Results</h3>
+        <div class="grid">
+            <div class="field">
+                <div class="label">Germination</div>
+                <div class="value">{{ batch.germination_percentage }}%</div>
+            </div>
+            <div class="field">
+                <div class="label">Purity</div>
+                <div class="value">{{ batch.purity_percentage }}%</div>
+            </div>
+            <div class="field">
+                <div class="label">Moisture Content</div>
+                <div class="value">{{ batch.moisture_percentage }}%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Compliance Status</h3>
+        <p>This seed batch has been tested in accordance with <strong>{{ compliance_type }}</strong> rules and found to be compliant.</p>
+        {% if notes %}
+        <p><strong>Notes:</strong> {{ notes }}</p>
+        {% endif %}
+    </div>
+
+    <div class="signature">
+        <div class="value">{{ issuer_name }}</div>
+        <div class="line"></div>
+        <div class="label">Authorized Signature</div>
+    </div>
+
+    <div class="verification">
+        CERTIFICATE HASH: {{ certificate_hash }}
+    </div>
+
+    <div class="footer">
+        <p>This is a computer-generated document. To verify authenticity, visit {{ verification_url }}</p>
+        <p>Generated by Bijmantra Compliance Reporter</p>
+    </div>
+</body>
+</html>

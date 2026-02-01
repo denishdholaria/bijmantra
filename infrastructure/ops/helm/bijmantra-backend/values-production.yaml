@@ -1,0 +1,30 @@
+env:
+  ENVIRONMENT: "production"
+  DB_HOST: "prod-db.bijmantra.internal"
+
+replicaCount: 5
+
+autoscaling:
+  enabled: true
+  minReplicas: 5
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 60
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+
+ingress:
+  hosts:
+    - host: api.bijmantra.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+   - secretName: bijmantra-prod-tls
+     hosts:
+       - api.bijmantra.org

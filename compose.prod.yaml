@@ -1,0 +1,213 @@
+# Bijmantra Production Docker Compose
+# Usage: docker compose -f compose.yaml -f compose.prod.yaml up -d
+# Or: make prod-docker
+#
+# IMPORTANT: Before deploying to production:
+# 1. Copy .env.production.example to .env
+# 2. Generate secure passwords and keys
+# 3. Configure SSL certificates
+# 4. Set up proper backup strategy
+
+version: "3.8"
+
+services:
+  postgres:
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    # Don't expose port in production - only internal network
+    ports: []
+    # Production-optimized PostgreSQL settings
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=768MB
+      -c maintenance_work_mem=128MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=16MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c max_worker_processes=4
+      -c max_parallel_workers_per_gather=2
+      -c max_parallel_workers=4
+      -c max_parallel_maintenance_workers=2
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  redis:
+    restart: always
+    # Don't expose port in production
+    ports: []
+    # Production Redis settings
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  minio:
+    restart: always
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?MINIO_ROOT_USER is required}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD is required}
+    # Don't expose ports in production - access through Caddy
+    ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  meilisearch:
+    restart: always
+    environment:
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:?MEILI_MASTER_KEY is required}
+    # Don't expose port in production
+    ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  # Production Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    image: bijmantra-backend:${APP_VERSION:-latest}
+    container_name: bijmantra-backend
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://redis:6379
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_USE_SSL=false
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY is required}
+      - DEMO_MODE=false
+      - SEED_DEMO_DATA=false
+      - LOG_LEVEL=INFO
+      - WORKERS=${BACKEND_WORKERS:-4}
+    # Don't expose port - access through Caddy
+    expose:
+      - "8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bijmantra-network
+    command: >
+      gunicorn app.main:app
+      --workers ${BACKEND_WORKERS:-4}
+      --worker-class uvicorn.workers.UvicornWorker
+      --bind 0.0.0.0:8000
+      --access-logfile -
+      --error-logfile -
+      --capture-output
+      --enable-stdio-inheritance
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  # Caddy Reverse Proxy with automatic HTTPS
+  caddy:
+    image: caddy:2-alpine
+    container_name: bijmantra-caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - ./frontend/dist:/srv/frontend:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+    networks:
+      - bijmantra-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+
+  # Backup service (runs daily at 2 AM)
+  backup:
+    image: postgres:16-alpine
+    container_name: bijmantra-backup
+    environment:
+      - PGHOST=postgres
+      - PGUSER=${POSTGRES_USER}
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - PGDATABASE=${POSTGRES_DB}
+      - BACKUP_DIR=/backups
+    volumes:
+      - ./backups:/backups
+    networks:
+      - bijmantra-network
+    entrypoint: /bin/sh
+    command: >
+      -c "while true; do
+        sleep 86400;
+        pg_dump -Fc > /backups/bijmantra_$$(date +%Y%m%d_%H%M%S).dump;
+        find /backups -name '*.dump' -mtime +7 -delete;
+      done"
+    profiles:
+      - backup  # Only start with: docker compose --profile backup up -d
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  meilisearch_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
+
+networks:
+  bijmantra-network:
+    driver: bridge

@@ -1,0 +1,54 @@
+[package]
+name = "bijmantra-genomics"
+version = "1.0.0-beta.1"
+edition = "2021"
+authors = ["Denish Dholaria <hello@bijmantra.org>"]
+description = "High-performance genomic computations for Bijmantra plant breeding platform"
+license = "MIT"
+repository = "https://github.com/denishdholaria/bijmantra"
+
+[lib]
+name = "bijmantra_compute"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+python = ["dep:pyo3", "dep:numpy"]
+
+[dependencies]
+# Python extension dependencies (optional, for python feature)
+pyo3 = { version = "0.27", features = ["extension-module"], optional = true }
+numpy = { version = "0.27", optional = true }
+
+# Shared dependencies
+ndarray = "0.17"
+rand = "0.8"
+statrs = "0.18"
+
+# WASM dependencies
+wasm-bindgen = "0.2.92"
+js-sys = "0.3.69"
+web-sys = { version = "0.3.69", features = [
+    "console",
+    "Performance",
+    "Window",
+] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde-wasm-bindgen = "0.6"
+console_error_panic_hook = { version = "0.1.7", optional = true }
+wee_alloc = { version = "0.4.5", optional = true }
+getrandom = { version = "0.2", features = ["js"] }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.42"
+
+[build-dependencies]
+cc = "1.0"
+
+[profile.release]
+opt-level = "s"
+lto = true
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
