@@ -17,7 +17,7 @@ python = ["dep:pyo3", "dep:numpy"]
 
 [dependencies]
 # Python extension dependencies (optional, for python feature)
-pyo3 = { version = "0.27", features = ["extension-module"], optional = true }
+pyo3 = { version = "0.28", features = ["extension-module"], optional = true }
 numpy = { version = "0.27", optional = true }
 
 # Shared dependencies
