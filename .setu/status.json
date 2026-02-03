@@ -1,0 +1,20 @@
+{
+  "protocol_version": "1.0",
+  "last_updated": "2026-01-13T14:15:00+05:30",
+  "kiro_status": {
+    "last_active": "2026-01-13T00:00:00Z",
+    "current_task": "SETU-2026-01-13-001",
+    "pending_outbox": 0,
+    "pending_inbox": 1
+  },
+  "antigravity_status": {
+    "last_active": "2026-01-13T14:15:00+05:30",
+    "current_task": "SETU-2026-01-13-001",
+    "pending_responses": 0
+  },
+  "handshake": {
+    "kiro_ready": true,
+    "antigravity_ready": true,
+    "last_sync": "2026-01-13T14:15:00+05:30"
+  }
+}

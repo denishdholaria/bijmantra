@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="none">
+  <defs>
+    <linearGradient id="seedGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="50%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#a3e635"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g filter="url(#glow)" stroke="url(#seedGradient)" stroke-width="2.5" fill="none">
+    <!-- Seed outline -->
+    <path d="M50 10 C20 30, 15 70, 50 110 C85 70, 80 30, 50 10 Z"/>
+    
+    <!-- Central stem -->
+    <line x1="50" y1="100" x2="50" y2="25"/>
+    
+    <!-- Left branches -->
+    <path d="M50 85 L30 70"/>
+    <path d="M50 70 L25 55"/>
+    <path d="M50 55 L30 45"/>
+    <path d="M50 40 L35 30"/>
+    
+    <!-- Right branches (circuit style) -->
+    <path d="M50 85 L70 75"/>
+    <path d="M50 70 L75 60 L75 50"/>
+    <path d="M50 55 L65 50"/>
+    <path d="M50 40 L60 35 L70 35"/>
+    
+    <!-- Nodes (circuit dots) -->
+    <circle cx="30" cy="70" r="3" fill="url(#seedGradient)"/>
+    <circle cx="25" cy="55" r="3" fill="url(#seedGradient)"/>
+    <circle cx="30" cy="45" r="3" fill="url(#seedGradient)"/>
+    <circle cx="35" cy="30" r="2.5" fill="url(#seedGradient)"/>
+    <circle cx="70" cy="75" r="3" fill="url(#seedGradient)"/>
+    <circle cx="75" cy="50" r="3" fill="url(#seedGradient)"/>
+    <circle cx="65" cy="50" r="2.5" fill="url(#seedGradient)"/>
+    <circle cx="70" cy="35" r="3" fill="url(#seedGradient)"/>
+    
+    <!-- Spark at top -->
+    <circle cx="50" cy="15" r="4" fill="url(#seedGradient)"/>
+    <line x1="50" y1="5" x2="50" y2="10" stroke-width="1.5"/>
+    <line x1="44" y1="10" x2="47" y2="13" stroke-width="1.5"/>
+    <line x1="56" y1="10" x2="53" y2="13" stroke-width="1.5"/>
+  </g>
+</svg>

@@ -1,0 +1,407 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijmantra.com/schemas/simulation_protocol.json",
+  "title": "Sadhana Agricultural Simulation Protocol",
+  "description": "Universal schema for defining agricultural simulations across any domain (Mars, Greenhouse, Open Field). Abstracts the 'Physics' from the 'Code' to enable domain-agnostic simulation engines.",
+  "type": "object",
+  "required": ["version", "simulation_id", "domain", "inputs", "time_steps", "outputs"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version for compatibility checking",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": ["1.0.0"]
+    },
+    "simulation_id": {
+      "type": "string",
+      "description": "Unique identifier for this simulation run",
+      "format": "uuid"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Simulation domain/environment type",
+      "enum": ["mars", "greenhouse", "open_field", "growth_chamber", "vertical_farm", "lunar", "custom"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional simulation metadata",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "author": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "organization_id": { "type": "integer" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Initial simulation parameters",
+      "required": ["environment", "germplasm"],
+      "properties": {
+        "environment": {
+          "$ref": "#/$defs/EnvironmentProfile"
+        },
+        "germplasm": {
+          "type": "array",
+          "description": "Plant materials being simulated",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/GermplasmEntry"
+          }
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceBudget"
+        },
+        "initial_conditions": {
+          "type": "object",
+          "description": "Domain-specific starting conditions",
+          "additionalProperties": true
+        }
+      }
+    },
+    "time_steps": {
+      "type": "array",
+      "description": "Discrete simulation phases",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/TimeStep"
+      }
+    },
+    "stress_factors": {
+      "type": "array",
+      "description": "Environmental stressors applied during simulation",
+      "items": {
+        "$ref": "#/$defs/StressFactor"
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "description": "Simulation output specification",
+      "required": ["metrics"],
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "description": "Metrics to calculate",
+          "items": {
+            "$ref": "#/$defs/OutputMetric"
+          }
+        },
+        "export_format": {
+          "type": "string",
+          "enum": ["json", "csv", "parquet"],
+          "default": "json"
+        },
+        "include_time_series": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include per-step metric history"
+        }
+      }
+    },
+    "termination_conditions": {
+      "type": "array",
+      "description": "Conditions that end the simulation early",
+      "items": {
+        "$ref": "#/$defs/TerminationCondition"
+      }
+    }
+  },
+  "$defs": {
+    "EnvironmentProfile": {
+      "type": "object",
+      "description": "Environmental parameters for the simulation",
+      "required": ["temperature", "photoperiod"],
+      "properties": {
+        "temperature": {
+          "type": "object",
+          "description": "Temperature profile",
+          "properties": {
+            "unit": { "type": "string", "enum": ["celsius", "kelvin"], "default": "celsius" },
+            "day": { "type": "number" },
+            "night": { "type": "number" },
+            "variance": { "type": "number", "description": "Daily random variance" }
+          }
+        },
+        "humidity": {
+          "type": "object",
+          "properties": {
+            "min_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+            "max_percent": { "type": "number", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "photoperiod": {
+          "type": "object",
+          "description": "Light cycle",
+          "properties": {
+            "light_hours": { "type": "number", "minimum": 0, "maximum": 24 },
+            "dark_hours": { "type": "number", "minimum": 0, "maximum": 24 },
+            "intensity_par": { "type": "number", "description": "PAR in μmol/m²/s" }
+          }
+        },
+        "atmosphere": {
+          "type": "object",
+          "description": "Atmospheric composition (for controlled environments)",
+          "properties": {
+            "pressure_kpa": { "type": "number" },
+            "co2_ppm": { "type": "number" },
+            "o2_ppm": { "type": "number" }
+          }
+        },
+        "radiation": {
+          "type": "object",
+          "description": "Radiation exposure (for space environments)",
+          "properties": {
+            "msv_per_day": { "type": "number" },
+            "shielding_factor": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "gravity": {
+          "type": "object",
+          "properties": {
+            "factor": { "type": "number", "description": "1.0 = Earth gravity", "default": 1.0 }
+          }
+        },
+        "custom_parameters": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Domain-specific environment parameters"
+        }
+      }
+    },
+    "GermplasmEntry": {
+      "type": "object",
+      "description": "Plant material in the simulation",
+      "required": ["germplasm_id", "quantity"],
+      "properties": {
+        "germplasm_id": {
+          "type": "integer",
+          "description": "Reference to germplasm table"
+        },
+        "germplasm_name": {
+          "type": "string",
+          "description": "Human-readable name"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "generation": {
+          "type": "integer",
+          "description": "Selection generation"
+        },
+        "traits": {
+          "type": "object",
+          "description": "Known trait values",
+          "additionalProperties": { "type": "number" }
+        },
+        "stress_tolerance": {
+          "type": "object",
+          "description": "Tolerance scores (0-1) for various stresses",
+          "additionalProperties": { 
+            "type": "number", 
+            "minimum": 0, 
+            "maximum": 1 
+          }
+        }
+      }
+    },
+    "ResourceBudget": {
+      "type": "object",
+      "description": "Available resources for the simulation",
+      "properties": {
+        "water": {
+          "type": "object",
+          "properties": {
+            "total_liters": { "type": "number" },
+            "recycling_efficiency": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "energy": {
+          "type": "object",
+          "properties": {
+            "total_kwh": { "type": "number" },
+            "renewable_fraction": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "nutrients": {
+          "type": "object",
+          "properties": {
+            "nitrogen_kg": { "type": "number" },
+            "phosphorus_kg": { "type": "number" },
+            "potassium_kg": { "type": "number" }
+          }
+        },
+        "space": {
+          "type": "object",
+          "properties": {
+            "area_m2": { "type": "number" },
+            "height_m": { "type": "number" }
+          }
+        }
+      }
+    },
+    "TimeStep": {
+      "type": "object",
+      "description": "A discrete phase in the simulation",
+      "required": ["step_id", "duration", "phase"],
+      "properties": {
+        "step_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "phase": {
+          "type": "string",
+          "description": "Growth phase",
+          "enum": ["germination", "seedling", "vegetative", "reproductive", "maturation", "harvest", "custom"]
+        },
+        "duration": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number", "minimum": 0 },
+            "unit": { "type": "string", "enum": ["hours", "days", "weeks"], "default": "days" }
+          }
+        },
+        "environment_overrides": {
+          "type": "object",
+          "description": "Override environment parameters for this step",
+          "additionalProperties": true
+        },
+        "events": {
+          "type": "array",
+          "description": "Scheduled events during this step",
+          "items": {
+            "type": "object",
+            "properties": {
+              "event_type": { "type": "string" },
+              "parameters": { "type": "object" }
+            }
+          }
+        }
+      }
+    },
+    "StressFactor": {
+      "type": "object",
+      "description": "Environmental stress applied during simulation",
+      "required": ["type", "intensity"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of stress",
+          "enum": [
+            "drought", "heat", "cold", "salinity", "radiation", "nutrient_deficiency",
+            "atmospheric_pressure", "low_gravity", "high_gravity", "pathogen", "custom"
+          ]
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Severity (0=none, 1=extreme)"
+        },
+        "start_step": {
+          "type": "integer",
+          "description": "Step ID when stress begins"
+        },
+        "end_step": {
+          "type": "integer",
+          "description": "Step ID when stress ends (null for permanent)"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Stress-specific parameters",
+          "additionalProperties": true
+        }
+      }
+    },
+    "OutputMetric": {
+      "type": "object",
+      "description": "Metric to calculate from simulation",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Metric identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "survival_rate", "biomass_yield", "harvest_index", "water_use_efficiency",
+            "energy_input", "nutrient_uptake", "days_to_maturity", "failure_mode", "custom"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "aggregation": {
+          "type": "string",
+          "enum": ["sum", "mean", "max", "min", "final"],
+          "default": "final"
+        }
+      }
+    },
+    "TerminationCondition": {
+      "type": "object",
+      "description": "Condition to end simulation early",
+      "required": ["type", "threshold"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["survival_below", "resource_depleted", "time_exceeded", "metric_threshold"]
+        },
+        "threshold": {
+          "type": "number"
+        },
+        "metric_name": {
+          "type": "string",
+          "description": "For metric_threshold type"
+        },
+        "failure_mode": {
+          "type": "string",
+          "description": "Failure mode to assign if triggered",
+          "examples": ["ATMOSPHERIC_COLLAPSE", "WATER_STARVATION", "RADIATION_DAMAGE"]
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "1.0.0",
+      "simulation_id": "550e8400-e29b-41d4-a716-446655440000",
+      "domain": "mars",
+      "metadata": {
+        "name": "Wheat Adaptation Trial - Sol 1-90",
+        "description": "Simulating wheat growth under Martian conditions"
+      },
+      "inputs": {
+        "environment": {
+          "temperature": { "unit": "celsius", "day": 20, "night": 5 },
+          "photoperiod": { "light_hours": 16, "dark_hours": 8 },
+          "atmosphere": { "pressure_kpa": 60, "co2_ppm": 950000, "o2_ppm": 210000 },
+          "radiation": { "msv_per_day": 0.5, "shielding_factor": 0.8 },
+          "gravity": { "factor": 0.38 }
+        },
+        "germplasm": [
+          { "germplasm_id": 101, "germplasm_name": "MARS-WHEAT-01", "quantity": 100 }
+        ]
+      },
+      "time_steps": [
+        { "step_id": 0, "phase": "germination", "duration": { "value": 7, "unit": "days" } },
+        { "step_id": 1, "phase": "vegetative", "duration": { "value": 45, "unit": "days" } },
+        { "step_id": 2, "phase": "reproductive", "duration": { "value": 30, "unit": "days" } }
+      ],
+      "stress_factors": [
+        { "type": "radiation", "intensity": 0.6, "start_step": 0 }
+      ],
+      "outputs": {
+        "metrics": [
+          { "name": "survival_rate", "type": "survival_rate", "unit": "percent" },
+          { "name": "biomass_kg", "type": "biomass_yield", "unit": "kg" }
+        ]
+      }
+    }
+  ]
+}

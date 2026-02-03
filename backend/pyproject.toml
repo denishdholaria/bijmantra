@@ -1,0 +1,140 @@
+# BijMantra Backend Configuration
+# LOKAS Architecture - Import Boundary Enforcement
+
+[project]
+name = "bijmantra-backend"
+version = "1.0.0-beta.1"
+description = "BijMantra Plant Breeding Platform - Backend API"
+requires-python = ">=3.11"
+
+[tool.ruff]
+# Target Python 3.11+
+target-version = "py311"
+
+# Line length matching Black default
+line-length = 100
+
+# Exclude common directories
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.pyc",
+    "alembic/versions",
+    ".pytest_cache",
+]
+
+[tool.ruff.lint]
+# Enable these rule sets
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+]
+
+# Ignore specific rules
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # do not perform function calls in argument defaults (FastAPI Depends)
+    "B904",   # raise without from (sometimes intentional)
+    "ARG001", # unused function argument (FastAPI dependencies)
+]
+
+# Allow autofix for all enabled rules
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+force-single-line = false
+lines-after-imports = 2
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Indent with spaces
+indent-style = "space"
+
+# Unix-style line endings
+line-ending = "lf"
+
+# =============================================================================
+# AANAYAN (आनयन) — IMPORT BOUNDARY RULES
+# From: Ānayana-maryādā-niyama (आनयन-मर्यादा-नियम)
+# =============================================================================
+# 
+# These rules enforce domain boundaries between LOKAs (bounded contexts).
+# Each LOKA should communicate via events, not direct imports.
+#
+# LOKAS:
+#   - sristi (Creation/Breeding)
+#   - bija_kosha (Seed Treasury/Germplasm)
+#   - rupa (Form/Phenomics)
+#   - kshetra (Field/Operations)
+#   - medha (Intelligence/Analytics)
+#   - vani (Commercial/Business)
+#   - vidya (Knowledge/Training)
+#
+# ALLOWED:
+#   - Import from app.core.* (shared infrastructure)
+#   - Import from app.models.* (shared data layer)
+#   - Import from app.services.event_bus (cross-domain communication)
+#   - Import within same LOKA
+#
+# FORBIDDEN:
+#   - Direct import from one LOKA to another
+#   - Example: sristi importing from bija_kosha
+#
+# =============================================================================
+
+[tool.ruff.lint.per-file-ignores]
+# Test files can import anything
+"tests/**/*.py" = ["ALL"]
+
+# Migration files have special needs
+"alembic/**/*.py" = ["E501", "F401"]
+
+# __init__.py files can have unused imports for re-exports
+"**/__init__.py" = ["F401"]
+
+# =============================================================================
+# FUTURE: When LOKAS folders are created, add these rules:
+# =============================================================================
+#
+# "app/lokas/sristi/**/*.py" = []
+# "app/lokas/bija_kosha/**/*.py" = []
+# "app/lokas/rupa/**/*.py" = []
+# "app/lokas/kshetra/**/*.py" = []
+# "app/lokas/medha/**/*.py" = []
+# "app/lokas/vani/**/*.py" = []
+# "app/lokas/vidya/**/*.py" = []
+#
+# Then use flake8-import-restrictions or custom ruff plugin to enforce:
+# - No cross-LOKA imports
+# - Only event_bus for cross-domain communication
+# =============================================================================
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+    "integration: marks tests as integration tests (require network access)",
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

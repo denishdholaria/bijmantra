@@ -1,0 +1,1 @@
+"""Future module API tests"""

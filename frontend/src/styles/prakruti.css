@@ -1,0 +1,465 @@
+/**
+ * 🌿 Prakruti Design System (प्रकृति)
+ * "Agriculture is our Culture."
+ * 
+ * CSS Custom Properties for Bijmantra
+ * Version: 1.0.0
+ */
+
+/* ========================================
+ * BASE THEME (Prakruti - Default)
+ * ======================================== */
+:root,
+[data-theme="prakruti"] {
+  /* ========================================
+   * COLOR PALETTE
+   * Colors drawn from the agricultural landscape
+   * ======================================== */
+
+  /* Primary: Earth (Mitti - मिट्टी) */
+  --prakruti-mitti: #8B5A2B;
+  --prakruti-mitti-light: #D4A574;
+  --prakruti-mitti-dark: #5D3A1A;
+  --prakruti-mitti-50: #FAF6F1;
+  --prakruti-mitti-100: #F0E6D9;
+  --prakruti-mitti-200: #E0CCB3;
+  --prakruti-mitti-900: #3D2510;
+
+  /* Secondary: Leaf (Patta - पत्ता) */
+  --prakruti-patta: #2D5A27;
+  --prakruti-patta-light: #6FCF5F;  /* Brightened from #4A9B3F for WCAG AA on dark backgrounds */
+  --prakruti-patta-dark: #1A3A16;
+  --prakruti-patta-pale: #E8F5E9;
+  --prakruti-patta-50: #F1F8F1;
+  --prakruti-patta-100: #DCEFDC;
+  --prakruti-patta-200: #B8DFB8;
+  --prakruti-patta-900: #0D2A0A;
+
+  /* Accent: Gold (Sona - सोना) */
+  --prakruti-sona: #D4A012;
+  --prakruti-sona-light: #F5D742;
+  --prakruti-sona-dark: #9A7400;
+  --prakruti-sona-pale: #FFF8E1;
+  --prakruti-sona-50: #FFFBEB;
+  --prakruti-sona-100: #FEF3C7;
+  --prakruti-sona-200: #FDE68A;
+
+  /* Accent: Sky (Neela - नीला) */
+  --prakruti-neela: #1E6091;
+  --prakruti-neela-light: #3B8AC4;
+  --prakruti-neela-dark: #0D4A6F;
+  --prakruti-neela-pale: #E3F2FD;
+  --prakruti-neela-50: #EFF6FF;
+  --prakruti-neela-100: #DBEAFE;
+  --prakruti-neela-200: #BFDBFE;
+
+  /* Semantic: Error (Laal - लाल) */
+  --prakruti-laal: #C62828;
+  --prakruti-laal-light: #EF5350;
+  --prakruti-laal-dark: #8E0000;
+  --prakruti-laal-pale: #FFEBEE;
+
+  /* Semantic: Warning (Narangi - नारंगी) */
+  --prakruti-narangi: #E65100;
+  --prakruti-narangi-light: #FF8A50;
+  --prakruti-narangi-dark: #AC1900;
+  --prakruti-narangi-pale: #FFF3E0;
+
+  /* Neutral: Dust (Dhool - धूल) 
+   * WCAG 2 AA Compliant - All colors meet 4.5:1 contrast ratio
+   * Light shades (50-300): For backgrounds
+   * Dark shades (400-500): For text on LIGHT backgrounds only
+   * Darkest shades (600-900): For backgrounds in dark mode
+   */
+  --prakruti-dhool-50: #FAFAF8;
+  --prakruti-dhool-100: #F5F5F0;
+  --prakruti-dhool-200: #E8E8E0;
+  --prakruti-dhool-300: #D4D4C8;
+  --prakruti-dhool-400: #737363;  /* WCAG AA: 4.5:1 on white, use dhool-300 on dark */
+  --prakruti-dhool-500: #5F5F4F;  /* WCAG AA: 5.5:1 on white, use dhool-300 on dark */
+  --prakruti-dhool-600: #484838;
+  --prakruti-dhool-700: #383830;
+  --prakruti-dhool-800: #282820;
+  --prakruti-dhool-900: #181810;
+
+  /* ========================================
+   * SEMANTIC COLOR MAPPINGS
+   * ======================================== */
+
+  /* Backgrounds */
+  --prakruti-bg-primary: var(--prakruti-dhool-50);
+  --prakruti-bg-secondary: var(--prakruti-dhool-100);
+  --prakruti-bg-tertiary: var(--prakruti-dhool-200);
+  --prakruti-bg-inverse: var(--prakruti-dhool-800);
+
+  /* Text */
+  --prakruti-text-primary: var(--prakruti-dhool-800);
+  --prakruti-text-secondary: var(--prakruti-dhool-600);
+  --prakruti-text-tertiary: var(--prakruti-dhool-500);
+  --prakruti-text-muted: var(--prakruti-dhool-400);
+  --prakruti-text-inverse: var(--prakruti-dhool-50);
+
+  /* Borders */
+  --prakruti-border: var(--prakruti-dhool-200);
+  --prakruti-border-strong: var(--prakruti-dhool-300);
+  --prakruti-border-focus: var(--prakruti-patta);
+
+  /* Interactive */
+  --prakruti-interactive: var(--prakruti-patta);
+  --prakruti-interactive-hover: var(--prakruti-patta-dark);
+  --prakruti-interactive-active: var(--prakruti-patta-dark);
+
+  /* ========================================
+   * TYPOGRAPHY
+   * ======================================== */
+
+  /* Font Families */
+  --prakruti-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+                        'Noto Sans', 'Liberation Sans', sans-serif, 
+                        'Apple Color Emoji', 'Segoe UI Emoji';
+  --prakruti-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, 
+                        'Cascadia Code', Consolas, monospace;
+  --prakruti-font-display: 'Cal Sans', 'DM Sans', var(--prakruti-font-sans);
+
+  /* Font Sizes (Major Third - 1.25 ratio) */
+  --prakruti-text-xs: 0.75rem;      /* 12px */
+  --prakruti-text-sm: 0.875rem;     /* 14px */
+  --prakruti-text-base: 1rem;       /* 16px */
+  --prakruti-text-lg: 1.125rem;     /* 18px */
+  --prakruti-text-xl: 1.25rem;      /* 20px */
+  --prakruti-text-2xl: 1.5rem;      /* 24px */
+  --prakruti-text-3xl: 1.875rem;    /* 30px */
+  --prakruti-text-4xl: 2.25rem;     /* 36px */
+  --prakruti-text-5xl: 3rem;        /* 48px */
+
+  /* Line Heights */
+  --prakruti-leading-none: 1;
+  --prakruti-leading-tight: 1.25;
+  --prakruti-leading-snug: 1.375;
+  --prakruti-leading-normal: 1.5;
+  --prakruti-leading-relaxed: 1.625;
+  --prakruti-leading-loose: 2;
+
+  /* Font Weights */
+  --prakruti-font-normal: 400;
+  --prakruti-font-medium: 500;
+  --prakruti-font-semibold: 600;
+  --prakruti-font-bold: 700;
+  --prakruti-font-extrabold: 800;
+
+  /* ========================================
+   * SPACING (4px base unit)
+   * ======================================== */
+
+  --prakruti-space-0: 0;
+  --prakruti-space-px: 1px;
+  --prakruti-space-0-5: 0.125rem;   /* 2px */
+  --prakruti-space-1: 0.25rem;      /* 4px */
+  --prakruti-space-1-5: 0.375rem;   /* 6px */
+  --prakruti-space-2: 0.5rem;       /* 8px */
+  --prakruti-space-2-5: 0.625rem;   /* 10px */
+  --prakruti-space-3: 0.75rem;      /* 12px */
+  --prakruti-space-3-5: 0.875rem;   /* 14px */
+  --prakruti-space-4: 1rem;         /* 16px */
+  --prakruti-space-5: 1.25rem;      /* 20px */
+  --prakruti-space-6: 1.5rem;       /* 24px */
+  --prakruti-space-7: 1.75rem;      /* 28px */
+  --prakruti-space-8: 2rem;         /* 32px */
+  --prakruti-space-9: 2.25rem;      /* 36px */
+  --prakruti-space-10: 2.5rem;      /* 40px */
+  --prakruti-space-11: 2.75rem;     /* 44px */
+  --prakruti-space-12: 3rem;        /* 48px */
+  --prakruti-space-14: 3.5rem;      /* 56px */
+  --prakruti-space-16: 4rem;        /* 64px */
+  --prakruti-space-20: 5rem;        /* 80px */
+  --prakruti-space-24: 6rem;        /* 96px */
+  --prakruti-space-28: 7rem;        /* 112px */
+  --prakruti-space-32: 8rem;        /* 128px */
+
+  /* ========================================
+   * BORDER RADIUS
+   * Organic, rounded corners inspired by nature
+   * ======================================== */
+
+  --prakruti-radius-none: 0;
+  --prakruti-radius-sm: 0.25rem;    /* 4px */
+  --prakruti-radius-md: 0.5rem;     /* 8px */
+  --prakruti-radius-lg: 0.75rem;    /* 12px */
+  --prakruti-radius-xl: 1rem;       /* 16px */
+  --prakruti-radius-2xl: 1.5rem;    /* 24px */
+  --prakruti-radius-3xl: 2rem;      /* 32px */
+  --prakruti-radius-full: 9999px;
+
+  /* ========================================
+   * SHADOWS
+   * Soft, natural shadows
+   * ======================================== */
+
+  --prakruti-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --prakruti-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --prakruti-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 
+                        0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --prakruti-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 
+                        0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --prakruti-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 
+                        0 8px 10px -6px rgb(0 0 0 / 0.08);
+  --prakruti-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+  --prakruti-shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* Colored shadows for emphasis */
+  --prakruti-shadow-patta: 0 4px 14px 0 rgb(45 90 39 / 0.25);
+  --prakruti-shadow-sona: 0 4px 14px 0 rgb(212 160 18 / 0.25);
+  --prakruti-shadow-mitti: 0 4px 14px 0 rgb(139 90 43 / 0.25);
+  --prakruti-shadow-neela: 0 4px 14px 0 rgb(30 96 145 / 0.25);
+  --prakruti-shadow-laal: 0 4px 14px 0 rgb(198 40 40 / 0.25);
+
+  /* ========================================
+   * Z-INDEX SCALE
+   * ======================================== */
+
+  --prakruti-z-base: 0;
+  --prakruti-z-dropdown: 100;
+  --prakruti-z-sticky: 200;
+  --prakruti-z-fixed: 300;
+  --prakruti-z-modal-backdrop: 400;
+  --prakruti-z-modal: 500;
+  --prakruti-z-popover: 600;
+  --prakruti-z-tooltip: 700;
+  --prakruti-z-toast: 800;
+
+  /* ========================================
+   * BREAKPOINTS
+   * ======================================== */
+
+  --prakruti-screen-xs: 320px;
+  --prakruti-screen-sm: 480px;
+  --prakruti-screen-md: 768px;
+  --prakruti-screen-lg: 1024px;
+  --prakruti-screen-xl: 1280px;
+  --prakruti-screen-2xl: 1536px;
+}
+
+/* ========================================
+ * TRANSITIONS & ANIMATIONS (Shared)
+ * ======================================== */
+
+:root {
+  /* Timing Functions */
+  --prakruti-ease-natural: cubic-bezier(0.4, 0, 0.2, 1);
+  --prakruti-ease-grow: cubic-bezier(0.0, 0, 0.2, 1);
+  --prakruti-ease-settle: cubic-bezier(0.4, 0, 0, 1);
+  --prakruti-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Durations */
+  --prakruti-duration-instant: 50ms;
+  --prakruti-duration-fast: 150ms;
+  --prakruti-duration-normal: 250ms;
+  --prakruti-duration-slow: 400ms;
+  --prakruti-duration-slower: 600ms;
+}
+
+
+/* ========================================
+ * DARK MODE (Legacy Support / Overrides)
+ * WCAG 2 AA Compliant - All text colors meet 4.5:1 contrast ratio
+ * ======================================== */
+
+.dark,
+[data-theme="dark"] {
+  /* Dark mode overrides for Prakruti design system */
+
+  /* Backgrounds (inverted) */
+  --prakruti-bg-primary: #1A1A18;
+  --prakruti-bg-secondary: #242420;
+  --prakruti-bg-tertiary: #2E2E28;
+  --prakruti-bg-inverse: var(--prakruti-dhool-100);
+
+  /* Text (inverted) - WCAG 2 AA Compliant */
+  --prakruti-text-primary: var(--prakruti-dhool-100);   /* #F5F5F0 - 12:1 on dark */
+  --prakruti-text-secondary: var(--prakruti-dhool-200); /* #E8E8E0 - 10:1 on dark */
+  --prakruti-text-tertiary: var(--prakruti-dhool-300);  /* #D4D4C8 - 8:1 on dark */
+  --prakruti-text-muted: var(--prakruti-dhool-300);     /* #D4D4C8 - 8:1 on dark (was 400/500, too dark) */
+  --prakruti-text-inverse: var(--prakruti-dhool-800);
+
+  /* Borders (darker) */
+  --prakruti-border: #383830;
+  --prakruti-border-strong: #484840;
+  --prakruti-border-focus: var(--prakruti-patta-light);
+}
+
+/* ========================================
+ * ANIMATIONS
+ * ======================================== */
+
+/* Growth Animation - For elements appearing */
+@keyframes prakruti-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Sprout Animation - For success states */
+@keyframes prakruti-sprout {
+  0% { 
+    transform: scale(0) rotate(-45deg); 
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1.2) rotate(0deg); 
+    opacity: 1;
+  }
+  100% { 
+    transform: scale(1) rotate(0deg); 
+    opacity: 1;
+  }
+}
+
+/* Sway Animation - For loading states */
+@keyframes prakruti-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+/* Fade In */
+@keyframes prakruti-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade Out */
+@keyframes prakruti-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Slide Up */
+@keyframes prakruti-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Down */
+@keyframes prakruti-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse Gentle */
+@keyframes prakruti-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Spin */
+@keyframes prakruti-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+ * UTILITY CLASSES
+ * ======================================== */
+
+/* Animation utilities */
+.prakruti-animate-grow {
+  animation: prakruti-grow var(--prakruti-duration-normal) var(--prakruti-ease-grow);
+}
+
+.prakruti-animate-sprout {
+  animation: prakruti-sprout var(--prakruti-duration-slow) var(--prakruti-ease-spring);
+}
+
+.prakruti-animate-sway {
+  animation: prakruti-sway 2s var(--prakruti-ease-natural) infinite;
+}
+
+.prakruti-animate-fade-in {
+  animation: prakruti-fade-in var(--prakruti-duration-normal) var(--prakruti-ease-natural);
+}
+
+.prakruti-animate-slide-up {
+  animation: prakruti-slide-up var(--prakruti-duration-normal) var(--prakruti-ease-grow);
+}
+
+.prakruti-animate-pulse {
+  animation: prakruti-pulse 2s var(--prakruti-ease-natural) infinite;
+}
+
+.prakruti-animate-spin {
+  animation: prakruti-spin 1s linear infinite;
+}
+
+/* Staggered animation delays */
+.prakruti-delay-1 { animation-delay: 50ms; }
+.prakruti-delay-2 { animation-delay: 100ms; }
+.prakruti-delay-3 { animation-delay: 150ms; }
+.prakruti-delay-4 { animation-delay: 200ms; }
+.prakruti-delay-5 { animation-delay: 250ms; }
+
+/* Transition utilities */
+.prakruti-transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: var(--prakruti-ease-natural);
+  transition-duration: var(--prakruti-duration-normal);
+}
+
+.prakruti-transition-fast {
+  transition-duration: var(--prakruti-duration-fast);
+}
+
+.prakruti-transition-slow {
+  transition-duration: var(--prakruti-duration-slow);
+}
+
+/* Focus ring */
+.prakruti-focus-ring:focus-visible {
+  outline: 2px solid var(--prakruti-border-focus);
+  outline-offset: 2px;
+}
+
+/* ========================================
+ * REDUCED MOTION
+ * ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================
+ * PRINT STYLES
+ * ======================================== */
+
+@media print {
+  :root {
+    --prakruti-bg-primary: #ffffff;
+    --prakruti-text-primary: #000000;
+  }
+  
+  .prakruti-no-print {
+    display: none !important;
+  }
+}

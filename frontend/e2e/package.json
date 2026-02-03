@@ -1,0 +1,33 @@
+{
+  "name": "bijmantra-e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for BijMantra using Playwright",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:smoke": "playwright test tests/smoke/",
+    "test:auth": "playwright test tests/auth/",
+    "test:crud": "playwright test tests/crud/",
+    "test:pages": "playwright test tests/pages/",
+    "test:accessibility": "playwright test --project=accessibility",
+    "test:visual": "playwright test --project=visual",
+    "test:performance": "playwright test --project=performance",
+    "test:api": "playwright test --project=api",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
+    "test:ci": "playwright test --reporter=github,html",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen http://localhost:5173",
+    "update-snapshots": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.8.4",
+    "@playwright/test": "^1.41.2",
+    "@types/node": "^20.11.16",
+    "tsx": "^4.21.0"
+  }
+}
