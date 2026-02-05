@@ -17,6 +17,13 @@
 🌐 **[bijmantra.org](https://bijmantra.org)** — Join the waitlist for early access
 
 ---
+## 🚨 Funding Required  
+
+This project has been sustained so far through personal funding, but continuing development is no longer sustainable without external support.  
+To move forward, BijMantra urgently requires funding. Please consider sponsoring or donating to help ensure its future.  
+
+🌐 [Support BijMantra] (https://github.com/sponsors/denishdholaria)  
+📧 Contact: hello@bijmantra.org  
 
 </div>
 
