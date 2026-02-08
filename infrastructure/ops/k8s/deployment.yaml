@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bijmantra-backend
+  labels:
+    app: bijmantra-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bijmantra-backend
+  template:
+    metadata:
+      labels:
+        app: bijmantra-backend
+    spec:
+      containers:
+      - name: backend
+        image: bijmantra-backend:latest
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        - secretRef:
+            name: backend-secrets

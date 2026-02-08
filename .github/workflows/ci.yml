@@ -1,0 +1,254 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Only trigger on actual code/config changes
+      # Docs, markdown, images, scripts, tasks, .kiro — all excluded by omission
+      - 'backend/app/**'
+      - 'backend/tests/**'
+      - 'backend/requirements.txt'
+      - 'backend/pyproject.toml'
+      - 'frontend/src/**'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - 'frontend/tsconfig.json'
+      - 'frontend/vite.config.ts'
+      - 'frontend/e2e/**'
+      - 'rust/src/**'
+      - 'rust/Cargo.toml'
+      - 'rust/Cargo.lock'
+      - 'fortran/src/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/app/**'
+      - 'backend/tests/**'
+      - 'frontend/src/**'
+      - 'rust/src/**'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+
+# ────────────────────────────────────────────────────────────
+# Jobs run in parallel where possible:
+#   quick-checks ──┬── backend-lint ──┐
+#                  ├── backend-test ──┤
+#                  ├── frontend-build ┤── summary
+#                  └── rust-check ────┘
+# ────────────────────────────────────────────────────────────
+
+jobs:
+  # ──────── Gate 0: Quick Sanity ────────
+  quick-checks:
+    name: '🚦 Quick Checks'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      frontend_changed: ${{ steps.changes.outputs.frontend }}
+      backend_changed: ${{ steps.changes.outputs.backend }}
+      rust_changed: ${{ steps.changes.outputs.rust }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            backend:
+              - 'backend/**'
+            rust:
+              - 'rust/**'
+
+      - name: Validate metrics.json
+        run: python3 -c "import json; json.load(open('metrics.json')); print('✅ metrics.json valid')"
+
+  # ──────── Backend Lint (Ruff) ────────
+  backend-lint:
+    name: '🐍 Backend Lint'
+    needs: quick-checks
+    if: needs.quick-checks.outputs.backend_changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Ruff check
+        run: ruff check app/ --output-format=github
+        working-directory: backend
+
+      - name: Ruff format check
+        run: ruff format --check app/
+        working-directory: backend
+        continue-on-error: true  # Don't block on formatting
+
+  # ──────── Backend Tests (pytest + SQLite) ────────
+  backend-test:
+    name: '🧪 Backend Tests'
+    needs: quick-checks
+    if: needs.quick-checks.outputs.backend_changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: backend
+
+      - name: Run smoke tests
+        run: |
+          pytest tests/test_smoke_api_v2.py -v --tb=short \
+            -x --timeout=120 2>&1 | tail -30
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: ci-test-secret-key-not-for-production
+          TESTING: '1'
+
+  # ──────── Frontend Build + Typecheck ────────
+  frontend-build:
+    name: '🎨 Frontend Build'
+    needs: quick-checks
+    if: needs.quick-checks.outputs.frontend_changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+        working-directory: frontend
+
+      - name: Build
+        run: npm run build
+        working-directory: frontend
+
+      - name: Report bundle size
+        run: |
+          echo "## 📦 Bundle Size" >> $GITHUB_STEP_SUMMARY
+          du -sh dist/ | awk '{print "Total: **" $1 "**"}' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          du -sh dist/assets/*.js | sort -rh | head -10 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        working-directory: frontend
+
+  # ──────── Rust / WASM Check ────────
+  rust-check:
+    name: '🦀 Rust Check'
+    needs: quick-checks
+    if: needs.quick-checks.outputs.rust_changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust -> target
+
+      - name: Check
+        run: cargo check --target wasm32-unknown-unknown
+        working-directory: rust
+
+      - name: Test (native)
+        run: cargo test --verbose
+        working-directory: rust
+
+  # ──────── Security Scan ────────
+  security-scan:
+    name: '🔒 Security'
+    needs: quick-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          HITS=$(grep -rnE \
+            '(password|secret_key|api_key|private_key)\s*=\s*["\x27][A-Za-z0-9+/=]{8,}' \
+            --include='*.py' --include='*.ts' --include='*.tsx' \
+            --exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=venv \
+            backend/app/ frontend/src/ 2>/dev/null \
+            | grep -viE '(test|example|demo|changeme|placeholder|TODO|env|config|process\.env)' \
+            || true)
+          if [ -n "$HITS" ]; then
+            echo "⚠️ Potential hardcoded secrets:"
+            echo "$HITS"
+          else
+            echo "✅ No hardcoded secrets detected"
+          fi
+
+  # ──────── Summary ────────
+  ci-summary:
+    name: '📊 Summary'
+    needs: [quick-checks, backend-lint, backend-test, frontend-build, rust-check, security-scan]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Results
+        run: |
+          echo "## CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Quick Checks | ${{ needs.quick-checks.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Lint | ${{ needs.backend-lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Tests | ${{ needs.backend-test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Build | ${{ needs.frontend-build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Rust Check | ${{ needs.rust-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security | ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Gate
+        if: |
+          needs.quick-checks.result == 'failure' ||
+          needs.backend-test.result == 'failure' ||
+          needs.frontend-build.result == 'failure'
+        run: |
+          echo "❌ Critical checks failed"
+          exit 1
