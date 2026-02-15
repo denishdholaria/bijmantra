@@ -1,0 +1,109 @@
+# =============================================================================
+# Sync README with metrics.json
+# =============================================================================
+# Automatically updates README.md and RELEASE.md when metrics.json changes
+# Ensures single source of truth for all project metrics
+# =============================================================================
+
+name: Sync README with Metrics
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'metrics.json'
+  workflow_dispatch:
+
+# Restrict permissions to minimum required
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Update README with Metrics
+        run: |
+          echo "📊 Reading metrics.json..."
+          
+          # Extract values from metrics.json
+          TOTAL_PAGES=$(jq -r '.pages.total' metrics.json)
+          FUNCTIONAL_PAGES=$(jq -r '.pages.functional' metrics.json)
+          TOTAL_ENDPOINTS=$(jq -r '.api.totalEndpoints' metrics.json)
+          BRAPI_ENDPOINTS=$(jq -r '.api.brapiEndpoints' metrics.json)
+          CUSTOM_ENDPOINTS=$(jq -r '.api.customEndpoints' metrics.json)
+          DB_TABLES=$(jq -r '.database.tables' metrics.json)
+          DB_MODELS=$(jq -r '.database.models' metrics.json)
+          MIGRATIONS=$(jq -r '.database.migrations' metrics.json)
+          RLS_TABLES=$(jq -r '.database.rlsEnabledTables' metrics.json)
+          TOTAL_TESTS=$(jq -r '.tests.total' metrics.json)
+          LAST_UPDATED=$(jq -r '.lastUpdated' metrics.json)
+          
+          echo "📝 Updating README.md..."
+          
+          # Update "At a Glance" section - API Endpoints
+          sed -i "s/\*\*[0-9,]*\*\* API Endpoints/**${TOTAL_ENDPOINTS}** API Endpoints/g" README.md
+          
+          # Update "At a Glance" section - Database Tables
+          sed -i "s/\*\*[0-9]*\*\* Database Tables/**${DB_TABLES}** Database Tables/g" README.md
+          
+          # Update "At a Glance" section - Migrations
+          sed -i "s/\*\*[0-9]*\*\* Migrations/**${MIGRATIONS}** Migrations/g" README.md
+          
+          # Update RLS coverage tables count
+          sed -i "s/100% ([0-9]* tables)/100% (${RLS_TABLES} tables)/g" README.md
+          
+          # Update API Catalog total
+          sed -i "s/Total: [0-9,]* endpoints/Total: ${TOTAL_ENDPOINTS} endpoints/g" README.md
+          
+          # Update Custom APIs count
+          sed -i "s/Custom: [0-9,]*/Custom: ${CUSTOM_ENDPOINTS}/g" README.md
+          sed -i "s/Custom APIs       | [0-9,]*/Custom APIs       | ${CUSTOM_ENDPOINTS}/g" README.md
+          
+          # Update total in modules table
+          sed -i "s/\*\*[0-9,]*\*\* (incl. BrAPI)/**${TOTAL_ENDPOINTS}** (incl. BrAPI)/g" README.md
+          
+          # Update documentation accuracy notice
+          sed -i "s/managing [0-9,]* API endpoints/managing ${TOTAL_ENDPOINTS} API endpoints/g" README.md
+          
+          echo "📝 Updating RELEASE.md..."
+          
+          # Update Release Statistics table
+          sed -i "s/| Database Models     | [0-9]*/| Database Models     | ${DB_MODELS}/g" RELEASE.md
+          sed -i "s/| Database Tables     | [0-9]*/| Database Tables     | ${DB_TABLES}/g" RELEASE.md
+          sed -i "s/| Migrations          | [0-9]*/| Migrations          | ${MIGRATIONS}/g" RELEASE.md
+          sed -i "s/| RLS Coverage        | 100% ([0-9]* tables)/| RLS Coverage        | 100% (${RLS_TABLES} tables)/g" RELEASE.md
+          
+          echo "✅ Updates complete"
+          
+      - name: Check for Changes
+        id: changes
+        run: |
+          if git diff --quiet README.md RELEASE.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "📋 No changes detected"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📋 Changes detected:"
+            git diff --stat README.md RELEASE.md
+          fi
+          
+      - name: Commit and Push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add README.md RELEASE.md
+          git commit -m "chore: sync README and RELEASE with metrics.json [skip ci]"
+          git push
+          
+          echo "✅ Changes committed and pushed"

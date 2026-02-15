@@ -1,0 +1,126 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+dist-ssr/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Kiro AI steering
+# NOTE: .kiro/ is now tracked in private repo (bijmantraorg)
+# It gets filtered out when syncing to public repo via GitHub Action
+# See .github/sync-to-public-exclude.txt
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Podman/Docker
+.containerignore
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Rust
+rust/target/
+rust/Cargo.lock
+backend/crates/**/target/
+backend/crates/**/Cargo.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+A1APP/
+A1APP
+
+# Development tracking
+# NOTE: docs/gupt/ is now tracked in private repo (bijmantraorg)
+# It gets filtered out when syncing to public repo via GitHub Action
+# See .github/sync-to-public-exclude.txt
+
+# Reference/backup folders
+proqrt-reference.bak/
+
+# Vercel UI preview
+.vercel
+.github/copilot-instructions.md
+
+# Local development folders
+Other/
+backend/bijmantra-sa-key.json
+
+# ADR (Architecture Decision Records) - Local Workspace only
+docs/adr/
+
+# BijMantra Data
+backend/data/
+backend/test_data/
+frontend/playwright-report/
+frontend/test-results/
+frontend/e2e/playwright/.auth/
+frontend/e2e/playwright-report/
+frontend/e2e/test-results/
+frontend/e2e/*.txt
+
+# Machine Learning & Search
+.surmlcache/
+
+# Databases
+surrealdb/
+
+# Temporary Text Files
+frontend/*.txt

@@ -1,0 +1,104 @@
+# Bijmantra Production Caddyfile
+# Automatic HTTPS with Let's Encrypt
+# Usage: Set DOMAIN environment variable or replace {$DOMAIN} with your domain
+
+{$DOMAIN:bijmantra.com} {
+    # Enable compression
+    encode gzip zstd
+
+    # Security headers
+    header {
+        # HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+        # XSS protection
+        X-XSS-Protection "1; mode=block"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Remove server header
+        -Server
+    }
+
+    # API routes -> Backend
+    handle /api/* {
+        reverse_proxy backend:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # BrAPI routes -> Backend
+    handle /brapi/* {
+        reverse_proxy backend:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # WebSocket for real-time features
+    handle /ws/* {
+        reverse_proxy backend:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # Health check endpoint
+    handle /health {
+        reverse_proxy backend:8000
+    }
+
+    # Static files (PWA)
+    handle {
+        root * /srv/frontend
+        
+        # PWA service worker - no cache
+        @sw path /sw.js /service-worker.js
+        header @sw Cache-Control "no-cache, no-store, must-revalidate"
+        
+        # PWA manifest - short cache
+        @manifest path /manifest.json /manifest.webmanifest
+        header @manifest Cache-Control "max-age=3600"
+        
+        # Static assets - long cache (hashed filenames)
+        @static path /assets/*
+        header @static Cache-Control "public, max-age=31536000, immutable"
+        
+        # HTML - short cache for updates
+        @html path *.html /
+        header @html Cache-Control "no-cache"
+        
+        # Try files, fallback to index.html for SPA routing
+        try_files {path} /index.html
+        file_server
+    }
+}
+
+# Redirect www to non-www
+www.{$DOMAIN:bijmantra.com} {
+    redir https://{$DOMAIN:bijmantra.com}{uri} permanent
+}
+
+# Health check endpoint for load balancers (HTTP only)
+:80 {
+    @health path /health
+    handle @health {
+        respond "OK" 200
+    }
+    
+    # Redirect everything else to HTTPS
+    handle {
+        redir https://{host}{uri} permanent
+    }
+}
