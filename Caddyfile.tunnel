@@ -1,0 +1,32 @@
+# BijMantra Caddyfile for Cloudflare Tunnel
+# No TLS needed - tunnel handles encryption
+
+:80 {
+    # API routes to backend
+    handle /api/* {
+        reverse_proxy localhost:8000
+    }
+    
+    handle /brapi/* {
+        reverse_proxy localhost:8000
+    }
+    
+    # OpenAPI docs
+    handle /docs {
+        reverse_proxy localhost:8000
+    }
+    
+    handle /openapi.json {
+        reverse_proxy localhost:8000
+    }
+    
+    # WebSocket for hot reload (dev)
+    handle /ws {
+        reverse_proxy localhost:8000
+    }
+    
+    # Frontend (Vite dev server)
+    handle {
+        reverse_proxy localhost:5173
+    }
+}

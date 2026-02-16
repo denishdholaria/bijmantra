@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 1,
+      "totalPages": 1
+    },
+    "status": [
+      {
+        "message": "Success",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "calls": [
+      {
+        "contentTypes": [
+          "application/json"
+        ],
+        "method": "GET",
+        "service": "serverinfo"
+      },
+      {
+        "contentTypes": [
+          "application/json"
+        ],
+        "method": "GET",
+        "service": "programs"
+      },
+      {
+        "contentTypes": [
+          "application/json"
+        ],
+        "method": "GET",
+        "service": "studies"
+      }
+    ],
+    "organizationName": "Bijmantra Test Harness",
+    "serverName": "Mock BrAPI"
+  }
+}

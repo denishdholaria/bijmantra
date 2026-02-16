@@ -1,0 +1,337 @@
+{
+  "$schema": "https://bijmantra.org/schemas/metrics.json",
+  "lastUpdated": "2026-02-15",
+  "updatedBy": "Jules (Phase 6E Resource Allocation — API wiring & final polish)",
+  "session": 97,
+  "sessionStatus": "Phase 3.4 CI/CD pipeline restored. Created modern ci.yml (7 parallel jobs, path-based detection). Enabled e2e-tests.yml (fixed email domain, modernized actions). Enabled sync-readme-metrics.yml + sync-to-public.yml. Disabled old ci-cd.yaml (K8s/Helm). Kept deploy-production + jules-pr-validation disabled.",
+
+  "veenaIntelligence": {
+    "status": "complete",
+    "functionsUsingRealDB": 32,
+    "functionsUsingServices": 32,
+    "functionsStillDemo": 0,
+    "searchServices": 8,
+    "domainsInCrossDomainQuery": 6,
+    "insightTypesImplemented": 5,
+    "services": [
+      "germplasm_search_service",
+      "trial_search_service",
+      "observation_search_service",
+      "cross_search_service",
+      "location_search_service",
+      "seedlot_search_service",
+      "program_search_service",
+      "trait_search_service",
+      "weather_service",
+      "breeding_value_service",
+      "gxe_service",
+      "data_export_service",
+      "genetic_diversity_service",
+      "kinship_service",
+      "spectral_indices_service",
+      "pedigree_service"
+    ],
+    "note": "16 active services. Cloud-only architecture (local/ollama removed). VeenaSidebar v2 + VeenaChat v2 redesigned for Web-OS shell."
+  },
+
+  "version": {
+    "app": "preview-1",
+    "brapi": "2.1",
+    "schema": "1.0.0",
+    "codename": "Prathama (प्रथम)",
+    "releaseDate": "2026-01-09",
+    "prerelease": "preview",
+    "prereleaseVersion": 1,
+    "note": "Preview release - early access for evaluation. Web-OS shell integration complete. CALF assessment needs refresh (page count grew from 221 to 354)."
+  },
+
+  "calf": {
+    "assessmentDate": "2026-02-08",
+    "documentPath": "docs/CALF_STATUS.md",
+    "supersedes": ["docs/CALF.md", "docs/CALF_ASSESSMENT.md", "docs/CALF_PAGE_LISTING.md"],
+    "summary": {
+      "calf0_displayOnly": { "count": 95, "percent": 27, "status": "acceptable" },
+      "calf1_clientSide": { "count": 76, "percent": 21, "status": "needs_backend" },
+      "calf2_demoData": { "count": 3, "percent": 1, "status": "nearly_eliminated" },
+      "calf3_realComputation": { "count": 69, "percent": 19, "status": "major_improvement" },
+      "calf4_wasm": { "count": 5, "percent": 1, "status": "excellent" },
+      "divisionPages": { "count": 106, "percent": 30, "status": "mixed" }
+    },
+    "criticalFinding": "Jan 9 crisis resolved: CALF-2 dropped from 42 to 3 pages (Vision module only). 39 pages converted to real DB queries. Zero DEMO_* arrays in backend. 74 pages (21%) perform real computation.",
+    "estimatedEffortToProduction": "3-4 weeks to preview-2"
+  },
+
+  "pages": {
+    "total": 354,
+    "pagesDir": 248,
+    "divisionsDir": 106,
+    "pagesWithRealAPI": 181,
+    "pagesWithDemoData": 3,
+    "functional": 28,
+    "displayOnly": 89,
+    "clientSideOnly": 67,
+    "demoDataViolation": 3,
+    "wasmCompute": 5,
+    "futureModulePages": 12,
+    "futureModulePagesWired": 10,
+    "note": "248 in src/pages + 106 in src/divisions. 180+ pages use real API calls (useQuery/apiClient). 3 pages with client-side helpers (Vision upload, BreedingSimulator intentional client-side compute)."
+  },
+
+  "api": {
+    "totalEndpoints": 1644,
+    "brapiEndpoints": 201,
+    "brapiCoverage": 100,
+    "customEndpoints": 1443,
+    "documentedEndpoints": 1644,
+    "endpointsReturningDemoData": 41,
+    "futureModuleEndpoints": 103,
+    "note": "1644 @router-decorated endpoints across 201 API files. Count from grep of @router.get/post/put/patch/delete."
+  },
+
+  "codebase": {
+    "frontendTsxFiles": 556,
+    "frontendTotalLines": 189940,
+    "backendPythonFiles": 201,
+    "backendTotalLines": 142687,
+    "components": 175,
+    "hooks": 24,
+    "stores": 11,
+    "routes": 325,
+    "frameworkFiles": 36,
+    "shellFiles": 13,
+    "apiRouterFiles": 201,
+    "serviceFiles": 99,
+    "crudFiles": 21,
+    "schemaFiles": 27,
+    "note": "Frontend: 556 TSX (189K lines). Backend: 201 API files (143K lines). 325 registered routes across 10 route files."
+  },
+
+  "database": {
+    "modelFiles": 56,
+    "tableDefinitions": 278,
+    "migrations": 48,
+    "seeders": 21,
+    "rlsEnabledTables": 103,
+    "rlsCoverage": "100%",
+    "note": "278 __tablename__ definitions across 56 model files. 47 alembic migrations. 21 seeder files."
+  },
+
+  "tests": {
+    "backendTestFiles": 58,
+    "smokeTestEndpoints": 570,
+    "smokeTestPassed": 1618,
+    "smokeTestXfail": 87,
+    "smokeTestAuthGuardGaps": 0,
+    "e2eSpecs": 19,
+    "e2eCriticalPathsPassed": 102,
+    "e2eCriticalPathsFailed": 0,
+    "e2eSections": ["auth-lifecycle", "brapi-core-pages", "division-navigation", "api-ui-verification", "shell-chrome", "cross-page-nav", "error-resilience", "responsive-layout", "brapi-api-compliance"],
+    "frontendTests": 7,
+    "total": 84,
+    "note": "Phase 3.3: 102 E2E tests (61 new critical paths + 16 fixed smoke + 25 API). 9 test sections covering auth, BrAPI pages, divisions, API-to-UI data, shell chrome, navigation, errors, responsive, API compliance. Backend: 1618/1705 smoke tests pass. Auth guard: 100%."
+  },
+
+  "modules": {
+    "total": 8,
+    "divisions": 10,
+    "divisionsList": ["commercial", "future", "integrations", "knowledge", "plant-sciences", "seed-bank", "seed-operations", "sensor-networks", "space-research", "sun-earth-systems"],
+    "list": [
+      { "name": "Breeding", "pages": 35, "endpoints": 126, "calfStatus": "improving" },
+      { "name": "Phenotyping", "pages": 28, "endpoints": 88, "calfStatus": "partial" },
+      { "name": "Genomics", "pages": 35, "endpoints": 110, "calfStatus": "improving" },
+      { "name": "Seed Bank", "pages": 15, "endpoints": 59, "calfStatus": "display_only" },
+      { "name": "Environment", "pages": 22, "endpoints": 117, "calfStatus": "display_only" },
+      { "name": "Seed Operations", "pages": 22, "endpoints": 99, "calfStatus": "partial" },
+      { "name": "Knowledge", "pages": 5, "endpoints": 35, "calfStatus": "display_only" },
+      { "name": "Settings & Admin", "pages": 35, "endpoints": 79, "calfStatus": "functional" }
+    ]
+  },
+
+  "workspaces": {
+    "total": 5,
+    "list": [
+      { "id": "breeding", "name": "Plant Breeding", "pages": 86 },
+      { "id": "seed-ops", "name": "Seed Industry", "pages": 25 },
+      { "id": "research", "name": "Innovation Lab", "pages": 28 },
+      { "id": "genebank", "name": "Gene Bank", "pages": 34 },
+      { "id": "admin", "name": "Administration", "pages": 25 }
+    ]
+  },
+
+  "shell": {
+    "status": "complete",
+    "paradigm": "Web-OS (unified)",
+    "components": ["SystemBar", "ShellSidebar", "Dock", "STRATA", "CommandPalette", "NotificationCenter", "ContextMenu", "VeenaSidebar"],
+    "immersiveRoutes": ["/veena", "/ai-assistant"],
+    "note": "Session 92-93: Unified 5 navigation paradigms into Web-OS shell. Dock+STRATA auto-hide on immersive routes. VeenaSidebar v2 + VeenaChat v2 redesigned."
+  },
+
+  "zeroMockDataPolicy": {
+    "status": "backend_complete",
+    "backendViolators": [],
+    "totalViolatingBackendFiles": 0,
+    "frontendDemoPages": 41,
+    "servicesDeleted": ["field_map.py", "field_planning.py", "forums.py", "germplasm_comparison.py", "grin_global.py", "plot_history.py", "progeny.py", "resource_management.py", "vision_datasets.py"],
+    "apisRewritten": ["resource_management.py", "germplasm_comparison.py", "field_map.py", "progeny.py", "field_planning.py", "plot_history.py", "forums.py"],
+    "servicesReplacedWithStubs": ["grin_global.py", "vision_datasets.py"],
+    "note": "Phase 1 FULLY COMPLETE (Sessions 94-95): Original 7 items (gwas, warehouse, field_scanner, pedigree, devguru, collaboration, import_api, data_viz) + discovered 9 additional in-memory demo services. All purged. 8 service files deleted (-3961 lines), 7 API files rewritten to real DB queries (+1429 lines). Net -2532 lines. Zero backend demo data remains."
+  },
+
+  "deadCode": {
+    "status": "clean",
+    "files": [],
+    "note": "Phase 0 COMPLETE (Session 94): Deleted Veena.tsx, Veena3DFlame.tsx, VeenaWelcome.tsx, VoiceCommand.tsx, DesktopShortcuts.tsx, MockDashboardService.ts + useDashboard.ts. Rewired Dashboard.tsx to apiClient. Cleaned barrel exports. -1,379 lines. Commit bbd3a7e."
+  },
+
+  "build": {
+    "status": "passing",
+    "chunks": 422,
+    "sizeKB": 14000,
+    "sizeMB": "14MB",
+    "buildTime": "~10.5s",
+    "tsErrors": 0,
+    "warnings": "2 chunks > 1500KB (index.js 1.5MB, EChartsWrapper 1.1MB)",
+    "note": "Vite 7.3.1, Node v25.2.1. Zero TypeScript errors. Build passes cleanly."
+  },
+
+  "cicd": {
+    "status": "active",
+    "platform": "GitHub Actions",
+    "activeWorkflows": 4,
+    "disabledWorkflows": 3,
+    "workflows": {
+      "ci.yml": {
+        "triggers": ["push:main", "pull_request:main"],
+        "jobs": ["quick-checks", "backend-lint", "backend-test", "frontend-build", "rust-check", "security-scan", "ci-summary"],
+        "features": ["path-based change detection", "parallel execution", "bundle size reporting", "concurrency cancellation"]
+      },
+      "e2e-tests.yml": {
+        "triggers": ["workflow_dispatch", "version tags"],
+        "jobs": ["smoke-tests", "api-tests", "full-e2e (chromium+firefox)", "summary"],
+        "features": ["manual trigger with suite selection", "multi-browser matrix", "artifact upload"]
+      },
+      "sync-readme-metrics.yml": {
+        "triggers": ["push:main (metrics.json)", "workflow_dispatch"],
+        "jobs": ["sync"],
+        "features": ["auto-updates README+RELEASE from metrics.json"]
+      },
+      "sync-to-public.yml": {
+        "triggers": ["workflow_dispatch", "schedule (daily 21:00 UTC)"],
+        "jobs": ["lint-readme", "sync"],
+        "features": ["rsync with exclusion list", "confidential file filtering", "README validation"]
+      }
+    },
+    "disabledList": ["ci-cd.yaml (K8s/Helm deploy)", "deploy-production.yml (Vercel)", "jules-pr-validation.yml (Jules fleet)"],
+    "note": "Phase 3.4: Restored CI/CD. New ci.yml replaces old broken ci-cd.yaml. Fixed e2e-tests.yml (email domain, action versions). All workflows YAML-validated. Uses dorny/paths-filter for smart change detection."
+  },
+
+  "pathToProduction": {
+    "priority0": {
+      "task": "Dead code removal (5 files) + update trackers",
+      "timeline": "1 session",
+      "status": "complete"
+    },
+    "priority1": {
+      "task": "Fix Demo Data — Backend (16 files: warehouse, field_scanner, gwas, pedigree, devguru, collaboration + 9 additional demo services)",
+      "timeline": "3 sessions (94-95)",
+      "status": "complete"
+    },
+    "priority2": {
+      "task": "Fix Demo Data — Frontend (41 CALF-2 pages)",
+      "timeline": "3-4 weeks",
+      "status": "next"
+    },
+    "priority3": {
+      "task": "Testing coverage — Phase 3.1 smoke tests (570 GET endpoints)",
+      "timeline": "1 session (96)",
+      "status": "complete"
+    },
+    "priority4": {
+      "task": "Bundle optimization (4 chunks > 500KB)",
+      "timeline": "1 week",
+      "status": "not_started"
+    },
+    "totalEstimate": "6-8 weeks to preview-2"
+  },
+
+  "julesFleet": {
+    "tasksTotal": 100,
+    "tasksCompleted": 19,
+    "tasksInProgress": 8,
+    "tasksPending": 73,
+    "localTasksCompleted": ["Task 18", "Task 21", "Task 36"],
+    "remoteTasksMerged": ["Task 11", "Task 12", "Task 15", "Task 17", "Task 10", "Task 13", "Task 20", "Task 21", "Task 19", "Task 07", "Task 08", "Task 18", "Soil Models Fleet"],
+    "remoteBranchesAvailable": [],
+    "note": "Wave 4 Complete. All Intelligence Models (Soil, Carbon, GDD, Pest) are PRESENT in codebase."
+  },
+
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "mahasarthiNavigation": "2026-01-07",
+    "calfAssessmentComplete": "2026-01-09",
+    "versionDowngraded": "2026-01-09",
+    "astraAgentArsenal": "2026-01-10",
+    "pyo3NumpyUpgradeComplete": "2026-01-10",
+    "p0DemoDataComplete": "2026-01-12",
+    "p05DemoDataComplete": "2026-01-12",
+    "themeSimplificationComplete": "2026-01-12",
+    "julesBatchCreated": "2026-01-12",
+    "referenceAppsAnalysis": "2026-01-13",
+    "baglamukhiPlanCreated": "2026-01-13",
+    "astraDeleted": "2026-01-13",
+    "setuProtocolEstablished": "2026-01-13",
+    "futureRoutersComplete": "2026-01-13",
+    "futureMigration029Complete": "2026-01-13",
+    "futureReactPagesComplete": "2026-01-13",
+    "thinkTankPhase1Complete": "2026-01-13",
+    "veenaChatFixed": "2026-01-13",
+    "veenaSearchServicesComplete": "2026-01-15",
+    "demoDataServicesComplete": "2026-01-15",
+    "errorHandlingImprovements": "2026-01-16",
+    "zeroMockDataPolicyEnforced": "2026-01-16",
+    "databaseMigrations030to034": "2026-01-17",
+    "postgresqlUpgradedTo17": "2026-01-17",
+    "futureModulesRoutingComplete": "2026-01-17",
+    "backendCoreRefactor": "2026-01-21",
+    "truthInUIPhase1": "2026-01-21",
+    "truthInUIPhase2": "2026-01-21",
+    "task18ImageAnalysis": "2026-01-21",
+    "task21GenomicKinship": "2026-01-21",
+    "task36GBLUPIntegration": "2026-01-21",
+    "task11PedigreeAnalysis": "2026-01-21",
+    "webOsShellIntegration": "2026-02-06",
+    "veenaSidebarV2": "2026-02-06",
+    "veenaChatV2": "2026-02-06",
+    "immersiveRouteDockHide": "2026-02-06",
+    "fullCodebaseAudit": "2026-02-07",
+    "phase0DeadCodeComplete": "2026-02-07",
+    "phase1BackendDemoEradication": "2026-02-07",
+    "phase1ExtendedDemoServicePurge": "2026-02-08",
+    "phase2FrontendWiring8Pages": "2026-02-08",
+    "phase3SmokeTests570Endpoints": "2026-02-08",
+    "phase32AuthGuardAudit": "2026-02-08",
+    "phase33E2ECriticalPaths102Tests": "2026-02-08",
+    "phase34CICDPipelineRestored": "2026-02-08"
+  },
+
+  "releaseInfo": {
+    "currentRelease": "preview-1",
+    "codename": "Prathama (प्रथम)",
+    "phase": "preview",
+    "status": "early-access",
+    "nextMilestone": "preview-2 (Dead code cleanup + Demo data eradication)",
+    "stableTarget": "v1.0.0",
+    "versionProgression": ["preview-1", "preview-2", "preview-3", "1.0.0-rc", "1.0.0"]
+  },
+
+  "techStack": {
+    "frontend": ["React 18", "TypeScript 5", "Vite 7.3", "Tailwind CSS", "TanStack Query", "Zustand", "Framer Motion"],
+    "backend": ["Python 3.14", "FastAPI", "SQLAlchemy 2.0", "Pydantic 2"],
+    "database": ["PostgreSQL 17", "PostGIS 3.6", "pgvector 0.8+", "Redis 8"],
+    "compute": ["Rust/WASM", "NumPy", "OpenCV", "Fortran (BLUP/REML)"],
+    "ai": ["VanRaden Kinship", "GBLUP Solver", "Spectral Indices (NDVI/TGI/CCC)"],
+    "runtime": ["Node v25.2.1", "Python 3.14.2"]
+  }
+}

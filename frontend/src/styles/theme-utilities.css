@@ -1,0 +1,187 @@
+/**
+ * Theme Utility Classes
+ * 
+ * Use these instead of hardcoded Tailwind colors for automatic dark mode support.
+ * These classes use CSS variables that switch based on theme.
+ * 
+ * USAGE:
+ *   ❌ BAD:  className="text-gray-900 bg-white"
+ *   ✅ GOOD: className="text-heading bg-surface"
+ */
+
+/* ============================================
+   TEXT COLORS - Auto-switch for dark mode
+   ============================================ */
+
+/* Primary text - for headings and important content */
+.text-heading {
+  color: hsl(var(--foreground));
+}
+
+/* Body text - for paragraphs and general content */
+.text-body {
+  color: hsl(var(--foreground) / 0.9);
+}
+
+/* Secondary text - for less important content */
+.text-secondary {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Muted text - for hints, placeholders, disabled */
+.text-muted-safe {
+  color: hsl(var(--muted-foreground) / 0.7);
+}
+
+/* Link text */
+.text-link {
+  color: hsl(var(--primary));
+}
+.text-link:hover {
+  color: hsl(var(--primary) / 0.8);
+}
+
+/* ============================================
+   BACKGROUND COLORS - Auto-switch for dark mode
+   ============================================ */
+
+/* Primary surface - cards, panels */
+.bg-surface {
+  background-color: hsl(var(--card));
+}
+
+/* Elevated surface - modals, dropdowns */
+.bg-surface-elevated {
+  background-color: hsl(var(--popover));
+}
+
+/* Muted surface - subtle backgrounds */
+.bg-surface-muted {
+  background-color: hsl(var(--muted));
+}
+
+/* Page background */
+.bg-page {
+  background-color: hsl(var(--background));
+}
+
+/* Hover states */
+.bg-hover {
+  background-color: hsl(var(--accent));
+}
+
+/* ============================================
+   BORDER COLORS - Auto-switch for dark mode
+   ============================================ */
+
+.border-default {
+  border-color: hsl(var(--border));
+}
+
+.border-muted {
+  border-color: hsl(var(--border) / 0.5);
+}
+
+.border-strong {
+  border-color: hsl(var(--border) / 1.5);
+}
+
+/* ============================================
+   STATUS COLORS - Semantic with dark mode support
+   ============================================ */
+
+/* Success */
+.status-success {
+  @apply bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400;
+}
+
+/* Warning */
+.status-warning {
+  @apply bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400;
+}
+
+/* Error */
+.status-error {
+  @apply bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400;
+}
+
+/* Info */
+.status-info {
+  @apply bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400;
+}
+
+/* Neutral */
+.status-neutral {
+  @apply bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300;
+}
+
+/* ============================================
+   INTERACTIVE STATES
+   ============================================ */
+
+/* Clickable item (list items, menu items) */
+.interactive {
+  @apply transition-colors;
+}
+.interactive:hover {
+  background-color: hsl(var(--accent));
+}
+.interactive:active {
+  background-color: hsl(var(--accent) / 0.8);
+}
+
+/* Selected state */
+.selected {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+/* ============================================
+   COMPONENT PATTERNS
+   ============================================ */
+
+/* Card pattern */
+.card-pattern {
+  @apply bg-surface border border-default rounded-lg shadow-sm;
+}
+
+/* Panel pattern */
+.panel-pattern {
+  @apply bg-surface-muted border border-default rounded-md p-4;
+}
+
+/* Input pattern */
+.input-pattern {
+  @apply bg-background border border-default rounded-md;
+  @apply focus:ring-2 focus:ring-ring focus:border-transparent;
+}
+
+/* ============================================
+   MIGRATION HELPERS
+   These override common hardcoded patterns
+   ============================================ */
+
+/* Override text-gray-900 in dark mode */
+.dark .text-gray-900:not(.preserve-color) {
+  color: hsl(var(--foreground));
+}
+
+/* Override bg-white in dark mode */
+.dark .bg-white:not(.preserve-color) {
+  background-color: hsl(var(--card));
+}
+
+/* Override bg-gray-50 in dark mode */
+.dark .bg-gray-50:not(.preserve-color) {
+  background-color: hsl(var(--muted));
+}
+
+/* Override bg-gray-100 in dark mode */
+.dark .bg-gray-100:not(.preserve-color) {
+  background-color: hsl(var(--muted));
+}
+
+/* Preserve color class - add to elements that should NOT auto-switch */
+.preserve-color {
+  /* No styles - just a marker class */
+}

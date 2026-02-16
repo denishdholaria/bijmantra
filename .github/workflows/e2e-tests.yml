@@ -1,0 +1,231 @@
+# E2E Tests Workflow
+# Runs Playwright E2E tests against backend + frontend
+# MANUAL TRIGGER + version tags (saves CI minutes)
+
+name: E2E Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - all
+          - auth
+          - crud
+          - api
+          - accessibility
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  E2E_BASE_URL: http://localhost:5173
+  E2E_API_URL: http://localhost:8000
+  E2E_TEST_EMAIL: demo@bijmantra.org
+  E2E_TEST_PASSWORD: Demo123!
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+
+jobs:
+  smoke-tests:
+    name: '🔥 Smoke Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install frontend
+        run: npm ci
+        working-directory: frontend
+
+      - name: Install E2E deps
+        run: npm ci
+        working-directory: frontend/e2e
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: frontend/e2e
+
+      - name: Install backend
+        run: pip install -r requirements.txt
+        working-directory: backend
+
+      - name: Start backend
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          echo "Waiting for backend..."
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/api/health && break || sleep 1
+          done
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: ci-e2e-secret-key-not-for-production
+          TESTING: '1'
+
+      - name: Start frontend
+        run: |
+          npm run dev &
+          echo "Waiting for frontend..."
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5173 && break || sleep 1
+          done
+        working-directory: frontend
+
+      - name: Run smoke tests
+        run: npx playwright test tests/smoke/critical-paths.spec.ts tests/smoke/e2e-critical-paths.spec.ts --project=chromium
+        working-directory: frontend/e2e
+
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: smoke-results
+          path: |
+            frontend/e2e/test-results/
+            frontend/e2e/playwright-report/
+          retention-days: 7
+
+  api-tests:
+    name: '🌐 API Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install E2E deps
+        run: npm ci
+        working-directory: frontend/e2e
+
+      - name: Install backend
+        run: pip install -r requirements.txt
+        working-directory: backend
+
+      - name: Start backend
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/api/health && break || sleep 1
+          done
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: ci-e2e-secret-key-not-for-production
+
+      - name: Run API tests
+        run: npm run test:api
+        working-directory: frontend/e2e
+
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: api-results
+          path: frontend/e2e/test-results/
+          retention-days: 7
+
+  full-e2e:
+    name: '🎭 Full E2E (${{ matrix.browser }})'
+    needs: smoke-tests
+    if: github.event.inputs.test_suite == 'all' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install all deps
+        run: |
+          cd frontend && npm ci
+          cd ../frontend/e2e && npm ci
+          cd ../../backend && pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+        working-directory: frontend/e2e
+
+      - name: Start services
+        run: |
+          cd backend && uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          cd frontend && npm run dev &
+          sleep 15
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: ci-e2e-secret-key-not-for-production
+
+      - name: Run E2E tests
+        run: npx playwright test --project=${{ matrix.browser }}
+        working-directory: frontend/e2e
+
+      - name: Upload report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: e2e-report-${{ matrix.browser }}
+          path: frontend/e2e/playwright-report/
+          retention-days: 14
+
+  summary:
+    name: '📊 E2E Summary'
+    needs: [smoke-tests, api-tests, full-e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Summary
+        run: |
+          echo "## E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke | ${{ needs.smoke-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API | ${{ needs.api-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Full E2E | ${{ needs.full-e2e.result }} |" >> $GITHUB_STEP_SUMMARY
