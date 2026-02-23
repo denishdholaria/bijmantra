@@ -117,7 +117,7 @@
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "tailwindcss": "^4.1.18",
-    "type-fest": "^5.4.3",
+    "type-fest": "^5.4.4",
     "typescript": "^5.3.3",
     "vite": "^7.3.1",
     "vite-plugin-pwa": "^0.17.5",
