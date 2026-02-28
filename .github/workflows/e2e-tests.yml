@@ -101,7 +101,7 @@ jobs:
         working-directory: frontend/e2e
 
       - name: Upload results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: smoke-results
@@ -151,7 +151,7 @@ jobs:
         working-directory: frontend/e2e
 
       - name: Upload results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: api-results
@@ -207,7 +207,7 @@ jobs:
         working-directory: frontend/e2e
 
       - name: Upload report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-report-${{ matrix.browser }}
