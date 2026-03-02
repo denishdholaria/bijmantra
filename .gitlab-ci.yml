@@ -1,0 +1,158 @@
+workflow:
+  rules:
+    # Keep pipeline creation explicit and predictable across sources.
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: always
+    # Allow manual triggering via Web UI (Run Pipeline button)
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    # Allow manual triggering via API
+    - if: $CI_PIPELINE_SOURCE == "api"
+      when: always
+    # Allow trigger-token initiated pipelines (optional, useful for automation)
+    - if: $CI_PIPELINE_SOURCE == "trigger"
+      when: always
+    # No fallback rule: all other sources (push, merge_request_event, schedule) create no pipeline.
+
+stages:
+  - lint
+  - test
+  - build
+  - security
+  - e2e
+
+variables:
+  PYTHON_VERSION: "3.13"
+  NODE_VERSION: "20"
+  DATABASE_URL: "sqlite:///./test.db"
+  SECRET_KEY: "ci-test-secret-key-not-for-production"
+  TESTING: "1"
+  RUN_FULL_CI: "false"
+
+ci_push_noop:
+  stage: lint
+  image: alpine:3.20
+  script:
+    - echo "Push pipeline intentionally lightweight. Run full checks via manual pipeline trigger."
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: on_success
+    - when: never
+
+ci_manual_noop:
+  stage: lint
+  image: alpine:3.20
+  script:
+    - echo "Manual pipeline wiring is healthy. Heavy jobs are opt-in manual actions."
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"
+      when: on_success
+    - when: never
+
+backend_lint:
+  stage: lint
+  image: python:3.13
+  script:
+    - cd backend
+    - pip install ruff
+    - ruff check app/
+    - ruff format --check app/ || true
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $RUN_FULL_CI == "true"
+      when: manual
+    - when: never
+  allow_failure: true
+
+backend_test:
+  stage: test
+  image: python:3.13
+  script:
+    - cd backend
+    - pip install -r requirements.txt
+    - pytest tests/test_smoke_api_v2.py -v --tb=short -x --timeout=120
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $RUN_FULL_CI == "true"
+      when: manual
+    - when: never
+  allow_failure: true
+
+frontend_build:
+  stage: build
+  image: node:20
+  script:
+    - cd frontend
+    - npm ci
+    - npx tsc --noEmit
+    - npm run build
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $RUN_FULL_CI == "true"
+      when: manual
+    - when: never
+  allow_failure: true
+
+rust_check:
+  stage: lint
+  image: rust:latest
+  script:
+    - cd rust
+    - rustup target add wasm32-unknown-unknown
+    - cargo check --target wasm32-unknown-unknown
+    - cargo test --verbose --target x86_64-unknown-linux-gnu
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $RUN_FULL_CI == "true"
+      when: manual
+    - when: never
+  allow_failure: true
+
+security_scan:
+  stage: security
+  image: ubuntu:latest
+  script:
+    - apt-get update && apt-get install -y grep
+    - |
+      HITS=$(grep -rnE '(password|secret_key|api_key|private_key)\s*=\s*["\x27][A-Za-z0-9+/=]{8,}' \
+        --include='*.py' --include='*.ts' --include='*.tsx' \
+        --exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=venv \
+        backend/app/ frontend/src/ 2>/dev/null \
+        | grep -viE '(test|example|demo|changeme|placeholder|TODO|env|config|process\.env)' \
+        || true)
+      if [ -n "$HITS" ]; then
+        echo "⚠️ Potential hardcoded secrets:"
+        echo "$HITS"
+      else
+        echo "✅ No hardcoded secrets detected"
+      fi
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $RUN_FULL_CI == "true"
+      when: manual
+    - when: never
+  allow_failure: true
+
+e2e_smoke:
+  stage: e2e
+  image: mcr.microsoft.com/playwright:v1.49.0-jammy
+  script:
+    - apt-get update && apt-get install -y python3-pip python3-venv curl
+    - python3 -m venv /venv
+    - source /venv/bin/activate
+    - cd backend
+    - pip install -r requirements.txt
+    - uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+    - sleep 10
+    - cd ../frontend
+    - npm ci
+    - npm run dev &
+    - sleep 10
+    - cd e2e
+    - npx playwright install --with-deps chromium
+    - npx playwright test tests/smoke/critical-paths.spec.ts tests/smoke/e2e-critical-paths.spec.ts --project=chromium
+  artifacts:
+    when: always
+    paths:
+      - frontend/e2e/playwright-report/
+    expire_in: 7 days
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $RUN_FULL_CI == "true"
+      when: manual
+    - when: never
+  allow_failure: true

@@ -1,0 +1,149 @@
+{
+  "lastUpdated": "2026-03-02",
+  "updatedBy": "Automated metrics script",
+  "session": 0,
+  "pages": {
+    "total": 249,
+    "functional": 235,
+    "demo": 14,
+    "uiOnly": 5,
+    "removed": 12
+  },
+  "api": {
+    "totalEndpoints": 1712,
+    "brapiEndpoints": 202,
+    "brapiCoverage": 100,
+    "customEndpoints": 1510
+  },
+  "database": {
+    "models": 97,
+    "migrations": 19,
+    "seeders": 15,
+    "tables": 106,
+    "seededRecords": 413,
+    "rlsEnabledTables": 0
+  },
+  "modules": {
+    "total": 8,
+    "list": [
+      {
+        "name": "Breeding",
+        "pages": 35,
+        "endpoints": 120
+      },
+      {
+        "name": "Phenotyping",
+        "pages": 25,
+        "endpoints": 85
+      },
+      {
+        "name": "Genomics",
+        "pages": 35,
+        "endpoints": 107
+      },
+      {
+        "name": "Seed Bank",
+        "pages": 15,
+        "endpoints": 59
+      },
+      {
+        "name": "Environment",
+        "pages": 20,
+        "endpoints": 97
+      },
+      {
+        "name": "Seed Operations",
+        "pages": 22,
+        "endpoints": 96
+      },
+      {
+        "name": "Knowledge",
+        "pages": 5,
+        "endpoints": 35
+      },
+      {
+        "name": "Settings & Admin",
+        "pages": 35,
+        "endpoints": 79
+      }
+    ]
+  },
+  "workspaces": {
+    "total": 5,
+    "list": [
+      {
+        "id": "breeding",
+        "name": "Plant Breeding",
+        "pages": 83
+      },
+      {
+        "id": "seed-ops",
+        "name": "Seed Business",
+        "pages": 22
+      },
+      {
+        "id": "research",
+        "name": "Innovation Lab",
+        "pages": 28
+      },
+      {
+        "id": "genebank",
+        "name": "Gene Bank",
+        "pages": 34
+      },
+      {
+        "id": "admin",
+        "name": "Administration",
+        "pages": 25
+      }
+    ]
+  },
+  "build": {
+    "status": "passing",
+    "pwaEntries": 116,
+    "sizeKB": 12609,
+    "sizeMB": "12.3MB"
+  },
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "productionReady": "2025-12-25"
+  },
+  "techStack": {
+    "frontend": [
+      "React 18",
+      "TypeScript 5",
+      "Vite 5",
+      "Tailwind CSS",
+      "TanStack Query"
+    ],
+    "backend": [
+      "Python 3.13",
+      "FastAPI",
+      "SQLAlchemy 2.0",
+      "Pydantic 2"
+    ],
+    "database": [
+      "PostgreSQL 15",
+      "PostGIS",
+      "pgvector",
+      "Redis"
+    ],
+    "compute": [
+      "Rust/WASM",
+      "Fortran"
+    ]
+  },
+  "version": {
+    "app": "0",
+    "brapi": "2.1",
+    "schema": "1.0.0"
+  },
+  "tests": {
+    "total": 80,
+    "frontend": 80,
+    "backend": 0,
+    "note": "Frontend tests counted from local run. Backend tests pending."
+  }
+}

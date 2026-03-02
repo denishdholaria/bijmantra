@@ -1,0 +1,138 @@
+# Bijmantra Development Docker Compose
+# Usage: docker compose -f compose.yaml -f compose.dev.yaml up -d
+# Or: make dev-docker
+
+version: "3.8"
+
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev_password_123}
+    # Expose port for local development tools (DBeaver, pgAdmin, etc.)
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  redis:
+    # Expose port for local debugging
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  minio:
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    # Expose both API and console ports
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+
+  meilisearch:
+    environment:
+      MEILI_ENV: development
+      # No master key in development for easier testing
+      MEILI_MASTER_KEY: ""
+    ports:
+      - "${MEILISEARCH_PORT:-7700}:7700"
+
+  # Backend with hot reload for development
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: bijmantra-backend-dev
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-bijmantra_user}:${POSTGRES_PASSWORD:-dev_password_123}@postgres:5432/${POSTGRES_DB:-bijmantra_db}
+      - REDIS_URL=redis://redis:6379
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_USE_SSL=false
+      - SECRET_KEY=${SECRET_KEY:-dev_secret_key_not_for_production}
+      - DEMO_MODE=true
+      - SEED_DEMO_DATA=true
+      - DEMO_ORG_NAME=Demo Organization
+      - DEMO_USER_EMAIL=demo@bijmantra.org
+      - DEMO_USER_PASSWORD=demo123
+      - LOG_LEVEL=DEBUG
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      # Mount source code for hot reload
+      - ./backend:/app
+      # Exclude virtual environment
+      - /app/venv
+      - /app/__pycache__
+    networks:
+      - bijmantra-network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+
+  # Frontend dev server (optional - usually run locally with npm run dev)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: bijmantra-frontend-dev
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+      - VITE_DEMO_MODE=true
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      # Mount source code for hot reload
+      - ./frontend:/app
+      # Exclude node_modules
+      - /app/node_modules
+    networks:
+      - bijmantra-network
+    command: npm run dev -- --host 0.0.0.0
+    profiles:
+      - frontend # Only start with: docker compose --profile frontend up
+
+  # Adminer for database management (dev only)
+  adminer:
+    image: adminer:latest
+    container_name: bijmantra-adminer
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    networks:
+      - bijmantra-network
+    profiles:
+      - tools # Only start with: docker compose --profile tools up
+
+  # Redis Commander for cache inspection (dev only)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: bijmantra-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    networks:
+      - bijmantra-network
+    profiles:
+      - tools
+
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: bijmantra-surrealdb
+    ports:
+      - "8082:8000"
+    volumes:
+      - surreal-data:/mydata
+    command: start --log trace --user root --pass root file://mydata/surreal.db --allow-scripting --allow-guests --allow-funcs --allow-net
+    networks:
+      - bijmantra-network
+
+volumes:
+  surreal-data:
+
+networks:
+  bijmantra-network:
+    driver: bridge

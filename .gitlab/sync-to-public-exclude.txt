@@ -1,0 +1,36 @@
+# =============================================================================
+# Files/Directories EXCLUDED from Public Repo
+# =============================================================================
+# Add paths here (one per line) to keep them private.
+# These will NOT be synced to gitlab.com/denishdholaria/bijmantraorg
+# =============================================================================
+
+# Confidential documentation
+docs/gupt
+docs
+
+# Kiro AI steering files
+.kiro
+
+# Jules AI agent files
+.Jules
+
+# Antigravity AI agent files
+.agent
+
+# Secrets and credentials
+secrets
+
+# Platform admin tools
+platform-admin
+
+# Per-organization configs
+configs
+
+# Sync workflow files (not needed in public)
+.github/workflows/sync-to-public.yml
+.github/sync-to-public-exclude.txt
+
+# Migration/setup scripts
+scripts/migrate-to-private-repo.sh
+scripts/test-public-repo-token.sh

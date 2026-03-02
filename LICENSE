@@ -1,0 +1,353 @@
+# BUSINESS SOURCE LICENSE 1.1
+
+## Parameters
+
+Licensor:             Denish Dholaria
+Licensed Work:        Bijmantra v1.0 and later versions
+                      The Licensed Work is © 2025 Denish Dholaria
+
+Additional Use Grant: You may use the Licensed Work for any purpose,
+                      including production use, provided that you do not
+                      use the Licensed Work for an Excluded Purpose.
+
+                      An "Excluded Purpose" means:
+                    
+                      (a) Offering the Licensed Work to third parties as a
+                          managed service, software-as-a-service (SaaS),
+                          platform-as-a-service (PaaS), or similar offering
+                          where the Licensed Work is a substantial component
+                          of the service, UNLESS you are:
+                          - A For-Profit Agricultural Enterprise with Annual Revenue < $1,000,000 USD
+                          - A government agency or publicly-funded program
+                          - A CGIAR center or affiliated program
+                          - A registered non-profit organization or NGO
+                          - An educational institution (subject to Section 3.2.1)
+                          - A farmer cooperative or producer organization; OR
+                    
+                      (b) Using the Licensed Work in connection with any
+                          Prohibited Technology as defined in the Ethical
+                          Use Restrictions section below.
+
+Change Date:          January 1, 2029 (4 years from v1.0 release date)
+
+Change License:       Apache License 2.0
+
+---
+
+## TERMS AND CONDITIONS
+
+### 1. DEFINITIONS
+
+"Annual Revenue" means the total gross revenue of a Legal Entity and all
+its Affiliates during the most recently completed fiscal year, calculated in
+accordance with generally accepted accounting principles (GAAP).
+
+"For-Profit Agricultural Enterprise" means any Legal Entity engaged in
+commercial seed production, seed sales, crop breeding for profit, agricultural
+biotechnology, agrochemicals, or related agribusiness activities, excluding
+farmer cooperatives and producer organizations.
+
+"Legal Entity" means the union of the acting entity and all other entities
+that control, are controlled by, or are under common control with that entity.
+"Control" means (i) the power to direct the affairs of such entity, or (ii)
+ownership of fifty percent (50%) or more of the outstanding shares or beneficial
+ownership of such entity.
+
+"Licensed Work" means Bijmantra, including all source code, object code,
+documentation, configuration files, assets, and associated materials contained
+in the official repository and distributions.
+
+"Licensor" means Denish Dholaria and his successors and assigns.
+
+"Managed Service" means making the functionality of the Licensed Work
+available to third parties over a computer network as a primary offering,
+including but not limited to software-as-a-service (SaaS), platform-as-a-service
+(PaaS), infrastructure-as-a-service (IaaS), or any hosted or cloud-based offering
+where the Licensed Work is a substantial component.
+
+"Prohibited Technology" means any technology, method, or practice designed to:
+- Restrict the use of genetic material (GURTs)
+- Produce sterile seeds or prevent seed saving (Terminator Technology)
+- Create farmer dependency on proprietary chemicals (Seed Dependency Technology)
+- Prevent farmers from saving, replanting, or sharing seeds
+See Section 4.1 for detailed definitions and exemptions.
+
+"You" (or "Your") means the individual or Legal Entity exercising
+permissions granted by this License.
+
+---
+
+### 2. LICENSE GRANT
+
+Subject to the terms and conditions of this License, Licensor hereby grants You
+a worldwide, royalty-free, non-exclusive, non-transferable license to:
+
+(a) Use the Licensed Work for any purpose not constituting an Excluded Purpose;
+(b) Prepare modifications and derivative works of the Licensed Work;
+(c) Distribute copies of the Licensed Work and derivative works thereof in
+    source code or object code form;
+(d) Publicly display and publicly perform the Licensed Work and derivative
+    works thereof.
+
+This license grant is subject to the Additional Use Grant and Ethical Use
+Restrictions defined in this License.
+
+---
+
+### 3. ADDITIONAL USE GRANT
+
+You may use the Licensed Work for any purpose, including production use and
+commercial use, EXCEPT for Excluded Purposes.
+
+#### 3.1 EXCLUDED PURPOSES
+
+The following are Excluded Purposes and require a separate Commercial License:
+
+(a) MANAGED SERVICE RESTRICTION
+You may NOT offer the Licensed Work to third parties as a Managed Service without
+a Commercial License, UNLESS you are:
+- A For-Profit Agricultural Enterprise with Annual Revenue < $1,000,000 USD
+- A government agency or publicly-funded breeding program
+- A CGIAR center or affiliated program
+- A registered non-profit organization or NGO
+- An educational institution (subject to institutional licensing in Section 3.2.1)
+- A farmer cooperative or producer organization
+
+(b) PROHIBITED TECHNOLOGY RESTRICTION
+ALL users (regardless of revenue) are prohibited from using the Licensed Work
+in connection with any Prohibited Technology. See Section 4 for details.
+
+#### 3.2 EXEMPTIONS AND GEOGRAPHIC TIERS
+
+The following organizations are EXEMPT from the $1,000,000 USD revenue
+threshold and may use the Licensed Work freely, even for Managed Services:
+
+(a) Government Agencies: Government agencies and publicly-funded breeding
+    programs at all levels (federal, state, local).
+(b) CGIAR and International Programs: CGIAR centers and their affiliated
+    programs, international agricultural research organizations.
+(c) Non-Profit Organizations: Registered non-profit organizations and NGOs
+    engaged in agricultural research, development, or humanitarian work.
+(d) Farmer Cooperatives: Farmer cooperatives and farmer producer organizations,
+    regardless of size or revenue.
+(e) Individual Researchers: Individual researchers, faculty, and students at
+    any educational institution for personal research projects, teaching, coursework,
+    and thesis work. Individual use is always free.
+(f) Educational Institutions: Educational institutions are subject to
+    geographic tiers based on the World Bank income classification of the country
+    where the institution is headquartered. See Section 3.2.1 for details.
+(g) Developing Country Enterprises: For-Profit Agricultural Enterprises
+    headquartered in countries classified as "Low Income" or "Lower-Middle Income"
+    by the World Bank, provided Annual Revenue does not exceed $10,000,000 USD.
+
+#### 3.2.1 GEOGRAPHIC TIERS FOR EDUCATIONAL INSTITUTIONS
+
+Institutional licensing fees for educational institutions are determined by the
+World Bank income classification of the country where the institution is
+headquartered. Individual researcher use remains free in all tiers.
+
+TIER 1: LOW INCOME COUNTRIES
+Status: Free
+All educational and research institutions headquartered in countries classified
+as "Low Income" by the World Bank may use the Licensed Work without any fees.
+Anti-Abuse Provision: This exemption applies ONLY to institutions that are 
+genuinely headquartered and primarily operate in the low-income country.
+
+TIER 2: LOWER-MIDDLE INCOME COUNTRIES
+Status: Free for first 3 years, then minimal fees
+Institutions headquartered in "Lower-Middle Income" countries receive a 3-year
+grace period. After Grace Period (Year 4+):
+- Small institutions (annual agricultural research budget < $5,000,000 USD): Free
+- Medium institutions (research budget $5M - $50M USD): $2,500 USD/year
+- Large institutions (research budget > $50,000,000 USD): $5,000 USD/year
+
+TIER 3: UPPER-MIDDLE INCOME COUNTRIES
+Status: Free for first year, then moderate fees
+Institutions headquartered in "Upper-Middle Income" countries receive a 1-year
+grace period. After Grace Period (Year 2+):
+- Small institutions (annual agricultural research budget < $10,000,000 USD): Free
+- Medium institutions (research budget $10M - $50M USD): $5,000 USD/year
+- Large institutions (research budget > $50,000,000 USD): $10,000 USD/year
+
+TIER 4: HIGH INCOME COUNTRIES
+Status: Standard fees (immediate for institutional use)
+Institutions headquartered in "High Income" countries are subject to immediate
+fees for institutional deployment. 
+Institutional Use Fees:
+- Small institutions (annual agricultural research budget < $10,000,000 USD): Free
+- Medium institutions (research budget $10M - $100M USD): $10,000 - $25,000 USD/year
+- Large institutions (research budget > $100,000,000 USD): $25,000 - $50,000 USD/year
+- Elite institutions (endowment > $1,000,000,000 USD): $50,000 - $100,000 USD/year
+
+#### 3.2.2 GRACE PERIOD MECHANICS
+
+(a) Start Date: Grace period begins on the date of first institutional
+    deployment. Individual researcher use does not trigger the grace period.
+(b) Notification: Institutions must notify Licensor of first institutional
+    deployment within 30 days to establish grace period start date.
+(c) Transition Notice: At end of grace period, institutions receive 90-day
+    advance notice before fees apply.
+(d) Hardship Extension: Institutions may request grace period extension due to
+    financial hardship, natural disasters, or other extraordinary circumstances.
+(e) Verification: Institutions self-report their tier and research budget.
+    Licensor may request verification for large institutions.
+
+#### 3.2.3 ADDITIONAL PROVISIONS
+
+(a) Hardship Waiver: Institutions facing extraordinary financial hardship may
+    apply for fee waivers or reductions.
+(b) Consortium Licensing: Multiple institutions may form consortia to share a
+    single institutional license for a discount.
+(c) Multi-Year Commitment Discount: 3-year commitment (20% discount), 5-year 
+    commitment (30% discount).
+(d) World Bank Classification Updates: If a country's World Bank income
+    classification changes, institutions have 2 years to transition to the new tier.
+
+#### 3.2.4 ANTI-ABUSE AND VERIFICATION
+
+To prevent exploitation of geographic tiers:
+- Institutions must have genuine physical presence and operations in the claimed country.
+- Licensor may verify headquarters location, operations, and primary markets served.
+- Institutions found to be misrepresenting their tier will be reclassified.
+
+---
+
+### 4. ETHICAL USE RESTRICTIONS
+
+#### 4.1 PROHIBITED USES
+
+ALL use of the Licensed Work, whether free or under a Commercial License,
+is PROHIBITED in connection with:
+
+(a) Genetic Use Restriction Technologies (GURTs): Any technology that
+    restricts the use of genetic material, including but not limited to technologies
+    that render seeds or plant genetic material sterile, non-viable, or dependent
+    on proprietary chemical inducers.
+(b) Terminator Technology: Any technology designed to produce sterile seeds
+    or prevent farmers from saving, replanting, or sharing seeds.
+(c) Seed Dependency Technology: Any technology that creates farmer
+    dependency on proprietary chemicals.
+(d) Seed Termination: Any method, technology, or practice designed to prevent
+    seeds from being saved, replanted, shared, or used for subsequent generations.
+
+Exemptions: This prohibition does not apply to:
+(a) Chemically-inducible gene expression systems used solely for research
+    purposes in controlled environments;
+(b) Technologies where the activating chemical is publicly available and
+    non-proprietary;
+(c) Biocontainment systems designed primarily for environmental protection;
+(d) Optional trait enhancement systems where base plant functionality
+    remains intact and commercially viable without chemical application.
+
+#### 4.2 AUTOMATIC TERMINATION FOR ETHICAL VIOLATIONS
+
+Any use of the Licensed Work in violation of Section 4.1 results in IMMEDIATE
+and AUTOMATIC termination of all license rights, including any Commercial
+License, without notice and without opportunity to cure.
+
+#### 4.3 CERTIFICATION
+
+By using the Licensed Work, You certify that You will not use the Licensed Work 
+in connection with any Prohibited Technology and will not transfer the Licensed 
+Work to any party engaged in Prohibited Technology activities.
+
+---
+
+### 5. ATTRIBUTION REQUIREMENTS
+
+You must retain and display the following attribution in all copies and
+substantial portions of the Licensed Work:
+
+    Powered by Bijmantra
+    Created by Denish Dholaria
+    https://bijmantra.org
+    Licensed under Bijmantra Sustainable License (BSL)
+
+Attribution must be displayed in source code files, user-facing interfaces, 
+and documentation.
+
+---
+
+### 6. COMMERCIAL LICENSE
+
+A Commercial License is required if You are a For-Profit Agricultural Enterprise 
+with Annual Revenue ≥ $1,000,000 USD and wish to offer the Licensed Work as a 
+Managed Service. A Commercial License is also required for any user who wishes 
+to remove attribution requirements, create proprietary derivatives without source 
+disclosure, or white-label the Licensed Work.
+
+Commercial License terms are subject to negotiation based on use case, organization 
+size, and deployment scale. Please contact hello@bijmantra.org for inquiries.
+
+---
+
+### 7. CHANGE DATE AND CHANGE LICENSE
+
+On the Change Date (January 1, 2029), the Licensed Work will automatically
+convert to the Change License (Apache License 2.0). After the Change Date, You 
+may use the Licensed Work under the terms of the Change License, and the 
+restrictions in this License will no longer apply. This automatic conversion applies 
+to all versions of the Licensed Work released before the Change Date.
+
+---
+
+### 8. TRADEMARK AND BRANDING
+
+"Bijmantra" is a trademark of Denish Dholaria. You may use the Bijmantra name 
+and logo solely to accurately identify the Licensed Work as the source of Your 
+derivative work or provide attribution. Without prior written permission, You 
+may NOT use "Bijmantra" in the name of Your product, service, or organization, 
+or use the logo in a manner suggesting endorsement or affiliation.
+
+---
+
+### 9. DISCLAIMER OF WARRANTY
+
+THE LICENSED WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+---
+
+### 10. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
+LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL,
+PUNITIVE, OR EXEMPLARY DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS LICENSE 
+OR THE USE OR INABILITY TO USE THE LICENSED WORK. IN NO EVENT SHALL THE LICENSOR'S 
+TOTAL LIABILITY TO YOU FOR ALL DAMAGES EXCEED THE AMOUNT OF FIFTY UNITED STATES 
+DOLLARS (USD $50.00).
+
+---
+
+### 11. TERMINATION
+
+This License and all rights granted hereunder will terminate automatically if
+You fail to comply with any term hereof. For breaches other than violations of 
+Section 4, You shall have thirty (30) days from receipt of written notice to cure 
+the breach. Upon termination, You must cease all use and distribution of the 
+Licensed Work.
+
+---
+
+### 12. GENERAL PROVISIONS
+
+12.1 ENTIRE AGREEMENT: This License constitutes the entire agreement between You 
+and the Licensor concerning the Licensed Work.
+12.2 SEVERABILITY: If any provision is held invalid, the remaining provisions 
+shall continue in full force and effect.
+12.3 WAIVER: No waiver of any term shall be deemed a further or continuing waiver.
+12.4 ASSIGNMENT: You may not assign this License without prior written consent.
+12.5 GOVERNING LAW: This License shall be governed by the laws of India, with 
+exclusive jurisdiction in the courts located in Gujarat, India.
+12.6 AMENDMENTS: The Licensor may publish revised versions. You may choose to use
+the Licensed Work under any version that was in effect at the time You obtained it.
+
+---
+
+### 13. CONTACT INFORMATION
+
+For questions regarding this License or Commercial Licensing:
+Denish Dholaria
+Email: hello@bijmantra.org
+Website: https://bijmantra.org

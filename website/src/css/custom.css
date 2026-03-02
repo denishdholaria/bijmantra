@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+ * BijMantra Cathedral Base Theme 
+ */
+:root {
+  /* Primary Action Color: Padmarāga Ruby (Tripura Sundari's active energy) */
+  --ifm-color-primary: #d11149;
+  --ifm-color-primary-dark: #bc0f41;
+  --ifm-color-primary-darker: #b10e3d;
+  --ifm-color-primary-darkest: #920b33;
+  --ifm-color-primary-light: #d5295b;
+  --ifm-color-primary-lighter: #d83464;
+  --ifm-color-primary-lightest: #df5880;
+
+  /* Typography */
+  --ifm-font-family-base: 'Inter', sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', Consolas, monospace;
+
+  /* Theme: Sudha Samudra (Ocean of Nectar - Light Mode Defaults) */
+  --ifm-background-color: #FDFAF6;
+  /* Pearl/Nectar base */
+  --ifm-background-surface-color: #ffffff;
+  --ifm-navbar-background-color: rgba(253, 250, 246, 0.85);
+  /* Frosty nectar */
+  --ifm-footer-background-color: #F4EFE6;
+  --ifm-color-content: #1e293b;
+  /* slate-800 for pristine reading */
+}
+
+[data-theme='dark'] {
+  /* Theme: Indranīla (Cosmic Sapphire - Dark Mode) */
+  --ifm-background-color: #06080F;
+  /* Deep Sapphire Noir */
+  --ifm-background-surface-color: #0c0f1a;
+  --ifm-navbar-background-color: rgba(6, 8, 15, 0.85);
+  --ifm-footer-background-color: #06080F;
+  --ifm-color-content: #cbd5e1;
+  /* slate-300 */
+}
+
+body {
+  background-color: var(--ifm-background-color);
+  color: var(--ifm-color-content);
+}
+
+/* Glass panel utility matching Tailwind */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-gradient-brand {
+  background-image: linear-gradient(135deg, #d11149, #e56d8a);
+  /* Padmarāga Ruby */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background-image: linear-gradient(135deg, #d4af37, #f7c577);
+  /* Divine Gold */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar-btn-login {
+  padding: 0.4rem 1.2rem !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  margin-left: 1rem;
+}
+
+/* Navaratna Lusters */
+.ambient-glow-1 {
+  position: fixed;
+  top: -10%;
+  right: -5%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(209, 17, 73, 0.08) 0%, transparent 70%);
+  /* Ruby Luster */
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ambient-glow-2 {
+  position: fixed;
+  bottom: -10%;
+  left: -5%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+  /* Gold Luster */
+  filter: blur(100px);
+  z-index: 0;
+  pointer-events: none;
+}

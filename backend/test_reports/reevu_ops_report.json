@@ -1,0 +1,54 @@
+{
+  "generated_at": "2026-02-27T09:18:02.861789+00:00",
+  "stages_evaluated": [
+    "A",
+    "C"
+  ],
+  "kpi_checks": {
+    "trace_completeness": {
+      "value": 1.0,
+      "floor": 0.99,
+      "met": true
+    },
+    "tool_call_precision": {
+      "value": 1.0,
+      "floor": 0.92,
+      "met": true
+    },
+    "domain_detection_accuracy": {
+      "value": 0.9697,
+      "floor": 0.85,
+      "met": true
+    },
+    "compound_classification": {
+      "value": 0.9091,
+      "floor": 0.8,
+      "met": true
+    },
+    "step_adequacy": {
+      "value": 1.0,
+      "floor": 0.85,
+      "met": true
+    }
+  },
+  "overall_floor_met": true,
+  "sources": {
+    "trace_completeness": "test_reports/reevu_trace_completeness_baseline.json",
+    "top_intent_routing": "test_reports/reevu_top_intent_routing_baseline.json",
+    "stage_a_kpi": "test_reports/reevu_stage_a_kpi_report.json",
+    "cross_domain_reasoning": "test_reports/reevu_cross_domain_reasoning_baseline.json"
+  },
+  "calibration_status": {
+    "current_floors": {
+      "trace_completeness": 0.99,
+      "tool_call_precision": 0.92,
+      "domain_detection_accuracy": 0.85,
+      "compound_classification": 0.8,
+      "step_adequacy": 0.85
+    },
+    "calibration_start_date": null,
+    "days_since_start": 0,
+    "calibration_ready": false,
+    "playbook": "docs/reevu/slo_calibration_playbook.md"
+  }
+}

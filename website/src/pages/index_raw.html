@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bijmantra | One Seed, Infinite Worlds</title>
+  <meta name="description"
+    content="Open-source breeding management platform for plant scientists worldwide. BrAPI v2.1 compatible, extending with 1300+ endpoints.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bijmantra — One Seed. Infinite Worlds.">
+  <meta property="og:description"
+    content="Open-source breeding management platform for plant scientists worldwide. BrAPI v2.1 compatible, extending with 1300+ endpoints.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bijmantra.org">
+  <meta property="og:image" content="https://bijmantra.org/logo.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Icons (Phosphor) -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Tailwind CSS -->
+
+  <!-- Configuration & Custom Animations -->
+  <script>
+    darkMode: 'class',
+      theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          },
+        colors: {
+          brand: {
+            50: '#ecfdf5',
+              100: '#d1fae5',
+                400: '#34d399',
+                  500: '#10b981', // Emerald primary
+                    600: '#059669',
+                      900: '#064e3b',
+                        950: '#022c22',
+            },
+          ui: {
+            900: '#0f172a', // Slate 900
+              950: '#020617', // Slate 950
+            }
+        },
+        animation: {
+          'blob': 'blob 10s infinite',
+            'float': 'float 6s ease-in-out infinite',
+              'glow': 'glow 3s ease-in-out infinite alternate',
+                'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                  'fade-in': 'fadeIn 1s ease-out forwards',
+          },
+        keyframes: {
+          blob: {
+            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+          },
+          float: {
+            '0%, 100%': { transform: 'translateY(0)' },
+            '50%': { transform: 'translateY(-10px)' },
+          },
+          glow: {
+            '0%': { 'box-shadow': '0 0 20px rgba(16, 185, 129, 0.2)' },
+            '100%': { 'box-shadow': '0 0 40px rgba(16, 185, 129, 0.6)' },
+          },
+          slideUp: {
+            '0%': { transform: 'translateY(40px)', opacity: '0' },
+            '100%': { transform: 'translateY(0)', opacity: '1' },
+          },
+          fadeIn: {
+            '0%': { opacity: '0' },
+            '100%': { opacity: '1' },
+          }
+        }
+      }
+    }
+    }
+  </script>
+
+  <style>
+    /* Base Resets & Overrides */
+    body {
+      background-color: theme('colors.ui.950');
+      color: #f8fafc;
+      /* slate-50 */
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphism Utilities */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-panel:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(16, 185, 129, 0.3);
+      /* brand.500 w/ opacity */
+    }
+
+    /* Custom Gradients */
+    .text-gradient {
+      background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-brand {
+      background: linear-gradient(135deg, #34d399 0%, #0ea5e9 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Ambient Glow Backgrounds */
+    .ambient-glow-1 {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(2, 6, 23, 0) 60%);
+      /* max opacity 0.15 */
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: -20%;
+      right: -10%;
+      width: 80vw;
+      height: 80vw;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, rgba(2, 6, 23, 0) 60%);
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Staggered Slide In Utilities */
+    .delay-100 {
+      animation-delay: 100ms;
+      opacity: 0;
+    }
+
+    .delay-200 {
+      animation-delay: 200ms;
+      opacity: 0;
+    }
+
+    .delay-300 {
+      animation-delay: 300ms;
+      opacity: 0;
+    }
+
+    .delay-400 {
+      animation-delay: 400ms;
+      opacity: 0;
+    }
+
+    .delay-500 {
+      animation-delay: 500ms;
+      opacity: 0;
+    }
+
+    /* Fancy Hover Group */
+    .feature-card {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.15);
+    }
+
+    .feature-icon-box {
+      transition: all 0.4s ease;
+    }
+
+    .feature-card:hover .feature-icon-box {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      transform: scale(1.1);
+    }
+
+    /* Waitlist Input Override */
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 30px #0f172a inset !important;
+      -webkit-text-fill-color: white !important;
+    }
+  </style>
+</head>
+
+<body
+  class="relative min-h-screen flex flex-col items-center justify-center selection:bg-brand-500/30 selection:text-brand-50">
+
+  <!-- Ambient Backgrounds -->
+  <div class="ambient-glow-1 animate-blob"></div>
+  <div class="ambient-glow-2 animate-blob [animation-delay:4s]"></div>
+
+  <!-- Navigation -->
+  <nav
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 lg:px-12 backdrop-blur-md border-b border-white/5 bg-ui-950/60 animate-fade-in">
+    <a href="/" class="flex items-center gap-3 group">
+      <div
+        class="w-10 h-10 p-1.5 glass-panel rounded-xl group-hover:border-brand-500/50 transition-colors animate-float">
+        <img src="logo.png" alt="BijMantra Logo" class="w-full h-full object-contain">
+      </div>
+      <span
+        class="font-heading font-bold text-xl tracking-wide text-white group-hover:text-brand-400 transition-colors">BijMantra</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#features" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Platform</a>
+      <a href="https://brapi.org" target="_blank" rel="noopener"
+        class="text-sm font-medium text-slate-400 hover:text-white transition-colors">BrAPI Standard</a>
+      <a href="https://github.com/denishdholaria/bijmantra" target="_blank" rel="noopener"
+        class="text-sm font-medium text-slate-400 hover:text-white transition-colors">GitHub</a>
+    </div>
+    <a href="https://app.bijmantra.org/login"
+      class="hidden md:inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all hover:scale-105 active:scale-95">
+      Login
+    </a>
+  </nav>
+
+  <!-- Hero Section -->
+  <main
+    class="w-full max-w-7xl mx-auto px-6 pt-32 pb-24 lg:pt-48 lg:pb-32 flex flex-col items-center text-center relative z-10">
+
+    <!-- Badge -->
+    <div
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-brand-400 text-xs font-semibold uppercase tracking-widest mb-8 animate-slide-up delay-100">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+      </span>
+      Early Access Preview
+    </div>
+
+    <!-- Headline -->
+    <h1
+      class="font-heading font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[1.1] mb-6 animate-slide-up delay-200">
+      One Seed.<br>
+      <span class="text-gradient-brand">Infinite Worlds.</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p class="max-w-2xl text-lg md:text-xl text-slate-400 font-medium leading-relaxed mb-10 animate-slide-up delay-300">
+      An impossibly ambitious endeavor to unify agricultural sciences into a single computational platform. Currently
+      built by a solo developer who has realized this mountain is too tall to climb alone.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-slide-up delay-400">
+      <a href="#the-reality"
+        class="group relative inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 text-sm font-bold text-ui-950 bg-brand-500 hover:bg-brand-400 rounded-full transition-all overflow-hidden animate-glow">
+        <span
+          class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
+        <span class="relative flex items-center gap-2">
+          <i class="ph-fill ph-book-open-text text-lg"></i>
+          Read the Reality
+        </span>
+      </a>
+
+      <a href="https://github.com/denishdholaria/bijmantra" target="_blank" rel="noopener"
+        class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 text-sm font-bold text-white bg-ui-900 glass-panel hover:bg-ui-800 rounded-full transition-all group">
+        <i class="ph ph-github-logo text-lg mr-2 group-hover:scale-110 transition-transform"></i>
+        View Source Code
+      </a>
+    </div>
+
+    <!-- Development Disclaimer (T&C Style) -->
+    <div class="mt-20 pt-8 border-t border-white/10 w-full max-w-2xl opacity-0 animate-slide-up delay-500">
+      <p class="text-[0.65rem] text-slate-500 leading-relaxed text-center uppercase tracking-widest px-4">
+        * BijMantra is currently in active pre-alpha development. Features, modules, and BrAPI architecture described
+        are aspirational or currently in progress. Access to the developer sandbox is for testing purposes only and does
+        not represent a finished or production-ready product.
+      </p>
+    </div>
+  </main>
+
+  <!-- The Reality Section -->
+  <section id="the-reality" class="w-full max-w-7xl mx-auto px-6 py-24 relative z-10">
+    <div class="text-center mb-16">
+      <h2 class="font-heading font-bold text-3xl md:text-5xl text-white mb-4">The Impossible Mission</h2>
+      <p class="text-slate-400 max-w-3xl mx-auto text-lg leading-relaxed">When I initially conceptualized "Cross-Domain
+        Agricultural Intelligence," I vastly underestimated the magnitude of the endeavor. As a solo developer, I am
+        standing at the base of an insurmountable mountain. I am asking for help.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card 1 -->
+      <div class="feature-card glass-panel p-8 rounded-3xl flex flex-col items-start cursor-default">
+        <div
+          class="feature-icon-box w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-red-500 mb-6 font-bold">
+          <i class="ph-fill ph-warning-circle text-2xl"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-xl text-white mb-3">The AI Illusion</h3>
+        <p class="text-slate-400 leading-relaxed text-sm">I believed advanced artificial intelligence could bridge the
+          massive gaps in agricultural data. I was wrong. Algorithms alone cannot synthesize biological truth. We
+          desperately require rigorous, human scientific validation to anchor these models.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card glass-panel p-8 rounded-3xl flex flex-col items-start cursor-default">
+        <div
+          class="feature-icon-box w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-blue-500 mb-6 font-bold">
+          <i class="ph-fill ph-cloud-warning text-2xl"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-xl text-white mb-3">The Climate Imperative</h3>
+        <p class="text-slate-400 leading-relaxed text-sm">The ultimate goal of this project is to build global
+          agricultural resilience. Climate change is an existential threat that cannot be engineered around in
+          isolation. We urgently need climatologists to integrate planetary-scale risk into field-level decisions.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card glass-panel p-8 rounded-3xl flex flex-col items-start cursor-default">
+        <div
+          class="feature-icon-box w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-amber-500 mb-6 font-bold">
+          <i class="ph-fill ph-users-three text-2xl"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-xl text-white mb-3">Multidisciplinary Complexity</h3>
+        <p class="text-slate-400 leading-relaxed text-sm">True agriculture is the paramount intersection of
+          sciences—biology, biochemistry, physics, genetics, agronomy, and macroeconomics. I do not possess this
+          sprawling expertise. We need seasoned professors and industry veterans to architect the profound domain logic.
+        </p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="feature-card glass-panel p-8 rounded-3xl flex flex-col items-start cursor-default">
+        <div
+          class="feature-icon-box w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-emerald-500 mb-6 font-bold">
+          <i class="ph-fill ph-hands-praying text-2xl"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-xl text-white mb-3">The Sustainability Crisis</h3>
+        <p class="text-slate-400 leading-relaxed text-sm">I have been burning through personal funds to keep this
+          platform alive, and it is entirely unsustainable. We are lightyears from the finished dream. To forge the
+          profound scientific inventions this system demands, we urgently require visionary funding.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contributor / Funding CTA -->
+  <section id="contribute" class="w-full max-w-7xl mx-auto px-6 py-12 relative z-10">
+    <div
+      class="glass-panel p-10 rounded-3xl border-brand-500/30 bg-brand-900/10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+      <!-- Decorative Glow -->
+      <div class="absolute -right-20 -top-20 w-64 h-64 bg-brand-500/20 blur-[80px] rounded-full"></div>
+
+      <div class="flex-1">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-400 text-xs font-bold uppercase tracking-widest mb-4 border border-brand-500/20">
+          <i class="ph-fill ph-hands-clapping text-brand-400"></i> We Urgently Need You
+        </div>
+        <h2 class="font-heading font-bold text-2xl md:text-3xl text-white mb-3">Save the Open-Source Mission</h2>
+        <p class="text-slate-400 text-sm leading-relaxed max-w-2xl">
+          I cannot build this entirely alone. To survive and scale, BijMantra urgently requires <span
+            class="text-white font-semibold">visionary institutional funding</span> to sustain development. We are
+          actively seeking <span class="text-white font-semibold">passionate scientists across all
+            disciplines—especially climatology and genetics—</span> willing to volunteer
+          their deep expertise to architect a globally resilient tomorrow. If you believe in this impossible dream,
+          please reach out.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0 relative z-10">
+        <a href="mailto:hello@bijmantra.org?subject=I want to volunteer scientific expertise to BijMantra"
+          class="inline-flex h-11 items-center justify-center px-6 bg-brand-500 text-ui-950 hover:bg-brand-400 font-bold text-sm rounded-xl transition-colors shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+          <i class="ph-fill ph-hand-heart mr-2 text-lg"></i> Volunteer Expertise
+        </a>
+        <a href="mailto:hello@bijmantra.org?subject=Funding and Sponsorship Inquiry"
+          class="inline-flex h-11 items-center justify-center px-6 bg-white/5 text-white border border-white/10 hover:bg-white/10 font-bold text-sm rounded-xl transition-colors backdrop-blur-md">
+          Sponsor the Project
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section id="waitlist" class="w-full max-w-4xl mx-auto px-6 py-24 relative z-10 text-center">
+    <div class="glass-panel p-10 md:p-16 rounded-[2.5rem] relative overflow-hidden">
+      <!-- Subtle internal glow -->
+      <div
+        class="absolute inset-x-0 bottom-0 h-px w-full bg-gradient-to-r from-transparent via-brand-500/50 to-transparent">
+      </div>
+
+      <i class="ph-fill ph-plant text-4xl text-brand-400 mb-6 inline-block"></i>
+      <h2 class="font-heading font-bold text-3xl md:text-4xl text-white mb-4">Ready to plant the seed?</h2>
+
+      <p class="text-slate-400 max-w-lg mx-auto mb-8 text-sm md:text-base">We are currently in active development to
+        bring you the first truly compatible, open-source breeding management platform.</p>
+
+      <a href="https://app.bijmantra.org/login"
+        class="inline-flex h-12 items-center justify-center px-8 mb-12 bg-brand-500 text-ui-950 hover:bg-brand-400 font-bold text-sm rounded-xl transition-colors shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+        Access Developer Sandbox
+      </a>
+
+      <div class="w-full h-px bg-white/10 mb-12 max-w-md mx-auto"></div>
+
+      <p class="text-slate-400 max-w-lg mx-auto mb-6 text-sm font-medium">Or join the waitlist to receive engineering
+        updates and platform news.</p>
+
+      <form id="waitlist-form" action="https://formspree.io/f/xdaoowvj" method="POST"
+        class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <div class="relative flex-1">
+          <i class="ph ph-envelope-simple absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+          <input type="email" name="email" placeholder="Enter your email" required
+            class="w-full h-12 pl-11 pr-4 bg-ui-900 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/50 transition-all font-medium text-sm">
+        </div>
+        <button type="submit"
+          class="h-12 px-6 bg-white text-ui-950 hover:bg-slate-200 font-bold text-sm rounded-xl transition-colors shrink-0">
+          Join Waitlist
+        </button>
+      </form>
+
+      <p class="mt-4 text-xs text-slate-500">No spam. You can unsubscribe at any time.</p>
+
+      <div id="success-message"
+        class="hidden mt-6 text-sm text-brand-400 font-medium bg-brand-500/10 inline-block px-4 py-2 rounded-lg border border-brand-500/20">
+        <i class="ph-fill ph-check-circle mr-1"></i> Added to the waitlist. Thank you!
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="w-full border-t border-white/5 border-dashed mt-auto">
+    <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 p-1 glass-panel rounded opacity-50">
+          <img src="logo.png" alt="" class="w-full h-full object-contain grayscale invert">
+        </div>
+        <span class="font-heading font-semibold text-slate-500 text-sm tracking-wide">BijMantra</span>
+      </div>
+
+      <p class="text-slate-600 text-xs text-center">
+        "Thank you to all those who work in acres, not in hours." <br class="md:hidden">
+        <span class="block mt-2">© 2026 Open Source Agricultural Intelligence.</span>
+      </p>
+
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/denishdholaria/bijmantra" target="_blank" rel="noopener"
+          class="text-slate-500 hover:text-white transition-colors" aria-label="GitHub">
+          <i class="ph-fill ph-github-logo text-xl"></i>
+        </a>
+        <a href="mailto:hello@bijmantra.org" class="text-slate-500 hover:text-white transition-colors"
+          aria-label="Email">
+          <i class="ph-fill ph-envelope-simple text-xl"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

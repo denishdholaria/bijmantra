@@ -1,0 +1,20 @@
+{
+  "stage": "A",
+  "kpi_targets": {
+    "tool_call_precision_floor": 0.92,
+    "trace_completeness_floor": 0.99
+  },
+  "kpi_values": {
+    "tool_call_precision": 1.0,
+    "trace_completeness": 1.0
+  },
+  "status": {
+    "tool_call_precision_meets_floor": true,
+    "trace_completeness_meets_floor": true,
+    "stage_a_kpi_floor_met": true
+  },
+  "sources": {
+    "top_intent": "test_reports/reevu_top_intent_routing_baseline.json",
+    "trace": "test_reports/reevu_trace_completeness_baseline.json"
+  }
+}
