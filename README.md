@@ -48,7 +48,7 @@ The current architecture reflects the latest direction toward:
 	•	modular domain-driven design
 	•	hybrid scientific compute infrastructure
 	•	AI-native data workflows
-	•	offline-first PWA capabilities
+	•	PWA capabilities
 	•	long-term platform stability
 
 Additional architectural refinements are expected as the platform continues to grow.
