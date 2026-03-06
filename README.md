@@ -19,6 +19,51 @@
 
 </div>
 
+⸻
+
+# Architectural Evolution
+
+BijMantra is not a typical CRUD web application. It is a system that combines:
+	•	plant breeding science
+	•	high-performance numerical computing
+	•	AI-assisted research workflows
+	•	offline-first field data collection
+	•	large-scale biological datasets
+
+Because of this scope, the platform has undergone multiple architectural refactoring phases during development.
+
+These refactors were driven by real engineering constraints encountered while building the system:
+	•	Early components began forming “god files” and “god objects” as scientific features accumulated.
+	•	The domain complexity of breeding analytics required stronger module boundaries.
+	•	Integration of AI capabilities beyond a simple chat interface required deeper architectural changes.
+	•	The platform needed to support hybrid compute engines (Python, Rust/WASM, and Fortran) in a stable way.
+	•	Scaling toward a modular, AI-native research platform required rethinking several early design decisions.
+
+Rather than patching over these issues, the architecture has been intentionally redesigned multiple times to maintain long-term integrity.
+
+This approach follows a common pattern in complex software systems:
+early versions prioritize capability, later versions prioritize structure, modularity, and longevity.
+
+The current architecture reflects the latest direction toward:
+	•	modular domain-driven design
+	•	hybrid scientific compute infrastructure
+	•	AI-native data workflows
+	•	offline-first PWA capabilities
+	•	long-term platform stability
+
+Additional architectural refinements are expected as the platform continues to grow.
+
+⸻
+
+Engineering Philosophy
+
+The project prioritizes:
+	•	Correctness over convenience
+	•	Architecture over short-term hacks
+	•	Scientific reproducibility
+	•	Long-term maintainability
+
+Refactoring is treated as a necessary part of building a durable research platform, not as a failure of the development process.
 ---
 
 <details>
