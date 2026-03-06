@@ -15,55 +15,10 @@
 [![PWA](https://img.shields.io/badge/PWA-Offline_Capable-purple?style=for-the-badge)](https://web.dev/progressive-web-apps/)
 [![Stars](https://img.shields.io/github/stars/denishdholaria/bijmantraorg?style=for-the-badge&logo=github&color=gold)](https://gitlab.com/denishdholaria/bijmantraorg)
 
-[**🚀 Get Started**](#-quick-start) · [**🧬 Architecture**](#-architecture) · [**🤝 Contribute**](#-contributing) · [**💰 Fund This Work**](#-invest-in-food-security)
+[**🚀 Get Started**](#-quick-start) · [**🧬 Architecture**](#-architecture) · [**🤝 Contribute**](#-contributing) · [**💼 Strategic Backing**](#-invest-in-food-security)
 
 </div>
 
-⸻
-
-# Architectural Evolution
-
-BijMantra is not a typical CRUD web application. It is a system that combines:
-	•	plant breeding science
-	•	high-performance numerical computing
-	•	AI-assisted research workflows
-	•	offline-first field data collection
-	•	large-scale biological datasets
-
-Because of this scope, the platform has undergone multiple architectural refactoring phases during development.
-
-These refactors were driven by real engineering constraints encountered while building the system:
-	•	Early components began forming “god files” and “god objects” as scientific features accumulated.
-	•	The domain complexity of breeding analytics required stronger module boundaries.
-	•	Integration of AI capabilities beyond a simple chat interface required deeper architectural changes.
-	•	The platform needed to support hybrid compute engines (Python, Rust/WASM, and Fortran) in a stable way.
-	•	Scaling toward a modular, AI-native research platform required rethinking several early design decisions.
-
-Rather than patching over these issues, the architecture has been intentionally redesigned multiple times to maintain long-term integrity.
-
-This approach follows a common pattern in complex software systems:
-early versions prioritize capability, later versions prioritize structure, modularity, and longevity.
-
-The current architecture reflects the latest direction toward:
-	•	modular domain-driven design
-	•	hybrid scientific compute infrastructure
-	•	AI-native data workflows
-	•	PWA capabilities
-	•	long-term platform stability
-
-Additional architectural refinements are expected as the platform continues to grow.
-
-⸻
-
-Engineering Philosophy
-
-The project prioritizes:
-	•	Correctness over convenience
-	•	Architecture over short-term hacks
-	•	Scientific reproducibility
-	•	Long-term maintainability
-
-Refactoring is treated as a necessary part of building a durable research platform, not as a failure of the development process.
 ---
 
 <details>
@@ -74,15 +29,55 @@ Refactoring is treated as a necessary part of building a durable research platfo
 > 
 > *Say Less. Build More. Deliver Greatness.*
 
-BijMantra is not a massive corporate endeavor; it is built by a solo developer orchestrating specialized AI agents. In this paradigm, English is the primary programming language, and intent is the compiler. There are no theoretical debates here—only relentless execution. I orchestrate the architecture in silence, and let the scale of the impact speak for itself.
-
 </details>
 
 ---
 
-> [!NOTE]
 > **A Note on Documentation Accuracy**
-> BijMantra is designed, architected, and maintained entirely by a single developer. While every effort is made to keep this documentation, codebase references, and all associated materials as accurate and current as possible, the sheer breadth of this platform — spanning genomics, agronomy, AI reasoning, full-stack engineering, and interoperability standards — means that occasional inconsistencies or outdated references are inevitable. Your patience and understanding are sincerely appreciated. If you encounter a discrepancy, please feel free to [open an issue](https://gitlab.com/denishdholaria/bijmantraorg/issues) — contributions of any size are always welcome.
+> BijMantra is developed with high velocity across genomics, agronomy, AI, interoperability, and full-stack engineering. Documentation is actively maintained and continuously refined. If you find a discrepancy, please [open an issue](https://gitlab.com/denishdholaria/bijmantraorg/issues).
+
+## Architectural Evolution
+
+BijMantra is not a typical CRUD web application. It is a system that combines:
+- plant breeding science
+- high-performance numerical computing
+- AI-assisted research workflows
+- offline-first field data collection
+- large-scale biological datasets
+
+Because of this scope, the platform has undergone multiple architectural refactoring phases during development.
+
+These refactors were driven by real engineering constraints encountered while building the system:
+- Early components began forming “god files” and “god objects” as scientific features accumulated.
+- The domain complexity of breeding analytics required stronger module boundaries.
+- Integration of AI capabilities beyond a simple chat interface required deeper architectural changes.
+- The platform needed to support hybrid compute engines (Python, Rust/WASM, and Fortran) in a stable way.
+- Scaling toward a modular, AI-native research platform required rethinking several early design decisions.
+
+Rather than patching over these issues, the architecture has been intentionally redesigned multiple times to maintain long-term integrity.
+
+This approach follows a common pattern in complex software systems: early versions prioritize capability, later versions prioritize structure, modularity, and longevity.
+
+The current architecture reflects the latest direction toward:
+- modular domain-driven design
+- hybrid scientific compute infrastructure
+- AI-native data workflows
+- PWA capabilities
+- long-term platform stability
+
+Additional architectural refinements are expected as the platform continues to grow.
+
+⸻
+
+## Engineering Philosophy
+
+The project prioritizes:
+- Correctness over convenience
+- Architecture over short-term hacks
+- Scientific reproducibility
+- Long-term maintainability
+
+Refactoring is treated as a necessary part of building a durable research platform, not as a failure of the development process.
 
 ## The Problem
 
@@ -133,7 +128,7 @@ make dev-frontend   # → http://localhost:5173
 | **Backend**  | Python 3 · FastAPI · SQLAlchemy · NumPy · SciPy               |
 | **Genomics** | Rust → WebAssembly (G-Matrix, LD, Population Stats)              |
 | **Database** | PostgreSQL 17 · PostGIS · pgvector · Row-Level Security        |
-| **AI**       | Multi-provider LLM (Ollama/Groq/Google AI/OpenAI) · RAG · REEVU |
+| **AI**       | Multi-provider LLM (Google AI) · RAG · REEVU |
 | **Interop**  | BrAPI v2.1 (201/201 endpoints) · 1344 API endpoints              |
 
 </details>
@@ -142,7 +137,7 @@ make dev-frontend   # → http://localhost:5173
 
 ## 🤝 Contributing
 
-BijMantra is built by a solo developer and needs your help. **You don't need to be an agriculture expert to contribute.**
+BijMantra welcomes builders, scientists, and institutions committed to serious agricultural R&D infrastructure. **You do not need to be an agriculture expert to contribute.**
 
 <details>
 <summary><b>How to Contribute (Developers & Scientists)</b></summary>
@@ -191,9 +186,9 @@ BijMantra's algorithms need validation from people who understand the science. I
 
 </div>
 
-**Climate change is accelerating.** By 2050, global food production must increase 60% to feed 9.7 billion people — while arable land decreases, water scarcity intensifies, and extreme weather events multiply. The tools researchers use today were designed for a stable climate. They weren't built for this.
+**Climate volatility is rewriting agricultural reality.** By 2050, food systems must produce more with less land, less water, and higher environmental uncertainty.
 
-**BijMantra is infrastructure for the next generation of agricultural science** — open, interoperable, and accessible to every researcher on the planet, not just those at well-funded institutions.
+**BijMantra is foundational infrastructure for next-generation agricultural science**: open, interoperable, and engineered for global research deployment.
 
 ### The Opportunity
 
@@ -206,10 +201,10 @@ BijMantra's algorithms need validation from people who understand the science. I
 | Fragmented data standards        | **100% BrAPI v2.1** interoperability   |
 
 <details>
-<summary><b>View Funding Tables & Partnership Mechanics</b></summary>
+<summary><b>View Backing Models & Partnership Mechanics</b></summary>
 <br />
 
-### What Funding Enables
+### What Strategic Backing Enables
 
 | Tier                       | Amount    | Impact                                                             |
 | -------------------------- | --------- | ------------------------------------------------------------------ |
@@ -217,7 +212,7 @@ BijMantra's algorithms need validation from people who understand the science. I
 | 🌿**Accelerator**    | $2,000/mo | Full-time development, faster feature delivery                     |
 | 🌳**Institutional**  | $10,000+  | Dedicated domain modules, pilot deployments, research partnerships |
 
-### How to Fund
+### Partnership Channels
 
 | Channel                            | Link                                                                          |
 | ---------------------------------- | ----------------------------------------------------------------------------- |
@@ -225,11 +220,11 @@ BijMantra's algorithms need validation from people who understand the science. I
 | 💰**Open Collective**        | [opencollective.com/bijmantra](https://opencollective.com/bijmantra)             |
 | 📧**Institutional / Direct** | [hello@bijmantra.org](mailto:hello@bijmantra.org)                                |
 
-> Every contribution is publicly tracked via Open Collective. Full financial transparency.
+> All public community funding is transparently tracked via Open Collective.
 
 ### Institutional Partners Welcome
 
-We actively seek partnerships with organizations that understand agricultural research infrastructure as a **global public good**:
+BijMantra is open for collaboration with organizations that treat agricultural research infrastructure as a **global public good**:
 
 - **CGIAR Centers** — IRRI, CIMMYT, ICRISAT, ICARDA
 - **Foundations** — Gates Foundation, Rockefeller Foundation, McKnight Foundation
@@ -237,15 +232,9 @@ We actively seek partnerships with organizations that understand agricultural re
 - **Universities** — Any institution running plant breeding programs
 - **Industry** — Seed companies and AgTech firms who benefit from open standards
 
-### 💖 Development Sponsors
+### Development Sponsors
 
-Are you a large institution or enterprise? Consider supporting the long-term sustainability of BijMantra through our [Development Sponsorship Program](SPONSORS.md). Sponsors receive exclusive benefits including perpetual free licenses (Institutional or Commercial, based on tier and org type) and prominent brand placement.
-
-<div align="center">
-
-*Be the first to feature your logo here by becoming a Founding Sponsor!*
-
-</div>
+Institutions and enterprises can join the [Development Sponsorship Program](SPONSORS.md) to accelerate roadmap execution. Sponsorship tiers include long-horizon collaboration options, licensing benefits, and strategic visibility.
 
 </details>
 
@@ -275,7 +264,7 @@ This platform exists because better tools lead to better science, better science
 ### Take Action
 
 [![Star](https://img.shields.io/badge/⭐_Star_This_Repo-2_seconds-gold?style=for-the-badge)](https://gitlab.com/denishdholaria/bijmantraorg)
-[![Sponsor](https://img.shields.io/badge/💖_Sponsor-Any_Amount-EA4AAA?style=for-the-badge)](https://github.com/sponsors/denishdholaria)
+[![Partner](https://img.shields.io/badge/💼_Partner_With_BijMantra-strategic-EA4AAA?style=for-the-badge)](https://github.com/sponsors/denishdholaria)
 [![Issues](https://img.shields.io/badge/🐛_Report_Bug-5_minutes-blue?style=for-the-badge)](https://gitlab.com/denishdholaria/bijmantraorg/issues)
 
 ---
