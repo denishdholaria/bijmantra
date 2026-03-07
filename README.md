@@ -1,3 +1,13 @@
+# 🚧 Scheduled Downtime Notice
+
+We’re currently performing **architectural refactoring** to enhance performance, scalability, and reliability.  
+During this period, the system will be **temporarily unavailable**.
+
+We appreciate your patience and understanding as we work to deliver a smoother, faster experience.  
+Please check back soon!
+
+*Last updated: March 6, 2026*
+---
 <div align="center">
 
 <img src="frontend/public/icons/icon-512x512.png" alt="BijMantra Logo" width="180"/>
