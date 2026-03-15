@@ -119,7 +119,7 @@ The first startup is not instant. BijMantra may need to install several dependen
 4. Paste this instruction into the chat:
 
 ```text
-Clone my public repository https://github.com/denishdholaria/bijmantra.git and start BijMantra locally. Install everything required for first-time setup, follow the README, use Podman rather than Docker, and run both the backend and frontend. Expect the first startup to take a while because dependencies and services may need to be installed and initialized.
+Clone public repository https://github.com/denishdholaria/bijmantra.git and start BijMantra locally. Install everything required for first-time setup, follow the README, use Podman rather than Docker, and run both the backend and frontend. Expect the first startup to take a while because dependencies and services may need to be installed and initialized.
 ```
 
 5. After setup finishes, open these local URLs:
