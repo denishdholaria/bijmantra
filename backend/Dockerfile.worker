@@ -1,0 +1,120 @@
+# Bijmantra Compute Worker - Multi-stage Dockerfile
+# Supports light, heavy, and GPU compute workers
+
+# ============================================
+# Base stage - common dependencies
+# ============================================
+FROM python:3.13-slim AS base
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    gfortran \
+    postgresql-client \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --upgrade pip && pip install --no-cache-dir --prefer-binary -r requirements.txt
+
+# ============================================
+# Light worker stage - Python-only
+# ============================================
+FROM base AS light-worker
+
+# Copy application code
+COPY . .
+
+# Create non-root user for security
+RUN groupadd -r bijmantra && useradd -r -g bijmantra bijmantra
+RUN chown -R bijmantra:bijmantra /app
+
+USER bijmantra
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)"
+
+# Run light worker
+CMD ["python", "-m", "app.workers.light_worker"]
+
+# ============================================
+# Heavy worker stage - with Rust/Fortran
+# ============================================
+FROM base AS heavy-worker
+
+# Install Rust (for Rust compute engines)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Copy application code
+COPY . .
+
+# Build Rust crates if they exist
+RUN if [ -d "crates" ]; then \
+    cd crates && \
+    cargo build --release; \
+    fi
+
+# Create non-root user for security
+RUN groupadd -r bijmantra && useradd -r -g bijmantra bijmantra
+RUN chown -R bijmantra:bijmantra /app
+
+USER bijmantra
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)"
+
+# Run heavy worker
+CMD ["python", "-m", "app.workers.heavy_worker"]
+
+# ============================================
+# GPU worker stage - with CUDA support
+# ============================================
+FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04 AS gpu-worker
+
+WORKDIR /app
+
+# Install Python and system dependencies
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3-pip \
+    gcc \
+    g++ \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symlink for python
+RUN ln -s /usr/bin/python3.11 /usr/bin/python
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --upgrade pip && pip install --no-cache-dir --prefer-binary -r requirements.txt
+
+# Install PyTorch with CUDA support
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Copy application code
+COPY . .
+
+# Create non-root user for security
+RUN groupadd -r bijmantra && useradd -r -g bijmantra bijmantra
+RUN chown -R bijmantra:bijmantra /app
+
+USER bijmantra
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)"
+
+# Run GPU worker
+CMD ["python", "-m", "app.workers.gpu_worker"]

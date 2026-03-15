@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"chat.tools.terminal.autoApprove": {
+			"npm run check:reevu-canonical": true,
+			"npm run test:run": true
+		},
+		"workbench.browser.enableChatTools": true
+	}
+}

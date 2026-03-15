@@ -1,0 +1,41 @@
+[tool.deptry]
+# Deptry configuration for BijMantra architecture enforcement
+
+# Paths to scan
+src = ["backend/app"]
+
+# Exclude patterns
+exclude = [
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.pyc",
+    "alembic/versions",
+    ".pytest_cache",
+    "tests",
+]
+
+# Known first-party modules
+known_first_party = ["app"]
+
+# Ignore specific dependency issues
+ignore_obsolete = []
+ignore_missing = []
+ignore_transitive = []
+ignore_misplaced_dev = []
+
+# Per-rule ignores
+per_rule_ignores = {}
+
+# Extend ignore patterns
+extend_exclude = [
+    "backend/app/tests/**",
+    "backend/app/scripts/**",
+]
+
+# Requirements files to check against
+requirements_txt = ["backend/requirements.txt"]
+requirements_txt_dev = []
+
+# Pep621 support (pyproject.toml)
+pep621_dev_dependency_groups = []

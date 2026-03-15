@@ -1,0 +1,46 @@
+#!/bin/bash
+# Pre-push hook to prevent accidental pushes to public repo
+
+set -euo pipefail
+
+remote="$1"
+url="$2"
+
+is_public_repo=false
+is_private_repo=false
+
+# Match both HTTPS and SSH forms for the known public repository.
+if [[ "$url" == *"github.com/denishdholaria/bijmantra.git"* ]] || [[ "$url" == *"github.com:denishdholaria/bijmantra.git"* ]]; then
+    is_public_repo=true
+fi
+
+# Match both HTTPS and SSH forms for the known private repository.
+if [[ "$url" == *"github.com/denishdholaria/bijmantraorg.git"* ]] || [[ "$url" == *"github.com:denishdholaria/bijmantraorg.git"* ]]; then
+    is_private_repo=true
+fi
+
+# Optional emergency override for maintenance scenarios.
+if [[ "${ALLOW_UNSAFE_PUSH:-}" == "1" ]]; then
+    echo "⚠️  ALLOW_UNSAFE_PUSH=1 set; bypassing remote safety checks for this push."
+    exit 0
+fi
+
+# Check if pushing to public repo
+if [[ "$is_public_repo" == "true" ]]; then
+    echo "❌ ERROR: Direct push to public repo is blocked!"
+    echo "📋 Use: ./scripts/sync_to_public.sh to sync to public repo"
+    echo "🔒 This prevents leaking private files and git history"
+    exit 1
+fi
+
+# Block unknown GitHub remotes by default. This prevents accidental pushes to forks
+# or similarly named repositories from automation tools.
+if [[ "$url" == *"github.com"* ]] && [[ "$is_private_repo" != "true" ]]; then
+    echo "❌ ERROR: Push blocked: unapproved GitHub remote '$url'"
+    echo "✅ Allowed private remote: github.com/denishdholaria/bijmantraorg.git"
+    echo "🛟 If this is intentional, run once with ALLOW_UNSAFE_PUSH=1"
+    exit 1
+fi
+
+echo "✅ Push allowed: $url"
+exit 0

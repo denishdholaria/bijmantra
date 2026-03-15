@@ -1,0 +1,149 @@
+{
+  "lastUpdated": "2026-03-15",
+  "updatedBy": "Automated metrics script",
+  "session": 22,
+  "pages": {
+    "total": 250,
+    "functional": 235,
+    "demo": 15,
+    "uiOnly": 5,
+    "removed": 12
+  },
+  "api": {
+    "totalEndpoints": 1751,
+    "brapiEndpoints": 204,
+    "brapiCoverage": 100,
+    "customEndpoints": 1547
+  },
+  "database": {
+    "models": 110,
+    "migrations": 21,
+    "seeders": 15,
+    "tables": 119,
+    "seededRecords": 413,
+    "rlsEnabledTables": 0
+  },
+  "modules": {
+    "total": 8,
+    "list": [
+      {
+        "name": "Breeding",
+        "pages": 35,
+        "endpoints": 120
+      },
+      {
+        "name": "Phenotyping",
+        "pages": 25,
+        "endpoints": 85
+      },
+      {
+        "name": "Genomics",
+        "pages": 35,
+        "endpoints": 107
+      },
+      {
+        "name": "Seed Bank",
+        "pages": 15,
+        "endpoints": 59
+      },
+      {
+        "name": "Environment",
+        "pages": 20,
+        "endpoints": 97
+      },
+      {
+        "name": "Seed Operations",
+        "pages": 22,
+        "endpoints": 96
+      },
+      {
+        "name": "Knowledge",
+        "pages": 5,
+        "endpoints": 35
+      },
+      {
+        "name": "Settings & Admin",
+        "pages": 35,
+        "endpoints": 95
+      }
+    ]
+  },
+  "workspaces": {
+    "total": 5,
+    "list": [
+      {
+        "id": "breeding",
+        "name": "Plant Breeding",
+        "pages": 83
+      },
+      {
+        "id": "seed-ops",
+        "name": "Seed Business",
+        "pages": 22
+      },
+      {
+        "id": "research",
+        "name": "Innovation Lab",
+        "pages": 28
+      },
+      {
+        "id": "genebank",
+        "name": "Gene Bank",
+        "pages": 34
+      },
+      {
+        "id": "admin",
+        "name": "Administration",
+        "pages": 25
+      }
+    ]
+  },
+  "build": {
+    "status": "passing",
+    "pwaEntries": 116,
+    "sizeKB": 12610,
+    "sizeMB": "12.3MB"
+  },
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "productionReady": "2025-12-25"
+  },
+  "techStack": {
+    "frontend": [
+      "React 19.2.4",
+      "TypeScript 5.9.3",
+      "Vite 7.3.1",
+      "Tailwind CSS 4.0.0",
+      "TanStack Query 5.90.21"
+    ],
+    "backend": [
+      "Python 3.13",
+      "FastAPI 0.115+",
+      "SQLAlchemy 2.0.36+",
+      "Pydantic 2.10+"
+    ],
+    "database": [
+      "PostgreSQL 18.1",
+      "PostGIS 3.6.1",
+      "pgvector 0.8.1",
+      "Redis 8"
+    ],
+    "compute": [
+      "Rust/WASM",
+      "Fortran"
+    ]
+  },
+  "version": {
+    "app": "0",
+    "brapi": "2.1",
+    "schema": "1.0.0"
+  },
+  "tests": {
+    "total": 2134,
+    "frontend": 84,
+    "backend": 2050,
+    "note": "AI configuration, runtime observability, Phase 3 capability integration, and the core trial/phenotyping trust surfaces are now materially in place: org-scoped AI provider, model, and agent-setting administration shipped with 16 new admin endpoints, dedicated migrations, persisted provider-registry loading, capability and prompt-mode manifest endpoints, backend runtime enforcement of persisted REEVU tool restrictions during function selection and execution, and now an org-scoped REEVU routing policy surface with a dedicated persistence model, migration, admin API, runtime provider-selection integration, and AI Settings UI for preferred provider/model defaults plus preferred-only versus fallback routing behavior; frontend admin surfaces expose live REEVU runtime health and metrics, a grouped capability picker sourced from the backend manifest, an operator diagnostics card backed by a new admin-only REEVU diagnostics endpoint for request outcomes, provider latency, safe-failure distribution, policy-flag visibility, current routing posture, and aggregated routing-decision telemetry so operators can distinguish managed preference hits, misses, request overrides, and template fallbacks without inspecting logs, and AI Settings now carries both a dedicated diagnostics tab and an inline live routing summary on the routing tab backed by a shared renderer so the configuration and diagnostics views stay aligned. The runtime power source is now surfaced explicitly as labels such as `Server env key`, AI Settings now provides provider and model presets plus scrollable setup dialogs so common paths like Gemini setup are easier to adopt without re-entering keys that are already active at the server runtime layer, and a new centralized AI model lifecycle catalog now controls backend default model identifiers, REEVU local fallback defaults, and AI Settings presets so alias-capable providers such as Google can move to `latest`-style model references instead of forcing frequent hardcoded renames across the codebase. That lifecycle catalog is now also exposed through a dedicated AI configuration manifest endpoint, so provider/model quick-start policy is backend-owned and AI Settings can consume the canonical contract instead of mirroring a second preset registry in the frontend; the latest frontend hardening pass now also normalizes unknown lifecycle identifiers at the AI Settings conversion boundary and locks in both empty-manifest and partial-manifest per-provider fallback behavior through focused page tests, so operator quick-start flows remain usable even when the backend catalog is incomplete. The backend manifest contract is now hardened as well: lifecycle fields are typed at the catalog and API response boundary, focused backend API tests now lock superuser access, provider coverage, and nested manifest shape for the model catalog endpoint, and the managed provider coverage is now aligned across runtime and UI so HuggingFace and FunctionGemma appear in the manifest, in fallback AI Settings presets, and in human-readable REEVU runtime labels instead of being stranded behind a four-provider subset. REEVU now also supports a clean local-vs-cloud split without concurrent provider contention: Ollama is a first-class advanced local provider with its own host/model settings, adapter, runtime reachability checks, catalog entry, UI preset, and status labeling, while cloud providers remain the default and recommended path; explicit provider selection now hard-routes a request or session to the chosen provider instead of silently falling through to a different provider, so local and cloud paths can coexist as selectable options without cross-talk. Phenotype comparison and trial summary endpoints now publish additive versioned database-backed trust metadata for REEVU consumption, and both surfaces now carry structured evidence envelopes with claims, typed evidence refs, calculation steps, uncertainty, and policy flags, with phenotype comparison adding envelope parity on compare/statistics flows and trial summary already carrying additive confidence and freshness metadata; compute contract hardening covers both output quality flags and nested input provenance metadata inside the existing contract, compute endpoints now emit durable audit-log entries for sync runs plus async submit, completion, and failure transitions through the canonical `audit_logs` path, and persistent compute lineage storage now complements those audits through a dedicated `compute_lineage_records` table plus additive lineage identifiers on sync and async compute contracts so lineage state survives beyond transient job storage; new cross-contract REEVU envelope tests now verify that compute provenance, trial-summary evidence envelopes, phenotype evidence refs, and chat-stage evidence assembly preserve evidence refs, calculation IDs, and validator expectations consistently across trust surfaces; the orphaned direct frontend-to-vendor AI client has been removed so the backend REEVU API remains the canonical production chat path, integration adapters now expose external connector capability metadata for routing and audit surfaces via the integration API, and REEVU agent settings now persist and execute prompt-mode capability classes with canonical sync and streaming chat-path prompt composition. Focused backend validation for the latest control-plane and trust slices is green, including the refreshed AI provider service, LLM runtime, and AI configuration API checkpoints plus a fresh 16-test frontend checkpoint for runtime status and AI Settings preset behavior. Earlier M1 stabilization across core breeding, seed bank, seed operations, and operational dashboards remains intact; separate unrelated frontend typecheck debt still exists elsewhere in the repo."
+  }
+}

@@ -1,0 +1,347 @@
+/**
+ * Field Mode Styles
+ * 
+ * High contrast, large touch targets for outdoor/sunlight usage.
+ * WCAG AAA compliant (7:1 contrast ratio minimum)
+ */
+
+/* ==========================================================================
+   Base Field Mode
+   ========================================================================== */
+
+.field-mode {
+  /* Increase base touch target sizes */
+  --touch-target-min: 48px;
+  
+  /* Larger border radius for easier tapping */
+  --radius: 0.75rem;
+}
+
+/* All interactive elements get minimum touch target */
+.field-mode button,
+.field-mode [role="button"],
+.field-mode input,
+.field-mode select,
+.field-mode textarea,
+.field-mode a {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+}
+
+/* Larger padding on interactive elements */
+.field-mode button,
+.field-mode [role="button"] {
+  padding: 0.75rem 1.25rem;
+}
+
+/* Larger checkboxes and radio buttons */
+.field-mode input[type="checkbox"],
+.field-mode input[type="radio"] {
+  width: 24px;
+  height: 24px;
+}
+
+/* Larger form inputs */
+.field-mode input[type="text"],
+.field-mode input[type="number"],
+.field-mode input[type="email"],
+.field-mode input[type="password"],
+.field-mode input[type="search"],
+.field-mode input[type="tel"],
+.field-mode input[type="url"],
+.field-mode select,
+.field-mode textarea {
+  font-size: 1.125rem;
+  padding: 0.875rem 1rem;
+}
+
+/* ==========================================================================
+   High Contrast Mode (WCAG AAA - 7:1 ratio)
+   ========================================================================== */
+
+.field-mode-contrast {
+  /* Override CSS variables for maximum contrast */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 100%;
+  
+  --primary: 142 76% 50%;
+  --primary-foreground: 0 0% 0%;
+  
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 100%;
+  
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 80%;
+  
+  --accent: 142 76% 50%;
+  --accent-foreground: 0 0% 0%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 30%;
+  --input: 0 0% 20%;
+  --ring: 142 76% 50%;
+}
+
+/* High contrast text */
+.field-mode-contrast {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Stronger focus indicators */
+.field-mode-contrast *:focus-visible {
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 3px;
+}
+
+/* High contrast borders */
+.field-mode-contrast .border,
+.field-mode-contrast [class*="border-"] {
+  border-width: 2px;
+}
+
+/* High contrast badges */
+.field-mode-contrast .badge,
+.field-mode-contrast [class*="Badge"] {
+  font-weight: 700;
+  border-width: 2px;
+}
+
+/* ==========================================================================
+   Large Text Mode
+   ========================================================================== */
+
+.field-mode-large {
+  font-size: 18px;
+}
+
+.field-mode-large h1 {
+  font-size: 2.5rem;
+}
+
+.field-mode-large h2 {
+  font-size: 2rem;
+}
+
+.field-mode-large h3 {
+  font-size: 1.75rem;
+}
+
+.field-mode-large h4 {
+  font-size: 1.5rem;
+}
+
+.field-mode-large p,
+.field-mode-large span,
+.field-mode-large label {
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.field-mode-large .text-sm {
+  font-size: 1rem;
+}
+
+.field-mode-large .text-xs {
+  font-size: 0.875rem;
+}
+
+.field-mode-large .text-muted-foreground {
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   Field-Specific Components
+   ========================================================================== */
+
+/* Large action buttons for field use */
+.field-action-button {
+  min-height: 56px;
+  min-width: 56px;
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  gap: 0.75rem;
+}
+
+.field-action-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Field mode card with larger padding */
+.field-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border-width: 2px;
+}
+
+/* Field mode input group */
+.field-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.field-input-group label {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.field-input-group input,
+.field-input-group select {
+  height: 56px;
+  font-size: 1.25rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  border-width: 2px;
+}
+
+/* Field mode number input with +/- buttons */
+.field-number-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-number-input button {
+  width: 56px;
+  height: 56px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 0.75rem;
+}
+
+.field-number-input input {
+  flex: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Swipe Gesture Indicators
+   ========================================================================== */
+
+.field-mode .swipe-hint {
+  position: relative;
+}
+
+.field-mode .swipe-hint::after {
+  content: '← swipe →';
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   Status Indicators (Larger for field visibility)
+   ========================================================================== */
+
+.field-mode .status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.field-mode .status-success {
+  background-color: hsl(142 76% 45%);
+  box-shadow: 0 0 0 3px hsla(142, 76%, 45%, 0.3);
+}
+
+.field-mode .status-warning {
+  background-color: hsl(43 96% 56%);
+  box-shadow: 0 0 0 3px hsla(43, 96%, 56%, 0.3);
+}
+
+.field-mode .status-error {
+  background-color: hsl(0 84% 60%);
+  box-shadow: 0 0 0 3px hsla(0, 84%, 60%, 0.3);
+}
+
+/* ==========================================================================
+   Data Collection Specific
+   ========================================================================== */
+
+/* Large trait value display */
+.field-trait-value {
+  font-size: 3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Plot identifier badge */
+.field-plot-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  height: 48px;
+  padding: 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 0.5rem;
+}
+
+/* Navigation between plots */
+.field-plot-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.field-plot-nav button {
+  flex: 1;
+  height: 64px;
+  font-size: 1.25rem;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .field-mode {
+    --touch-target-min: 52px;
+  }
+  
+  .field-mode-large {
+    font-size: 20px;
+  }
+  
+  .field-action-button {
+    min-height: 64px;
+    font-size: 1.25rem;
+  }
+}
+
+/* Landscape mode on mobile - optimize for one-handed use */
+@media (max-width: 896px) and (orientation: landscape) {
+  .field-mode .field-plot-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: hsl(var(--background));
+    border-top: 2px solid hsl(var(--border));
+    z-index: 50;
+  }
+}

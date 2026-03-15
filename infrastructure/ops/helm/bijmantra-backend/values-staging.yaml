@@ -1,0 +1,14 @@
+env:
+  ENVIRONMENT: "staging"
+  DB_HOST: "staging-db.bijmantra.internal"
+
+ingress:
+  hosts:
+    - host: api.staging.bijmantra.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+   - secretName: bijmantra-staging-tls
+     hosts:
+       - api.staging.bijmantra.org

@@ -1,0 +1,73 @@
+name: Update API Registry
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'backend/app/api/**/*.py'
+      - 'backend/app/modules/**/router.py'
+      - 'backend/app/main.py'
+  pull_request:
+    paths:
+      - 'backend/app/api/**/*.py'
+      - 'backend/app/modules/**/router.py'
+      - 'backend/app/main.py'
+
+jobs:
+  update-registry:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install --upgrade pip
+          # Install minimal dependencies needed for the script
+          pip install fastapi pydantic
+      
+      - name: Generate API Registry
+        run: |
+          cd backend
+          python3 -m app.scripts.generate_api_registry
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet docs/api/API_REGISTRY.md docs/api/API_REGISTRY.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changed == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/api/API_REGISTRY.md docs/api/API_REGISTRY.json
+          git commit -m "chore: update API registry [skip ci]"
+          git push
+      
+      - name: Comment on PR
+        if: steps.check_changes.outputs.changed == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **API Registry Update Required**\n\nThis PR modifies API endpoints. Please regenerate the API registry:\n\n```bash\ncd backend\npython3 -m app.scripts.generate_api_registry\ngit add ../docs/api/API_REGISTRY.md ../docs/api/API_REGISTRY.json\ngit commit -m "chore: update API registry"\n```'
+            })

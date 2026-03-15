@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "lint": "npm run lint --prefix frontend",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "@webgpu/types": "^0.1.69",
+    "baseline-browser-mapping": "^2.9.19",
+    "wrangler": "^4.69.0"
+  }
+}

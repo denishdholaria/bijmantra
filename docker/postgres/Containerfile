@@ -1,0 +1,25 @@
+# PostgreSQL with PostGIS + pgvector
+# For Bijmantra Plant Breeding Platform
+#
+# Build: podman build -t bijmantra-postgres -f Containerfile .
+# Run: podman run -d --name bijmantra-postgres -e POSTGRES_PASSWORD=secret bijmantra-postgres
+
+FROM --platform=linux/amd64 postgis/postgis:18-3.6
+
+LABEL maintainer="Bijmantra Team"
+LABEL description="PostgreSQL 18 with PostGIS 3.5 and pgvector for plant breeding AI"
+LABEL version="2.0.0"
+
+# Install pgvector from apt (simpler than building from source)
+# PostgreSQL 18 brings: Async I/O (3x faster reads), uuidv7(), virtual generated columns
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends postgresql-18-pgvector && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy initialization script
+COPY init-extensions.sql /docker-entrypoint-initdb.d/
+
+# Default environment
+ENV POSTGRES_DB=bijmantra_db
+ENV POSTGRES_USER=bijmantra_user

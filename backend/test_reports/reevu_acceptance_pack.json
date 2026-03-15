@@ -1,0 +1,138 @@
+{
+  "generated_at_utc": "2026-02-27T07:42:55.422110+00:00",
+  "commit_hash": "b90241b9434a56e7219fce7899dca6af0f6f9e52",
+  "overall_status": "passed",
+  "gate_outcomes": [
+    {
+      "command": "uv run pytest tests/units/api/v2 -q",
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 19.153,
+      "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0\nrootdir: /Volumes/AppDen/AppsHom/bijmantra/backend\nconfigfile: pyproject.toml\nplugins: anyio-4.12.1, asyncio-1.3.0, zarr-3.1.5\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollected 127 items\n\ntests/units/api/v2/future/test_crop_calendar.py .                        [  0%]\ntests/units/api/v2/future/test_crop_suitability.py .......               [  6%]\ntests/units/api/v2/future/test_soil_moisture.py ...                      [  8%]\ntests/units/api/v2/test_chat_policy_validation.py ..........             [ 16%]\ntests/units/api/v2/test_chat_streaming.py .............................. [ 40%]\n............                                                             [ 49%]\ntests/units/api/v2/test_dock.py .....................................    [ 78%]\ntests/units/api/v2/test_offline_sync.py .....                            [ 82%]\ntests/units/api/v2/test_offline_sync_conflict.py .......                 [ 88%]\ntests/units/api/v2/test_rbac.py ...............                          [100%]\n\n============================= 127 passed in 1.87s ==============================",
+      "stderr": "warning: `VIRTUAL_ENV=/Users/denish/.cache/uv/builds-v0/.tmpyPt1an` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead"
+    },
+    {
+      "command": "uv run pytest tests/units/test_reevu_stage_c.py -q",
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 11.306,
+      "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0\nrootdir: /Volumes/AppDen/AppsHom/bijmantra/backend\nconfigfile: pyproject.toml\nplugins: anyio-4.12.1, asyncio-1.3.0, zarr-3.1.5\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollected 60 items\n\ntests/units/test_reevu_stage_c.py ...................................... [ 63%]\n......................                                                   [100%]\n\n============================== 60 passed in 0.03s ==============================",
+      "stderr": "warning: `VIRTUAL_ENV=/Users/denish/.cache/uv/builds-v0/.tmpyPt1an` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead"
+    },
+    {
+      "command": "uv run pytest tests/units/test_reevu_metrics.py -q",
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 11.096,
+      "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0\nrootdir: /Volumes/AppDen/AppsHom/bijmantra/backend\nconfigfile: pyproject.toml\nplugins: anyio-4.12.1, asyncio-1.3.0, zarr-3.1.5\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollected 11 items\n\ntests/units/test_reevu_metrics.py ...........                            [100%]\n\n============================== 11 passed in 0.07s ==============================",
+      "stderr": "warning: `VIRTUAL_ENV=/Users/denish/.cache/uv/builds-v0/.tmpyPt1an` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead"
+    },
+    {
+      "command": "uv run python scripts/eval_cross_domain_reasoning.py",
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 0.194,
+      "stdout": "REEVU Stage C Cross-Domain Reasoning Evaluation\n  prompts evaluated: 33\n  domain detection accuracy (subset): 96.97%\n  compound classification: 90.91%\n  step adequacy: 100.00%\n  -- Strict Metrics --\n  exact match rate: 54.55%\n  precision: 81.52%\n  recall: 96.97%\n  F1 score: 87.28%\n  wrote: test_reports/reevu_cross_domain_reasoning_baseline.json",
+      "stderr": "warning: `VIRTUAL_ENV=/Users/denish/.cache/uv/builds-v0/.tmpyPt1an` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead"
+    },
+    {
+      "command": "uv run python scripts/generate_reevu_ops_report.py",
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 0.043,
+      "stdout": "REEVU Ops Report\n  trace_completeness: 100.00% (floor 99.00%) \u2014 \u2705 met\n  tool_call_precision: 100.00% (floor 92.00%) \u2014 \u2705 met\n  domain_detection_accuracy: 96.97% (floor 85.00%) \u2014 \u2705 met\n  compound_classification: 90.91% (floor 80.00%) \u2014 \u2705 met\n  step_adequacy: 100.00% (floor 85.00%) \u2014 \u2705 met\n  overall floor met: \u2705 met\n  wrote JSON: test_reports/reevu_ops_report.json\n  wrote markdown: test_reports/reevu_ops_report.md",
+      "stderr": "warning: `VIRTUAL_ENV=/Users/denish/.cache/uv/builds-v0/.tmpyPt1an` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead"
+    }
+  ],
+  "kpi_deltas": {
+    "status": "computed",
+    "comparator_available": false,
+    "metrics": {
+      "trace_completeness": {
+        "current": 1.0,
+        "comparator": null,
+        "delta": null,
+        "floor": 0.99,
+        "floor_met": true
+      },
+      "tool_call_precision": {
+        "current": 1.0,
+        "comparator": null,
+        "delta": null,
+        "floor": 0.92,
+        "floor_met": true
+      },
+      "domain_detection_accuracy": {
+        "current": 0.9697,
+        "comparator": null,
+        "delta": null,
+        "floor": 0.85,
+        "floor_met": true
+      },
+      "compound_classification": {
+        "current": 0.9091,
+        "comparator": null,
+        "delta": null,
+        "floor": 0.8,
+        "floor_met": true
+      },
+      "step_adequacy": {
+        "current": 1.0,
+        "comparator": null,
+        "delta": null,
+        "floor": 0.85,
+        "floor_met": true
+      }
+    }
+  },
+  "artifact_integrity": {
+    "all_valid": true,
+    "artifacts": {
+      "trace_completeness_baseline": {
+        "path": "/Volumes/AppDen/AppsHom/bijmantra/backend/test_reports/reevu_trace_completeness_baseline.json",
+        "exists": true,
+        "valid": true,
+        "details": "valid JSON"
+      },
+      "top_intent_routing_baseline": {
+        "path": "/Volumes/AppDen/AppsHom/bijmantra/backend/test_reports/reevu_top_intent_routing_baseline.json",
+        "exists": true,
+        "valid": true,
+        "details": "valid JSON"
+      },
+      "stage_a_kpi_report": {
+        "path": "/Volumes/AppDen/AppsHom/bijmantra/backend/test_reports/reevu_stage_a_kpi_report.json",
+        "exists": true,
+        "valid": true,
+        "details": "valid JSON"
+      },
+      "cross_domain_reasoning_baseline": {
+        "path": "/Volumes/AppDen/AppsHom/bijmantra/backend/test_reports/reevu_cross_domain_reasoning_baseline.json",
+        "exists": true,
+        "valid": true,
+        "details": "valid JSON"
+      },
+      "ops_report_json": {
+        "path": "/Volumes/AppDen/AppsHom/bijmantra/backend/test_reports/reevu_ops_report.json",
+        "exists": true,
+        "valid": true,
+        "details": "valid JSON"
+      },
+      "ops_report_markdown": {
+        "path": "/Volumes/AppDen/AppsHom/bijmantra/backend/test_reports/reevu_ops_report.md",
+        "exists": true,
+        "valid": true,
+        "details": "non-empty text"
+      }
+    }
+  },
+  "blockers": [],
+  "risk_notes": [
+    "Placeholder: add release and production risk notes before final sign-off."
+  ],
+  "rollback_checklist": [
+    "Revert backend/scripts/generate_reevu_acceptance_pack.py if format is unsuitable.",
+    "Revert generated acceptance artifacts under backend/test_reports/.",
+    "Revert generated summary doc under docs/development/reevu/."
+  ]
+}

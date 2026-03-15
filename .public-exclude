@@ -1,0 +1,30 @@
+# Files and folders to exclude from public repo
+# One pattern per line
+
+# Kiro IDE files
+.kiro/
+
+# Private documentation
+docs-private/
+
+# Environment and secrets
+.env
+.env.*
+*.key
+*.pem
+*secret*
+*private*
+
+# Agent files
+.agent/
+.ai/
+
+# Local configs
+*.local
+.vscode/settings.json
+
+# Backup folders
+.venv.py314.backup/
+
+# Cache
+.surmlcache/

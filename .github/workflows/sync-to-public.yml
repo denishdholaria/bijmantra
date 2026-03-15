@@ -1,0 +1,62 @@
+name: Sync to Public Repo
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch: # Manual trigger only
+  # Optionally add: push to main in private repo
+  # push:
+  #   branches: [main]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout private repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Build filtered snapshot
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f .public-exclude ]]; then
+            echo "Missing .public-exclude in repository root"
+            exit 1
+          fi
+
+          mkdir -p /tmp/public-sync
+          rsync -a --delete --exclude-from=.public-exclude --exclude=.git/ ./ /tmp/public-sync/
+          cp .public-exclude /tmp/public-sync/.public-exclude
+
+      - name: Remove git history
+        run: |
+          set -euo pipefail
+
+          cd /tmp/public-sync
+          COMMIT_HASH="${GITHUB_SHA}"
+          rm -rf .git
+          git init --initial-branch=main
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "chore: sync from private repo (source: $COMMIT_HASH)"
+
+      - name: Push to public repo
+        env:
+          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${PUBLIC_REPO_TOKEN:-}" ]]; then
+            echo "PUBLIC_REPO_TOKEN is not configured"
+            exit 1
+          fi
+
+          cd /tmp/public-sync
+          git branch --show-current
+          git rev-parse HEAD
+          git remote add public https://x-access-token:${PUBLIC_REPO_TOKEN}@github.com/denishdholaria/bijmantra.git
+          git push public HEAD:refs/heads/main --force
