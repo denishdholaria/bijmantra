@@ -1,9 +1,9 @@
-# BUSINESS SOURCE LICENSE 1.1
+# BUSINESS SOURCE LICENSE
 
 ## Parameters
 
 Licensor:             Denish Dholaria
-Licensed Work:        Bijmantra v1.0 and later versions
+Licensed Work:        Bijmantra and later versions
                       The Licensed Work is © 2025 Denish Dholaria
 
 Additional Use Grant: You may use the Licensed Work for any purpose,
@@ -27,11 +27,6 @@ Additional Use Grant: You may use the Licensed Work for any purpose,
                       (b) Using the Licensed Work in connection with any
                           Prohibited Technology as defined in the Ethical
                           Use Restrictions section below.
-
-Change Date:          January 1, 2029 (4 years from v1.0 release date)
-
-Change License:       Apache License 2.0
-
 ---
 
 ## TERMS AND CONDITIONS
@@ -98,6 +93,8 @@ Restrictions defined in this License.
 
 You may use the Licensed Work for any purpose, including production use and
 commercial use, EXCEPT for Excluded Purposes.
+Use of the Software is subject to the BijMantra Ethical Use Policy.
+Violation terminates all rights.
 
 #### 3.1 EXCLUDED PURPOSES
 
