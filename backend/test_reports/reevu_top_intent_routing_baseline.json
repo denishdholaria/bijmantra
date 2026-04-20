@@ -1,0 +1,12 @@
+{
+  "total_cases": 20,
+  "expected_actionable_cases": 18,
+  "predicted_actionable_cases": 18,
+  "function_exact_match_count": 20,
+  "function_exact_match_rate": 1.0,
+  "actionable_function_match_count": 18,
+  "actionable_function_precision": 1.0,
+  "param_subset_match_count_when_function_matches": 20,
+  "param_subset_match_rate_when_function_matches": 1.0,
+  "failures": []
+}

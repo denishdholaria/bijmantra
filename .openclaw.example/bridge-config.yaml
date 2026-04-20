@@ -1,0 +1,15 @@
+# Sanitized BijMantra <-> OpenClaw bridge example.
+# Copy into ~/.bijmantra/runtime/claw/bridge-config.yaml and adjust as needed.
+
+bridge:
+  gateway_url: "ws://127.0.0.1:18789"
+  gateway_token: ""
+  schedule_mode: "continuous"
+  timezone: "Asia/Kolkata"
+  agent_id: "bijmantra-dev"
+  sandbox_image: "bijmantra-sandbox:latest"
+  max_duration_minutes: 120
+  git_branch_prefix: "auto/"
+  notification_channel: ""
+  notification_to: ""
+  workspace_path: "/absolute/path/to/bijmantra"

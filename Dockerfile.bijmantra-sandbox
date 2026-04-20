@@ -1,0 +1,105 @@
+# syntax=docker/dockerfile:1.7
+#
+# BijMantra Development Sandbox
+# Provides a backend-capable OpenClaw sandbox image with the Python, Node, and
+# Bun tooling needed for repo-local verification.
+#
+# Build:
+#   podman build -f Dockerfile.bijmantra-sandbox -t bijmantra-sandbox:latest .
+
+FROM python:3.13-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# ── System packages ──────────────────────────────────────────────────
+RUN --mount=type=cache,id=bijmantra-sandbox-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=bijmantra-sandbox-apt-lists,target=/var/lib/apt,sharing=locked \
+  apt-get update \
+  && apt-get install -y --no-install-recommends \
+    bash \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    jq \
+    libpq-dev \
+    postgresql-client \
+    ripgrep \
+    unzip \
+    wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# ── Node.js 22 + Bun (for frontend builds + OpenClaw CLI) ───────────
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y --no-install-recommends nodejs \
+  && rm -rf /var/lib/apt/lists/* \
+  && curl -fsSL https://bun.sh/install | BUN_INSTALL=/opt/bun bash \
+  && ln -sf /opt/bun/bin/bun /usr/local/bin/bun \
+  && ln -sf /opt/bun/bin/bun /usr/local/bin/bunx
+
+# ── Python virtual environment with BijMantra backend dependencies ───
+COPY backend/requirements.sandbox.txt /tmp/backend-requirements.txt
+
+RUN python -m venv /opt/bijmantra-venv
+ENV PATH="/opt/bijmantra-venv/bin:$PATH"
+ENV VIRTUAL_ENV="/opt/bijmantra-venv"
+
+RUN --mount=type=cache,id=bijmantra-sandbox-pip-cache,target=/root/.cache/pip,sharing=locked \
+  pip install --upgrade pip setuptools wheel \
+  && pip install --prefer-binary -r /tmp/backend-requirements.txt
+
+RUN ln -sf /opt/bijmantra-venv/bin/pip /usr/local/bin/pip \
+  && ln -sf /opt/bijmantra-venv/bin/pytest /usr/local/bin/pytest
+
+RUN cat <<'EOF' >/usr/local/bin/uv
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${1:-}" == "run" ]]; then
+  shift
+  export VIRTUAL_ENV="/opt/bijmantra-venv"
+  export PATH="${VIRTUAL_ENV}/bin:${PATH:-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin}"
+  exec "$@"
+fi
+
+echo "uv shim only supports: uv run <command>" >&2
+exit 2
+EOF
+
+RUN chmod +x /usr/local/bin/uv
+
+RUN cat <<'EOF' >/usr/local/bin/poetry
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${1:-}" == "run" ]]; then
+  shift
+  export VIRTUAL_ENV="/opt/bijmantra-venv"
+  export PATH="${VIRTUAL_ENV}/bin:${PATH:-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin}"
+  exec "$@"
+fi
+
+echo "poetry shim only supports: poetry run <command>" >&2
+exit 2
+EOF
+
+RUN chmod +x /usr/local/bin/poetry
+
+COPY ops-private/claw-runtime/scripts/bijmantra-sandbox-entrypoint.sh /usr/local/bin/bijmantra-sandbox-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/bijmantra-sandbox-entrypoint.sh
+
+# ── Sandbox user and workspace mount point ───────────────────────────
+RUN useradd --create-home --shell /bin/bash sandbox \
+  && mkdir -p /workspace /home/sandbox/workspace \
+  && ln -sf /workspace /home/sandbox/workspace \
+  && chown -R sandbox:sandbox /home/sandbox /workspace /opt/bijmantra-venv
+
+USER sandbox
+WORKDIR /workspace
+
+ENTRYPOINT ["/usr/local/bin/bijmantra-sandbox-entrypoint.sh"]
+CMD ["sleep", "infinity"]

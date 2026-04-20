@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compute Monitoring Dashboard - BijMantra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #334155;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #10b981;
+            color: #fff;
+        }
+        
+        .badge-warning {
+            background: #f59e0b;
+            color: #fff;
+        }
+        
+        .badge-critical {
+            background: #ef4444;
+            color: #fff;
+        }
+        
+        .badge-info {
+            background: #3b82f6;
+            color: #fff;
+        }
+        
+        .alert {
+            background: #1e293b;
+            border-left: 4px solid #ef4444;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+        
+        .alert-warning {
+            border-left-color: #f59e0b;
+        }
+        
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .alert-message {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill.success {
+            background: #10b981;
+        }
+        
+        .progress-fill.warning {
+            background: #f59e0b;
+        }
+        
+        .progress-fill.critical {
+            background: #ef4444;
+        }
+        
+        .refresh-info {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        
+        .error {
+            background: #7f1d1d;
+            color: #fca5a5;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Compute Monitoring Dashboard</h1>
+            <p class="subtitle">Real-time monitoring of compute operations</p>
+        </header>
+        
+        <div id="error-container"></div>
+        <div id="dashboard-container">
+            <div class="loading">Loading dashboard...</div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/v2/monitoring';
+        let refreshInterval;
+        
+        async function fetchDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/compute`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                renderDashboard(data);
+                clearError();
+            } catch (error) {
+                showError(`Failed to fetch dashboard: ${error.message}`);
+            }
+        }
+        
+        function renderDashboard(data) {
+            const container = document.getElementById('dashboard-container');
+            const metrics = data.overall_metrics;
+            
+            container.innerHTML = `
+                <!-- Overall Metrics -->
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Total Jobs</span>
+                        </div>
+                        <div class="metric-value">${metrics.total_jobs}</div>
+                        <div class="metric-label">All compute jobs</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Success Rate</span>
+                        </div>
+                        <div class="metric-value">${(metrics.success_rate * 100).toFixed(1)}%</div>
+                        <div class="metric-label">Job completion rate</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${getSuccessRateClass(metrics.success_rate)}" 
+                                 style="width: ${metrics.success_rate * 100}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Queue Depth</span>
+                        </div>
+                        <div class="metric-value">${metrics.queue_depth_total}</div>
+                        <div class="metric-label">Pending jobs</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Worker Utilization</span>
+                        </div>
+                        <div class="metric-value">${(metrics.worker_utilization * 100).toFixed(1)}%</div>
+                        <div class="metric-label">${metrics.workers_active} / ${metrics.workers_total} workers active</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${getUtilizationClass(metrics.worker_utilization)}" 
+                                 style="width: ${metrics.worker_utilization * 100}%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Job Status -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <span class="card-title">Job Status</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Pending</span>
+                        <span><span class="badge badge-info">${metrics.jobs_pending}</span></span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Running</span>
+                        <span><span class="badge badge-info">${metrics.jobs_running}</span></span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Completed</span>
+                        <span><span class="badge badge-success">${metrics.jobs_completed}</span></span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Failed</span>
+                        <span><span class="badge badge-critical">${metrics.jobs_failed}</span></span>
+                    </div>
+                </div>
+                
+                <!-- Worker Metrics by Type -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <span class="card-title">Workers by Type</span>
+                    </div>
+                    ${data.worker_metrics_by_type.map(w => `
+                        <div class="metric-row">
+                            <div>
+                                <div style="font-weight: 500;">${w.worker_type.toUpperCase()}</div>
+                                <div style="font-size: 12px; color: #64748b;">
+                                    ${w.active_workers} / ${w.total_workers} active
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div>${(w.utilization * 100).toFixed(0)}% utilized</div>
+                                <div style="font-size: 12px; color: #64748b;">
+                                    ${w.jobs_processed} processed, ${w.jobs_failed} failed
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <!-- Queue Metrics by Type -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <span class="card-title">Queue Depth by Type</span>
+                    </div>
+                    ${data.queue_metrics_by_type.map(q => `
+                        <div class="metric-row">
+                            <div>
+                                <div style="font-weight: 500;">${q.compute_type.toUpperCase()}</div>
+                                <div style="font-size: 12px; color: #64748b;">
+                                    ${q.pending_jobs} pending, ${q.running_jobs} running
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="badge ${getQueueDepthBadge(q.queue_depth)}">${q.queue_depth}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <!-- Active Alerts -->
+                ${data.active_alerts.length > 0 ? `
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Active Alerts</span>
+                            <span class="badge badge-critical">${data.active_alerts.length}</span>
+                        </div>
+                        ${data.active_alerts.map(alert => `
+                            <div class="alert ${alert.severity === 'warning' ? 'alert-warning' : ''}">
+                                <div class="alert-header">
+                                    <span class="alert-title">${alert.metric}</span>
+                                    <span class="badge ${alert.severity === 'critical' ? 'badge-critical' : 'badge-warning'}">
+                                        ${alert.severity.toUpperCase()}
+                                    </span>
+                                </div>
+                                <div class="alert-message">${alert.message}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+                
+                <div class="refresh-info">
+                    Last updated: ${new Date(data.timestamp).toLocaleString()} • Auto-refresh every 30 seconds
+                </div>
+            `;
+        }
+        
+        function getSuccessRateClass(rate) {
+            if (rate >= 0.95) return 'success';
+            if (rate >= 0.90) return 'warning';
+            return 'critical';
+        }
+        
+        function getUtilizationClass(utilization) {
+            if (utilization < 0.20 || utilization > 0.90) return 'critical';
+            if (utilization > 0.80) return 'warning';
+            return 'success';
+        }
+        
+        function getQueueDepthBadge(depth) {
+            if (depth > 1000) return 'badge-critical';
+            if (depth > 500) return 'badge-warning';
+            return 'badge-info';
+        }
+        
+        function showError(message) {
+            const container = document.getElementById('error-container');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        function clearError() {
+            document.getElementById('error-container').innerHTML = '';
+        }
+        
+        // Initial load
+        fetchDashboard();
+        
+        // Auto-refresh every 30 seconds
+        refreshInterval = setInterval(fetchDashboard, 30000);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>

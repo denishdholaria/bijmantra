@@ -1,0 +1,435 @@
+# BIJMANTRA ETHICAL USE POLICY
+
+**Version 4.0 — February 2026**
+
+Copyright © 2025–2026 Denish Dholaria
+
+Development supported by Solar Agrotech Private Limited
+
+---
+
+## PREAMBLE
+
+Bijmantra is built on the conviction that agricultural technology should
+serve farmers, food security, and the long-term health of our planet's
+agricultural systems. This Ethical Use Policy exists to ensure that the
+Software is never used to undermine these values.
+
+This Policy is **legally binding** and is incorporated by reference into
+the main LICENSE. Violation of this Policy results in **immediate and
+automatic termination** of all license rights, whether under the Open
+Source License (AGPL-3.0) or any Commercial License.
+
+---
+
+## 1. ABSOLUTE PROHIBITIONS
+
+The following uses of the Software are **absolutely prohibited** under
+any circumstances, without exception, and regardless of license type:
+
+### 1.1 Genetic Use Restriction Technologies (GURTs)
+
+The Software may NOT be used, directly or indirectly, in the research,
+development, testing, production, deployment, or commercialization of
+any Genetic Use Restriction Technology (GURT), including but not limited
+to:
+
+**(a) V-GURTs (Variety-Level GURTs / "Terminator Technology")**
+
+Technologies that produce seeds or plant propagules that are sterile,
+non-viable, or incapable of germination, including:
+
+- Genetic modifications that cause seed sterility
+- Technologies that prevent embryo development
+- Modifications that cause seed abortion
+- Any mechanism designed to prevent farmers from saving and replanting seeds
+
+**(b) T-GURTs / Seed Dependency Technology**
+
+Technologies that require application of proprietary chemicals, compounds,
+or external inputs to activate, maintain, or express genetic traits, where
+the primary purpose is commercial lock-in rather than agronomic benefit,
+including:
+
+- Chemically-induced gene expression systems for commercial trait control
+- Technologies requiring proprietary "activator" compounds for farmer use
+- Conditional trait expression dependent on purchased inputs
+- Any mechanism creating exploitative chemical dependency for trait function
+
+**Exemptions — the following are NOT prohibited:**
+
+- Research use of chemically-inducible gene expression systems (e.g.,
+  dexamethasone-inducible, ethanol-inducible) in controlled laboratory
+  or greenhouse settings for basic science
+- Beneficial biocontainment systems designed to prevent transgene flow
+  to wild relatives (environmental safety measures, not farmer lock-in)
+- Standard agricultural inputs (fertilizers, pesticides, micronutrients)
+  that are not genetically tied to trait expression
+- Inducible promoter systems used in research that are not intended for
+  commercial deployment requiring farmer chemical purchases
+
+**Burden of Proof:** In cases of ambiguity, the technology developer must
+demonstrate that the system does not create exploitative farmer dependency.
+The guiding question: *"Does the farmer lose access to a trait they already
+had if they stop purchasing a specific proprietary chemical?"* If yes, it
+is prohibited.
+
+**(c) Seed Termination Technologies**
+
+Any technology, method, process, or practice designed or intended to:
+
+- Prevent seeds from being saved for replanting
+- Prevent seeds from being shared, exchanged, or sold by farmers
+- Prevent seeds from being used for subsequent generations
+- Reduce seed viability over successive generations
+- Create artificial dependency on seed purchases
+
+### 1.2 Biological Weapons and Harmful Applications
+
+The Software may NOT be used in connection with:
+
+- Development of biological weapons or agents
+- Creation of plant pathogens or pests
+- Deliberate harm to agricultural systems
+- Bioterrorism or agricultural sabotage
+
+### 1.3 Deceptive Practices
+
+The Software may NOT be used to:
+
+- Falsify breeding records or pedigree data
+- Misrepresent variety characteristics
+- Commit fraud in seed certification
+- Deceive farmers about seed quality or origin
+
+---
+
+## 2. RATIONALE
+
+### 2.1 Why These Prohibitions Exist
+
+**Farmer Sovereignty**: For millennia, farmers have saved, selected, and
+shared seeds. This practice is fundamental to agricultural resilience,
+biodiversity, and farmer autonomy. Technologies that prevent seed saving
+threaten this foundation.
+
+**Food Security**: Seed termination technologies create dependency on
+corporate seed supplies. In times of crisis—economic, political, or
+environmental—this dependency threatens food security.
+
+**Biodiversity**: Farmer seed saving and selection is a primary driver
+of crop genetic diversity. Technologies that eliminate this practice
+accelerate genetic erosion.
+
+**Equity**: Seed termination technologies disproportionately harm
+smallholder farmers in developing countries who cannot afford to purchase
+new seeds every season.
+
+**Precautionary Principle**: The long-term ecological and social
+consequences of widespread GURT deployment are unknown and potentially
+irreversible.
+
+### 2.2 Scientific and Policy Context
+
+These prohibitions align with:
+
+- **Convention on Biological Diversity (CBD)**: De facto moratorium on
+  field testing and commercial sale of terminator seeds (Decision V/5)
+
+- **International Treaty on Plant Genetic Resources for Food and
+  Agriculture (ITPGRFA)**: Recognition of farmers' rights to save, use,
+  exchange, and sell farm-saved seed
+
+- **UN Declaration on the Rights of Peasants**: Right to save, use,
+  exchange, and sell farm-saved seed and propagating material
+
+- **Cartagena Protocol on Biosafety**: Precautionary approach to
+  biotechnology
+
+---
+
+## 3. SCOPE AND APPLICATION
+
+### 3.1 What "Use" Means
+
+For purposes of this Policy, "use" includes:
+
+- Running the Software
+- Incorporating the Software into other systems
+- Using outputs or data generated by the Software
+- Modifying or creating derivative works
+- Distributing the Software or derivatives
+- Providing services based on the Software
+
+### 3.2 Direct and Indirect Use
+
+This Policy prohibits both:
+
+**(a) Direct Use**: Using the Software itself for prohibited purposes
+
+**(b) Indirect Use**: Using the Software as part of a larger system,
+workflow, or enterprise that includes prohibited activities, even if
+the Software itself is not directly involved in those activities
+
+**Example**: A company that develops terminator seeds may not use
+Bijmantra for ANY purpose, including unrelated breeding programs,
+because the organization as a whole is engaged in prohibited activities.
+
+### 3.3 Knowledge Standard
+
+Violation occurs when You:
+
+- Know that Your use involves prohibited activities; OR
+- Have reason to know (would know upon reasonable inquiry); OR
+- Are willfully ignorant of facts that would reveal prohibited activities
+
+---
+
+## 4. CERTIFICATION AND COMPLIANCE
+
+### 4.1 Certification
+
+By using the Software, You certify that:
+
+**(a)** You are not currently engaged in, and have not within the past
+five (5) years been engaged in, the research, development, testing,
+production, or commercialization of any technology described in Section 1.
+
+**(b)** You will not use the Software, or permit the Software to be used,
+in connection with any technology described in Section 1.
+
+**(c)** You will not transfer, license, sell, or otherwise make the
+Software available to any party that You know or have reason to believe
+is engaged in activities described in Section 1.
+
+**(d)** If You become aware that the Software is being used in connection
+with prohibited activities, You will immediately cease such use and
+notify the Licensor.
+
+### 4.2 Compliance Monitoring
+
+The Licensor reserves the right to:
+
+- Request certification of compliance
+- Investigate credible reports of violations
+- Require documentation of use cases
+- Conduct audits (for Commercial Licensees)
+
+### 4.3 Reporting Violations
+
+If You become aware of potential violations of this Policy, please report
+to: **hello@bijmantra.org** with subject "Ethical Use Policy Concern"
+
+Reports may be made anonymously. The Licensor will investigate all
+credible reports.
+
+---
+
+## 5. CONSEQUENCES OF VIOLATION
+
+### 5.1 Automatic Termination
+
+Any violation of Section 1 (Absolute Prohibitions) results in **immediate
+and automatic termination** of all license rights, including:
+
+- Open Source License (AGPL-3.0) rights
+- Commercial License rights
+- Any other permissions granted under the LICENSE
+
+Termination is **automatic** upon violation and does not require notice
+from the Licensor.
+
+### 5.2 No Cure Period
+
+Unlike other license violations, there is **no cure period** for
+violations of this Ethical Use Policy. Termination is immediate and
+permanent.
+
+### 5.3 Survival of Obligations
+
+Upon termination for ethical use violation:
+
+- You must immediately cease all use of the Software
+- You must destroy all copies in Your possession
+- You must cease distribution of the Software and derivatives
+- You remain liable for damages caused by the violation
+
+### 5.4 Legal Remedies
+
+The Licensor reserves all legal remedies for violations, including:
+
+- Injunctive relief
+- Damages (actual and consequential)
+- Disgorgement of profits
+- Attorney's fees and costs
+
+### 5.5 Public Disclosure
+
+The Licensor reserves the right to publicly disclose violations of this
+Policy to warn the community and deter future violations.
+
+---
+
+## 6. PERMITTED USES
+
+For clarity, the following uses are **permitted** under this Policy:
+
+### 6.1 Conventional Breeding
+
+- Traditional plant breeding methods
+- Marker-assisted selection
+- Genomic selection
+- Hybrid development (where farmers can save seed, even if F2 shows segregation)
+
+### 6.2 Biotechnology (Non-GURT)
+
+- Genetic modification for agronomic traits (yield, disease resistance, etc.)
+- Gene editing (CRISPR, etc.) for crop improvement
+- Transgenic development (subject to applicable regulations)
+- Molecular marker development
+
+### 6.3 Seed Production
+
+- Commercial seed production
+- Seed certification
+- Quality control
+- Inventory management
+
+### 6.4 Research
+
+- Academic research on plant genetics
+- Public breeding programs
+- Germplasm conservation
+- Biodiversity studies
+
+### 6.5 Hybrid Seed Business
+
+Commercial hybrid seed production is **permitted**, even though F1 hybrids
+do not breed true. The distinction is:
+
+- **Permitted**: Hybrids where farmers CAN save seed (even if not economically
+  advantageous due to segregation)
+- **Prohibited**: Technologies that PREVENT seed saving through genetic
+  or technological means
+
+---
+
+## 7. GRAY AREAS AND INTERPRETATION
+
+### 7.1 Guiding Principle
+
+When interpreting this Policy, the guiding principle is:
+
+> **Does this technology preserve or undermine farmers' ability to save,
+> select, and share seeds?**
+
+Technologies that preserve this ability are permitted. Technologies that
+undermine it are prohibited.
+
+### 7.2 Requesting Guidance
+
+If You are uncertain whether a particular use is permitted, You may
+request guidance from the Licensor:
+
+Email: **hello@bijmantra.org**  
+Subject: "Ethical Use Policy Guidance Request"
+
+Provide:
+- Description of intended use
+- Technologies involved
+- How farmer seed-saving rights are affected
+
+The Licensor will respond within 30 days with guidance. Guidance provided
+in writing by the Licensor may be relied upon as a defense to claims of
+violation.
+
+### 7.3 Evolution of Technology
+
+This Policy applies to technologies as they exist today and as they may
+evolve. New technologies that achieve the same effect as prohibited
+technologies through different mechanisms are also prohibited.
+
+---
+
+## 8. AMENDMENTS
+
+### 8.1 Amendment Process
+
+This Ethical Use Policy may be amended by the Licensor to:
+
+- Clarify existing prohibitions
+- Address new technologies
+- Respond to community feedback
+- Align with evolving international norms
+
+### 8.2 Notice
+
+Amendments will be published in the repository and announced through
+appropriate channels. Amendments take effect 30 days after publication.
+
+### 8.3 No Weakening
+
+Amendments may clarify or strengthen this Policy but may **never weaken**
+the core prohibitions in Section 1.
+
+---
+
+## 9. RELATIONSHIP TO OTHER TERMS
+
+### 9.1 Incorporation
+
+This Ethical Use Policy is incorporated by reference into:
+
+- The main LICENSE file
+- All Commercial License Agreements
+- Any other agreements governing use of the Software
+
+### 9.2 Precedence
+
+In case of conflict between this Policy and other license terms, this
+Policy takes precedence. No other agreement may waive or modify the
+prohibitions in Section 1.
+
+### 9.3 Severability
+
+If any provision of this Policy is held unenforceable, the remaining
+provisions continue in full force. The core prohibitions in Section 1
+are essential terms; if they are held unenforceable, the entire license
+terminates.
+
+---
+
+## 10. ACKNOWLEDGMENT
+
+By using the Software, You acknowledge that:
+
+1. You have read and understood this Ethical Use Policy
+2. You agree to be bound by its terms
+3. You certify compliance as described in Section 4
+4. You understand the consequences of violation described in Section 5
+
+---
+
+## 11. CONTACT
+
+For questions about this Ethical Use Policy:
+
+**Denish Dholaria**  
+Email: hello@bijmantra.org  
+Website: https://bijmantra.org
+
+---
+
+## CLOSING STATEMENT
+
+> *"The right to save seed is not merely an economic issue—it is a matter
+> of food sovereignty, cultural heritage, and human dignity. Technologies
+> that strip this right from farmers have no place in a just food system."*
+>
+> — Denish Dholaria
+
+---
+
+**Document Version**: 4.0  
+**Effective Date**: February 1, 2026  
+**Last Updated**: February 2026

@@ -1,0 +1,132 @@
+# Files and folders to exclude from public repo
+# One pattern per line
+
+# Canonical deny surface for public sync.
+# Keep live claw runtime state and operator execution fabric private.
+
+# Kiro IDE files
+.kiro/
+
+# Legacy in-repo private documentation path retained as a deny rule if reintroduced.
+docs-private/
+
+# Private GitHub agent and instruction surfaces
+.github/copilot-instructions.md
+.github/agents/
+
+# Environment and secrets
+.env
+.env.*
+**/.env
+**/.env.*
+*.key
+*.pem
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.jks
+*.keystore
+*secret*
+*private*
+
+# Agent files
+.agent/
+.ai/
+ops-private/
+
+# Claw runtime state and operator-only execution fabric
+.bijmantra/
+.openclaw/
+.nemoclaw/
+.openclaw.example/
+.nemoclaw.example/
+runtime-artifacts/
+generated_certificates/
+openclaw.json
+bridge-config.yaml
+agents.yaml
+watchdog.log
+watchdog-state.json
+cron-sync-state.json
+mission-evidence/
+docker-compose.bijmantra.yml
+scripts/bjm-start.sh
+scripts/bijmantra_cron_bridge.py
+scripts/bijmantra_watchdog.py
+scripts/bijmantra_ctl.py
+scripts/sandbox_policy_manager.py
+
+# Local configs
+*.local
+.vscode/settings.json
+
+# Backup folders
+.venv.py314.backup/
+
+# Cache
+.surmlcache/
+
+# Dependencies and build artifacts (LARGE!)
+node_modules/
+**/node_modules/
+venv/
+**/venv/
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+target/
+Cargo.lock
+package-lock.json
+bun.lock
+poetry.lock
+yarn.lock
+
+# Learning/example repos (LARGE!)
+.learn/
+
+# Website (not needed in app repo)
+website/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs and temp files
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+
+# Test reports and generated files
+test_reports/
+backend/test_reports/
+coverage/
+.nyc_output/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Media and large assets
+*.mp4
+*.mov
+*.avi
+*.mp3
+*.wav
+ml_models/

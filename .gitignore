@@ -1,0 +1,184 @@
+# Environment
+.env
+.env.*
+**/.env
+**/.env.*
+**/.envrc
+!.env.example
+!**/.env.example
+!**/.env.*.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+.venv*/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.import_linter_cache/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.turbo/
+dist/
+dist-ssr/
+.npm
+
+# Bun
+.bun/
+bun.lockb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Private-only workspace surfaces are tracked in the private repo
+# and filtered during public sync through the root public exclude list.
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+coverage/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Certificates and credentials
+*.key
+*.pem
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Logs
+*.log
+logs/
+
+# commit graph outputs, ignore the extraction cache
+graphify-out/cache/
+
+# Podman/Docker
+.containerignore
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Rust
+rust/target/
+rust/Cargo.lock
+backend/crates/**/target/
+backend/crates/**/Cargo.lock
+
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.learn/
+
+# Development tracking
+# NOTE: docs/gupt/ is now tracked in private repo (bijmantraorg)
+# It gets filtered out when syncing to public repo via GitHub Action
+# See .github/sync-to-public-exclude.txt
+
+# Vercel UI preview
+.vercel
+
+# Local development folders
+/Other/
+/backend/bijmantra-sa-key.json
+ops-private/
+.bijmantra/
+.openclaw/agents/**/agent/auth-profiles.json
+.nemoclaw/
+.openclaw/
+.update_state_before.json
+
+# Repo-local claw runtime spillover
+/agents.yaml
+/bridge-config.yaml
+/openclaw.json
+/watchdog.log
+/watchdog-state.json
+/cron-sync-state.json
+/mission-evidence/
+
+# ADR (Architecture Decision Records) - Local Workspace only
+/docs/adr/
+
+# BijMantra Data
+backend/data/
+backend/test_data/
+backend/cache_data/
+generated_certificates/
+frontend/playwright-report/
+frontend/test-results/
+frontend/e2e/playwright/.auth/
+frontend/e2e/playwright-report/
+frontend/e2e/test-results/
+frontend/e2e/playwright/
+frontend/e2e/*.txt
+frontend/src/wasm/pkg/
+runtime-artifacts/
+
+# Machine Learning & Search
+.surmlcache/
+
+# Databases
+
+
+# Temporary Text Files
+frontend/*.txt
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
+
+# Website build output
+website/
+website/.docusaurus/
+website/build/
+.aider*

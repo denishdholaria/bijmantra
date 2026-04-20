@@ -1,0 +1,61 @@
+# Sanitized BijMantra bridge-side agent defaults example.
+# Copy into ~/.bijmantra/runtime/claw/agents.yaml for the reviewed queue bridge.
+# Runtime agent registration and sandbox behavior are configured in openclaw.json.
+
+version: 1
+x-bijmantra-default-model: &bijmantra_default_model google/gemini-3.1-pro-preview
+
+agents:
+  bijmantra-dev:
+    model: *bijmantra_default_model
+    fallbacks:
+      - *bijmantra_default_model
+    thinking: medium
+    instructions: |
+      You are an autonomous development agent for BijMantra.
+
+      Rules:
+      1. Work only on the branch specified in the job prompt.
+      2. Run all verification commands before considering a job complete.
+      3. Write tests for new code.
+      4. Follow existing code style and patterns.
+      5. Commit with [auto] prefix in messages.
+      6. Never merge directly to main.
+      7. Stop and report after two failed fix attempts.
+      8. Do not modify secrets, env files, or operator-owned runtime state.
+    sandbox:
+      image: bijmantra-sandbox:latest
+      workspaceMount: /workspace
+    tools:
+      allowlist:
+        - bash
+        - read
+        - write
+        - glob
+        - grep
+
+  bijmantra-research:
+    model: *bijmantra_default_model
+    thinking: high
+    instructions: |
+      You are a research agent for BijMantra.
+      Read broadly, write sparingly, and emit structured findings for human review.
+    tools:
+      allowlist:
+        - bash
+        - read
+        - glob
+        - grep
+
+  bijmantra-verify:
+    model: *bijmantra_default_model
+    thinking: low
+    instructions: |
+      You are a verification agent for BijMantra.
+      Run tests, report failures clearly, and do not fix code.
+    tools:
+      allowlist:
+        - bash
+        - read
+        - glob
+        - grep

@@ -1,0 +1,366 @@
+{
+  "lastUpdated": "2026-04-17",
+  "updatedBy": "Task 222 - Titanium Path update",
+  "session": 26,
+  "pages": {
+    "total": 253,
+    "functional": 236,
+    "demo": 17,
+    "uiOnly": 5,
+    "removed": 12
+  },
+  "api": {
+    "totalEndpoints": 1965,
+    "brapiEndpoints": 248,
+    "brapiPublishedEndpoints": 201,
+    "brapiExposedEndpoints": 248,
+    "brapiCoverage": 100,
+    "customEndpoints": 1717
+  },
+  "database": {
+    "models": 110,
+    "migrations": 21,
+    "seeders": 15,
+    "tables": 119,
+    "seededRecords": 413,
+    "rlsEnabledTables": 0
+  },
+  "modules": {
+    "total": 8,
+    "list": [
+      {
+        "name": "Breeding",
+        "pages": 35,
+        "endpoints": 120
+      },
+      {
+        "name": "Phenotyping",
+        "pages": 25,
+        "endpoints": 85
+      },
+      {
+        "name": "Genomics",
+        "pages": 35,
+        "endpoints": 107
+      },
+      {
+        "name": "Seed Bank",
+        "pages": 15,
+        "endpoints": 59
+      },
+      {
+        "name": "Environment",
+        "pages": 20,
+        "endpoints": 97
+      },
+      {
+        "name": "Seed Operations",
+        "pages": 22,
+        "endpoints": 96
+      },
+      {
+        "name": "Knowledge",
+        "pages": 5,
+        "endpoints": 35
+      },
+      {
+        "name": "Settings & Admin",
+        "pages": 35,
+        "endpoints": 95
+      }
+    ]
+  },
+  "workspaces": {
+    "total": 5,
+    "list": [
+      {
+        "id": "breeding",
+        "name": "Plant Breeding",
+        "pages": 83
+      },
+      {
+        "id": "seed-ops",
+        "name": "Seed Business",
+        "pages": 22
+      },
+      {
+        "id": "research",
+        "name": "Innovation Lab",
+        "pages": 28
+      },
+      {
+        "id": "genebank",
+        "name": "Gene Bank",
+        "pages": 34
+      },
+      {
+        "id": "admin",
+        "name": "Administration",
+        "pages": 25
+      }
+    ]
+  },
+  "build": {
+    "status": "passing",
+    "pwaEntries": 116,
+    "sizeKB": 19893,
+    "sizeMB": "19.4MB"
+  },
+  "titaniumPath": {
+    "boundedWorkflows": {
+      "completed": 3,
+      "total": 3,
+      "list": [
+        {
+          "id": "workflow-1",
+          "name": "LD Analysis",
+          "status": "completed",
+          "completedDate": "2026-04-13",
+          "productionCode": 804,
+          "testCode": 1183,
+          "testToCodeRatio": 1.47,
+          "division": "plant-sciences/genomics",
+          "closureReport": ".ai/tasks/2026-04-13-ld-analysis-workflow-closure.md"
+        },
+        {
+          "id": "workflow-2",
+          "name": "Phenomic Upload",
+          "status": "completed",
+          "completedDate": "2026-04-13",
+          "productionCode": 650,
+          "testCode": 200,
+          "testToCodeRatio": 0.31,
+          "division": "phenotyping/upload",
+          "closureReport": ".kiro/specs/titanium-path-convergent-architecture/task-12-completion-report.md"
+        },
+        {
+          "id": "workflow-3",
+          "name": "Trial Creation",
+          "status": "completed",
+          "completedDate": "2026-04-13",
+          "productionCode": 450,
+          "testCode": 180,
+          "testToCodeRatio": 0.4,
+          "division": "breeding/trials",
+          "closureReport": ".ai/tasks/2026-04-13-task-17-trial-creation-closure.md"
+        }
+      ]
+    },
+    "hotFileReduction": {
+      "frontend": {
+        "total": 8,
+        "extracted": 5,
+        "inProgress": 0,
+        "notStarted": 0,
+        "list": [
+          {
+            "path": "frontend/src/pages/WasmLDAnalysis.tsx",
+            "status": "extracted",
+            "beforeLines": 400,
+            "afterLines": 18,
+            "reductionPercent": 95,
+            "extractedTo": "divisions/plant-sciences/genomics/ld-analysis/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "frontend/src/lib/api-client.ts",
+            "status": "extracted",
+            "beforeLines": 596,
+            "afterLines": 570,
+            "reductionPercent": 4,
+            "note": "Already well-architectured as thin facade; dead code cleaned"
+          },
+          {
+            "path": "frontend/src/framework/shell/DesktopWorkbench.tsx",
+            "status": "extracted",
+            "beforeLines": 2682,
+            "afterLines": 450,
+            "reductionPercent": 83,
+            "extractedTo": "framework/shell/components/",
+            "completedDate": "2026-04-15"
+          },
+          {
+            "path": "frontend/src/pages/AISettings.tsx",
+            "status": "extracted",
+            "beforeLines": 200,
+            "afterLines": 16,
+            "reductionPercent": 92,
+            "extractedTo": "features/ai-chat/settings/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "frontend/src/pages/Login.tsx",
+            "status": "extracted",
+            "beforeLines": 150,
+            "afterLines": 11,
+            "reductionPercent": 93,
+            "extractedTo": "features/auth/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "frontend/src/framework/registry/workspaces.ts",
+            "status": "extracted",
+            "beforeLines": 976,
+            "afterLines": 875,
+            "reductionPercent": 10,
+            "extractedTo": "framework/registry/services/workspaceService.ts",
+            "completedDate": "2026-04-17"
+          },
+          {
+            "path": "frontend/src/framework/registry/divisions.ts",
+            "status": "extracted",
+            "beforeLines": 746,
+            "afterLines": 722,
+            "reductionPercent": 3,
+            "extractedTo": "framework/registry/services/divisionService.ts",
+            "completedDate": "2026-04-17"
+          },
+          {
+            "path": "frontend/src/routes/core.tsx",
+            "status": "verified-thin",
+            "beforeLines": 213,
+            "afterLines": 213,
+            "reductionPercent": 0,
+            "note": "Already thin routing logic; no extraction needed"
+          }
+        ]
+      },
+      "backend": {
+        "total": 3,
+        "extracted": 2,
+        "inProgress": 0,
+        "notStarted": 1,
+        "list": [
+          {
+            "path": "backend/app/api/v2/developer_control_plane.py",
+            "status": "planning-complete",
+            "beforeLines": 5406,
+            "afterLines": 5406,
+            "note": "Extraction plan complete; autonomy bridge protection documented"
+          },
+          {
+            "path": "backend/app/api/v2/chat.py",
+            "status": "extracted",
+            "beforeLines": 2323,
+            "afterLines": 1800,
+            "reductionPercent": 23,
+            "extractedTo": "services/chat/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "backend/app/main.py",
+            "status": "extracted",
+            "beforeLines": 1228,
+            "afterLines": 352,
+            "reductionPercent": 71,
+            "extractedTo": "startup/",
+            "completedDate": "2026-04-13"
+          }
+        ]
+      }
+    },
+    "frontendConvergence": {
+      "divisionModules": 3,
+      "featureModules": 2,
+      "legacyPagesTotal": 253,
+      "legacyPagesMigrated": 5,
+      "legacyPagesAsThinAdapters": 5,
+      "convergenceAdoptionPercent": 2.0,
+      "note": "Three division modules created (ld-analysis, phenomic-upload, trial-creation) and two feature modules (ai-chat, auth)"
+    },
+    "navigationTruthConsolidation": {
+      "status": "completed",
+      "singleSourceOfTruth": true,
+      "duplicationsIdentified": true,
+      "completedDate": "2026-04-13"
+    },
+    "architectureTrail": {
+      "proposalsCreated": 1,
+      "decisionsRecorded": 4,
+      "tasksTracked": 24,
+      "closureReports": 3,
+      "adrs": [
+        "ADR-014-frontend-convergence-map.md",
+        "ADR-015-hot-file-reduction-protocol.md",
+        "ADR-016-bounded-workflow-delivery.md",
+        "ADR-017-autonomy-bridge-protection.md"
+      ]
+    },
+    "completionStatus": {
+      "percentComplete": 92,
+      "tasksCompleted": 22,
+      "tasksTotal": 24,
+      "remainingWork": [
+        "Task 24: Final verification and test suite"
+      ]
+    }
+  },
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "productionReady": "2025-12-25",
+    "titaniumPathFirstWorkflow": "2026-04-13"
+  },
+  "techStack": {
+    "frontend": [
+      "React 19.2.4",
+      "TypeScript 5.9.3",
+      "Vite 7.3.1",
+      "Tailwind CSS 4.0.0",
+      "TanStack Query 5.90.21"
+    ],
+    "backend": [
+      "Python 3.13",
+      "FastAPI 0.115+",
+      "SQLAlchemy 2.0.36+",
+      "Pydantic 2.10+"
+    ],
+    "database": [
+      "PostgreSQL 18.1",
+      "PostGIS 3.6.1",
+      "pgvector 0.8.1",
+      "Redis 8"
+    ],
+    "compute": [
+      "Rust/WASM",
+      "Fortran"
+    ]
+  },
+  "version": {
+    "app": "0",
+    "brapi": "2.1",
+    "schema": "1.0.0"
+  },
+  "tests": {
+    "total": 2218,
+    "frontend": 123,
+    "backend": 2095,
+    "reevu_real_system_status": {
+      "implementation_plan": {
+        "status": "completed",
+        "completed_items": 51,
+        "next_items": 0,
+        "pending_items": 0
+      },
+      "canonical_local_runtime": {
+        "status": "blocked",
+        "selected_organization_id": 1,
+        "passed_cases": 3,
+        "total_cases": 14,
+        "benchmark_ready_organization_ids": [
+          2
+        ],
+        "remaining_blockers": [
+          "observations.empty",
+          "bio_gwas_runs.empty",
+          "bio_qtls.empty"
+        ]
+      },
+      "managed_runtime": {
+        "status": "not_requested"
+      }
+    },
+    "note": "REEVU local real-question benchmark coverage remains blocked at 3/14 in the default canonical local artifact written to backend/test_reports/reevu_real_question_local.json for org 1, while supplementary Demo Organization artifacts at backend/test_reports/reevu_real_question_local_org2.json and backend/test_reports/reevu_local_readiness_census_org2.json now show a truthful 14/14 local run with org 2 marked benchmark-ready after bounded weather-location reuse, DB-backed deterministic GBLUP hardening, and trusted-contract domain-summary alignment for trial-ranking and GBLUP success paths; final REEVU acceptance now also reports managed-runtime preflight separately so missing managed configuration is surfaced explicitly instead of being mistaken for an evaluated managed benchmark artifact, and canonical cross-domain weather joins now opt out of generated forecast fallback so missing location input, missing coordinates, or provider failures safe-fail instead of injecting synthetic weather evidence. AI configuration, runtime observability, Phase 4 capability integration, and the core trial/phenotyping trust surfaces are now materially in place: org-scoped AI provider, model, and agent-setting administration shipped with 16 new admin endpoints, dedicated migrations, persisted provider-registry loading, capability and prompt-mode manifest endpoints, backend runtime enforcement of persisted REEVU tool restrictions during function selection and execution, and now an org-scoped REEVU routing policy surface with a dedicated persistence model, migration, admin API, runtime provider-selection integration, and AI Settings UI for preferred provider/model defaults plus preferred-only versus fallback routing behavior; frontend admin surfaces expose live REEVU runtime health and metrics, a grouped capability picker sourced from the backend manifest, an operator diagnostics card backed by a new admin-only REEVU diagnostics endpoint for request outcomes, provider latency, safe-failure distribution, policy-flag visibility, current routing posture, and aggregated routing-decision telemetry so operators can distinguish managed preference hits, misses, request overrides, and template fallbacks without inspecting logs, and AI Settings now carries both a dedicated diagnostics tab and an inline live routing summary on the routing tab backed by a shared renderer so the configuration and diagnostics views stay aligned. The runtime power source is now surfaced explicitly as labels such as `Server env key`, AI Settings now provides provider and model presets plus scrollable setup dialogs so common paths like Gemini setup are easier to adopt without re-entering keys that are already active at the server runtime layer, and a new centralized AI model lifecycle catalog now controls backend default model identifiers, REEVU local fallback defaults, and AI Settings presets so alias-capable providers such as Google can move to `latest`-style model references instead of forcing frequent hardcoded renames across the codebase. That lifecycle catalog is now also exposed through a dedicated AI configuration manifest endpoint, so provider/model quick-start policy is backend-owned and AI Settings can consume the canonical contract instead of mirroring a second preset registry in the frontend; the latest frontend hardening pass now also normalizes unknown lifecycle identifiers at the AI Settings conversion boundary and locks in both empty-manifest and partial-manifest per-provider fallback behavior through focused page tests, so operator quick-start flows remain usable even when the backend catalog is incomplete. The backend manifest contract is now hardened as well: lifecycle fields are typed at the catalog and API response boundary, focused backend API tests now lock superuser access, provider coverage, and nested manifest shape for the model catalog endpoint, and the managed provider coverage is now aligned across runtime and UI so HuggingFace and FunctionGemma appear in the manifest, in fallback AI Settings presets, and in human-readable REEVU runtime labels instead of being stranded behind a four-provider subset. REEVU now also supports a clean local-vs-cloud split without concurrent provider contention: Ollama is a first-class advanced local provider with its own host/model settings, adapter, runtime reachability checks, catalog entry, UI preset, and status labeling, while cloud providers remain the default and recommended path; explicit provider selection now hard-routes a request or session to the chosen provider instead of silently falling through to a different provider, so local and cloud paths can coexist as selectable options without cross-talk. Phenotype comparison and trial summary endpoints now publish additive versioned database-backed trust metadata for REEVU consumption, and both surfaces now carry structured evidence envelopes with claims, typed evidence refs, calculation steps, uncertainty, and policy flags, with phenotype comparison adding envelope parity on compare/statistics flows and trial summary already carrying additive confidence and freshness metadata; compute contract hardening covers both output quality flags and nested input provenance metadata inside the existing contract, compute endpoints now emit durable audit-log entries for sync runs plus async submit, completion, and failure transitions through the canonical `audit_logs` path, and persistent compute lineage storage now complements those audits through a dedicated `compute_lineage_records` table plus additive lineage identifiers on sync and async compute contracts so lineage state survives beyond transient job storage; new cross-contract REEVU envelope tests now verify that compute provenance, trial-summary evidence envelopes, phenotype evidence refs, and chat-stage evidence assembly preserve evidence refs, calculation IDs, and validator expectations consistently across trust surfaces; the orphaned direct frontend-to-vendor AI client has been removed so the backend REEVU API remains the canonical production chat path, integration adapters now expose external connector capability metadata for routing and audit surfaces via the integration API, and REEVU agent settings now persist and execute prompt-mode capability classes with canonical sync and streaming chat-path prompt composition. Canonical sync and streaming REEVU chat traces now share request-correlated plan-execution and retrieval-audit metadata, sync function-backed responses now record REEVU metrics before returning, and `/api/v2/chat/diagnostics` now aggregates retrieval-execution telemetry across traced requests, functions, domains, services, and compound plans. Cross-domain query retrieval audit now also reports touched tables, requested-versus-resolved domains, bounded resolved identifier samples, and safe-failure dependency context such as missing runtime services or weather lookup failure state without broadening trusted REEVU surfaces or canonical retrieval paths. Planner domain detection is now also hardened for the canonical benchmark lane so trial top-performer prompts carry analytics scope, deterministic genomic-selection prompts such as `genomic selection` and `GBLUP` now carry analytics scope, and drought-trait trial comparisons no longer drag the partial weather lane in unless weather or climate is explicitly requested. Chat validation now also consumes nested contract evidence refs, calculation steps, and deterministic method refs when assembling evidence packs for function-backed responses. Trial lookup parsing now also prefers the most specific named-trial phrase in natural-language prompts, and direct payload probing now confirms the remaining local `rq-04` and `rq-05` failures are function-level trial-resolution safe-failures against sparse org 1 trial data while `rq-07` is a function-level deterministic-compute safe-failure on missing GBLUP inputs. The canonical local benchmark artifact now also preserves per-case `safe_failure_source`, `safe_failure_payload`, and selected-org readiness attribution fields, so current failures self-identify as function-result retrieval or input blockers instead of requiring separate probe scripts to distinguish validator drift from sparse-tenant safe-failure. Downstream `backend/test_reports/reevu_authority_gap_report.json` and the REEVU acceptance-pack JSON and markdown now also preserve and render that failed-case attribution per surface, so operator-facing reports expose failure source, error category, missing inputs, searched retrieval paths, and readiness-versus-executor classification directly from the canonical artifact chain. The supplementary org 2 readiness census now marks Demo Organization as ready with `bio_gwas_runs: 1` and `bio_qtls: 2`, and the default aggregate local readiness census should continue to report org 2 as benchmark-ready even though the selected org 1 benchmark artifact remains blocked at 3/14 because its readiness blockers are unchanged. The refreshed local artifact still remains blocked at 3/14 because org 1 readiness blockers are unchanged. Focused backend validation for the latest control-plane and trust slices is green, including the refreshed AI provider service, LLM runtime, and AI configuration API checkpoints plus a fresh 16-test frontend checkpoint for runtime status and AI Settings preset behavior. The internal developer control-plane refactor has now completed Phase 1 through Slice 4L: contracts, autonomy, parser validation, feature-owned state, selectors, UI composition, route ownership, planner subcomponent wiring, autonomy tab rendering, JSON tab rendering, orchestration tab rendering, graph tab rendering, feature-owned controller extraction, autonomy-helper plus selector isolation, explicit local-fallback persistence-status surfacing, deterministic canonical board serialization, an explicit exact-match board schema version policy, and shell-decoupled hidden-route hardening now live under frontend/src/features/dev-control-plane/, while the legacy page, store, and lib paths remain compatibility shims; ControlPlanePage is now a thin composition shell over the feature-owned useControlPlaneController surface, import/export/reset and lane/sub-plan mutation flows remain inside the feature boundary, autonomy recommendation, blocked-lane, ready-lane, and advisory-gap derivation now flow through stable feature-owned helpers and selectors instead of one oversized view-model path, the store now keeps runtime-only hydration and storage-availability metadata out of the persisted payload while exposing truthful local-fallback status to the UI, collision-safe suffixed template IDs now protect created lanes and sub-plans across delete and recreate flows, the board contract now publishes explicit supported-import and current-export schema metadata, unsupported imports fail with deterministic compatibility guidance, valid format/import/export flows emit stable newline-terminated JSON with deterministic field ordering, the control-plane feature remains decoupled from desktop-shell internals behind one hidden superuser-only route registration, live planner editing now has browser-verified write-through into the canonical JSON surface, the orchestration tab remains a read-only projection of canonical board state, the graph tab remains a read-only projection over canonical board JSON and the shared JSON graph canvas, and the refreshed 24-test frontend control-plane plus admin-route checkpoint remains green. Phase 2 is now complete through Slice 5C: active-board persistence contract, backend organization-scoped durability, authenticated fetch/save API, canonical validation and canonicalization on save, optimistic-concurrency conflict rejection, truthful no-record fetch behavior, and a feature-owned frontend active-board integration with truthful fallback, conflict surfacing, and a focused 9-test frontend checkpoint. Phase 3 is now complete: successful active-board saves create immutable organization-scoped revision snapshots in the same transaction, same-hash re-saves do not produce duplicate revisions, a read-only versions endpoint lists revision metadata newest-first for the current organization, and superuser-only restore semantics now rebuild the active head from immutable history under optimistic concurrency while preserving history by appending a restore event rather than mutating prior revisions, locked by a focused 18-test backend checkpoint covering access control, empty history, revision creation, ordering, org isolation, conflict no-ledger regression, invalid-schema rejection, same-hash deduplication, missing-revision rejection, no-op restore behavior, head recreation from history, restore provenance, and corrupt-revision rejection; a follow-up architecture decision closed the remaining Phase 3 question by recording that a separate revision-detail or restore-preview path is not needed before Phase 4 unless later hidden-route operator testing shows the current versions list is insufficient. Phase 4 is now complete through Slice 7G: queue integration starts from accepted queue-candidate and queue-entry contracts, queue write remains explicit and operator-triggered only, the hidden control-plane now projects bounded in-module queue status before and after write attempts, the operator-explicit completion write-back path records reviewed closure evidence back into the canonical active board with deterministic lane-to-job provenance checks, lifecycle semantics are now locked so `completed` remains the terminal persisted lane state for Phase 4 while verification remains closure evidence rather than a separate persisted status, and orchestrator intake is now explicitly board-first so OmShriMaatreNamaha must read the canonical active board and current board token before trusting or reusing dispatch material while the queue stays a derived execution surface only; stale derived artifacts must be regenerated from the current board rather than silently reused, and no polling, implicit overwrite, queue mutation, or generic sync engine is introduced. KRABI Phase 4 is now complete: direct product reliance on raw .openclaw directory structure has been removed, LEGACY_RUNTIME_DIRNAME marked as deprecated, test files updated to use normalized runtime-artifacts/* paths instead of .openclaw/*, and product code no longer directly encodes .openclaw as a permanent contract. Phase 5 is now completed through Slice 8H: structural drift-warning semantics remain locked by contract and projected in the hidden autonomy surface, explicit validation-basis editing and projection now exist in the hidden planner and autonomy UI, and lane-level validation owner, summary, evidence, and `last_reviewed_at` metadata can now be added, inspected, updated, and cleared directly from canonical board state while autonomy continues to prefer that explicit contract over long-term keyword heuristics when evaluating the advisory `active-without-validation-evidence` warning. Completed-lane semantics are now also narrowed so `completed` without persisted closure evidence is treated as blocking drift, while the hidden autonomy panel projects canonical queue job, queue hash, source board token, closure summary, evidence, and completion timestamp directly from the selected lane. Owner reconciliation is now tightened inside the feature boundary as well: undeclared owner labels surface as advisory drift instead of silently blending into declared agent-role contracts, planner copy now refers to owner assignments explicitly, and the queue-write path now refuses execution when the selected lane is not structurally ready. The control-plane closeout now includes the remaining one-source-of-truth wording pass, and the first board-to-runtime contract artifact has been added as an architecture document; reviewed queue entries now preserve explicit board-and-lane provenance through queue materialization and dispatch-plan projection, the watchdog runtime path now writes a stable closeout receipt with refreshed tracking-artifact fingerprints before treating reviewed execution as closed out, the hidden control-plane draft-closeout flow now prefers that stable runtime receipt, and the hidden autonomy UI now surfaces whether draft closeout will use the stable receipt or the queue-only fallback while keeping explicit human write-back and full closed-loop automation out of scope. The orchestration surface now also includes a latest durable mission-detail drilldown for OmShriMaatreNamaha, backed by a new read-only mission-detail endpoint and focused controller/UI coverage, so operators can inspect subtasks, assignments, evidence, verification runs, decision notes, and blockers for the newest durable mission snapshot without leaving the hidden control plane. Focused validation for the closeout and mission-detail slices is green across targeted frontend autonomy, planner, controller, JSON, control-plane shell, and orchestration checkpoints plus the backend developer-control-plane API file, with only a pre-existing SQLAlchemy warning about unrelated foreign-key drop ordering during backend test teardown. The OmShriMaatreNamaha orchestrator definition is also now correctly registered by exact name after fixing missing YAML frontmatter in the repo agent file. The integrated autonomous-self-building overlay has now moved from blueprint-only status into accepted runtime-intake, evidence/write-back, governance, and bounded pilot-definition artifacts, the reviewed-dispatch pilot runbook now exists for the `platform-runtime` lane, and live pilot execution remains pending. KRABI is now complete through Phase 6 proof: the reviewed overnight queue is immutable after export, runtime lifecycle state is recorded in watchdog state and stable mission-evidence receipts instead of queue rewrites, the canonical private runtime compose defaults are now loopback-only and token-authenticated without `--allow-unconfigured`, operator startup now requires `OPENCLAW_GATEWAY_TOKEN`, stale tracked runtime inventory residue has been removed from Git, and the remaining credential and device rotation work has been split into an approved follow-up task instead of reopening the completed boundary-separation plan. Earlier M1 stabilization across core breeding, seed bank, seed operations, and operational dashboards remains intact; separate unrelated frontend typecheck debt still exists elsewhere in the repo."
+  }
+}

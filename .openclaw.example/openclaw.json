@@ -1,0 +1,40 @@
+{
+  "agents": {
+    "list": [
+      {
+        "id": "main"
+      },
+      {
+        "id": "bijmantra-dev",
+        "name": "bijmantra-dev",
+        "workspace": "~/.openclaw/workspace",
+        "agentDir": "~/.openclaw/agents/bijmantra-dev/agent",
+        "model": "google/gemini-3.1-pro-preview",
+        "sandbox": {
+          "mode": "all",
+          "scope": "agent",
+          "workspaceAccess": "rw",
+          "docker": {
+            "image": "bijmantra-sandbox:latest"
+          }
+        }
+      }
+    ]
+  },
+  "gateway": {
+    "mode": "local",
+    "bind": "auto",
+    "port": 18789,
+    "auth": {
+      "mode": "token",
+      "token": "replace-with-operator-token"
+    },
+    "controlUi": {
+      "enabled": false,
+      "allowedOrigins": [
+        "http://127.0.0.1:18789",
+        "http://localhost:18789"
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+# Sensitive sync and private-doc controls require owner review
+
+.github/workflows/sync-to-public.yml* @denishdholaria
+.public-exclude @denishdholaria
+
+/bijmantra/ @denishdholaria
+/bijmantraorg/ @denishdholaria
+
+/docs/reevu/ @denishdholaria
+/docs/development/ @denishdholaria
+
+/secrets/ @denishdholaria
+/configs/ @denishdholaria
+/platform-admin/ @denishdholaria
+/ops-private/ @denishdholaria

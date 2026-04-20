@@ -1,0 +1,1 @@
+export * from '@/features/dev-control-plane/contracts/board'

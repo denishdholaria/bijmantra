@@ -1,0 +1,90 @@
+# Sanitized NemoClaw sandbox policy example for BijMantra.
+# Copy into an operator-managed policy home and adjust for the real workspace/runtime layout.
+
+version: 1
+
+filesystem_policy:
+  include_workdir: true
+  read_only:
+    - /usr
+    - /lib
+    - /proc
+    - /dev/urandom
+    - /etc
+    - /var/log
+  read_write:
+    - /workspace
+    - /tmp
+    - /dev/null
+    - /home/sandbox/.venv
+
+landlock:
+  compatibility: best_effort
+
+process:
+  run_as_user: sandbox
+  run_as_group: sandbox
+
+network_policies:
+  google_ai:
+    name: google_ai
+    endpoints:
+      - host: generativelanguage.googleapis.com
+        port: 443
+        rules:
+          - allow: { method: "*", path: "/**" }
+    binaries:
+      - { path: /usr/local/bin/openclaw }
+
+  github:
+    name: github
+    endpoints:
+      - host: github.com
+        port: 443
+        access: full
+      - host: api.github.com
+        port: 443
+        access: full
+    binaries:
+      - { path: /usr/bin/gh }
+      - { path: /usr/bin/git }
+
+  pypi:
+    name: pypi
+    endpoints:
+      - host: pypi.org
+        port: 443
+        rules:
+          - allow: { method: GET, path: "/**" }
+      - host: files.pythonhosted.org
+        port: 443
+        rules:
+          - allow: { method: GET, path: "/**" }
+    binaries:
+      - { path: /home/sandbox/.venv/bin/pip }
+
+  npm_registry:
+    name: npm_registry
+    endpoints:
+      - host: registry.npmjs.org
+        port: 443
+        access: full
+    binaries:
+      - { path: /usr/bin/npm }
+      - { path: /usr/local/bin/pnpm }
+
+  local_postgres:
+    name: local_postgres
+    endpoints:
+      - host: postgres
+        port: 5432
+        protocol: postgres
+        enforcement: enforce
+
+  local_redis:
+    name: local_redis
+    endpoints:
+      - host: redis
+        port: 6379
+        protocol: redis
+        enforcement: enforce

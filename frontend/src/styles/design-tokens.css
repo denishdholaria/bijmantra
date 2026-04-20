@@ -1,0 +1,131 @@
+/**
+ * Bijmantra Design System Tokens
+ *
+ * Comprehensive design tokens for scientific data visualization,
+ * accessibility, and consistent UI across the platform.
+ */
+
+:root {
+  /* ============================================
+     STATUS COLORS (Accessible across modes)
+     ============================================ */
+  --status-success: hsl(142 76% 36%);
+  --status-success-light: hsl(142 76% 90%);
+  --status-warning: hsl(43 96% 56%);
+  --status-warning-light: hsl(43 96% 90%);
+  --status-error: hsl(0 84% 60%);
+  --status-error-light: hsl(0 84% 90%);
+  --status-info: hsl(217 91% 60%);
+  --status-info-light: hsl(217 91% 90%);
+
+  /* ============================================
+     SCIENTIFIC DATA COLORS (Standard Palette)
+     ============================================ */
+  --data-categorical-1: hsl(230 70% 55%); /* Blue */
+  --data-categorical-2: hsl(35 95% 55%); /* Orange */
+  --data-categorical-3: hsl(150 60% 45%); /* Teal */
+  --data-categorical-4: hsl(325 65% 55%); /* Magenta */
+  --data-categorical-5: hsl(190 75% 50%); /* Cyan */
+  --data-categorical-6: hsl(0 70% 55%); /* Red */
+  --data-categorical-7: hsl(270 60% 55%); /* Purple */
+  --data-categorical-8: hsl(60 70% 50%); /* Yellow */
+
+  /* ============================================
+     COLORBLIND-SAFE PALETTE (Okabe-Ito)
+     ============================================ */
+  --cb-blue: #0072B2;
+  --cb-orange: #E69F00;
+  --cb-teal: #009E73;
+  --cb-pink: #CC79A7;
+  --cb-sky: #56B4E9;
+  --cb-vermillion: #D55E00;
+  --cb-yellow: #F0E442;
+  --cb-black: #000000;
+
+  /* ============================================
+     SEQUENTIAL SCALES (For heatmaps)
+     ============================================ */
+  --data-sequential-1: hsl(210 100% 95%);
+  --data-sequential-2: hsl(210 100% 85%);
+  --data-sequential-3: hsl(210 100% 70%);
+  --data-sequential-4: hsl(210 100% 55%);
+  --data-sequential-5: hsl(210 100% 40%);
+  --data-sequential-6: hsl(210 100% 30%);
+
+  /* Green sequential (for positive values) */
+  --data-seq-green-1: hsl(142 50% 95%);
+  --data-seq-green-2: hsl(142 50% 80%);
+  --data-seq-green-3: hsl(142 50% 60%);
+  --data-seq-green-4: hsl(142 50% 40%);
+  --data-seq-green-5: hsl(142 50% 25%);
+
+  /* ============================================
+     DIVERGING SCALES (For comparisons)
+     ============================================ */
+  --data-diverging-neg-3: hsl(0 70% 40%);
+  --data-diverging-neg-2: hsl(0 70% 55%);
+  --data-diverging-neg-1: hsl(0 70% 75%);
+  --data-diverging-neutral: hsl(0 0% 95%);
+  --data-diverging-pos-1: hsl(142 70% 75%);
+  --data-diverging-pos-2: hsl(142 70% 55%);
+  --data-diverging-pos-3: hsl(142 70% 40%);
+
+  /* ============================================
+     GENOTYPE COLORS (For allele matrices)
+     ============================================ */
+  --genotype-aa: hsl(230 70% 55%); /* Homozygous A */
+  --genotype-ab: hsl(150 60% 50%); /* Heterozygous */
+  --genotype-bb: hsl(35 95% 55%); /* Homozygous B */
+  --genotype-missing: hsl(0 0% 85%); /* Missing data */
+
+  /* ============================================
+     SPACING SCALE (8px base)
+     ============================================ */
+  --space-0: 0;
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+
+  /* ============================================
+     DENSITY MODES
+     ============================================ */
+  --density-compact: 4px;
+  --density-comfortable: 8px;
+  --density-spacious: 12px;
+
+  /* Current density (default: comfortable) */
+  --density-base: var(--density-comfortable);
+}
+
+/* Dark mode adjustments */
+.dark {
+  --status-success-light: hsl(142 76% 15%);
+  --status-warning-light: hsl(43 96% 15%);
+  --status-error-light: hsl(0 84% 15%);
+  --status-info-light: hsl(217 91% 15%);
+
+  --data-diverging-neutral: hsl(0 0% 20%);
+  --genotype-missing: hsl(0 0% 30%);
+}
+
+/* ============================================
+   DENSITY MODE CLASSES
+   ============================================ */
+[data-density="compact"] {
+  --density-base: var(--density-compact);
+}
+
+[data-density="comfortable"] {
+  --density-base: var(--density-comfortable);
+}
+
+[data-density="spacious"] {
+  --density-base: var(--density-spacious);
+}

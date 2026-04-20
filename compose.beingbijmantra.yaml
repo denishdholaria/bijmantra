@@ -1,0 +1,17 @@
+services:
+  beingbijmantra-surrealdb:
+    image: surrealdb/surrealdb:v3.0.4
+    container_name: beingbijmantra-surrealdb
+    profiles:
+      - beingbijmantra
+    ports:
+      - "${BEINGBIJMANTRA_SURREAL_PORT:-8083}:8000"
+    volumes:
+      - beingbijmantra_surrealdb_data:/mydata
+    command: start --log trace --bind 0.0.0.0:8000 --user root --pass root --allow-all surrealkv:///mydata/beingbijmantra-surreal.db
+    networks:
+      - bijmantra-network
+
+volumes:
+  beingbijmantra_surrealdb_data:
+    driver: local
