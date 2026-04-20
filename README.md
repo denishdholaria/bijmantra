@@ -3,8 +3,8 @@
 <img src="frontend/public/icons/icon-512x512.png" alt="BijMantra Logo" width="180"/>
 
 # BijMantra
-
 ## (Under Development)
+### Cross-domain agricultural intelligence platform for breeding, seed, research, and institutional workflows
 
 ## ⚠️ Important Notice — Official BijMantra Domain
 
@@ -36,7 +36,6 @@ If you encounter any suspicious activity or have questions, please reach out thr
 
 - Despite these constraints, foundational progress continues with a focus on long-term robustness and reliability rather than rapid iteration.
 
-Cross-domain agricultural intelligence platform for breeding, seed, research, and institutional workflows
 
 🌐 **[bijmantra.org](https://bijmantra.org)**
 
