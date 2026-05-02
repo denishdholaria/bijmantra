@@ -1,0 +1,41 @@
+{
+  "name": "beingbijmantra",
+  "displayName": "BeingBijMantra",
+  "description": "VS Code-First Contained Autonomy extension for BijMantra",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "activationEvents": [
+    "onCommand:beingbijmantra.openDeveloperBoard",
+    "onCommand:beingbijmantra.testCopilot"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "beingbijmantra.openDeveloperBoard",
+        "title": "BijMantra: Open Developer Board"
+      },
+      {
+        "command": "beingbijmantra.testCopilot",
+        "title": "BijMantra: Pre-flight Copilot Connection"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "bun run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "bun run compile && bun run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.115.0",
+    "@types/node": "^18.19.130",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "typescript": "^5.9.3"
+  }
+}

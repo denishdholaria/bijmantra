@@ -1,0 +1,441 @@
+[
+  {
+    "benchmark_id": "rq-01",
+    "query": "Show the details for germplasm IR64 including pedigree and core identifiers",
+    "use_case": "single-germplasm-detail",
+    "source_capability": "get_germplasm_details",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "single_domain",
+    "expected_domains": [
+      "breeding"
+    ],
+    "expected_function": "get_germplasm_details",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: resolve and summarize one germplasm record from a natural-language query."
+  },
+  {
+    "benchmark_id": "rq-02",
+    "query": "Summarize yield and disease resistance traits for IR64",
+    "use_case": "trait-summary",
+    "source_capability": "get_trait_summary",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "single_domain",
+    "expected_domains": [
+      "breeding"
+    ],
+    "expected_function": "get_trait_summary",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: answer a trait-summary question grounded in phenotype comparison data."
+  },
+  {
+    "benchmark_id": "rq-03",
+    "query": "Compare IR64 and Swarna for yield and disease resistance",
+    "use_case": "pairwise-germplasm-comparison",
+    "source_capability": "compare_germplasm",
+    "source_tests": [
+      "backend/tests/units/services/test_function_executor.py",
+      "backend/tests/units/test_reevu_stage_c.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "breeding_analytics",
+    "expected_domains": [
+      "breeding",
+      "analytics"
+    ],
+    "expected_function": "compare_germplasm",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: compare two named entries and return structured comparison output."
+  },
+  {
+    "benchmark_id": "rq-04",
+    "query": "Show trial results for the Ludhiana advanced yield trial this season",
+    "use_case": "trial-summary",
+    "source_capability": "get_trial_results",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "trials",
+    "cross_domain_class": "single_domain",
+    "expected_domains": [
+      "trials"
+    ],
+    "expected_function": "get_trial_results",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: retrieve and summarize a single trial from natural-language context."
+  },
+  {
+    "benchmark_id": "rq-05",
+    "query": "Which entry was the top performer in our wheat trial this season?",
+    "use_case": "trial-ranking-top-performer",
+    "source_capability": "get_trial_results",
+    "source_tests": [
+      "backend/tests/units/test_reevu_stage_c.py",
+      "backend/tests/units/services/test_function_calling_service.py"
+    ],
+    "domain_group": "trials",
+    "cross_domain_class": "trials_analytics",
+    "expected_domains": [
+      "trials",
+      "analytics"
+    ],
+    "expected_function": "get_trial_results",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: turn deterministic trial-summary ranking output into a top-performer answer."
+  },
+  {
+    "benchmark_id": "rq-06",
+    "query": "What markers are associated with blast resistance in rice?",
+    "use_case": "marker-association-lookup",
+    "source_capability": "get_marker_associations",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "genomics",
+    "cross_domain_class": "single_domain",
+    "expected_domains": [
+      "genomics"
+    ],
+    "expected_function": "get_marker_associations",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: genomics trait lookup via marker/QTL association evidence."
+  },
+  {
+    "benchmark_id": "rq-07",
+    "query": "Run genomic selection with GBLUP for grain yield on our wheat training population",
+    "use_case": "deterministic-gblup-compute",
+    "source_capability": "calculate_breeding_value",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "genomics",
+    "cross_domain_class": "genomics_analytics",
+    "expected_domains": [
+      "genomics",
+      "analytics"
+    ],
+    "expected_function": "calculate_breeding_value",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [
+        "deterministic_method_refs_required",
+        "deterministic_compute_evidence_required"
+      ],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: route genomic-selection phrasing to deterministic GBLUP compute instead of generic prose."
+  },
+  {
+    "benchmark_id": "rq-08",
+    "query": "Compare breeding lines with the latest trial results for drought tolerance",
+    "use_case": "cross-domain-breeding-trials",
+    "source_capability": "cross_domain_query",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "breeding_trials",
+    "expected_domains": [
+      "breeding",
+      "trials"
+    ],
+    "expected_function": "cross_domain_query",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: join breeding and trial evidence without requiring weather data."
+  },
+  {
+    "benchmark_id": "rq-09",
+    "query": "Find breeding lines with genomic evidence for blast resistance and compare them to our germplasm",
+    "use_case": "cross-domain-breeding-genomics",
+    "source_capability": "cross_domain_query",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "breeding_genomics",
+    "expected_domains": [
+      "breeding",
+      "genomics"
+    ],
+    "expected_function": "cross_domain_query",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: combine breeding and genomics evidence for compound recommendation-style questions."
+  },
+  {
+    "benchmark_id": "rq-10",
+    "query": "Compare trial performance with phenotype observations and local weather for our current rice season",
+    "use_case": "cross-domain-trials-phenotype-weather",
+    "source_capability": "cross_domain_query",
+    "source_tests": [
+      "backend/tests/units/services/test_function_executor.py",
+      "backend/tests/units/test_reevu_stage_c.py"
+    ],
+    "domain_group": "trials",
+    "cross_domain_class": "trials_analytics_weather",
+    "expected_domains": [
+      "trials",
+      "analytics",
+      "weather"
+    ],
+    "expected_function": "cross_domain_query",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: compound question joining trial, observation, and weather evidence."
+  },
+  {
+    "benchmark_id": "rq-11",
+    "query": "Recommend the best germplasm and supporting speed-breeding protocol for blast resistance improvement",
+    "use_case": "cross-domain-recommendation-with-protocol",
+    "source_capability": "cross_domain_query",
+    "source_tests": [
+      "backend/tests/units/services/test_function_calling_service.py",
+      "backend/tests/units/services/test_function_executor.py",
+      "backend/tests/units/test_reevu_stage_c.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "breeding_analytics_protocol",
+    "expected_domains": [
+      "breeding",
+      "analytics"
+    ],
+    "expected_function": "cross_domain_query",
+    "safe_failure_expected": false,
+    "pass_criteria": {
+      "factuality": [
+        "capability_grounded_answer",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "evidence_envelope_required",
+        "retrieval_audit_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": []
+    },
+    "description": "Actual REEVU use case: recommendation output that combines candidate ranking with protocol evidence."
+  },
+  {
+    "benchmark_id": "rq-12",
+    "query": "Show the details for the germplasm named Sharbati so I can identify the exact record",
+    "use_case": "safe-failure-ambiguous-germplasm",
+    "source_capability": "get_germplasm_details",
+    "source_tests": [
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "single_domain",
+    "expected_domains": [
+      "breeding"
+    ],
+    "expected_function": "get_germplasm_details",
+    "safe_failure_expected": true,
+    "pass_criteria": {
+      "factuality": [
+        "do_not_guess_when_resolution_is_incomplete",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "retrieval_audit_required",
+        "failure_reason_context_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": [
+        "structured_safe_failure_required",
+        "failure_reason_must_be_explicit"
+      ]
+    },
+    "description": "Actual REEVU use case: ambiguous germplasm resolution should fail safely rather than guessing."
+  },
+  {
+    "benchmark_id": "rq-13",
+    "query": "Show the results for the Punjab wheat trial because I cannot remember the exact trial name",
+    "use_case": "safe-failure-ambiguous-trial",
+    "source_capability": "get_trial_results",
+    "source_tests": [
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "trials",
+    "cross_domain_class": "single_domain",
+    "expected_domains": [
+      "trials"
+    ],
+    "expected_function": "get_trial_results",
+    "safe_failure_expected": true,
+    "pass_criteria": {
+      "factuality": [
+        "do_not_guess_when_resolution_is_incomplete",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "retrieval_audit_required",
+        "failure_reason_context_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": [
+        "structured_safe_failure_required",
+        "failure_reason_must_be_explicit"
+      ]
+    },
+    "description": "Actual REEVU use case: ambiguous trial lookup should respond with structured safe failure."
+  },
+  {
+    "benchmark_id": "rq-14",
+    "query": "Recommend a breeding line using genomic evidence even if the genomics service has no matching trait data",
+    "use_case": "safe-failure-missing-genomics-evidence",
+    "source_capability": "cross_domain_query",
+    "source_tests": [
+      "backend/tests/units/services/test_function_executor.py"
+    ],
+    "domain_group": "breeding",
+    "cross_domain_class": "breeding_genomics",
+    "expected_domains": [
+      "breeding",
+      "genomics"
+    ],
+    "expected_function": "cross_domain_query",
+    "safe_failure_expected": true,
+    "pass_criteria": {
+      "factuality": [
+        "do_not_guess_when_resolution_is_incomplete",
+        "expected_domain_alignment"
+      ],
+      "evidence_quality": [
+        "retrieval_audit_required",
+        "failure_reason_context_required"
+      ],
+      "deterministic_compute": [],
+      "safe_failure": [
+        "structured_safe_failure_required",
+        "failure_reason_must_be_explicit"
+      ]
+    },
+    "description": "Actual REEVU use case: missing genomics evidence in a compound query should fail safely with explicit missing-domain context."
+  }
+]

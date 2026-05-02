@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-02-25T06:13:32.829540+00:00",
+  "stages_evaluated": [
+    "A",
+    "C"
+  ],
+  "kpi_checks": {
+    "trace_completeness": {
+      "value": 1.0,
+      "floor": 0.99,
+      "met": true
+    },
+    "tool_call_precision": {
+      "value": 1.0,
+      "floor": 0.92,
+      "met": true
+    },
+    "domain_detection_accuracy": {
+      "value": 0.8667,
+      "floor": 0.85,
+      "met": true
+    },
+    "compound_classification": {
+      "value": 0.8,
+      "floor": 0.8,
+      "met": true
+    },
+    "step_adequacy": {
+      "value": 0.8667,
+      "floor": 0.85,
+      "met": true
+    }
+  },
+  "overall_floor_met": true,
+  "sources": {
+    "trace_completeness": "test_reports/reevu_trace_completeness_baseline.json",
+    "top_intent_routing": "test_reports/reevu_top_intent_routing_baseline.json",
+    "stage_a_kpi": "test_reports/reevu_stage_a_kpi_report.json",
+    "cross_domain_reasoning": "test_reports/reevu_cross_domain_reasoning_baseline.json"
+  }
+}

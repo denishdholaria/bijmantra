@@ -1,0 +1,72 @@
+# syntax=docker/dockerfile:1.7
+#
+# BijMantra Development Sandbox (Chloe)
+# Provides a backend-capable sandbox image with Python, Node, and
+# Bun tooling needed for repo-local verification.
+#
+# Build:
+#   podman build -f Dockerfile.bijmantra-sandbox -t bijmantra-sandbox:latest .
+
+FROM python:3.13-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# ── System packages ──────────────────────────────────────────────────
+RUN --mount=type=cache,id=bijmantra-sandbox-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=bijmantra-sandbox-apt-lists,target=/var/lib/apt,sharing=locked \
+  apt-get update \
+  && apt-get install -y --no-install-recommends \
+    bash \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    jq \
+    libpq-dev \
+    postgresql-client \
+    ripgrep \
+    unzip \
+    wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# ── Node.js 22 + Bun (for frontend builds + Chloe CLI) ──────────────
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y --no-install-recommends nodejs \
+  && rm -rf /var/lib/apt/lists/* \
+  && curl -fsSL https://bun.sh/install | BUN_INSTALL=/opt/bun bash \
+  && ln -sf /opt/bun/bin/bun /usr/local/bin/bun \
+  && ln -sf /opt/bun/bin/bun /usr/local/bin/bunx
+
+# ── uv + backend dependencies ───────────────────────────────────────
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+COPY backend/pyproject.toml backend/uv.lock backend/README.md /tmp/backend/
+RUN mkdir -p /tmp/backend/app && touch /tmp/backend/app/__init__.py
+RUN cd /tmp/backend && uv sync --frozen --no-dev --extra analytics --extra geo
+
+# Shims so agents calling `uv run` or `poetry run` work inside sandbox
+RUN cat <<'EOF' >/usr/local/bin/poetry
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ "${1:-}" == "run" ]]; then shift; exec "$@"; fi
+echo "poetry shim only supports: poetry run <command>" >&2; exit 2
+EOF
+RUN chmod +x /usr/local/bin/poetry
+
+COPY ops-private/claw-runtime/scripts/bijmantra-sandbox-entrypoint.sh /usr/local/bin/bijmantra-sandbox-entrypoint.sh
+RUN chmod +x /usr/local/bin/bijmantra-sandbox-entrypoint.sh
+
+# ── Sandbox user and workspace mount point ───────────────────────────
+RUN useradd --create-home --shell /bin/bash sandbox \
+  && mkdir -p /workspace /home/sandbox/workspace \
+  && ln -sf /workspace /home/sandbox/workspace \
+  && chown -R sandbox:sandbox /home/sandbox /workspace
+
+USER sandbox
+WORKDIR /workspace
+
+ENTRYPOINT ["/usr/local/bin/bijmantra-sandbox-entrypoint.sh"]
+CMD ["sleep", "infinity"]

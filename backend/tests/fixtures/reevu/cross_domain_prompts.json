@@ -1,0 +1,373 @@
+[
+    {
+        "prompt_id": "cd-01",
+        "query": "Compare wheat varieties for drought resistance and show weather data for Rajasthan trials",
+        "expected_domains": [
+            "weather",
+            "trials",
+            "breeding"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: weather + trials + breeding for variety comparison under drought"
+    },
+    {
+        "prompt_id": "cd-02",
+        "query": "Find genomic markers for blast resistance in rice and predict yield for next season",
+        "expected_domains": [
+            "genomics",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: genomics + breeding + analytics for marker-yield prediction"
+    },
+    {
+        "prompt_id": "cd-03",
+        "query": "Calculate GDD for maize in Maharashtra and recommend best sowing window",
+        "expected_domains": [
+            "weather",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: weather + analytics for GDD-based recommendation"
+    },
+    {
+        "prompt_id": "cd-04",
+        "query": "Show trial results for soybean varieties MACS-1281 and JS-335",
+        "expected_domains": [
+            "trials"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: trials only"
+    },
+    {
+        "prompt_id": "cd-05",
+        "query": "What are the SNP markers linked to disease resistance in chickpea germplasm?",
+        "expected_domains": [
+            "genomics"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: genomics only"
+    },
+    {
+        "prompt_id": "cd-06",
+        "query": "Compare yield performance across locations for hybrid maize and analyze GxE stability",
+        "expected_domains": [
+            "trials",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: trials + analytics for GxE analysis"
+    },
+    {
+        "prompt_id": "cd-07",
+        "query": "Find drought-tolerant wheat parents with good combining ability and check weather forecast for crossing nursery",
+        "expected_domains": [
+            "weather",
+            "breeding"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: weather + breeding for parent selection"
+    },
+    {
+        "prompt_id": "cd-08",
+        "query": "What is the pedigree of variety HD-2967?",
+        "expected_domains": [
+            "breeding"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: breeding only"
+    },
+    {
+        "prompt_id": "cd-09",
+        "query": "Rank rice varieties by yield and blast resistance, correlating with genomic markers and recent trial data",
+        "expected_domains": [
+            "genomics",
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 4,
+        "description": "Multi-domain: genomics + trials + breeding + analytics for comprehensive ranking"
+    },
+    {
+        "prompt_id": "cd-10",
+        "query": "Compute the selection index for top 10 germplasm entries based on yield, protein content, and disease score",
+        "expected_domains": [
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: breeding + analytics for selection index computation"
+    },
+    {
+        "prompt_id": "cd-11",
+        "query": "What was the average rainfall during kharif 2025 in Gujarat?",
+        "expected_domains": [
+            "weather"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: weather only"
+    },
+    {
+        "prompt_id": "cd-12",
+        "query": "Identify QTL regions for grain quality in bread wheat and suggest marker-assisted selection crosses",
+        "expected_domains": [
+            "genomics",
+            "breeding"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: genomics + breeding for MAS recommendation"
+    },
+    {
+        "prompt_id": "cd-13",
+        "query": "How does temperature variation across trial sites affect yield stability of BINA Dhan-7?",
+        "expected_domains": [
+            "weather",
+            "trials",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: weather + trials + analytics for environmental impact analysis"
+    },
+    {
+        "prompt_id": "cd-14",
+        "query": "Predict which crosses will produce superior segregants based on genomic diversity and parent performance data",
+        "expected_domains": [
+            "genomics",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: genomics + breeding + analytics for cross prediction"
+    },
+    {
+        "prompt_id": "cd-15",
+        "query": "Show all active nursery trials for wheat in Punjab",
+        "expected_domains": [
+            "trials"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: trials only for nursery listing"
+    },
+    {
+        "prompt_id": "cd-16",
+        "query": "What is the best sowing date for mustard in Rajasthan considering recent climate trends?",
+        "expected_domains": [
+            "weather",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Implicit domain: weather (climate) + analytics (trends/prediction) without explicit keywords"
+    },
+    {
+        "prompt_id": "cd-17",
+        "query": "Compare sorghum and pearl millet germplasm for fodder yield under rainfed conditions with trial data from semi-arid zones",
+        "expected_domains": [
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: trials + breeding + analytics with underrepresented crops (sorghum, pearl millet)"
+    },
+    {
+        "prompt_id": "cd-18",
+        "query": "List all cotton varieties with Bt resistance genes and their genotyping profiles",
+        "expected_domains": [
+            "genomics",
+            "breeding"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: genomics + breeding for cotton Bt resistance"
+    },
+    {
+        "prompt_id": "cd-19",
+        "query": "Show haplotype diversity for drought tolerance loci across our germplasm collection and rank entries by allele frequency",
+        "expected_domains": [
+            "genomics",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: genomics + breeding + analytics for haplotype-based ranking"
+    },
+    {
+        "prompt_id": "cd-20",
+        "query": "What is the correlation between soil moisture deficit and yield reduction in our wheat trials this season?",
+        "expected_domains": [
+            "weather",
+            "trials",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: weather + trials + analytics for moisture-yield correlation"
+    },
+    {
+        "prompt_id": "cd-21",
+        "query": "Retrieve frost risk data for October nurseries and flag susceptible germplasm entries",
+        "expected_domains": [
+            "weather",
+            "breeding"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: weather (frost) + breeding (germplasm) for risk flagging"
+    },
+    {
+        "prompt_id": "cd-22",
+        "query": "How many replications were used in the advanced yield trial at Ludhiana this year?",
+        "expected_domains": [
+            "trials"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: trials with specific location and trial type"
+    },
+    {
+        "prompt_id": "cd-23",
+        "query": "Assess genomic selection accuracy for grain yield using cross-validation on our training population and weather covariates",
+        "expected_domains": [
+            "genomics",
+            "weather",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: genomics + weather + analytics for genomic selection accuracy"
+    },
+    {
+        "prompt_id": "cd-24",
+        "query": "Find molecular markers associated with stem borer resistance in maize and compare across trial locations",
+        "expected_domains": [
+            "genomics",
+            "trials"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: genomics + trials for marker-trial comparison"
+    },
+    {
+        "prompt_id": "cd-25",
+        "query": "Generate a stability analysis report for rice varieties tested across 5 locations with weather overlays",
+        "expected_domains": [
+            "weather",
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 4,
+        "description": "Multi-domain: weather + trials + breeding + analytics — full pipeline query"
+    },
+    {
+        "prompt_id": "cd-26",
+        "query": "What varieties have the highest phenotypic stability for protein content?",
+        "expected_domains": [
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 2,
+        "description": "Multi-domain: breeding (phenotype/variety) + analytics (stability analysis)"
+    },
+    {
+        "prompt_id": "cd-27",
+        "query": "Show me the DNA sequencing results for entry GEN-5042",
+        "expected_domains": [
+            "genomics"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: genomics (sequencing, DNA)"
+    },
+    {
+        "prompt_id": "cd-28",
+        "query": "Compare growing degree days across trial sites and correlate with flowering time in wheat using linkage data",
+        "expected_domains": [
+            "weather",
+            "trials",
+            "genomics",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 4,
+        "description": "Multi-domain: weather + trials + genomics + analytics — 4-domain compound"
+    },
+    {
+        "prompt_id": "cd-29",
+        "query": "Rank our top 20 hybrid maize entries by yield performance across all trial blocks this season and include weather stress flags",
+        "expected_domains": [
+            "weather",
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 4,
+        "description": "Multi-domain: weather + trials + breeding + analytics — ranking with weather stress"
+    },
+    {
+        "prompt_id": "cd-30",
+        "query": "What is the solar radiation trend for the upcoming rabi season in Madhya Pradesh?",
+        "expected_domains": [
+            "weather"
+        ],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Single domain: weather (solar radiation)"
+    },
+    {
+        "prompt_id": "cd-31",
+        "query": "Identify polymorphism in the Xa21 gene across our rice accessions and predict blast resistance using trial performance data",
+        "expected_domains": [
+            "genomics",
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 4,
+        "description": "Multi-domain: genomics + trials + breeding + analytics — gene-level to field-level query"
+    },
+    {
+        "prompt_id": "cd-32",
+        "query": "Hello, can you tell me about yourself?",
+        "expected_domains": [],
+        "is_compound": false,
+        "expected_min_steps": 1,
+        "description": "Negative case: no domain detected, expect breeding fallback"
+    },
+    {
+        "prompt_id": "cd-33",
+        "query": "Estimate the yield gap between irrigated and rainfed conditions for our best performing sorghum entries based on this year's experiment data",
+        "expected_domains": [
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "is_compound": true,
+        "expected_min_steps": 3,
+        "description": "Multi-domain: trials + breeding + analytics for yield gap estimation with sorghum"
+    }
+]

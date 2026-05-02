@@ -1,0 +1,1068 @@
+{
+  "generated_at": "2026-04-05T10:38:21.986969+00:00",
+  "fixture_path": "/Users/denish/Documents/bpro/bijmantraorg/backend/tests/fixtures/reevu/real_question_benchmark.json",
+  "runtime_path": "local",
+  "runtime_target": "in_process_app",
+  "runtime_status": "blocked",
+  "total_cases": 14,
+  "passed_cases": 3,
+  "pass_rate": 0.2143,
+  "failed_cases": 11,
+  "question_family_summary": {
+    "by_domain_group": {
+      "breeding": {
+        "total_cases": 8,
+        "passed_cases": 2,
+        "failed_cases": 6,
+        "pass_rate": 0.25,
+        "failed_benchmark_ids": [
+          "rq-01",
+          "rq-02",
+          "rq-03",
+          "rq-08",
+          "rq-09",
+          "rq-11"
+        ]
+      },
+      "genomics": {
+        "total_cases": 2,
+        "passed_cases": 0,
+        "failed_cases": 2,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-06",
+          "rq-07"
+        ]
+      },
+      "trials": {
+        "total_cases": 4,
+        "passed_cases": 1,
+        "failed_cases": 3,
+        "pass_rate": 0.25,
+        "failed_benchmark_ids": [
+          "rq-04",
+          "rq-05",
+          "rq-10"
+        ]
+      }
+    },
+    "by_cross_domain_class": {
+      "breeding_analytics": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-03"
+        ]
+      },
+      "breeding_analytics_protocol": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-11"
+        ]
+      },
+      "breeding_genomics": {
+        "total_cases": 2,
+        "passed_cases": 1,
+        "failed_cases": 1,
+        "pass_rate": 0.5,
+        "failed_benchmark_ids": [
+          "rq-09"
+        ]
+      },
+      "breeding_trials": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-08"
+        ]
+      },
+      "genomics_analytics": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-07"
+        ]
+      },
+      "single_domain": {
+        "total_cases": 6,
+        "passed_cases": 2,
+        "failed_cases": 4,
+        "pass_rate": 0.3333,
+        "failed_benchmark_ids": [
+          "rq-01",
+          "rq-02",
+          "rq-04",
+          "rq-06"
+        ]
+      },
+      "trials_analytics": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-05"
+        ]
+      },
+      "trials_analytics_weather": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-10"
+        ]
+      }
+    },
+    "by_question_family": {
+      "breeding::breeding_analytics": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-03"
+        ]
+      },
+      "breeding::breeding_analytics_protocol": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-11"
+        ]
+      },
+      "breeding::breeding_genomics": {
+        "total_cases": 2,
+        "passed_cases": 1,
+        "failed_cases": 1,
+        "pass_rate": 0.5,
+        "failed_benchmark_ids": [
+          "rq-09"
+        ]
+      },
+      "breeding::breeding_trials": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-08"
+        ]
+      },
+      "breeding::single_domain": {
+        "total_cases": 3,
+        "passed_cases": 1,
+        "failed_cases": 2,
+        "pass_rate": 0.3333,
+        "failed_benchmark_ids": [
+          "rq-01",
+          "rq-02"
+        ]
+      },
+      "genomics::genomics_analytics": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-07"
+        ]
+      },
+      "genomics::single_domain": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-06"
+        ]
+      },
+      "trials::single_domain": {
+        "total_cases": 2,
+        "passed_cases": 1,
+        "failed_cases": 1,
+        "pass_rate": 0.5,
+        "failed_benchmark_ids": [
+          "rq-04"
+        ]
+      },
+      "trials::trials_analytics": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-05"
+        ]
+      },
+      "trials::trials_analytics_weather": {
+        "total_cases": 1,
+        "passed_cases": 0,
+        "failed_cases": 1,
+        "pass_rate": 0.0,
+        "failed_benchmark_ids": [
+          "rq-10"
+        ]
+      }
+    }
+  },
+  "results": [
+    {
+      "benchmark_id": "rq-01",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "single_domain",
+      "question_family": "breeding::single_domain",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "get_germplasm_details",
+      "actual_function": "get_germplasm_details",
+      "expected_domains": [
+        "breeding"
+      ],
+      "detected_domains": [
+        "breeding"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_lookup",
+          "germplasm_search_service"
+        ],
+        "missing": [
+          "specific germplasm identifier"
+        ],
+        "next_steps": [
+          "Provide the exact accession or germplasm ID.",
+          "Retry with a narrower germplasm name or accession query."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_warning",
+        "reason": "The selected local organization is sparse on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-02",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "single_domain",
+      "question_family": "breeding::single_domain",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "get_trait_summary",
+      "actual_function": "get_trait_summary",
+      "expected_domains": [
+        "breeding"
+      ],
+      "detected_domains": [
+        "breeding"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "phenotype_comparison.statistics",
+          "germplasm_search_service"
+        ],
+        "missing": [
+          "resolvable germplasm identifiers"
+        ],
+        "next_steps": [
+          "Retry with exact accession or germplasm IDs.",
+          "Use fewer or more specific germplasm names."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [
+          "observations.empty"
+        ],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-03",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "breeding_analytics",
+      "question_family": "breeding::breeding_analytics",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "compare_germplasm",
+      "actual_function": "compare_germplasm",
+      "expected_domains": [
+        "breeding",
+        "analytics"
+      ],
+      "detected_domains": [
+        "breeding"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "phenotype_comparison.compare",
+          "germplasm_search_service"
+        ],
+        "missing": [
+          "at least two resolvable germplasm identifiers"
+        ],
+        "next_steps": [
+          "Retry with exact accession or germplasm IDs.",
+          "Reduce the comparison to two explicitly named germplasm entries."
+        ]
+      },
+      "failed_checks": [
+        "factuality.expected_domain_alignment",
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": false,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [
+          "observations.empty"
+        ],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-04",
+      "runtime_path": "local",
+      "domain_group": "trials",
+      "cross_domain_class": "single_domain",
+      "question_family": "trials::single_domain",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "get_trial_results",
+      "actual_function": "get_trial_results",
+      "expected_domains": [
+        "trials"
+      ],
+      "detected_domains": [
+        "trials"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "trial_summary",
+          "trial_search_service"
+        ],
+        "missing": [
+          "specific trial identifier"
+        ],
+        "next_steps": [
+          "Provide the trial ID or exact trial name.",
+          "Narrow the question by crop, location, or season."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_warning",
+        "reason": "The selected local organization is sparse on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [],
+        "relevant_warnings": [
+          "trials.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-05",
+      "runtime_path": "local",
+      "domain_group": "trials",
+      "cross_domain_class": "trials_analytics",
+      "question_family": "trials::trials_analytics",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "get_trial_results",
+      "actual_function": "get_trial_results",
+      "expected_domains": [
+        "trials",
+        "analytics"
+      ],
+      "detected_domains": [
+        "trials"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "trial_summary",
+          "trial_search_service"
+        ],
+        "missing": [
+          "specific trial identifier"
+        ],
+        "next_steps": [
+          "Provide the trial ID or exact trial name.",
+          "Narrow the question by crop, location, or season."
+        ]
+      },
+      "failed_checks": [
+        "factuality.expected_domain_alignment",
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": false,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_warning",
+        "reason": "The selected local organization is sparse on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [],
+        "relevant_warnings": [
+          "trials.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-06",
+      "runtime_path": "local",
+      "domain_group": "genomics",
+      "cross_domain_class": "single_domain",
+      "question_family": "genomics::single_domain",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "get_marker_associations",
+      "actual_function": "get_marker_associations",
+      "expected_domains": [
+        "genomics"
+      ],
+      "detected_domains": [
+        "genomics"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "QTLMappingService.get_traits",
+          "QTLMappingService.get_gwas_results"
+        ],
+        "missing": [
+          "single authoritative genomics trait"
+        ],
+        "next_steps": [
+          "Retry with the exact trait name used in QTL or GWAS records.",
+          "Ask for available genomics traits before requesting markers."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [
+          "bio_gwas_runs.empty",
+          "bio_qtls.empty"
+        ],
+        "relevant_warnings": [],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-07",
+      "runtime_path": "local",
+      "domain_group": "genomics",
+      "cross_domain_class": "genomics_analytics",
+      "question_family": "genomics::genomics_analytics",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "calculate_breeding_value",
+      "actual_function": "calculate_breeding_value",
+      "expected_domains": [
+        "genomics",
+        "analytics"
+      ],
+      "detected_domains": [
+        "analytics"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_compute_inputs",
+        "missing_inputs": [
+          "phenotypes"
+        ],
+        "required_inputs": [
+          "phenotypes",
+          "genotype_matrix or g_matrix"
+        ]
+      },
+      "failed_checks": [
+        "factuality.expected_domain_alignment",
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": false,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true,
+        "deterministic_compute.deterministic_method_refs_required": true,
+        "deterministic_compute.deterministic_compute_evidence_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [
+          "observations.empty"
+        ],
+        "relevant_warnings": [],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-08",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "breeding_trials",
+      "question_family": "breeding::breeding_trials",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "cross_domain_query",
+      "actual_function": "cross_domain_query",
+      "expected_domains": [
+        "breeding",
+        "trials"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "trials"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_search_service.search",
+          "trait_search_service.search",
+          "trial_search_service.search"
+        ],
+        "missing": [
+          "breeding"
+        ],
+        "missing_context": [],
+        "next_steps": [
+          "Add or verify records in the missing domains and retry.",
+          "Narrow the compound query to a location, crop, or trait with known data."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_warning",
+        "reason": "The selected local organization is sparse on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [],
+        "relevant_warnings": [
+          "germplasm.sparse",
+          "trials.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-09",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "breeding_genomics",
+      "question_family": "breeding::breeding_genomics",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "cross_domain_query",
+      "actual_function": "cross_domain_query",
+      "expected_domains": [
+        "breeding",
+        "genomics"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "genomics"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_search_service.search",
+          "trait_search_service.search",
+          "QTLMappingService.get_traits",
+          "QTLMappingService.list_qtls",
+          "QTLMappingService.get_gwas_results"
+        ],
+        "missing": [
+          "genomics",
+          "breeding",
+          "analytics"
+        ],
+        "missing_context": [],
+        "next_steps": [
+          "Add or verify records in the missing domains and retry.",
+          "Narrow the compound query to a location, crop, or trait with known data."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [
+          "bio_gwas_runs.empty",
+          "bio_qtls.empty"
+        ],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-10",
+      "runtime_path": "local",
+      "domain_group": "trials",
+      "cross_domain_class": "trials_analytics_weather",
+      "question_family": "trials::trials_analytics_weather",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "cross_domain_query",
+      "actual_function": "cross_domain_query",
+      "expected_domains": [
+        "trials",
+        "analytics",
+        "weather"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "trials",
+        "weather"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_search_service.search",
+          "trial_search_service.search",
+          "weather_location_coordinate_resolution",
+          "observation_search_service.search"
+        ],
+        "missing": [
+          "weather",
+          "trials",
+          "breeding",
+          "analytics"
+        ],
+        "missing_context": [
+          {
+            "domain": "weather",
+            "location_query": null,
+            "reason": "no location query was provided"
+          }
+        ],
+        "next_steps": [
+          "Specify a location so REEVU can resolve coordinates and call the real weather provider.",
+          "Add or verify records in the missing domains and retry.",
+          "Narrow the compound query to a location, crop, or trait with known data."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case. Unmapped expected domains: weather.",
+        "relevant_blockers": [
+          "observations.empty"
+        ],
+        "relevant_warnings": [
+          "trials.sparse"
+        ],
+        "unmapped_expected_domains": [
+          "weather"
+        ]
+      }
+    },
+    {
+      "benchmark_id": "rq-11",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "breeding_analytics_protocol",
+      "question_family": "breeding::breeding_analytics_protocol",
+      "http_status": 200,
+      "passed": false,
+      "expected_function": "cross_domain_query",
+      "actual_function": "cross_domain_query",
+      "expected_domains": [
+        "breeding",
+        "analytics"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "protocols"
+      ],
+      "safe_failure_expected": false,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_search_service.search",
+          "trait_search_service.search",
+          "speed_breeding_service.get_protocols"
+        ],
+        "missing": [
+          "breeding",
+          "protocols",
+          "analytics"
+        ],
+        "missing_context": [],
+        "next_steps": [
+          "Add or verify records in the missing domains and retry.",
+          "Narrow the compound query to a location, crop, or trait with known data."
+        ]
+      },
+      "failed_checks": [
+        "safe_failure.unexpected_safe_failure"
+      ],
+      "checks": {
+        "factuality.capability_grounded_answer": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.evidence_envelope_required": true,
+        "evidence_quality.retrieval_audit_required": true
+      },
+      "failure_attribution": {
+        "status": "selected_local_org_readiness_blocker",
+        "reason": "The selected local organization is blocked on benchmark-relevant data surfaces for the expected REEVU domains in this case.",
+        "relevant_blockers": [
+          "observations.empty"
+        ],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-12",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "single_domain",
+      "question_family": "breeding::single_domain",
+      "http_status": 200,
+      "passed": true,
+      "expected_function": "get_germplasm_details",
+      "actual_function": "get_germplasm_details",
+      "expected_domains": [
+        "breeding"
+      ],
+      "detected_domains": [
+        "breeding"
+      ],
+      "safe_failure_expected": true,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_lookup",
+          "germplasm_search_service"
+        ],
+        "missing": [
+          "specific germplasm identifier"
+        ],
+        "next_steps": [
+          "Provide the exact accession or germplasm ID.",
+          "Retry with a narrower germplasm name or accession query."
+        ]
+      },
+      "failed_checks": [],
+      "checks": {
+        "factuality.do_not_guess_when_resolution_is_incomplete": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.retrieval_audit_required": true,
+        "evidence_quality.failure_reason_context_required": true,
+        "safe_failure.structured_safe_failure_required": true,
+        "safe_failure.failure_reason_must_be_explicit": true
+      },
+      "failure_attribution": {
+        "status": "passed",
+        "reason": "The benchmark case passed on the selected local runtime.",
+        "relevant_blockers": [],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-13",
+      "runtime_path": "local",
+      "domain_group": "trials",
+      "cross_domain_class": "single_domain",
+      "question_family": "trials::single_domain",
+      "http_status": 200,
+      "passed": true,
+      "expected_function": "get_trial_results",
+      "actual_function": "get_trial_results",
+      "expected_domains": [
+        "trials"
+      ],
+      "detected_domains": [
+        "trials"
+      ],
+      "safe_failure_expected": true,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "trial_summary",
+          "trial_search_service"
+        ],
+        "missing": [
+          "specific trial identifier"
+        ],
+        "next_steps": [
+          "Provide the trial ID or exact trial name.",
+          "Narrow the question by crop, location, or season."
+        ]
+      },
+      "failed_checks": [],
+      "checks": {
+        "factuality.do_not_guess_when_resolution_is_incomplete": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.retrieval_audit_required": true,
+        "evidence_quality.failure_reason_context_required": true,
+        "safe_failure.structured_safe_failure_required": true,
+        "safe_failure.failure_reason_must_be_explicit": true
+      },
+      "failure_attribution": {
+        "status": "passed",
+        "reason": "The benchmark case passed on the selected local runtime.",
+        "relevant_blockers": [],
+        "relevant_warnings": [
+          "trials.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    },
+    {
+      "benchmark_id": "rq-14",
+      "runtime_path": "local",
+      "domain_group": "breeding",
+      "cross_domain_class": "breeding_genomics",
+      "question_family": "breeding::breeding_genomics",
+      "http_status": 200,
+      "passed": true,
+      "expected_function": "cross_domain_query",
+      "actual_function": "cross_domain_query",
+      "expected_domains": [
+        "breeding",
+        "genomics"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "genomics"
+      ],
+      "safe_failure_expected": true,
+      "safe_failure_observed": true,
+      "safe_failure_source": "function_result",
+      "safe_failure_payload": {
+        "error_category": "insufficient_retrieval_scope",
+        "searched": [
+          "germplasm_search_service.search",
+          "QTLMappingService.get_traits",
+          "QTLMappingService.list_qtls",
+          "QTLMappingService.get_gwas_results"
+        ],
+        "missing": [
+          "genomics",
+          "breeding",
+          "analytics"
+        ],
+        "missing_context": [],
+        "next_steps": [
+          "Add or verify records in the missing domains and retry.",
+          "Narrow the compound query to a location, crop, or trait with known data."
+        ]
+      },
+      "failed_checks": [],
+      "checks": {
+        "factuality.do_not_guess_when_resolution_is_incomplete": true,
+        "factuality.expected_domain_alignment": true,
+        "evidence_quality.retrieval_audit_required": true,
+        "evidence_quality.failure_reason_context_required": true,
+        "safe_failure.structured_safe_failure_required": true,
+        "safe_failure.failure_reason_must_be_explicit": true
+      },
+      "failure_attribution": {
+        "status": "passed",
+        "reason": "The benchmark case passed on the selected local runtime.",
+        "relevant_blockers": [
+          "bio_gwas_runs.empty",
+          "bio_qtls.empty"
+        ],
+        "relevant_warnings": [
+          "germplasm.sparse"
+        ],
+        "unmapped_expected_domains": []
+      }
+    }
+  ],
+  "local_organization_id": 1,
+  "local_organization_selection": {
+    "mode": "default",
+    "requested_organization_id": 1,
+    "effective_organization_id": 1
+  },
+  "readiness_blockers": [
+    "observations.empty",
+    "bio_gwas_runs.empty",
+    "bio_qtls.empty"
+  ],
+  "readiness_warnings": [
+    "germplasm.sparse",
+    "trials.sparse"
+  ],
+  "runtime_readiness": {
+    "organization_id": 1,
+    "surface_counts": {
+      "germplasm": 2,
+      "trials": 3,
+      "observations": 0,
+      "bio_gwas_runs": 0,
+      "bio_qtls": 0
+    },
+    "surface_examples": {
+      "germplasm": [
+        "TEST-VAR-8841-A",
+        "TEST-VAR-8841-B"
+      ],
+      "trials": [
+        "Auto Test Trial 1770461736550",
+        "aaaa",
+        "Cotton Crop Improvement - Drought"
+      ]
+    },
+    "surface_errors": {},
+    "readiness_flags": [
+      "germplasm.sparse",
+      "trials.sparse",
+      "observations.empty",
+      "bio_gwas_runs.empty",
+      "bio_qtls.empty"
+    ]
+  },
+  "failure_attribution_summary": {
+    "passed": 3,
+    "selected_local_org_readiness_blocker": 7,
+    "selected_local_org_readiness_warning": 4
+  }
+}

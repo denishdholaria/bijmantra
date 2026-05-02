@@ -1,0 +1,116 @@
+{
+  "generated_at": "2026-04-05T10:38:24.285099+00:00",
+  "stages_evaluated": [
+    "A",
+    "C"
+  ],
+  "kpi_checks": {
+    "trace_completeness": {
+      "value": 1.0,
+      "floor": 0.99,
+      "met": true
+    },
+    "tool_call_precision": {
+      "value": 1.0,
+      "floor": 0.92,
+      "met": true
+    },
+    "domain_detection_accuracy": {
+      "value": 0.9697,
+      "floor": 0.85,
+      "met": true
+    },
+    "compound_classification": {
+      "value": 0.9091,
+      "floor": 0.8,
+      "met": true
+    },
+    "step_adequacy": {
+      "value": 1.0,
+      "floor": 0.85,
+      "met": true
+    }
+  },
+  "overall_floor_met": true,
+  "sources": {
+    "trace_completeness": "test_reports/reevu_trace_completeness_baseline.json",
+    "top_intent_routing": "test_reports/reevu_top_intent_routing_baseline.json",
+    "stage_a_kpi": "test_reports/reevu_stage_a_kpi_report.json",
+    "cross_domain_reasoning": "test_reports/reevu_cross_domain_reasoning_baseline.json",
+    "real_question_local": "test_reports/reevu_real_question_local.json",
+    "local_readiness_census": "test_reports/reevu_local_readiness_census.json",
+    "authority_gap_report": "test_reports/reevu_authority_gap_report.json",
+    "real_question_managed": "test_reports/reevu_real_question_managed.json"
+  },
+  "runtime_readiness": {
+    "local": {
+      "artifact_present": true,
+      "readiness_census_present": true,
+      "authority_gap_report_present": true,
+      "runtime_status": "blocked",
+      "runtime_target": "in_process_app",
+      "selected_local_organization_id": 1,
+      "pass_rate": 0.2143,
+      "passed_cases": 3,
+      "failed_cases": 11,
+      "total_cases": 14,
+      "readiness_blockers": [
+        "observations.empty",
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty"
+      ],
+      "readiness_warnings": [
+        "germplasm.sparse",
+        "trials.sparse"
+      ],
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "benchmark_ready_demo_organization_ids": [
+        2
+      ],
+      "benchmark_ready_non_demo_organization_ids": [],
+      "policy_guidance": [
+        "Benchmark-ready local coverage currently comes from demo-dataset tenant(s): 2 (Demo Organization). The canonical demo dataset is isolated from production and staging; do not mirror demo-seeded benchmark data into selected non-demo organization 1 (Default Organization). Use the ready demo tenant for supplementary local executor verification or provision authoritative data for the selected organization."
+      ],
+      "selected_local_organization_remediation": [
+        "observations.empty: Provision authoritative observations for the selected organization via the authenticated import upload surface at /api/v2/import/upload with import_type=observation.",
+        "bio_gwas_runs.empty: Persist authoritative GWAS runs for the selected organization through the authenticated GWAS execution surface at /api/v2/bio-analytics/gwas/run using authoritative genotype and phenotype inputs.",
+        "bio_qtls.empty: Provision authoritative BioQTL rows for the selected organization via the authenticated import upload surface at /api/v2/import/upload with import_type=qtl.",
+        "germplasm.sparse: Expand authoritative germplasm coverage for the selected organization via the authenticated import upload surface at /api/v2/import/upload with import_type=germplasm.",
+        "trials.sparse: Expand authoritative trial coverage for the selected organization via the authenticated import upload surface at /api/v2/import/upload with import_type=trial."
+      ],
+      "least_blocked_local_organization": null,
+      "authority_gap_status": "selected_local_org_blocked",
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ]
+    },
+    "managed": {
+      "artifact_present": false,
+      "runtime_status": null,
+      "runtime_target": null,
+      "pass_rate": null,
+      "passed_cases": null,
+      "failed_cases": null,
+      "total_cases": null,
+      "readiness_blockers": [],
+      "readiness_warnings": []
+    }
+  },
+  "calibration_status": {
+    "current_floors": {
+      "trace_completeness": 0.99,
+      "tool_call_precision": 0.92,
+      "domain_detection_accuracy": 0.85,
+      "compound_classification": 0.8,
+      "step_adequacy": 0.85
+    },
+    "calibration_start_date": null,
+    "days_since_start": 0,
+    "calibration_ready": false,
+    "playbook": "docs/reevu/slo_calibration_playbook.md"
+  }
+}

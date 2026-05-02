@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/bijmantra_compute_targets.cmake")
+
+check_required_components(bijmantra_compute)

@@ -1,0 +1,411 @@
+{
+  "lastUpdated": "2026-04-22",
+  "updatedBy": "Plan 3 - Next Bounded Workflows final closure",
+  "session": 30,
+  "pages": {
+    "total": 253,
+    "functional": 236,
+    "demo": 17,
+    "uiOnly": 5,
+    "removed": 12
+  },
+  "api": {
+    "totalEndpoints": 1965,
+    "brapiEndpoints": 248,
+    "brapiPublishedEndpoints": 201,
+    "brapiExposedEndpoints": 248,
+    "brapiCoverage": 100,
+    "customEndpoints": 1717
+  },
+  "database": {
+    "models": 110,
+    "migrations": 21,
+    "seeders": 15,
+    "tables": 119,
+    "seededRecords": 413,
+    "rlsEnabledTables": 0
+  },
+  "modules": {
+    "total": 8,
+    "list": [
+      {
+        "name": "Breeding",
+        "pages": 35,
+        "endpoints": 120
+      },
+      {
+        "name": "Phenotyping",
+        "pages": 25,
+        "endpoints": 85
+      },
+      {
+        "name": "Genomics",
+        "pages": 35,
+        "endpoints": 107
+      },
+      {
+        "name": "Seed Bank",
+        "pages": 15,
+        "endpoints": 59
+      },
+      {
+        "name": "Environment",
+        "pages": 20,
+        "endpoints": 97
+      },
+      {
+        "name": "Seed Operations",
+        "pages": 22,
+        "endpoints": 96
+      },
+      {
+        "name": "Knowledge",
+        "pages": 5,
+        "endpoints": 35
+      },
+      {
+        "name": "Settings & Admin",
+        "pages": 35,
+        "endpoints": 95
+      }
+    ]
+  },
+  "workspaces": {
+    "total": 5,
+    "list": [
+      {
+        "id": "breeding",
+        "name": "Plant Breeding",
+        "pages": 83
+      },
+      {
+        "id": "seed-ops",
+        "name": "Seed Business",
+        "pages": 22
+      },
+      {
+        "id": "research",
+        "name": "Innovation Lab",
+        "pages": 28
+      },
+      {
+        "id": "genebank",
+        "name": "Gene Bank",
+        "pages": 34
+      },
+      {
+        "id": "admin",
+        "name": "Administration",
+        "pages": 25
+      }
+    ]
+  },
+  "build": {
+    "status": "passing",
+    "pwaEntries": 728,
+    "sizeKB": 16899,
+    "sizeMB": "16.5MB",
+    "previousSizeKB": 19893,
+    "sizeReductionPercent": 15.0
+  },
+  "titaniumPath": {
+    "boundedWorkflows": {
+      "completed": 6,
+      "total": 6,
+      "list": [
+        {
+          "id": "workflow-1",
+          "name": "LD Analysis",
+          "status": "completed",
+          "completedDate": "2026-04-13",
+          "productionCode": 804,
+          "testCode": 1183,
+          "testToCodeRatio": 1.47,
+          "division": "plant-sciences/genomics",
+          "closureReport": ".ai/tasks/2026-04-13-ld-analysis-workflow-closure.md"
+        },
+        {
+          "id": "workflow-2",
+          "name": "Phenomic Upload",
+          "status": "completed",
+          "completedDate": "2026-04-13",
+          "productionCode": 650,
+          "testCode": 200,
+          "testToCodeRatio": 0.31,
+          "division": "phenotyping/upload",
+          "closureReport": ".kiro/specs/titanium-path-convergent-architecture/task-12-completion-report.md"
+        },
+        {
+          "id": "workflow-3",
+          "name": "Trial Creation",
+          "status": "completed",
+          "completedDate": "2026-04-13",
+          "productionCode": 450,
+          "testCode": 180,
+          "testToCodeRatio": 0.4,
+          "division": "breeding/trials",
+          "closureReport": ".ai/tasks/2026-04-13-task-17-trial-creation-closure.md"
+        },
+        {
+          "id": "workflow-4",
+          "name": "Seed Bank Accession Search",
+          "status": "completed",
+          "completedDate": "2026-04-22",
+          "productionCode": 777,
+          "testCode": 406,
+          "testToCodeRatio": 0.52,
+          "division": "seed-bank/accession-search",
+          "closureReport": ".ai/tasks/2026-04-22-workflow-4-seed-bank-accession-search-closure.md"
+        },
+        {
+          "id": "workflow-5",
+          "name": "Cross Planning with Pedigree",
+          "status": "completed",
+          "completedDate": "2026-04-22",
+          "productionCode": 746,
+          "testCode": 419,
+          "testToCodeRatio": 0.56,
+          "division": "breeding/cross-planning",
+          "closureReport": ".ai/tasks/2026-04-22-workflow-5-cross-planning-closure.md"
+        },
+        {
+          "id": "workflow-6",
+          "name": "Environmental Sensor Dashboard",
+          "status": "completed",
+          "completedDate": "2026-04-22",
+          "productionCode": 617,
+          "testCode": 334,
+          "testToCodeRatio": 0.54,
+          "division": "environment/sensor-dashboard",
+          "closureReport": ".ai/tasks/2026-04-22-workflow-6-sensor-dashboard-closure.md"
+        }
+      ]
+    },
+    "hotFileReduction": {
+      "frontend": {
+        "total": 8,
+        "extracted": 5,
+        "inProgress": 0,
+        "notStarted": 0,
+        "list": [
+          {
+            "path": "frontend/src/pages/WasmLDAnalysis.tsx",
+            "status": "extracted",
+            "beforeLines": 400,
+            "afterLines": 18,
+            "reductionPercent": 95,
+            "extractedTo": "divisions/plant-sciences/genomics/ld-analysis/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "frontend/src/lib/api-client.ts",
+            "status": "extracted",
+            "beforeLines": 596,
+            "afterLines": 570,
+            "reductionPercent": 4,
+            "note": "Already well-architectured as thin facade; dead code cleaned"
+          },
+          {
+            "path": "frontend/src/framework/shell/DesktopWorkbench.tsx",
+            "status": "extracted",
+            "beforeLines": 2682,
+            "afterLines": 450,
+            "reductionPercent": 83,
+            "extractedTo": "framework/shell/components/",
+            "completedDate": "2026-04-15"
+          },
+          {
+            "path": "frontend/src/pages/AISettings.tsx",
+            "status": "extracted",
+            "beforeLines": 200,
+            "afterLines": 16,
+            "reductionPercent": 92,
+            "extractedTo": "features/ai-chat/settings/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "frontend/src/pages/Login.tsx",
+            "status": "extracted",
+            "beforeLines": 150,
+            "afterLines": 11,
+            "reductionPercent": 93,
+            "extractedTo": "features/auth/",
+            "completedDate": "2026-04-13"
+          },
+          {
+            "path": "frontend/src/framework/registry/workspaces.ts",
+            "status": "extracted",
+            "beforeLines": 976,
+            "afterLines": 875,
+            "reductionPercent": 10,
+            "extractedTo": "framework/registry/services/workspaceService.ts",
+            "completedDate": "2026-04-17"
+          },
+          {
+            "path": "frontend/src/framework/registry/divisions.ts",
+            "status": "extracted",
+            "beforeLines": 746,
+            "afterLines": 722,
+            "reductionPercent": 3,
+            "extractedTo": "framework/registry/services/divisionService.ts",
+            "completedDate": "2026-04-17"
+          },
+          {
+            "path": "frontend/src/routes/core.tsx",
+            "status": "verified-thin",
+            "beforeLines": 213,
+            "afterLines": 213,
+            "reductionPercent": 0,
+            "note": "Already thin routing logic; no extraction needed"
+          }
+        ]
+      },
+      "backend": {
+        "total": 3,
+        "extracted": 3,
+        "inProgress": 0,
+        "notStarted": 0,
+        "list": [
+          {
+            "path": "backend/app/api/v2/developer_control_plane.py",
+            "status": "extracted",
+            "beforeLines": 5406,
+            "afterLines": 4025,
+            "reductionPercent": 26,
+            "extractedTo": "services/control_plane/ and api/v2/control_plane/",
+            "completedDate": "2026-04-21",
+            "note": "Extracted to 4 thin routers (lanes, missions, verification, telemetry) and 4 service modules; autonomy bridge preserved"
+          },
+          {
+            "path": "backend/app/api/v2/chat.py",
+            "status": "extracted",
+            "beforeLines": 2323,
+            "afterLines": 299,
+            "reductionPercent": 87,
+            "extractedTo": "services/chat/",
+            "completedDate": "2026-04-21"
+          },
+          {
+            "path": "backend/app/main.py",
+            "status": "extracted",
+            "beforeLines": 1228,
+            "afterLines": 352,
+            "reductionPercent": 71,
+            "extractedTo": "startup/",
+            "completedDate": "2026-04-13"
+          }
+        ]
+      }
+    },
+    "frontendConvergence": {
+      "divisionModules": 26,
+      "featureModules": 2,
+      "legacyPagesTotal": 259,
+      "legacyPagesMigrated": 21,
+      "legacyPagesAsThinAdapters": 21,
+      "convergenceAdoptionPercent": 8.1,
+      "note": "Plan 1 Stabilization added 18 thin adapter pages across 23 division modules and 2 feature modules. Plan 3 Next Bounded Workflows added 3 more thin adapters and 3 new division modules (seed-bank/accession-search, breeding/cross-planning, environment/sensor-dashboard)."
+    },
+    "navigationTruthConsolidation": {
+      "status": "completed",
+      "singleSourceOfTruth": true,
+      "duplicationsIdentified": true,
+      "completedDate": "2026-04-13"
+    },
+    "architectureTrail": {
+      "proposalsCreated": 1,
+      "decisionsRecorded": 4,
+      "tasksTracked": 29,
+      "closureReports": 7,
+      "adrs": [
+        "ADR-014-frontend-convergence-map.md",
+        "ADR-015-hot-file-reduction-protocol.md",
+        "ADR-016-bounded-workflow-delivery.md",
+        "ADR-017-autonomy-bridge-protection.md"
+      ]
+    },
+    "completionStatus": {
+      "percentComplete": 100,
+      "tasksCompleted": 24,
+      "tasksTotal": 24,
+      "remainingWork": []
+    }
+  },
+  "milestones": {
+    "brapiComplete": "2025-12-23",
+    "gatewayComplete": "2025-12-26",
+    "prakrutiComplete": "2025-12-26",
+    "productionReady": "2025-12-25",
+    "titaniumPathFirstWorkflow": "2026-04-13"
+  },
+  "techStack": {
+    "frontend": [
+      "React 19.2.5",
+      "TypeScript 6.0.2",
+      "Vite 8.0.8",
+      "Tailwind CSS 4.2.2",
+      "TanStack Query 5.99.0"
+    ],
+    "backend": [
+      "Python 3.13",
+      "FastAPI 0.135+",
+      "SQLAlchemy 2.0.49+",
+      "Pydantic 2.13+",
+      "uv (package manager)"
+    ],
+    "database": [
+      "PostgreSQL 18.1",
+      "PostGIS 3.6.1",
+      "pgvector 0.8.1",
+      "Redis 8"
+    ],
+    "compute": [
+      "Rust/WASM",
+      "Fortran"
+    ]
+  },
+  "version": {
+    "app": "0",
+    "brapi": "2.1",
+    "schema": "1.0.0"
+  },
+  "tests": {
+    "total": 2218,
+    "frontend": 123,
+    "backend": 2095,
+    "reevu_real_system_status": {
+      "implementation_plan": {
+        "status": "completed",
+        "completed_items": 51,
+        "next_items": 0,
+        "pending_items": 0
+      },
+      "canonical_local_runtime": {
+        "status": "blocked",
+        "selected_organization_id": 1,
+        "passed_cases": 3,
+        "total_cases": 14,
+        "benchmark_ready_organization_ids": [
+          2
+        ],
+        "remaining_blockers": [
+          "observations.empty",
+          "bio_gwas_runs.empty",
+          "bio_qtls.empty"
+        ]
+      },
+      "step_executor_hardening": {
+        "status": "phase_1_and_phase_3_completed",
+        "compound_query_execution": "step_executor_default",
+        "property_tests": "green",
+        "cross_domain_handler_tests": "green",
+        "diagnostics_endpoint": "/api/v2/chat/diagnostics",
+        "operator_dashboard_route": "/ai-diagnostics"
+      },
+      "managed_runtime": {
+        "status": "not_requested"
+      }
+    },
+    "note": "REEVU local real-question benchmark coverage remains blocked at 3/14 in the default canonical local artifact written to backend/test_reports/reevu_real_question_local.json for org 1, while supplementary Demo Organization artifacts at backend/test_reports/reevu_real_question_local_org2.json and backend/test_reports/reevu_local_readiness_census_org2.json now show a truthful 14/14 local run with org 2 marked benchmark-ready after bounded weather-location reuse, DB-backed deterministic GBLUP hardening, and trusted-contract domain-summary alignment for trial-ranking and GBLUP success paths; final REEVU acceptance now also reports managed-runtime preflight separately so missing managed configuration is surfaced explicitly instead of being mistaken for an evaluated managed benchmark artifact, and canonical cross-domain weather joins now opt out of generated forecast fallback so missing location input, missing coordinates, or provider failures safe-fail instead of injecting synthetic weather evidence. AI configuration, runtime observability, Phase 4 capability integration, and the core trial/phenotyping trust surfaces are now materially in place: org-scoped AI provider, model, and agent-setting administration shipped with 16 new admin endpoints, dedicated migrations, persisted provider-registry loading, capability and prompt-mode manifest endpoints, backend runtime enforcement of persisted REEVU tool restrictions during function selection and execution, and now an org-scoped REEVU routing policy surface with a dedicated persistence model, migration, admin API, runtime provider-selection integration, and AI Settings UI for preferred provider/model defaults plus preferred-only versus fallback routing behavior; frontend admin surfaces expose live REEVU runtime health and metrics, a grouped capability picker sourced from the backend manifest, an operator diagnostics card backed by a new admin-only REEVU diagnostics endpoint for request outcomes, provider latency, safe-failure distribution, policy-flag visibility, current routing posture, and aggregated routing-decision telemetry so operators can distinguish managed preference hits, misses, request overrides, and template fallbacks without inspecting logs, and the new superuser-only `/ai-diagnostics` route now provides the dedicated operator dashboard while AI Settings keeps a diagnostics handoff tab and inline live routing summary on the routing tab. The runtime power source is now surfaced explicitly as labels such as `Server env key`, AI Settings now provides provider and model presets plus scrollable setup dialogs so common paths like Gemini setup are easier to adopt without re-entering keys that are already active at the server runtime layer, and a new centralized AI model lifecycle catalog now controls backend default model identifiers, REEVU local fallback defaults, and AI Settings presets so alias-capable providers such as Google can move to `latest`-style model references instead of forcing frequent hardcoded renames across the codebase. That lifecycle catalog is now also exposed through a dedicated AI configuration manifest endpoint, so provider/model quick-start policy is backend-owned and AI Settings can consume the canonical contract instead of mirroring a second preset registry in the frontend; the latest frontend hardening pass now also normalizes unknown lifecycle identifiers at the AI Settings conversion boundary and locks in both empty-manifest and partial-manifest per-provider fallback behavior through focused page tests, so operator quick-start flows remain usable even when the backend catalog is incomplete. The backend manifest contract is now hardened as well: lifecycle fields are typed at the catalog and API response boundary, focused backend API tests now lock superuser access, provider coverage, and nested manifest shape for the model catalog endpoint, and the managed provider coverage is now aligned across runtime and UI so HuggingFace and FunctionGemma appear in the manifest, in fallback AI Settings presets, and in human-readable REEVU runtime labels instead of being stranded behind a four-provider subset. REEVU now also supports a clean local-vs-cloud split without concurrent provider contention: Ollama is a first-class advanced local provider with its own host/model settings, adapter, runtime reachability checks, catalog entry, UI preset, and status labeling, while cloud providers remain the default and recommended path; explicit provider selection now hard-routes a request or session to the chosen provider instead of silently falling through to a different provider, so local and cloud paths can coexist as selectable options without cross-talk. Phenotype comparison and trial summary endpoints now publish additive versioned database-backed trust metadata for REEVU consumption, and both surfaces now carry structured evidence envelopes with claims, typed evidence refs, calculation steps, uncertainty, and policy flags, with phenotype comparison adding envelope parity on compare/statistics flows and trial summary already carrying additive confidence and freshness metadata; compute contract hardening covers both output quality flags and nested input provenance metadata inside the existing contract, compute endpoints now emit durable audit-log entries for sync runs plus async submit, completion, and failure transitions through the canonical `audit_logs` path, and persistent compute lineage storage now complements those audits through a dedicated `compute_lineage_records` table plus additive lineage identifiers on sync and async compute contracts so lineage state survives beyond transient job storage; new cross-contract REEVU envelope tests now verify that compute provenance, trial-summary evidence envelopes, phenotype evidence refs, and chat-stage evidence assembly preserve evidence refs, calculation IDs, and validator expectations consistently across trust surfaces; the orphaned direct frontend-to-vendor AI client has been removed so the backend REEVU API remains the canonical production chat path, integration adapters now expose external connector capability metadata for routing and audit surfaces via the integration API, and REEVU agent settings now persist and execute prompt-mode capability classes with canonical sync and streaming chat-path prompt composition. Canonical sync and streaming REEVU chat traces now share request-correlated plan-execution and retrieval-audit metadata, sync function-backed responses now record REEVU metrics before returning, and `/api/v2/chat/diagnostics` now aggregates retrieval-execution telemetry across traced requests, functions, domains, services, compound plans, step execution traces, narrowing effectiveness, retrieval outcomes, and benchmark status. Cross-domain query retrieval audit now also reports touched tables, requested-versus-resolved domains, bounded resolved identifier samples, and safe-failure dependency context such as missing runtime services or weather lookup failure state without broadening trusted REEVU surfaces or canonical retrieval paths. Planner domain detection is now also hardened for the canonical benchmark lane so trial top-performer prompts carry analytics scope, deterministic genomic-selection prompts such as `genomic selection` and `GBLUP` now carry analytics scope, and drought-trait trial comparisons no longer drag the partial weather lane in unless weather or climate is explicitly requested. Chat validation now also consumes nested contract evidence refs, calculation steps, and deterministic method refs when assembling evidence packs for function-backed responses. Trial lookup parsing now also prefers the most specific named-trial phrase in natural-language prompts, and direct payload probing now confirms the remaining local `rq-04` and `rq-05` failures are function-level trial-resolution safe-failures against sparse org 1 trial data while `rq-07` is a function-level deterministic-compute safe-failure on missing GBLUP inputs. The canonical local benchmark artifact now also preserves per-case `safe_failure_source`, `safe_failure_payload`, and selected-org readiness attribution fields, so current failures self-identify as function-result retrieval or input blockers instead of requiring separate probe scripts to distinguish validator drift from sparse-tenant safe-failure. Downstream `backend/test_reports/reevu_authority_gap_report.json` and the REEVU acceptance-pack JSON and markdown now also preserve and render that failed-case attribution per surface, so operator-facing reports expose failure source, error category, missing inputs, searched retrieval paths, and readiness-versus-executor classification directly from the canonical artifact chain. The supplementary org 2 readiness census now marks Demo Organization as ready with `bio_gwas_runs: 1` and `bio_qtls: 2`, and the default aggregate local readiness census should continue to report org 2 as benchmark-ready even though the selected org 1 benchmark artifact remains blocked at 3/14 because its readiness blockers are unchanged. The refreshed local artifact still remains blocked at 3/14 because org 1 readiness blockers are unchanged. Focused backend validation for the latest control-plane and trust slices is green, including the refreshed AI provider service, LLM runtime, AI configuration API checkpoints, step-executor property tests, cross-domain handler tests, and focused frontend checkpoints for the new diagnostics route and admin navigation; separate unrelated frontend typecheck debt still exists elsewhere in the repo."
+  }
+}

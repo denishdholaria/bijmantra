@@ -1,0 +1,465 @@
+# Domain Registry
+# Maps all services to their target domain modules
+# This registry defines domain ownership and guides the service migration process
+
+domains:
+  core:
+    description: "Authentication, authorization, tenants, and platform infrastructure"
+    services:
+      # Core infrastructure services
+      - authorization.py
+      - audit_service.py
+      - event_bus.py
+      - rate_limiter.py
+      - job_service.py
+      - redis_security.py
+      - security_audit.py
+      - task_queue.py
+      - compute_engine.py
+      - data_export.py
+      - data_quality_service.py
+      - data_quality.py
+      - collaboration_service.py
+      - barcode_service.py
+      - label_printing.py
+      - scales_service.py
+      - quick_entry.py
+      - progress_tracker.py
+      - devguru_service.py
+      # Core subdirectories
+      - core/seasons_service.py
+      - import_engine/
+      - infra/
+      - chaitanya/
+      - prahari/
+      - rakshaka/
+      - ledger/
+      - social/
+      - compliance/
+
+  breeding:
+    description: "Breeding programs, crosses, trials, breeding values, and selection"
+    services:
+      # Breeding services
+      - breeding_value.py
+      - breeding_pipeline.py
+      - breeding_knowledge.py
+      - cross_service.py
+      - cross_prediction.py
+      - cross_search.py
+      - crossing_planner.py
+      - parent_selection.py
+      - selection_decisions.py
+      - selection_index.py
+      - pedigree_service.py
+      - pedigree.py
+      - doubled_haploid.py
+      - speed_breeding.py
+      - genetic_gain.py
+      - performance_ranking.py
+      - performance_service.py
+      - trial_service.py
+      - trial_design.py
+      - trial_planning.py
+      - trial_search.py
+      - trial_network.py
+      - experimental_design_generator.py
+      - stability_analysis.py
+      - gxe_analysis.py
+      - correlation_analysis.py
+      - mixed_model.py
+      - nursery.py
+      - variety_licensing.py
+      - economics.py
+      - proposal_service.py
+      - program_search.py
+      # Breeding compute
+      - yield_prediction/
+      - analytics/
+
+  genomics:
+    description: "GWAS, genomic selection, molecular breeding, and genetic analysis"
+    services:
+      # Genomics services
+      - gwas.py
+      - genomic_selection.py
+      - marker_assisted.py
+      - molecular_breeding.py
+      - population_genetics.py
+      - qtl_mapping.py
+      - haplotype_analysis.py
+      - ld_analysis.py
+      - snp_clustering.py
+      - parentage_analysis.py
+      - genetic_diversity.py
+      - genotyping.py
+      - genomics_data.py
+      - bioinformatics.py
+      - biosimulation.py
+      - disease_resistance.py
+      - nirs_prediction.py
+      # Genomics compute
+      - genomics_statistics/
+
+  phenotyping:
+    description: "Field observations, phenotype analysis, image analysis, and vision systems"
+    services:
+      # Phenotyping services
+      - phenotype_analysis.py
+      - phenomic_selection.py
+      - phenology.py
+      - image_analysis.py
+      - image_service.py
+      - vision_annotation.py
+      - vision_datasets.py
+      - vision_deployment.py
+      - vision_model.py
+      - vision_training.py
+      - ml_bounding_box_extractor.py
+      - observation_search.py
+      - quality_control.py
+      - trait_ontology.py
+      - trait_search.py
+      - abiotic_stress.py
+      - field_layout_service.py
+      - harvest_management.py
+      - processing_batch.py
+      - dus_testing.py
+      - dus_crops.py
+      # Phenotyping subdirectory
+      - phenotyping/
+
+  germplasm:
+    description: "Seed and genetic resource management, germplasm passport, and inventory"
+    services:
+      # Germplasm services
+      - germplasm_service.py
+      - germplasm_passport.py
+      - germplasm_search.py
+      - germplasm_attribute_service.py
+      - seed_inventory.py
+      - seed_traceability.py
+      - seedlot_search.py
+      - dispatch_management.py
+
+  environment:
+    description: "Weather, climate, environmental physics, and field environment"
+    services:
+      # Environment services
+      - weather_service.py
+      - weather_integration.py
+      - weather_integration_service.py
+      - field_environment.py
+      - gdd_calculator_service.py
+      - field_gdd_service.py
+      - cross_domain_gdd_service.py
+      - gdd_error_handler.py
+      - gee_integration_service.py
+      - environmental_physics.py
+      - crop_calendar.py
+      - solar.py
+      - water_balance_service.py
+      - carbon_monitoring_service.py
+      - emissions_calculator_service.py
+      - sustainability_metrics_service.py
+      - yield_gap_service.py
+      - soil_analysis.py
+
+  spatial:
+    description: "Geospatial analytics, maps, location services, and spatial analysis"
+    services:
+      # Spatial services
+      - spatial_analysis.py
+      - spatial_correction.py
+      - spatial.py
+      - maps_service.py
+      - location_search.py
+      - space_research.py
+
+  ai:
+    description: "Veena AI assistant, RAG, ML services, and cognitive functions"
+    services:
+      # AI services
+      - veena_service.py
+      - veena_cognitive_service.py
+      - function_calling_service.py
+      - voice_service.py
+      - dimensionality_reduction.py
+      - statistics_calculator.py
+      - statistics.py
+      - math_utils.py
+      - simulation_service.py
+      - simulation.py
+      # AI subdirectory
+      - ai/
+      # Recommendation engine
+      - reevu/
+
+  interop:
+    description: "BrAPI and external integrations, data exchange standards"
+    services:
+      # Interop services
+      - integration_hub.py
+      - grin_global.py
+      - iot_aggregation.py
+      - sensor_network.py
+      - vault_sensors.py
+      # IoT subdirectory
+      - iot/
+      # Robotics subdirectory
+      - robotics/
+
+# Migration tracking
+migration_status:
+  total_services: 137
+  migrated: 0
+  pending: 137
+  
+# Service subdirectories
+subdirectories:
+  ai:
+    domain: ai
+    files:
+      - engine.py
+      - memory.py
+      - quota.py
+      - tools.py
+  
+  analytics:
+    domain: breeding
+    target: compute/analytics
+    files:
+      - cold_storage_3d_mapper.py
+      - crop_ontology_sync_worker.py
+      - custom_report_weasyprint_engine.py
+      - duckdb_parquet_writer.py
+      - engine.py
+      - etl_phenotype_extractor.py
+      - etl_service.py
+      - gblup_matrix_solver.py
+      - gwas_plink_adapter.py
+      - gxe_interaction_scorer.py
+      - ssp_scenario_parser.py
+      - storage.py
+      - yield_env_covariate_matrix.py
+  
+  chaitanya:
+    domain: core
+    files:
+      - orchestrator.py
+  
+  compliance:
+    domain: core
+    files:
+      - audit.py
+      - batch.py
+      - email_service.py
+      - pdf_generator.py
+      - rules.py
+  
+  core:
+    domain: core
+    files:
+      - seasons_service.py
+  
+  genomics_statistics:
+    domain: genomics
+    target: compute/statistics
+    files:
+      - kinship.py
+  
+  import_engine:
+    domain: core
+    files:
+      - base.py
+      - domain_importers.py
+      - file_importers.py
+      - schemas.py
+      - validator.py
+  
+  infra:
+    domain: core
+    files:
+      - cfr_part11_audit_logger.py
+      - csv_enterprise_regex_mapper.py
+      - event_trigger_rule_engine.py
+      - gee_auth_manager.py
+      - gee_field_boundary_extractor.py
+      - gee_ndvi_raster_fetcher.py
+      - image_leaf_area_calculator.py
+      - marketplace_webhook_dispatcher.py
+      - mqtt_lorawan_ingestion_node.py
+      - rbac_row_level_security_middleware.py
+      - saml_oidc_auth_provider.py
+      - uav_orthomosaic_stitcher_webhook.py
+      - websocket_crdt_sync_manager.py
+  
+  iot:
+    domain: interop
+    files:
+      - device_service.py
+      - telemetry_service.py
+  
+  ledger:
+    domain: core
+    files:
+      - chain.py
+      - consensus.py
+      - contracts.py
+      - merkle.py
+      - models.py
+      - service.py
+  
+  phenotyping:
+    domain: phenotyping
+    files:
+      - observation_service.py
+      - observation_unit_service.py
+      - spectral_indices.py
+  
+  prahari:
+    domain: core
+    files:
+      - observer.py
+      - responder.py
+      - threat_analyzer.py
+  
+  rakshaka:
+    domain: core
+    files:
+      - anomaly_detector.py
+      - healer.py
+      - health_monitor.py
+  
+  reevu:
+    domain: ai
+    files:
+      - deterministic_router.py
+      - metrics.py
+      - orchestrator.py
+      - planner.py
+      - policy_guard.py
+      - recommendation_formatter.py
+      - response_validator.py
+  
+  robotics:
+    domain: interop
+    files:
+      - geo_utils.py
+      - kinematics.py
+      - mission_control.py
+      - path_planning.py
+      - sensors.py
+  
+  social:
+    domain: core
+    files:
+      - content.py
+      - graph.py
+      - groups.py
+      - moderation.py
+  
+  yield_prediction:
+    domain: breeding
+    target: compute/yield_prediction
+    files:
+      - attribution.py
+      - ensemble.py
+      - ml.py
+      - process.py
+      - statistical.py
+      - yield_matrix_math.py
+
+# Domain boundaries and contracts
+contracts:
+  core:
+    provides:
+      - authentication
+      - authorization
+      - audit_logging
+      - event_bus
+      - job_queue
+      - rate_limiting
+      - data_import
+      - compliance
+    consumers:
+      - all domains
+  
+  breeding:
+    provides:
+      - breeding_programs
+      - crosses
+      - trials
+      - breeding_values
+      - selection_indices
+    depends_on:
+      - core
+      - genomics
+      - phenotyping
+      - germplasm
+  
+  genomics:
+    provides:
+      - gwas_analysis
+      - genomic_selection
+      - marker_analysis
+      - genetic_diversity
+    depends_on:
+      - core
+      - germplasm
+  
+  phenotyping:
+    provides:
+      - observations
+      - phenotype_analysis
+      - image_analysis
+      - vision_models
+    depends_on:
+      - core
+      - spatial
+  
+  germplasm:
+    provides:
+      - germplasm_management
+      - seed_inventory
+      - passport_data
+    depends_on:
+      - core
+  
+  environment:
+    provides:
+      - weather_data
+      - climate_analysis
+      - gdd_calculation
+      - environmental_monitoring
+    depends_on:
+      - core
+      - spatial
+  
+  spatial:
+    provides:
+      - geospatial_analysis
+      - maps
+      - location_services
+    depends_on:
+      - core
+  
+  ai:
+    provides:
+      - veena_assistant
+      - recommendations
+      - ml_services
+      - cognitive_functions
+    depends_on:
+      - core
+      - all domains (for context)
+  
+  interop:
+    provides:
+      - brapi_endpoints
+      - external_integrations
+      - iot_integration
+      - robotics_control
+    depends_on:
+      - core
+      - all domains (for data exchange)

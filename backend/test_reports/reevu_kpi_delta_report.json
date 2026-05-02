@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-02-25T13:56:24.160280+00:00",
+  "inputs": {
+    "baseline_cross_domain": "provided",
+    "latest_cross_domain": "provided",
+    "latest_ops_report": "provided"
+  },
+  "metrics": {
+    "domain_detection_accuracy": {
+      "before": 0.8667,
+      "after": 0.8667,
+      "delta": 0.0,
+      "floor": 0.85,
+      "before_floor_met": true,
+      "after_floor_met": true,
+      "source": "cross_domain"
+    },
+    "compound_classification": {
+      "before": 0.8,
+      "after": 0.8,
+      "delta": 0.0,
+      "floor": 0.8,
+      "before_floor_met": true,
+      "after_floor_met": true,
+      "source": "cross_domain"
+    },
+    "step_adequacy": {
+      "before": 0.8667,
+      "after": 0.8667,
+      "delta": 0.0,
+      "floor": 0.85,
+      "before_floor_met": true,
+      "after_floor_met": true,
+      "source": "cross_domain"
+    },
+    "trace_completeness": {
+      "before": null,
+      "after": 1.0,
+      "delta": null,
+      "floor": 0.99,
+      "before_floor_met": null,
+      "after_floor_met": true,
+      "source": "ops_report"
+    },
+    "tool_call_precision": {
+      "before": null,
+      "after": 1.0,
+      "delta": null,
+      "floor": 0.92,
+      "before_floor_met": null,
+      "after_floor_met": true,
+      "source": "ops_report"
+    }
+  },
+  "overall_after_floor_met": true
+}

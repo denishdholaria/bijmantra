@@ -1,0 +1,1 @@
+# Inventory domain package

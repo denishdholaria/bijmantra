@@ -1,0 +1,257 @@
+{
+  "total_prompts": 15,
+  "domain_detection_accuracy": 0.8667,
+  "compound_classification_accuracy": 0.8,
+  "step_adequacy_rate": 0.8667,
+  "domain_correct": 13,
+  "compound_correct": 12,
+  "step_adequate": 13,
+  "details": [
+    {
+      "prompt_id": "cd-01",
+      "domain_match": true,
+      "expected_domains": [
+        "breeding",
+        "trials",
+        "weather"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "trials",
+        "weather"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 4,
+      "expected_min_steps": 3
+    },
+    {
+      "prompt_id": "cd-02",
+      "domain_match": true,
+      "expected_domains": [
+        "analytics",
+        "breeding",
+        "genomics"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "genomics"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 3,
+      "expected_min_steps": 3
+    },
+    {
+      "prompt_id": "cd-03",
+      "domain_match": false,
+      "expected_domains": [
+        "analytics",
+        "weather"
+      ],
+      "detected_domains": [
+        "weather"
+      ],
+      "compound_match": false,
+      "step_ok": false,
+      "step_count": 1,
+      "expected_min_steps": 2
+    },
+    {
+      "prompt_id": "cd-04",
+      "domain_match": true,
+      "expected_domains": [
+        "trials"
+      ],
+      "detected_domains": [
+        "trials"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 1,
+      "expected_min_steps": 1
+    },
+    {
+      "prompt_id": "cd-05",
+      "domain_match": true,
+      "expected_domains": [
+        "genomics"
+      ],
+      "detected_domains": [
+        "breeding",
+        "genomics"
+      ],
+      "compound_match": false,
+      "step_ok": true,
+      "step_count": 2,
+      "expected_min_steps": 1
+    },
+    {
+      "prompt_id": "cd-06",
+      "domain_match": true,
+      "expected_domains": [
+        "analytics",
+        "trials"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "trials"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 3,
+      "expected_min_steps": 2
+    },
+    {
+      "prompt_id": "cd-07",
+      "domain_match": true,
+      "expected_domains": [
+        "breeding",
+        "weather"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "trials",
+        "weather"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 4,
+      "expected_min_steps": 2
+    },
+    {
+      "prompt_id": "cd-08",
+      "domain_match": true,
+      "expected_domains": [
+        "breeding"
+      ],
+      "detected_domains": [
+        "breeding"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 1,
+      "expected_min_steps": 1
+    },
+    {
+      "prompt_id": "cd-09",
+      "domain_match": true,
+      "expected_domains": [
+        "analytics",
+        "breeding",
+        "genomics",
+        "trials"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "genomics",
+        "trials"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 4,
+      "expected_min_steps": 4
+    },
+    {
+      "prompt_id": "cd-10",
+      "domain_match": false,
+      "expected_domains": [
+        "analytics",
+        "breeding"
+      ],
+      "detected_domains": [
+        "breeding"
+      ],
+      "compound_match": false,
+      "step_ok": false,
+      "step_count": 1,
+      "expected_min_steps": 2
+    },
+    {
+      "prompt_id": "cd-11",
+      "domain_match": true,
+      "expected_domains": [
+        "weather"
+      ],
+      "detected_domains": [
+        "weather"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 1,
+      "expected_min_steps": 1
+    },
+    {
+      "prompt_id": "cd-12",
+      "domain_match": true,
+      "expected_domains": [
+        "breeding",
+        "genomics"
+      ],
+      "detected_domains": [
+        "breeding",
+        "genomics"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 2,
+      "expected_min_steps": 2
+    },
+    {
+      "prompt_id": "cd-13",
+      "domain_match": true,
+      "expected_domains": [
+        "analytics",
+        "trials",
+        "weather"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "trials",
+        "weather"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 4,
+      "expected_min_steps": 3
+    },
+    {
+      "prompt_id": "cd-14",
+      "domain_match": true,
+      "expected_domains": [
+        "analytics",
+        "breeding",
+        "genomics"
+      ],
+      "detected_domains": [
+        "analytics",
+        "breeding",
+        "genomics"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 3,
+      "expected_min_steps": 3
+    },
+    {
+      "prompt_id": "cd-15",
+      "domain_match": true,
+      "expected_domains": [
+        "trials"
+      ],
+      "detected_domains": [
+        "trials"
+      ],
+      "compound_match": true,
+      "step_ok": true,
+      "step_count": 1,
+      "expected_min_steps": 1
+    }
+  ]
+}

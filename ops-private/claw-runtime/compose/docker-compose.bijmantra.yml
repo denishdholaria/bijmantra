@@ -1,0 +1,168 @@
+# BijMantra Autonomous Development Stack
+# Canonical staged private-ops owner for the claw execution fabric.
+#
+# Runs:
+#   1. OpenClaw Gateway (always-on agent runtime with cron)
+#   2. OpenClaw CLI (interactive agent sessions)
+#   3. PostgreSQL (BijMantra dev database)
+#   4. Redis (caching + queues)
+#
+# Usage:
+#   podman compose -f ops-private/claw-runtime/compose/docker-compose.bijmantra.yml up -d
+#
+# The gateway defaults to loopback-only token auth for local operator use.
+# Cron jobs from the configured runtime home are loaded at startup.
+
+name: bijmantra-private-runtime
+
+services:
+  # ── OpenClaw Gateway (Always-On Agent Runtime) ─────────────────────
+  openclaw-gateway:
+    container_name: bijmantra-openclaw-gateway
+    image: bijmantra-openclaw:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile.openclaw
+    user: "0:0"
+    labels:
+      io.bijmantra.stack: private-runtime
+      io.bijmantra.role: openclaw-gateway
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_CONFIG_DIR: /home/node/.openclaw
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      DOCKER_HOST: unix:///var/run/docker.sock
+      OPENCLAW_GATEWAY_AUTH: "token"
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:?set OPENCLAW_GATEWAY_TOKEN}
+      OPENCLAW_GATEWAY_BIND: "custom"
+      OPENCLAW_GATEWAY_CUSTOM_BIND: "127.0.0.1"
+      OPENCLAW_GATEWAY_PORT: "18789"
+      OPENCLAW_GATEWAY_CONTROLUI_ENABLED: "false"
+      TZ: ${OPENCLAW_TZ:-Asia/Kolkata}
+    volumes:
+      # OpenClaw runtime/config home. Export OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh.
+      - ${OPENCLAW_CONFIG_DIR:?set OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh}:/home/node/.openclaw
+      # Mirror the host-visible runtime path so docker-backed sandboxes can use
+      # the same absolute path when the daemon interprets bind mounts outside
+      # the gateway container.
+      - ${OPENCLAW_CONFIG_DIR:?set OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh}:${OPENCLAW_CONFIG_DIR:?set OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh}
+      # Provider credentials are read from the mounted OpenClaw auth store
+      # (seed by linking a provider channel and binding the existing `main` agent; do not commit auth-profiles.json).
+      # BijMantra repo root mounted for agent access. Do not fall back to the
+      # compose directory, which breaks isolated overnight lanes.
+      - ${OPENCLAW_WORKSPACE_DIR:?set OPENCLAW_WORKSPACE_DIR to the BijMantra repo root or run ops-private/claw-runtime/scripts/bjm-start.sh}:/home/node/.openclaw/workspace
+      # Mirror the host-visible repo path so docker-backed sandboxes receive a
+      # bind source that exists for the Podman daemon as well as the gateway.
+      - ${OPENCLAW_WORKSPACE_DIR:?set OPENCLAW_WORKSPACE_DIR to the BijMantra repo root or run ops-private/claw-runtime/scripts/bjm-start.sh}:${OPENCLAW_WORKSPACE_DIR:?set OPENCLAW_WORKSPACE_DIR to the BijMantra repo root or run ops-private/claw-runtime/scripts/bjm-start.sh}
+      # Required when enabling OpenClaw's docker-backed tool sandbox from a
+      # containerized gateway. For Podman-managed stacks, point this at the
+      # Podman socket exposed by the machine VM.
+      - ${OPENCLAW_DOCKER_SOCKET:?set OPENCLAW_DOCKER_SOCKET to the Docker or Podman socket path for sandboxed agent tools}:/var/run/docker.sock
+    ports:
+      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+      - "127.0.0.1:${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+    init: true
+    security_opt:
+      - label=disable
+    restart: unless-stopped
+    command:
+      [
+        "node",
+        "openclaw.mjs",
+        "gateway",
+      ]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── OpenClaw CLI (Interactive Agent Sessions) ──────────────────────
+  openclaw-cli:
+    container_name: bijmantra-openclaw-cli
+    image: bijmantra-openclaw:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile.openclaw
+    labels:
+      io.bijmantra.stack: private-runtime
+      io.bijmantra.role: openclaw-cli
+    network_mode: "service:openclaw-gateway"
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_CONFIG_DIR: /home/node/.openclaw
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:?set OPENCLAW_GATEWAY_TOKEN}
+      BROWSER: echo
+      TZ: ${OPENCLAW_TZ:-Asia/Kolkata}
+    volumes:
+      - ${OPENCLAW_CONFIG_DIR:?set OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh}:/home/node/.openclaw
+      - ${OPENCLAW_CONFIG_DIR:?set OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh}:${OPENCLAW_CONFIG_DIR:?set OPENCLAW_CONFIG_DIR or run ops-private/claw-runtime/scripts/bjm-start.sh}
+      - ${OPENCLAW_WORKSPACE_DIR:?set OPENCLAW_WORKSPACE_DIR to the BijMantra repo root or run ops-private/claw-runtime/scripts/bjm-start.sh}:/home/node/.openclaw/workspace
+      - ${OPENCLAW_WORKSPACE_DIR:?set OPENCLAW_WORKSPACE_DIR to the BijMantra repo root or run ops-private/claw-runtime/scripts/bjm-start.sh}:${OPENCLAW_WORKSPACE_DIR:?set OPENCLAW_WORKSPACE_DIR to the BijMantra repo root or run ops-private/claw-runtime/scripts/bjm-start.sh}
+    stdin_open: true
+    tty: true
+    init: true
+    entrypoint: ["node", "dist/index.js"]
+    depends_on:
+      - openclaw-gateway
+
+  # ── PostgreSQL (BijMantra Development Database) ────────────────────
+  postgres:
+    container_name: bijmantra-runtime-postgres
+    image: postgres:16-bookworm
+    labels:
+      io.bijmantra.stack: private-runtime
+      io.bijmantra.role: runtime-postgres
+    environment:
+      POSTGRES_DB: bijmantra
+      POSTGRES_USER: bijmantra
+      POSTGRES_PASSWORD: bijmantra
+    volumes:
+      - bijmantra-pg-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bijmantra"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis (Caching + Message Queue) ────────────────────────────────
+  redis:
+    container_name: bijmantra-runtime-redis
+    image: redis:7-bookworm
+    labels:
+      io.bijmantra.stack: private-runtime
+      io.bijmantra.role: runtime-redis
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  bijmantra-pg-data:

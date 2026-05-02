@@ -1,0 +1,259 @@
+# BijMantra Unified Compose
+# Single file for all development infrastructure.
+#
+# Usage:
+#   ./dev.sh              — start everything for development
+#   ./dev.sh --minimal    — PostgreSQL only
+#   ./dev.sh --stop       — stop all services
+#
+# Manual profile control:
+#   podman compose up -d postgres                          # just DB
+#   podman compose --profile infra up -d                   # + Redis, MinIO, Meilisearch
+#   podman compose --profile tools up -d                   # + Adminer, Redis Commander
+#   podman compose --profile beingbijmantra up -d          # + project-brain sidecar
+
+services:
+  # ── PostgreSQL (PostGIS + pgvector) ────────────────────────────────
+  postgres:
+    build:
+      context: ./docker/postgres
+      dockerfile: Containerfile
+    image: bijmantra-postgres:latest
+    container_name: bijmantra-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bijmantra_db}
+      POSTGRES_USER: ${POSTGRES_USER:-bijmantra_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_in_production}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./docker/postgres/postgresql.conf:/etc/postgresql/custom.conf:ro
+    # Override shared_preload_libraries at startup so pgaudit can be loaded.
+    # The -c flags are appended to the default postgres command by the entrypoint.
+    command: >
+      postgres
+      -c shared_preload_libraries=timescaledb,pgaudit
+      -c config_file=/etc/postgresql/custom.conf
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bijmantra_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  # ── Redis ──────────────────────────────────────────────────────────
+  redis:
+    profiles: [infra]
+    image: redis:8-alpine
+    container_name: bijmantra-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  # ── MinIO (object storage) ─────────────────────────────────────────
+  minio:
+    profiles: [infra]
+    image: minio/minio:latest
+    container_name: bijmantra-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - bijmantra-network
+
+  # ── Meilisearch (instant search) ───────────────────────────────────
+  meilisearch:
+    profiles: [infra]
+    image: getmeili/meilisearch:v1.34
+    container_name: bijmantra-meilisearch
+    environment:
+      MEILI_ENV: ${MEILI_ENV:-development}
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-}
+    volumes:
+      - meilisearch_data:/meili_data
+    ports:
+      - "${MEILISEARCH_PORT:-7700}:7700"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  # ── Being Bijmantra project-brain sidecar (SurrealDB) ──────────────
+  beingbijmantra-surrealdb:
+    profiles: [beingbijmantra]
+    image: surrealdb/surrealdb:v3.0.4
+    container_name: beingbijmantra-surrealdb
+    ports:
+      - "${BEINGBIJMANTRA_SURREAL_PORT:-8083}:8000"
+    volumes:
+      - beingbijmantra_surrealdb_data:/mydata
+    command: start --log trace --bind 0.0.0.0:8000 --user root --pass root --allow-all surrealkv:///mydata/beingbijmantra-surreal.db
+    networks:
+      - bijmantra-network
+
+  # ── Chloe Gateway (agent runtime) ───────────────────────────────────
+  chloe-gateway:
+    profiles: [chloe]
+    container_name: bijmantra-chloe-gateway
+    image: bijmantra-chloe:latest
+    build:
+      context: ./ops-private/claw-runtime
+      dockerfile: Dockerfile.openclaw
+    user: "0:0"
+    labels:
+      io.bijmantra.role: chloe-gateway
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_CONFIG_DIR: /home/node/.openclaw
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      OPENCLAW_GATEWAY_AUTH: "token"
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-bijmantra-dev-token}
+      OPENCLAW_GATEWAY_BIND: "custom"
+      OPENCLAW_GATEWAY_CUSTOM_BIND: "0.0.0.0"
+      OPENCLAW_GATEWAY_PORT: "18789"
+      OPENCLAW_GATEWAY_CONTROLUI_ENABLED: "false"
+      TZ: ${OPENCLAW_TZ:-Asia/Kolkata}
+    volumes:
+      - ./.openclaw:/home/node/.openclaw
+      - .:/home/node/.openclaw/workspace
+    ports:
+      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+      - "127.0.0.1:${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+    init: true
+    security_opt:
+      - label=disable
+    restart: unless-stopped
+    command: ["node", "openclaw.mjs", "gateway"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bijmantra-network
+
+  # ── Chloe CLI (interactive agent sessions) ─────────────────────────
+  chloe-cli:
+    profiles: [chloe]
+    container_name: bijmantra-chloe-cli
+    image: bijmantra-chloe:latest
+    labels:
+      io.bijmantra.role: chloe-cli
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_CONFIG_DIR: /home/node/.openclaw
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-bijmantra-dev-token}
+      OPENCLAW_GATEWAY_URL: http://chloe-gateway:18789
+      BROWSER: echo
+      TZ: ${OPENCLAW_TZ:-Asia/Kolkata}
+    volumes:
+      - ./.openclaw:/home/node/.openclaw
+      - .:/home/node/.openclaw/workspace
+    stdin_open: true
+    tty: true
+    init: true
+    entrypoint: ["node", "dist/index.js"]
+    networks:
+      - bijmantra-network
+
+  # ── Chloe Sandbox (agent tool sandbox) ─────────────────────────────
+  chloe-sandbox:
+    profiles: [chloe]
+    container_name: bijmantra-chloe-sandbox
+    build:
+      context: .
+      dockerfile: Dockerfile.bijmantra-sandbox
+    labels:
+      io.bijmantra.role: chloe-sandbox
+    volumes:
+      - .:/workspace
+    networks:
+      - bijmantra-network
+
+  # ── Dev tools (Adminer, Redis Commander) ───────────────────────────
+  adminer:
+    profiles: [tools]
+    image: adminer:latest
+    container_name: bijmantra-adminer
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    networks:
+      - bijmantra-network
+
+  redis-commander:
+    profiles: [tools]
+    image: rediscommander/redis-commander:latest
+    container_name: bijmantra-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    depends_on:
+      - redis
+    networks:
+      - bijmantra-network
+
+  # ── OmShriMaatreNamaha orchestration DB ────────────────────────────
+  om-shri-maatre-namaha-db:
+    profiles: [tools]
+    image: surrealdb/surrealdb:v3.0.4
+    container_name: OmShriMaatreNamahaDB
+    ports:
+      - "8082:8000"
+    volumes:
+      - om_shri_maatre_namaha_db_data:/mydata
+    command: start --log trace --bind 0.0.0.0:8000 --user root --pass root --allow-all surrealkv:///mydata/surreal.db
+    networks:
+      - bijmantra-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  meilisearch_data:
+  beingbijmantra_surrealdb_data:
+  om_shri_maatre_namaha_db_data:
+
+networks:
+  bijmantra-network:
+    driver: bridge

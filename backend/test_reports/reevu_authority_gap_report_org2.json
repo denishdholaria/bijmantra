@@ -1,0 +1,392 @@
+{
+  "generated_at": "2026-04-03T12:18:52.876961+00:00",
+  "runtime_path": "local",
+  "overall_gap_status": "clear",
+  "selected_local_organization_id": 2,
+  "local_organization_selection": {
+    "mode": "cli",
+    "requested_organization_id": 2,
+    "effective_organization_id": 2
+  },
+  "organizations_scanned": 2,
+  "benchmark_ready_organization_ids": [
+    2
+  ],
+  "benchmark_ready_demo_organization_ids": [
+    2
+  ],
+  "benchmark_ready_non_demo_organization_ids": [],
+  "blocked_organization_ids": [
+    1
+  ],
+  "common_blockers_across_blocked_orgs": [
+    "bio_gwas_runs.empty",
+    "bio_qtls.empty",
+    "observations.empty"
+  ],
+  "policy_guidance": [],
+  "selected_local_org_blockers": [],
+  "selected_local_org_warnings": [
+    "trials.sparse"
+  ],
+  "surface_gaps": [
+    {
+      "surface_key": "breeding_germplasm_detail",
+      "surface_label": "Breeding germplasm detail",
+      "trust_status": "trusted",
+      "benchmark_ids": [
+        "rq-01",
+        "rq-12"
+      ],
+      "question_families": [
+        "breeding::single_domain"
+      ],
+      "expected_functions": [
+        "get_germplasm_details"
+      ],
+      "total_cases": 2,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-01",
+        "rq-12"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "breeding_phenotype_summary_and_comparison",
+      "surface_label": "Breeding phenotype summary and comparison",
+      "trust_status": "trusted",
+      "benchmark_ids": [
+        "rq-02",
+        "rq-03"
+      ],
+      "question_families": [
+        "breeding::breeding_analytics",
+        "breeding::single_domain"
+      ],
+      "expected_functions": [
+        "compare_germplasm",
+        "get_trait_summary"
+      ],
+      "total_cases": 2,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-02",
+        "rq-03"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "trial_summary_and_ranking",
+      "surface_label": "Trial summary and ranking",
+      "trust_status": "trusted",
+      "benchmark_ids": [
+        "rq-04",
+        "rq-05",
+        "rq-13"
+      ],
+      "question_families": [
+        "trials::single_domain",
+        "trials::trials_analytics"
+      ],
+      "expected_functions": [
+        "get_trial_results"
+      ],
+      "total_cases": 3,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-04",
+        "rq-05",
+        "rq-13"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "genomics_marker_and_qtl_lookup",
+      "surface_label": "Genomics marker and QTL lookup",
+      "trust_status": "trusted",
+      "benchmark_ids": [
+        "rq-06"
+      ],
+      "question_families": [
+        "genomics::single_domain"
+      ],
+      "expected_functions": [
+        "get_marker_associations"
+      ],
+      "total_cases": 1,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-06"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "deterministic_breeding_value_compute",
+      "surface_label": "Deterministic breeding-value compute",
+      "trust_status": "trusted",
+      "benchmark_ids": [
+        "rq-07"
+      ],
+      "question_families": [
+        "genomics::genomics_analytics"
+      ],
+      "expected_functions": [
+        "calculate_breeding_value"
+      ],
+      "total_cases": 1,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-07"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "cross_domain_orchestration",
+      "surface_label": "Cross-domain orchestration",
+      "trust_status": "trusted",
+      "benchmark_ids": [
+        "rq-08",
+        "rq-09",
+        "rq-10",
+        "rq-11",
+        "rq-14"
+      ],
+      "question_families": [
+        "breeding::breeding_analytics_protocol",
+        "breeding::breeding_genomics",
+        "breeding::breeding_trials",
+        "trials::trials_analytics_weather"
+      ],
+      "expected_functions": [
+        "cross_domain_query"
+      ],
+      "total_cases": 5,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-08",
+        "rq-09",
+        "rq-10",
+        "rq-11",
+        "rq-14"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "weather_enrichment_inside_cross_domain_queries",
+      "surface_label": "Weather enrichment inside cross-domain queries",
+      "trust_status": "partial",
+      "benchmark_ids": [
+        "rq-10"
+      ],
+      "question_families": [
+        "trials::trials_analytics_weather"
+      ],
+      "expected_functions": [
+        "cross_domain_query"
+      ],
+      "total_cases": 1,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-10"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    },
+    {
+      "surface_key": "speed_breeding_protocol_enrichment",
+      "surface_label": "Speed-breeding protocol enrichment inside cross-domain queries",
+      "trust_status": "partial",
+      "benchmark_ids": [
+        "rq-11"
+      ],
+      "question_families": [
+        "breeding::breeding_analytics_protocol"
+      ],
+      "expected_functions": [
+        "cross_domain_query"
+      ],
+      "total_cases": 1,
+      "failed_cases": 0,
+      "pass_rate": 1.0,
+      "failed_benchmark_ids": [],
+      "passed_benchmark_ids": [
+        "rq-11"
+      ],
+      "failed_checks": [],
+      "safe_failure_sources": [],
+      "safe_failure_error_categories": [],
+      "failure_attribution_statuses": [],
+      "failure_attribution_summary": {},
+      "failed_case_details": [],
+      "selected_local_org_status": "ready",
+      "selected_local_org_blockers": [],
+      "selected_local_org_warnings": [
+        "trials.sparse"
+      ],
+      "common_blockers_across_blocked_orgs": [
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty",
+        "observations.empty"
+      ],
+      "benchmark_ready_local_org_count": 1,
+      "benchmark_ready_organization_ids": [
+        2
+      ],
+      "gap_status": "clear"
+    }
+  ]
+}

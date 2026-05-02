@@ -1,0 +1,98 @@
+{
+  "generated_at": "2026-04-03T12:18:50.455390+00:00",
+  "runtime_path": "local",
+  "local_organization_selection": {
+    "mode": "cli",
+    "requested_organization_id": 2,
+    "effective_organization_id": 2
+  },
+  "selected_local_organization_id": 2,
+  "organizations_scanned": 2,
+  "benchmark_ready_organization_ids": [
+    2
+  ],
+  "benchmark_ready_demo_organization_ids": [
+    2
+  ],
+  "benchmark_ready_non_demo_organization_ids": [],
+  "blocked_organization_ids": [
+    1
+  ],
+  "least_blocked_local_organization": null,
+  "policy_guidance": [],
+  "organizations": [
+    {
+      "organization_id": 1,
+      "organization_name": "Default Organization",
+      "is_active": true,
+      "listed_in_active_organizations": true,
+      "organization_scope": "non_demo",
+      "selected": false,
+      "runtime_status": "blocked",
+      "readiness_blockers": [
+        "observations.empty",
+        "bio_gwas_runs.empty",
+        "bio_qtls.empty"
+      ],
+      "readiness_warnings": [
+        "germplasm.sparse",
+        "trials.sparse"
+      ],
+      "surface_counts": {
+        "germplasm": 2,
+        "trials": 3,
+        "observations": 0,
+        "bio_gwas_runs": 0,
+        "bio_qtls": 0
+      },
+      "surface_errors": {},
+      "surface_examples": {
+        "germplasm": [
+          "TEST-VAR-8841-A",
+          "TEST-VAR-8841-B"
+        ],
+        "trials": [
+          "Auto Test Trial 1770461736550",
+          "aaaa",
+          "Cotton Crop Improvement - Drought"
+        ]
+      }
+    },
+    {
+      "organization_id": 2,
+      "organization_name": "Demo Organization",
+      "is_active": true,
+      "listed_in_active_organizations": true,
+      "organization_scope": "demo_dataset",
+      "selected": true,
+      "runtime_status": "ready",
+      "readiness_blockers": [],
+      "readiness_warnings": [
+        "trials.sparse"
+      ],
+      "surface_counts": {
+        "germplasm": 19,
+        "trials": 4,
+        "observations": 35,
+        "bio_gwas_runs": 1,
+        "bio_qtls": 2
+      },
+      "surface_errors": {},
+      "surface_examples": {
+        "germplasm": [
+          "GJ-39",
+          "GG-2",
+          "GR-11",
+          "GW-322",
+          "GM-6"
+        ],
+        "trials": [
+          "Rice Yield Trial 2024",
+          "Wheat Disease Resistance Trial",
+          "Maize Hybrid Evaluation 2024",
+          "Ludhiana Advanced Yield Trial 2025"
+        ]
+      }
+    }
+  ]
+}

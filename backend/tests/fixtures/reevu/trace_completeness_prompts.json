@@ -1,0 +1,22 @@
+[
+  {"id": "trace-01", "message": "Hello REEVU"},
+  {"id": "trace-02", "message": "Summarize our breeding goals"},
+  {"id": "trace-03", "message": "What data do you need for trial analysis?"},
+  {"id": "trace-04", "message": "Explain marker-assisted selection"},
+  {"id": "trace-05", "message": "Give me a simple overview of QTL mapping"},
+  {"id": "trace-06", "message": "How should we plan season-wise trials?"},
+  {"id": "trace-07", "message": "What is genotype by environment interaction?"},
+  {"id": "trace-08", "message": "Suggest steps to improve drought tolerance pipeline"},
+  {"id": "trace-09", "message": "How do I compare two varieties in principle?"},
+  {"id": "trace-10", "message": "Explain seed lot traceability best practices"},
+  {"id": "trace-11", "message": "What are common causes of trial failure?"},
+  {"id": "trace-12", "message": "How do we structure data collection forms?"},
+  {"id": "trace-13", "message": "What should be included in a breeding dashboard?"},
+  {"id": "trace-14", "message": "How can we reduce data quality issues?"},
+  {"id": "trace-15", "message": "What indicators matter for weather risk?"},
+  {"id": "trace-16", "message": "Describe a safe workflow for cross proposals"},
+  {"id": "trace-17", "message": "How should we handle missing phenotyping data?"},
+  {"id": "trace-18", "message": "What makes a recommendation trustworthy?"},
+  {"id": "trace-19", "message": "How do policy checks protect response quality?"},
+  {"id": "trace-20", "message": "Give a concise plan for next breeding cycle"}
+]

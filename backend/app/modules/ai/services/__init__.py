@@ -1,0 +1,100 @@
+"""Public AI service exports."""
+
+from app.modules.ai.adapters import IProviderAdapter, ProviderRegistry
+from app.modules.ai.services.orchestrator_state import (
+	AssignmentRecord,
+	BlockerRecord,
+	DecisionNoteRecord,
+	EvidenceItemRecord,
+	MissionRecord,
+	MissionStateRepository,
+	MissionStateSnapshot,
+	MissionStatus,
+	OrchestratorMissionStateService,
+	SubtaskRecord,
+	SubtaskStatus,
+	VerificationResult,
+	VerificationRunRecord,
+	VolatileMissionStateRepository,
+)
+from app.modules.ai.services.project_brain_memory_file import FileBackedProjectBrainMemoryRepository
+from app.modules.ai.services.project_brain_memory import (
+	ProjectBrainCorrectionRecord,
+	ProjectBrainMemoryEdgeRecord,
+	ProjectBrainMemoryNodeRecord,
+	ProjectBrainMemoryRepository,
+	ProjectBrainMemoryService,
+	ProjectBrainProjectionRecord,
+	ProjectBrainProvenanceTrail,
+	ProjectBrainRecallView,
+	ProjectBrainScope,
+	ProjectBrainSourceArtifactRecord,
+	ProjectBrainSourceSurface,
+	ProjectBrainTrustRank,
+	VolatileProjectBrainMemoryRepository,
+)
+from app.modules.ai.services.project_brain_memory_surreal import (
+	ProjectBrainSurrealConnectionConfig,
+	ProjectBrainSurrealRepositoryError,
+	SurrealProjectBrainMemoryRepository,
+)
+from app.modules.ai.services.project_brain_memory_surreal_schema import (
+	ProjectBrainSurrealSchemaBootstrapError,
+	ProjectBrainSurrealSchemaBootstrapReport,
+	ProjectBrainSurrealSchemaManager,
+	build_project_brain_surreal_schema_statements,
+)
+from app.modules.ai.services.project_brain_query import (
+	ProjectBrainQueryResult,
+	ProjectBrainQueryService,
+	render_project_brain_query_result,
+)
+from app.modules.ai.services.project_brain_snapshot_query import (
+	ProjectBrainSnapshotQueryResult,
+	ProjectBrainSnapshotQueryService,
+)
+
+__all__ = [
+	"AssignmentRecord",
+	"BlockerRecord",
+	"DecisionNoteRecord",
+	"EvidenceItemRecord",
+	"FileBackedProjectBrainMemoryRepository",
+	"IProviderAdapter",
+	"MissionRecord",
+	"MissionStateRepository",
+	"MissionStateSnapshot",
+	"MissionStatus",
+	"OrchestratorMissionStateService",
+	"ProjectBrainCorrectionRecord",
+	"ProjectBrainMemoryEdgeRecord",
+	"ProjectBrainMemoryNodeRecord",
+	"ProjectBrainMemoryRepository",
+	"ProjectBrainMemoryService",
+	"ProjectBrainProjectionRecord",
+	"ProjectBrainProvenanceTrail",
+	"ProjectBrainQueryResult",
+	"ProjectBrainQueryService",
+	"ProjectBrainRecallView",
+	"ProjectBrainScope",
+	"ProjectBrainSourceArtifactRecord",
+	"ProjectBrainSourceSurface",
+	"ProjectBrainSnapshotQueryResult",
+	"ProjectBrainSnapshotQueryService",
+	"ProjectBrainSurrealConnectionConfig",
+	"ProjectBrainSurrealSchemaBootstrapError",
+	"ProjectBrainSurrealSchemaBootstrapReport",
+	"ProjectBrainSurrealSchemaManager",
+	"ProjectBrainSurrealRepositoryError",
+	"ProjectBrainTrustRank",
+	"ProviderRegistry",
+	"SubtaskRecord",
+	"SubtaskStatus",
+	"SurrealProjectBrainMemoryRepository",
+	"VerificationResult",
+	"VerificationRunRecord",
+	"VolatileMissionStateRepository",
+	"VolatileProjectBrainMemoryRepository",
+	"build_project_brain_surreal_schema_statements",
+	"render_project_brain_query_result",
+]

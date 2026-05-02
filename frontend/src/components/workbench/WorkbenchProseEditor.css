@@ -1,0 +1,112 @@
+.workbench-prose-editor {
+  display: flex;
+  min-height: 100%;
+  flex: 1;
+  flex-direction: column;
+}
+
+.workbench-prose-editor .ProseMirror {
+  min-height: 100%;
+  flex: 1;
+  outline: none;
+}
+
+.workbench-prose-editor .ProseMirror > * + * {
+  margin-top: 0.9rem;
+}
+
+.workbench-prose-editor .ProseMirror h1,
+.workbench-prose-editor .ProseMirror h2,
+.workbench-prose-editor .ProseMirror h3 {
+  color: rgb(15 23 42);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dark .workbench-prose-editor .ProseMirror h1,
+.dark .workbench-prose-editor .ProseMirror h2,
+.dark .workbench-prose-editor .ProseMirror h3 {
+  color: rgb(241 245 249);
+}
+
+.workbench-prose-editor .ProseMirror h1 {
+  font-size: 1.85rem;
+}
+
+.workbench-prose-editor .ProseMirror h2 {
+  font-size: 1.4rem;
+}
+
+.workbench-prose-editor .ProseMirror h3 {
+  font-size: 1.1rem;
+}
+
+.workbench-prose-editor .ProseMirror p,
+.workbench-prose-editor .ProseMirror li,
+.workbench-prose-editor .ProseMirror blockquote {
+  color: rgb(15 23 42);
+  font-size: 0.97rem;
+  line-height: 1.8;
+}
+
+.dark .workbench-prose-editor .ProseMirror p,
+.dark .workbench-prose-editor .ProseMirror li,
+.dark .workbench-prose-editor .ProseMirror blockquote {
+  color: rgb(226 232 240);
+}
+
+.workbench-prose-editor .ProseMirror blockquote {
+  border-left: 3px solid rgb(16 185 129 / 0.35);
+  padding-left: 1rem;
+}
+
+.workbench-prose-editor .ProseMirror ul,
+.workbench-prose-editor .ProseMirror ol {
+  padding-left: 1.5rem;
+}
+
+.workbench-prose-editor .ProseMirror code {
+  border-radius: 0.4rem;
+  background: rgb(15 23 42 / 0.08);
+  padding: 0.15rem 0.35rem;
+  font-size: 0.85em;
+}
+
+.dark .workbench-prose-editor .ProseMirror code {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.workbench-prose-editor .ProseMirror pre {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: rgb(15 23 42 / 0.94);
+  padding: 1rem;
+  color: rgb(226 232 240);
+}
+
+.workbench-prose-editor .ProseMirror pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.workbench-prose-editor .ProseMirror a {
+  color: rgb(5 150 105);
+  text-decoration: underline;
+}
+
+.dark .workbench-prose-editor .ProseMirror a {
+  color: rgb(110 231 183);
+}
+
+.workbench-prose-editor .ProseMirror.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: rgb(100 116 139);
+}
+
+.dark .workbench-prose-editor .ProseMirror.is-editor-empty:first-child::before {
+  color: rgb(148 163 184);
+}
