@@ -61,7 +61,7 @@ For official releases and project ownership, refer only to:
 
 ---
 
-> **Status as of <!-- METRIC:LAST_UPDATED -->2026-04-20<!-- /METRIC -->:**
+> **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-02<!-- /METRIC -->:**
 
 * BijMantra is currently in preview, with ongoing refactoring across the platform. While the overall system footprint is substantial, the REEVU intelligence layer and broader architecture are still undergoing stabilization and hardening.
 
