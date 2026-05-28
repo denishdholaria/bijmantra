@@ -20,8 +20,6 @@ A third-party website is operating under **bijmantra.com**, which is not affilia
 
 While the license permits reuse and modification of the codebase, it does not permit representation as the official project or use of BijMantra branding in a way that creates confusion around origin or affiliation. Do not share data, credentials, or make payments on third-party deployments claiming association with BijMantra.
 
-Further action may be taken as appropriate.
-
 ---
 
 # **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
