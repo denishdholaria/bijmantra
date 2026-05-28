@@ -12,17 +12,7 @@
 
 ---
 
-## ⚠️ Important Notice — Official BijMantra Domain
-
-A third-party website is operating under **bijmantra.com**, which is not affiliated with, operated by, or endorsed by the BijMantra project team.
-
-**The official project is only available at:** https://bijmantra.org and the [official GitHub repository](https://github.com/denishdholaria/bijmantra.git).
-
-While the license permits reuse and modification of the codebase, it does not permit representation as the official project or use of BijMantra branding in a way that creates confusion around origin or affiliation. Do not share data, credentials, or make payments on third-party deployments claiming association with BijMantra.
-
----
-
-# **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
+## **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
 
 * BijMantra is currently undergoing significant backend refactoring and architectural improvements. These changes are foundational to the platform's long-term stability, scalability, and feature roadmap. 
 
@@ -33,6 +23,26 @@ While the license permits reuse and modification of the codebase, it does not pe
 * Every decision now has to count. We are building carefully, not quickly. We appreciate your patience and understanding during this phase.
 
 🌐 **[bijmantra.org](https://bijmantra.org)**
+
+---
+
+## ⚠️ Important Notice — Official BijMantra Domain
+
+A third-party website is operating under **bijmantra.com**, which is not affiliated with, operated by, or endorsed by the BijMantra project team.
+
+**The official project is only available at:** https://bijmantra.org and the [official GitHub repository](https://github.com/denishdholaria/bijmantra.git).
+
+## Licensing and Collaboration Policy
+
+* Organizations are welcome to enter into legal licensing agreements with BijMantra. We remain open to collaboration and negotiation where appropriate.
+
+* BijMantra do not grant rights to represent deployments as the official BijMantra project, nor to use the BijMantra name, logo, or branding in ways that may cause confusion regarding origin or affiliation.
+
+## For security and clarity:
+
+* Do not share data, credentials, or make payments on third-party deployments claiming association with BijMantra.
+
+* Any authorized use must be clearly distinguished from the official BijMantra initiative.
 
 ---
 
