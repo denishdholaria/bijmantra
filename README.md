@@ -14,62 +14,25 @@
 
 ## ⚠️ Important Notice — Official BijMantra Domain
 
-A third-party website is currently operating under the domain **bijmantra.com**.
+A third-party website is operating under **bijmantra.com**, which is not affiliated with, operated by, or endorsed by the BijMantra project team.
 
-For clarity:
+**The official project is only available at:** https://bijmantra.org and the [official GitHub repository](https://github.com/denishdholaria/bijmantra.git).
 
-* The **official BijMantra project is only available at:** https://bijmantra.org
-* The domain **bijmantra.com is not affiliated with, operated by, or endorsed by the BijMantra project team**
-
-BijMantra is a source-available/open-source initiative. While the license permits reuse, modification, and deployment of the codebase, **it does not permit representation as the official project or use of BijMantra branding in a manner that creates confusion regarding origin, ownership, or affiliation**.
-
-Users and institutions should:
-
-* Verify the domain before interacting with any BijMantra-related system
-* Exercise caution before sharing data, credentials, or making payments on third-party deployments claiming association with BijMantra
-
-This notice is provided to maintain clarity around official project surfaces and to prevent confusion as the ecosystem evolves.
-
-For authoritative access and updates, rely only on:
-
-* 🌐 https://bijmantra.org
-* Official GitHub Public Repository (https://github.com/denishdholaria/bijmantra.git) and communication channels
+While the license permits reuse and modification of the codebase, it does not permit representation as the official project or use of BijMantra branding in a way that creates confusion around origin or affiliation. Do not share data, credentials, or make payments on third-party deployments claiming association with BijMantra.
 
 Further action may be taken as appropriate.
 
 ---
 
-## © Copyright and Branding
+> **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
 
-© 2026 BijMantra Project. All rights reserved.
+* BijMantra is currently undergoing significant backend refactoring and architectural improvements. These changes are foundational to the platform's long-term stability, scalability, and feature roadmap. 
 
-BijMantra is released under the terms specified in the [LICENSE](LICENSE).
-All code usage, modification, and redistribution must comply with that license.
+* Development speed is constrained by personal funding — GitHub, Copilot, and AI tooling subscriptions are self-financed for a project of this scale. This limits the exploratory iteration that has historically shaped the product: trialing different approaches across UI, workflows, menu systems, and AI integrations — much like climbing a mountain, there is more than one path to the peak, and finding the right one takes deliberate experimentation.
 
-**Name and Branding:**
-"BijMantra" is the official project name and brand of the BijMantra Project.
+* The repository is currently mid-refactor and in a fractured state — the app cannot be started from the latest commits. If you wish to run BijMantra locally, please use the last snapshot tag. We will update this notice once the refactor reaches a runnable state. We appreciate your patience and understanding during this phase.
 
-* Use of the codebase is permitted under the license
-* **Use of the name, branding, or identity in a way that implies official status, endorsement, or affiliation is not permitted without explicit authorization**
-
-Third-party deployments or forks must clearly indicate their independent status and must not present themselves as the official BijMantra platform.
-
-For official releases and project ownership, refer only to:
-
-* https://bijmantra.org
-* The official GitHub repository
-
----
-
-> **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-02<!-- /METRIC -->:**
-
-* BijMantra is currently in preview, with ongoing refactoring across the platform. While the overall system footprint is substantial, the REEVU intelligence layer and broader architecture are still undergoing stabilization and hardening.
-
-* Progress is intentionally measured. Agricultural decision systems require rigorous handling of evidence contracts, data provenance, validation pipelines, and cross-domain behavior before they can be considered production-ready.
-
-* Development is constrained by limited funding and compute resources. Efficient allocation of AI credits requires careful planning and prioritization. Tooling subscriptions (e.g., GitHub Copilot, Kiro Pro, Antigravity/Google AI services) provide essential support but are quickly exhausted, requiring disciplined usage.
-
-* Despite constraints, foundational progress continues with a focus on long-term robustness and reliability rather than rapid iteration.
+* Every decision now has to count. We are building carefully, not quickly. We appreciate your patience and understanding during this phase.
 
 🌐 **[bijmantra.org](https://bijmantra.org)**
 
@@ -250,6 +213,28 @@ See:
 * CONTRIBUTING.md
 * ETHICAL_USE_POLICY.md
 * COMMERCIAL_LICENSE.md
+
+---
+
+## © Copyright and Branding
+
+© 2026 BijMantra Project. All rights reserved.
+
+BijMantra is released under the terms specified in the [LICENSE](LICENSE).
+All code usage, modification, and redistribution must comply with that license.
+
+**Name and Branding:**
+"BijMantra" is the official project name and brand of the BijMantra Project.
+
+* Use of the codebase is permitted under the license
+* **Use of the name, branding, or identity in a way that implies official status, endorsement, or affiliation is not permitted without explicit authorization**
+
+Third-party deployments or forks must clearly indicate their independent status and must not present themselves as the official BijMantra platform.
+
+For official releases and project ownership, refer only to:
+
+* https://bijmantra.org
+* The official GitHub repository
 
 ---
 
