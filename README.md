@@ -24,7 +24,7 @@ Further action may be taken as appropriate.
 
 ---
 
-> **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
+# **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
 
 * BijMantra is currently undergoing significant backend refactoring and architectural improvements. These changes are foundational to the platform's long-term stability, scalability, and feature roadmap. 
 
