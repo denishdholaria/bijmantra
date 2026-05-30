@@ -1,0 +1,112 @@
+{
+  "comments": [],
+  "groups": [
+    {
+      "crop_type": "Maize (Corn)",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Maize (Corn).",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Maize (Corn) Pipeline Circle",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Maize (Fodder)",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Maize (Fodder).",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Maize (Fodder) Pipeline Circle",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Sugarcane.",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Sugarcane Pipeline Circle",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Rice",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Rice.",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Rice Pipeline Circle",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Maize (Corn)",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Maize (Corn).",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Maize (Corn) Pipeline Circle",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Maize (Fodder)",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Maize (Fodder).",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Maize (Fodder) Pipeline Circle",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Sugarcane.",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Sugarcane Pipeline Circle",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:group",
+      "synthetic_method": "social_group_template"
+    },
+    {
+      "crop_type": "Rice",
+      "data_source": "synthetic",
+      "description": "Tenant-safe synthetic knowledge group for Rice.",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_private": false,
+      "member_count": 0,
+      "name": "Rice Pipeline Circle",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:group",
+      "synthetic_method": "social_group_template"
+    }
+  ],
+  "posts": [],
+  "reactions": [],
+  "reputation": []
+}

@@ -73,6 +73,84 @@ describe('Offline Sync Integration', () => {
   })
 
   describe('Scenario: Sync Queue Management', () => {
+    it('should keep failed server writes pending', async () => {
+      localStorage.setItem('auth_token', 'test-token')
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          status: 500,
+        })
+      )
+
+      offlineSync.upsertDocument({
+        id: 'obs-server-failure',
+        type: 'observation',
+        data: { value: 'should remain pending' },
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      })
+
+      await offlineSync.syncToServer()
+
+      const doc = offlineSync.getDocument('observation', 'obs-server-failure')
+      expect(doc?.syncedAt).toBeUndefined()
+      expect(offlineSync.getPendingDocuments().map((pending) => pending.id)).toContain(
+        'obs-server-failure'
+      )
+    })
+
+    it('should keep writes pending when no auth token is available', async () => {
+      localStorage.removeItem('auth_token')
+      const fetchMock = vi.fn()
+      vi.stubGlobal('fetch', fetchMock)
+
+      offlineSync.upsertDocument({
+        id: 'obs-no-token',
+        type: 'observation',
+        data: { value: 'should wait for auth' },
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      })
+
+      await offlineSync.syncToServer()
+
+      expect(fetchMock).not.toHaveBeenCalled()
+      const doc = offlineSync.getDocument('observation', 'obs-no-token')
+      expect(doc?.syncedAt).toBeUndefined()
+      expect(offlineSync.getPendingDocuments().map((pending) => pending.id)).toContain(
+        'obs-no-token'
+      )
+    })
+
+    it('should mark documents synced only after a successful server ACK', async () => {
+      localStorage.setItem('auth_token', 'test-token')
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          status: 201,
+        })
+      )
+
+      offlineSync.upsertDocument({
+        id: 'obs-server-success',
+        type: 'observation',
+        data: { value: 'acknowledged' },
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      })
+
+      await offlineSync.syncToServer()
+
+      const doc = offlineSync.getDocument('observation', 'obs-server-success')
+      expect(doc?.syncedAt).toBeDefined()
+      expect(doc?.localOnly).toBe(false)
+      expect(offlineSync.getPendingDocuments().map((pending) => pending.id)).not.toContain(
+        'obs-server-success'
+      )
+    })
+
     it('should track pending changes count', () => {
       const initialStatus = offlineSync.getStatus()
       expect(initialStatus.pendingChanges).toBe(0)

@@ -12,16 +12,20 @@ from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user
-from app.middleware.tenant_context import get_tenant_db
+from app.api.deps import get_current_superuser
 from app.core.rls import (
     RLS_ENABLED_TABLES,
     generate_all_rls_policies_sql,
     generate_disable_rls_sql,
 )
+from app.middleware.tenant_context import get_tenant_db
 
 
-router = APIRouter(prefix="/rls", tags=["Row-Level Security"], dependencies=[Depends(get_current_user)])
+router = APIRouter(
+    prefix="/rls",
+    tags=["Row-Level Security"],
+    dependencies=[Depends(get_current_superuser)],
+)
 
 
 # ============================================

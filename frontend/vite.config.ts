@@ -159,7 +159,7 @@ export default defineConfig({
     sourcemap: false, // Disable sourcemaps in production for smaller builds
   },
   server: {
-    port: 5173,
+    port: parseInt(process.env.FRONTEND_PORT || '5656'),
     allowedHosts: ['0.bijmantra.org', 'app.bijmantra.org', 'localhost', '.app.github.dev', '.github.dev'],
     proxy: {
       '/brapi': {

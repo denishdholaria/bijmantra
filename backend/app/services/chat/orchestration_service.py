@@ -30,6 +30,11 @@ from app.modules.ai.services.quota import AIQuotaService
 from app.modules.ai.services.reevu import PolicyGuard, ReevuMetrics, ReevuStage
 from app.modules.ai.services.reevu_service import ReevuService
 from app.modules.ai.services.response_enrichment_service import ResponseEnrichmentService
+from app.modules.ai.services.reevu.conversation_context import (
+    ConversationContextService,
+    is_follow_up_query,
+    is_reset_query,
+)
 from app.modules.ai.services.tools import FunctionExecutor
 from app.modules.breeding.services.breeding_value_service import breeding_value_service
 from app.modules.breeding.services.cross_search_service import cross_search_service
@@ -64,6 +69,19 @@ class OrchestrationService:
         self.user_id = int(current_user.id)
         self.organization_id = int(current_user.organization_id)
         self.user_ref = SimpleNamespace(id=self.user_id, organization_id=self.organization_id)
+        self._context_service: ConversationContextService | None = None
+
+    def _get_context_service(self) -> ConversationContextService | None:
+        """Lazily initialise ConversationContextService when Redis is available."""
+        if self._context_service is not None:
+            return self._context_service
+        try:
+            from app.core.redis import redis_client
+            if redis_client.is_available:
+                self._context_service = ConversationContextService(redis_client=redis_client)
+        except Exception:
+            pass
+        return self._context_service
 
     # ------------------------------------------------------------------ #
     # Shared setup helpers                                                 #
@@ -169,8 +187,9 @@ class OrchestrationService:
                         "is_compound": False,
                     },
                 )
-            plan_summary = MessageService.build_plan_summary(
+            plan_summary = await MessageService.build_plan_summary_async(
                 request.message,
+                self.db,
                 function_call_name=function_call.name if function_call else None,
             )
 
@@ -179,6 +198,28 @@ class OrchestrationService:
                 function_executor = self._build_function_executor(capability_registry)
                 try:
                     execution_parameters = {**function_call.parameters, "organization_id": self.organization_id}
+
+                    # Conversation memory: retrieve context and inject entity IDs for follow-up narrowing
+                    conv_id = getattr(request, "conversation_id", None)
+                    ctx_svc = self._get_context_service()
+                    conv_ctx = None
+                    if ctx_svc and conv_id:
+                        try:
+                            conv_ctx = await ctx_svc.get(conv_id)
+                            if conv_ctx and is_reset_query(request.message):
+                                await ctx_svc.clear(conv_id)
+                                conv_ctx = None
+                            elif conv_ctx and is_follow_up_query(request.message, conv_ctx):
+                                # Inject context entity IDs for progressive narrowing
+                                for domain, ids in conv_ctx.entity_sets.items():
+                                    execution_parameters[f"_context_{domain}_ids"] = ids
+                                # Carry forward active filters (don't override explicit params)
+                                for k, v in conv_ctx.active_filters.items():
+                                    if k not in execution_parameters:
+                                        execution_parameters[k] = v
+                        except Exception as _ctx_exc:
+                            logger.debug("[REEVU] Context retrieval skipped: %s", _ctx_exc)
+
                     function_result = await function_executor.execute(function_call.name, execution_parameters)
                     function_call_data = function_call.to_dict()
                     function_result = await ResponseEnrichmentService.enrich(
@@ -279,6 +320,15 @@ class OrchestrationService:
                         plan_execution_summary=executed_plan_summary,
                     )
 
+                    # Conversation memory: update context after successful execution
+                    if ctx_svc and conv_id and function_result.get("success"):
+                        try:
+                            outcome = function_result.get("_execution_outcome")
+                            if outcome is not None:
+                                await ctx_svc.update(conv_id, outcome, execution_parameters)
+                        except Exception as _upd_exc:
+                            logger.debug("[REEVU] Context update skipped: %s", _upd_exc)
+
                     return ChatResponse(
                         request_id=request_id,
                         message=response_message,
@@ -315,7 +365,7 @@ class OrchestrationService:
         except Exception as exc:
             logger.warning("[REEVU] Function detection error: %s, proceeding with regular chat", exc)
             with contextlib.suppress(Exception):
-                plan_summary = MessageService.build_plan_summary(request.message)
+                plan_summary = await MessageService.build_plan_summary_async(request.message, self.db)
 
         # --- Regular conversational path ---
         if request.include_context:
@@ -340,6 +390,8 @@ class OrchestrationService:
                     ]
             except Exception as exc:
                 logger.warning("[REEVU] Context retrieval error: %s", exc)
+                with contextlib.suppress(Exception):
+                    await self.db.rollback()
 
         context_text = ContextService.merge_prompt_context(
             scoped_task_context,
@@ -511,6 +563,8 @@ class OrchestrationService:
                     context_doc_ids = [doc.doc_id for doc in context_docs]
             except Exception as exc:
                 logger.warning("[REEVU] Context retrieval error for streaming: %s", exc)
+                with contextlib.suppress(Exception):
+                    await self.db.rollback()
 
         context_text = ContextService.merge_prompt_context(scoped_task_context, context_text or "")
 
@@ -555,8 +609,9 @@ class OrchestrationService:
                     if isinstance(function_call, ClarificationResponse):
                         clarification_response = function_call
                         function_call = None
-                    plan_summary = MessageService.build_plan_summary(
+                    plan_summary = await MessageService.build_plan_summary_async(
                         request.message,
+                        self.db,
                         function_call_name=function_call.name if function_call else None,
                     )
                     yield streaming_svc.stage_event(
@@ -570,7 +625,7 @@ class OrchestrationService:
                 except Exception as exc:
                     logger.warning("[REEVU] Function detection failed: %s", exc)
                     with contextlib.suppress(Exception):
-                        plan_summary = MessageService.build_plan_summary(request.message)
+                        plan_summary = await MessageService.build_plan_summary_async(request.message, self.db)
                     yield streaming_svc.stage_event(ReevuStage.PLAN_GENERATION, "failed", error=str(exc))
 
                 actual_provider = "unknown"

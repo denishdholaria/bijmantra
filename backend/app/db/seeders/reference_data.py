@@ -77,6 +77,7 @@ class ReferenceDataSeeder(BaseSeeder):
 
     name = "reference_data"
     description = "Essential reference data (breeding methods, scales, traits)"
+    is_demo_data = False
 
     def should_run(self, env: str = "dev") -> bool:
         """
@@ -88,9 +89,19 @@ class ReferenceDataSeeder(BaseSeeder):
 
     def seed(self) -> int:
         """Seed reference data into the database."""
-        from app.models.brapi import BreedingMethod
+        from app.models.core import Organization
+        from app.models.germplasm import BreedingMethod
 
         count = 0
+
+        # Breeding methods are global reference data — assign to org 1 (system org).
+        # Fall back to the first available org if org 1 doesn't exist yet.
+        system_org = self.db.query(Organization).filter(Organization.id == 1).first()
+        if system_org is None:
+            system_org = self.db.query(Organization).order_by(Organization.id).first()
+        if system_org is None:
+            logger.warning("No organization found; skipping breeding method seed")
+            return 0
 
         # Seed breeding methods
         for method_data in BREEDING_METHODS:
@@ -104,7 +115,8 @@ class ReferenceDataSeeder(BaseSeeder):
                 continue
 
             method = BreedingMethod(
-                name=method_data["name"],
+                organization_id=system_org.id,
+                breeding_method_name=method_data["name"],
                 abbreviation=method_data["abbreviation"],
                 description=method_data["description"],
             )
@@ -122,7 +134,7 @@ class ReferenceDataSeeder(BaseSeeder):
 
         WARNING: This should rarely be called as reference data is foundational.
         """
-        from app.models.brapi import BreedingMethod
+        from app.models.germplasm import BreedingMethod
 
         count = 0
 

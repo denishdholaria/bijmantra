@@ -1,0 +1,10 @@
+{
+  "data": {
+    "note": "RDF endpoint registered; default transform uses target trait dictionary.",
+    "source": "https://cropontology.org/rdf/CO_321"
+  },
+  "metadata": {
+    "fetched_at": "2026-05-05T11:16:01.266976+00:00",
+    "source": "crop_ontology"
+  }
+}

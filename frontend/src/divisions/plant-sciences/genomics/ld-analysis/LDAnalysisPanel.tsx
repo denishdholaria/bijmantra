@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useLDAnalysis } from './useLDAnalysis';
+import { Spinner } from '@/components/ui/spinner';
 
 export function LDAnalysisPanel() {
   const {
@@ -26,9 +27,18 @@ export function LDAnalysisPanel() {
     nSamples, nMarkers, ldThreshold,
     ldPairs, hweTests, ldMatrix, decayData,
     highLDPairs, hweViolations,
-    wasmReady, wasmVersion, syntheticPreviewAvailable,
+    wasmReady, wasmVersion, wasmLoading, wasmError, syntheticPreviewAvailable,
     update, runAnalysis,
   } = useLDAnalysis();
+
+  if (wasmLoading) {
+    return (
+      <div className="container mx-auto p-6 flex items-center justify-center min-h-[200px]">
+        <Spinner aria-label="Loading genomics engine..." className="mr-2" />
+        <p className="text-muted-foreground animate-pulse">Initialising compute engine…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -42,9 +52,21 @@ export function LDAnalysisPanel() {
             LD decay, r² calculation, and Hardy-Weinberg equilibrium testing
           </p>
         </div>
-        <Badge variant={wasmReady ? "default" : "secondary"} className={wasmReady ? "bg-green-500" : ""}>
-          {wasmReady ? `⚡ WebAssembly v${wasmVersion}` : 'Loading...'}
-        </Badge>
+        <div className="flex flex-col items-end gap-1">
+          <Badge variant={wasmReady ? "success" : "destructive"}>
+            {wasmReady ? `WASM v${wasmVersion}` : 'Engine Not Available'}
+          </Badge>
+          {wasmError && (
+            <div role="alert" className="wasm-error-detail mt-2 rounded border border-destructive/50 bg-destructive/10 p-3 text-sm">
+              <p className="wasm-error-message font-medium text-destructive">
+                {wasmError.message || 'An unknown error occurred during WASM initialisation'}
+              </p>
+              <p className="wasm-error-rebuild mt-1 text-muted-foreground">
+                Run <code className="font-mono">make wasm</code> in the project root to rebuild the engine.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -160,7 +182,7 @@ export function LDAnalysisPanel() {
                   Production builds run against stored variant sets only.
                 </p>
               )}
-              <Button onClick={runAnalysis} className="w-full" disabled={isProcessing}>
+              <Button onClick={runAnalysis} className="w-full" disabled={isProcessing || !wasmReady}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 {isProcessing ? 'Analyzing...' : 'Run Analysis'}
               </Button>
@@ -355,7 +377,7 @@ export function LDAnalysisPanel() {
                       <YAxis label={{ value: 'Mean r²', angle: -90, position: 'insideLeft' }} domain={[0, 1]} />
                       <Tooltip
                         labelFormatter={(v) => `${v} bp`}
-                        formatter={(v: number) => [v.toFixed(3), "Mean r²"]}
+                        formatter={(v) => [typeof v === 'number' ? v.toFixed(3) : String(v ?? ''), "Mean r²"]}
                       />
                       <Line type="monotone" dataKey="mean_r2" stroke="#8884d8" dot={false} strokeWidth={2} />
                     </LineChart>

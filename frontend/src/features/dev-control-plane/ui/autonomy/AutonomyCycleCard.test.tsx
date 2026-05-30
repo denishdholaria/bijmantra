@@ -62,6 +62,7 @@ describe('AutonomyCycleCard', () => {
           detail: null,
         },
       ],
+      first_actionable_completion_write: null,
     }
 
     render(

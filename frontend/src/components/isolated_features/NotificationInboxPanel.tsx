@@ -67,7 +67,7 @@ export const NotificationInboxPanel: React.FC<NotificationInboxPanelProps> = ({
     return notifications.filter(n => {
       // Tab filtering
       if (activeTab === 'unread' && n.read) return false;
-      if (activeTab === 'reevu' && n.type !== LEGACY_REEVU_NOTIFICATION_TYPE) return false;
+      if (activeTab === 'reevu' && (n.type as string) !== LEGACY_REEVU_NOTIFICATION_TYPE) return false;
 
       // Search filtering
       if (searchQuery) {
@@ -218,7 +218,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       className={cn(
         "group relative flex gap-3 p-4 border-b border-border/50 hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:bg-muted",
         !notification.read && "bg-primary/5 dark:bg-primary/10 border-l-2 border-l-primary",
-        !notification.read && notification.type === LEGACY_REEVU_NOTIFICATION_TYPE && "bg-amber-50/50 dark:bg-amber-900/10 border-l-amber-500"
+        !notification.read && (notification.type as string) === LEGACY_REEVU_NOTIFICATION_TYPE && "bg-amber-50/50 dark:bg-amber-900/10 border-l-amber-500"
       )}
       onClick={onMarkAsRead}
       onKeyDown={(e) => {
@@ -257,24 +257,21 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
                 {notification.source}
               </Badge>
             )}
-            {notification.type === LEGACY_REEVU_NOTIFICATION_TYPE && (
+            {(notification.type as string) === LEGACY_REEVU_NOTIFICATION_TYPE && (
               <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800 text-[10px] font-bold py-0 px-1.5 h-4">
                 REEVU INSIGHT
               </Badge>
             )}
           </div>
 
-          {notification.actionUrl && (
+          {notification.action && (
             <Button
               variant="ghost"
               size="sm"
               className="h-6 px-2 text-[10px] text-primary hover:text-primary-foreground hover:bg-primary"
-              asChild
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); notification.action!.onClick(); }}
             >
-              <a href={notification.actionUrl}>
-                View <ExternalLink className="ml-1 h-3 w-3" />
-              </a>
+              {notification.action.label} <ExternalLink className="ml-1 h-3 w-3" />
             </Button>
           )}
         </div>
@@ -312,7 +309,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 // HELPERS
 // ============================================
 
-function getTypeConfig(type: NotificationType) {
+function getTypeConfig(type: string) {
   switch (type) {
     case 'success':
       return {
@@ -365,12 +362,12 @@ function getTypeConfig(type: NotificationType) {
   }
 }
 
-function formatTimeAgo(date: Date): string {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+function formatTimeAgo(timestamp: number): string {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
 
   if (seconds < 60) return 'now';
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
   if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`;
-  return date.toLocaleDateString();
+  return new Date(timestamp).toLocaleDateString();
 }

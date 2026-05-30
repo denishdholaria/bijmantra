@@ -1,0 +1,30 @@
+{
+  "errors": [],
+  "fetch_errors": [
+    {
+      "error": "RetryError[<Future at 0x109553110 state=finished raised HTTPStatusError>]",
+      "raw_path": "/Users/denish/Documents/bpro/bijmantraorg/data_pipeline/raw/faostat_error.json",
+      "source": "faostat"
+    },
+    {
+      "error": "No module named 'kagglehub'",
+      "raw_path": "/Users/denish/Documents/bpro/bijmantraorg/data_pipeline/raw/kaggle_crop_yield_error.json",
+      "source": "kaggle_crop_yield"
+    }
+  ],
+  "stats": {
+    "hybrid_records": 1452,
+    "real_records": 410,
+    "synthetic_records": 11854,
+    "total_records": 13716,
+    "validation_time_ms": 93
+  },
+  "validation_status": "passed",
+  "warnings": [
+    {
+      "issue": "Real data ratio is 3.0%; synthetic fallback dominates this run",
+      "severity": "medium",
+      "table": "pipeline"
+    }
+  ]
+}

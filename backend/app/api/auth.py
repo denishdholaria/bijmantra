@@ -45,8 +45,36 @@ _FAILED_LOGIN_ATTEMPTS: dict[str, dict] = {}
 _PASSWORD_ROTATION_DAYS = 90
 
 
+def _is_production_environment() -> bool:
+    return settings.ENVIRONMENT.lower() in {"prod", "production"}
+
+
+def _local_password_login_allowed() -> bool:
+    return (
+        not _is_production_environment()
+        or settings.ALLOW_LOCAL_PASSWORD_LOGIN_IN_PRODUCTION
+    )
+
+
+def _assert_local_password_login_allowed() -> None:
+    if _local_password_login_allowed():
+        return
+
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail=(
+            "Local password login is disabled in production. "
+            "Use the configured identity provider."
+        ),
+    )
+
+
+def _login_key(email: str) -> str:
+    return email.strip().lower()
+
+
 def _is_locked(email: str) -> bool:
-    record = _FAILED_LOGIN_ATTEMPTS.get(email)
+    record = _FAILED_LOGIN_ATTEMPTS.get(_login_key(email))
     if not record:
         return False
     until = record.get("locked_until")
@@ -54,15 +82,14 @@ def _is_locked(email: str) -> bool:
 
 
 def _record_failed_login(email: str) -> None:
-    rec = _FAILED_LOGIN_ATTEMPTS.setdefault(email, {"count": 0, "locked_until": None})
+    rec = _FAILED_LOGIN_ATTEMPTS.setdefault(_login_key(email), {"count": 0, "locked_until": None})
     rec["count"] += 1
     if rec["count"] >= 5:
         rec["locked_until"] = datetime.now(UTC) + timedelta(minutes=15)
 
 
 def _clear_failed_login(email: str) -> None:
-    if email in _FAILED_LOGIN_ATTEMPTS:
-        del _FAILED_LOGIN_ATTEMPTS[email]
+    _FAILED_LOGIN_ATTEMPTS.pop(_login_key(email), None)
 
 
 @router.post("/login", response_model=Token)
@@ -81,6 +108,8 @@ async def login(
     2. Set appropriate UI state
     3. Filter data accordingly
     """
+    _assert_local_password_login_allowed()
+
     # Rate limit check (M2 fix)
     client_ip = get_client_ip(request)
     rate_check = await rate_limiter.check(RateLimitType.LOGIN, client_ip)
@@ -97,15 +126,17 @@ async def login(
             },
         )
 
-    if _is_locked(form_data.username):
+    email = _login_key(form_data.username)
+
+    if _is_locked(email):
         raise HTTPException(
             status_code=423, detail="Account temporarily locked due to failed login attempts"
         )
 
-    user = await user_crud.authenticate(db, email=form_data.username, password=form_data.password)
+    user = await user_crud.authenticate(db, email=email, password=form_data.password)
 
     if not user:
-        _record_failed_login(form_data.username)
+        _record_failed_login(email)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -115,7 +146,7 @@ async def login(
             },
         )
 
-    _clear_failed_login(form_data.username)
+    _clear_failed_login(email)
 
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
@@ -129,7 +160,12 @@ async def login(
     # Create access token
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": str(user.id)}, expires_delta=access_token_expires
+        data={
+            "sub": str(user.id),
+            "organization_id": user.organization_id,
+            "is_superuser": user.is_superuser,
+        },
+        expires_delta=access_token_expires,
     )
 
     # Determine if this is a demo user
@@ -237,6 +273,7 @@ async def reset_rate_limit(
     ip_to_reset = target_ip if target_ip else client_ip
 
     await rate_limiter.reset(RateLimitType.LOGIN, ip_to_reset)
+    _FAILED_LOGIN_ATTEMPTS.clear()
 
     return {
         "status": "ok",
@@ -276,6 +313,7 @@ async def reset_all_rate_limits(
     # Clear all in-memory rate limit data
     rate_limiter._in_memory_store.clear()
     rate_limiter._blocked.clear()
+    _FAILED_LOGIN_ATTEMPTS.clear()
 
     client_ip = get_client_ip(request)
 

@@ -1,0 +1,258 @@
+{
+  "data": {
+    "@context": null,
+    "metadata": {
+      "datafiles": [],
+      "pagination": {
+        "currentPage": 0,
+        "pageSize": 3,
+        "totalCount": 3,
+        "totalPages": 1
+      },
+      "status": []
+    },
+    "result": {
+      "data": [
+        {
+          "accessionNumber": "A0000002",
+          "acquisitionDate": "2000-04-09",
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "biologicalStatusOfAccessionCode": "120",
+          "biologicalStatusOfAccessionDescription": "Semi-natural/wild",
+          "breedingMethodDbId": "breeding_method1",
+          "breedingMethodName": "Male Backcross",
+          "collection": "Fake Foods Collection",
+          "commonCropName": "Tomatillo",
+          "countryOfOriginCode": "USA",
+          "defaultDisplayName": "Fantastico",
+          "documentationURL": "https://wiki.brapi.org",
+          "donors": [
+            {
+              "donorAccessionNumber": "A2222222",
+              "donorInstituteCode": "USA999",
+              "germplasmPUI": "doi:10.12345/A2222222"
+            }
+          ],
+          "externalReferences": [
+            {
+              "referenceID": "https://brapi.org/specification",
+              "referenceId": "https://brapi.org/specification",
+              "referenceSource": "BrAPI Doc"
+            }
+          ],
+          "genus": "Aspergillus",
+          "germplasmDbId": "germplasm2",
+          "germplasmName": "Tomatillo Fantastico",
+          "germplasmOrigin": [
+            {
+              "coordinateUncertainty": "20",
+              "coordinates": {
+                "geometry": {
+                  "coordinates": [
+                    42.53514,
+                    -76.55404,
+                    123.0998
+                  ],
+                  "type": "Point"
+                },
+                "type": "Feature"
+              }
+            }
+          ],
+          "germplasmPUI": "doi:10.12345/A0000002",
+          "germplasmPreprocessing": "EO:0007210; transplanted from study 2351 observation unit ID: pot:894",
+          "instituteCode": "USA999",
+          "instituteName": "BrAPI Science Institute",
+          "pedigree": "A2342345/A4564565",
+          "seedSource": "Root Stock",
+          "seedSourceDescription": "Branches were collected from a 10-year-old tree growing in a progeny trial established in a loamy brown earth soil.",
+          "species": "fructus",
+          "speciesAuthority": "Smith, 1822",
+          "storageTypes": [
+            {
+              "code": "10",
+              "description": "Seed collection"
+            }
+          ],
+          "subtaxa": "Aspergillus fructus A",
+          "subtaxaAuthority": "Smith, 1822",
+          "synonyms": [
+            {
+              "synonym": "Variety 234",
+              "type": "Pre-Code"
+            }
+          ],
+          "taxonIds": [
+            {
+              "sourceName": "NCBI",
+              "taxonId": "2026747"
+            }
+          ]
+        },
+        {
+          "accessionNumber": "A0000003",
+          "acquisitionDate": "2000-04-09",
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "biologicalStatusOfAccessionCode": "120",
+          "biologicalStatusOfAccessionDescription": "Semi-natural/wild",
+          "breedingMethodDbId": "breeding_method1",
+          "breedingMethodName": "Male Backcross",
+          "collection": "Fake Foods Collection",
+          "commonCropName": "Tomatillo",
+          "countryOfOriginCode": "USA",
+          "defaultDisplayName": "Fantastico",
+          "documentationURL": "https://wiki.brapi.org",
+          "donors": [
+            {
+              "donorAccessionNumber": "A3333333",
+              "donorInstituteCode": "USA999",
+              "germplasmPUI": "doi:10.12345/A3333333"
+            }
+          ],
+          "externalReferences": [
+            {
+              "referenceID": "https://brapi.org/specification",
+              "referenceId": "https://brapi.org/specification",
+              "referenceSource": "BrAPI Doc"
+            }
+          ],
+          "genus": "Aspergillus",
+          "germplasmDbId": "germplasm3",
+          "germplasmName": "Tomatillo Fantastico",
+          "germplasmOrigin": [
+            {
+              "coordinateUncertainty": "20",
+              "coordinates": {
+                "geometry": {
+                  "coordinates": [
+                    42.53514,
+                    -76.55404,
+                    123.0998
+                  ],
+                  "type": "Point"
+                },
+                "type": "Feature"
+              }
+            }
+          ],
+          "germplasmPUI": "doi:10.12345/A0000003",
+          "germplasmPreprocessing": "EO:0007210; transplanted from study 2351 observation unit ID: pot:894",
+          "instituteCode": "USA999",
+          "instituteName": "BrAPI Science Institute",
+          "pedigree": "A0000001/A0000002",
+          "seedSource": "Root Stock",
+          "seedSourceDescription": "Branches were collected from a 10-year-old tree growing in a progeny trial established in a loamy brown earth soil.",
+          "species": "fructus",
+          "speciesAuthority": "Smith, 1822",
+          "storageTypes": [
+            {
+              "code": "10",
+              "description": "Seed collection"
+            }
+          ],
+          "subtaxa": "Aspergillus fructus A",
+          "subtaxaAuthority": "Smith, 1822",
+          "synonyms": [
+            {
+              "synonym": "Variety 345",
+              "type": "Pre-Code"
+            }
+          ],
+          "taxonIds": [
+            {
+              "sourceName": "NCBI",
+              "taxonId": "2026747"
+            }
+          ]
+        },
+        {
+          "accessionNumber": "A0000001",
+          "acquisitionDate": "2000-04-09",
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "biologicalStatusOfAccessionCode": "120",
+          "biologicalStatusOfAccessionDescription": "Semi-natural/wild",
+          "breedingMethodDbId": "breeding_method1",
+          "breedingMethodName": "Male Backcross",
+          "collection": "Fake Foods Collection",
+          "commonCropName": "Tomatillo",
+          "countryOfOriginCode": "USA",
+          "defaultDisplayName": "Fantastico",
+          "documentationURL": "https://wiki.brapi.org",
+          "donors": [
+            {
+              "donorAccessionNumber": "A1111111",
+              "donorInstituteCode": "USA999",
+              "germplasmPUI": "doi:10.12345/A1111111"
+            }
+          ],
+          "externalReferences": [
+            {
+              "referenceID": "https://brapi.org/specification",
+              "referenceId": "https://brapi.org/specification",
+              "referenceSource": "BrAPI Doc"
+            }
+          ],
+          "genus": "Aspergillus",
+          "germplasmDbId": "germplasm1",
+          "germplasmName": "Tomatillo Fantastico",
+          "germplasmOrigin": [
+            {
+              "coordinateUncertainty": "20",
+              "coordinates": {
+                "geometry": {
+                  "coordinates": [
+                    42.53514,
+                    -76.55404,
+                    123.0998
+                  ],
+                  "type": "Point"
+                },
+                "type": "Feature"
+              }
+            }
+          ],
+          "germplasmPUI": "doi:10.12345/A0000001",
+          "germplasmPreprocessing": "EO:0007210; transplanted from study 2351 observation unit ID: pot:894",
+          "instituteCode": "USA999",
+          "instituteName": "BrAPI Science Institute",
+          "pedigree": "A2342345/A1231234",
+          "seedSource": "Root Stock",
+          "seedSourceDescription": "Branches were collected from a 10-year-old tree growing in a progeny trial established in a loamy brown earth soil.",
+          "species": "fructus",
+          "speciesAuthority": "Smith, 1822",
+          "storageTypes": [
+            {
+              "code": "10",
+              "description": "Seed collection"
+            }
+          ],
+          "subtaxa": "Aspergillus fructus A",
+          "subtaxaAuthority": "Smith, 1822",
+          "synonyms": [
+            {
+              "synonym": "Variety 123",
+              "type": "Pre-Code"
+            }
+          ],
+          "taxonIds": [
+            {
+              "sourceName": "NCBI",
+              "taxonId": "2026747"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "fetched_at": "2026-05-07T11:02:07.511153+00:00",
+    "page_size": 100,
+    "source": "brapi_germplasm"
+  }
+}

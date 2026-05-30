@@ -478,6 +478,7 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
         preferred_provider: LLMProvider | None = None,
         organization_id: int | None = None,
         user_id: int | None = None,
+        available_providers: list[LLMConfig] | None = None,
     ) -> LLMResponse:
         """
         Generate a response using the best available LLM provider.
@@ -508,7 +509,7 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
                     return cached
 
         # Get available providers
-        available = await self.get_available_providers()
+        available = available_providers if available_providers is not None else await self.get_available_providers()
 
         # Filter by preferred provider if specified
         if preferred_provider:
@@ -553,6 +554,18 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
 
             except Exception as e:
                 logger.warning(f"[REEVU] Provider {config.provider.value} failed: {e}")
+                
+                # If the user explicitly provided an API key (which sets preferred_provider),
+                # surface API errors immediately instead of falling back to the template
+                if preferred_provider and ("API Error" in str(e) or "404" in str(e) or "403" in str(e) or "400" in str(e)):
+                     return LLMResponse(
+                        content=f"The AI provider rejected the request. Please check if the model name is correct and your API key has permission.\n\nDetails: {str(e)}",
+                        provider=config.provider,
+                        model=config.model,
+                        model_confirmed=False,
+                        latency_ms=(time.time() - start_time) * 1000
+                     )
+                
                 continue
 
         # Fallback to template
@@ -595,6 +608,9 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
         Returns:
             LLMResponse
         """
+        # Ensure we have the base providers loaded first
+        available = await self.get_available_providers()
+
         # If user provided their own API key, temporarily configure that provider
         temp_config_restored = False
         original_config = None
@@ -615,12 +631,18 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
                     rate_limit=original_config.rate_limit
                 )
                 self.providers[preferred_provider] = temp_config
+                
+                # Update it in the available list so generate() uses it
+                for i, p in enumerate(available):
+                    if p.provider == preferred_provider:
+                        available[i] = temp_config
+                        break
+                
                 temp_config_restored = True
                 logger.info(f"[REEVU] Using user-provided API key for {preferred_provider.value}")
 
         try:
-            # Determine which provider will be used
-            available = await self.get_available_providers()
+            # Filter by preferred provider if specified
 
             # Filter by preferred provider if specified
             if preferred_provider:
@@ -663,6 +685,7 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
                 preferred_provider=preferred_provider,
                 organization_id=organization_id,
                 user_id=user_id,
+                available_providers=available,
             )
 
         finally:
@@ -695,6 +718,9 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
         Yields:
             Text chunks as they arrive from the LLM
         """
+        # Ensure we have the base providers loaded first
+        available = await self.get_available_providers()
+
         # If user provided their own API key, temporarily configure that provider
         temp_config_restored = False
         original_config = None
@@ -714,12 +740,18 @@ Remember: A breeder making decisions based on your advice could affect crop yiel
                     rate_limit=original_config.rate_limit
                 )
                 self.providers[preferred_provider] = temp_config
+                
+                # Update it in the available list so stream_chat uses it
+                for i, p in enumerate(available):
+                    if p.provider == preferred_provider:
+                        available[i] = temp_config
+                        break
+                
                 temp_config_restored = True
                 logger.info(f"[REEVU] Using user-provided API key for streaming with {preferred_provider.value}")
 
         try:
-            # Determine which provider will be used
-            available = await self.get_available_providers()
+            # Filter by preferred provider if specified
 
             # Filter by preferred provider if specified
             if preferred_provider:

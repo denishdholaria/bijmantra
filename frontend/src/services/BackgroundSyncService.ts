@@ -1,3 +1,6 @@
+import { apiClient } from '@/lib/api-client'
+import { logger } from '@/lib/logger'
+
 export type DraftObservation = {
   id: string
   trialDbId: string
@@ -104,6 +107,31 @@ export class BackgroundSyncService {
     })
   }
 
+  async clearLocalData(): Promise<void> {
+    if (this.dbPromise) {
+      try {
+        const db = await this.dbPromise
+        db.close()
+      } catch (error) {
+        logger.warn('[BackgroundSync] Failed to close draft database before cleanup', {
+          error: error instanceof Error ? error.message : String(error),
+        })
+      } finally {
+        this.dbPromise = null
+      }
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      const request = indexedDB.deleteDatabase(DB_NAME)
+      request.onsuccess = () => resolve()
+      request.onerror = () => reject(request.error)
+      request.onblocked = () => {
+        logger.warn('[BackgroundSync] Draft database cleanup blocked by an open tab')
+        resolve()
+      }
+    })
+  }
+
   async syncManager(): Promise<{ pushed: number; skippedReason?: string }> {
     if (!navigator.onLine) {
       return { pushed: 0, skippedReason: 'offline' }
@@ -122,9 +150,14 @@ export class BackgroundSyncService {
     const drafts = await this.listDrafts(true)
     if (drafts.length === 0) return { pushed: 0 }
 
+    const token = apiClient.getToken()
+    if (!token) {
+      return { pushed: 0, skippedReason: 'unauthenticated' }
+    }
+
     const response = await fetch('/api/v2/pwa/drafts/sync', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ drafts }),
     })
 
@@ -136,7 +169,11 @@ export class BackgroundSyncService {
 
   attachOnlineSync(): () => void {
     const handler = () => {
-      this.syncManager().catch(() => undefined)
+      this.syncManager().catch((error) => {
+        logger.warn('[BackgroundSync] Online sync failed; drafts remain queued', {
+          error: error instanceof Error ? error.message : String(error),
+        })
+      })
     }
     window.addEventListener('online', handler)
     return () => window.removeEventListener('online', handler)

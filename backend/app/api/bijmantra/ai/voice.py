@@ -9,33 +9,52 @@ Endpoints:
 """
 
 import contextlib
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.api.deps import get_current_user
-from app.modules.core.services.voice_service import EDGE_VOICES, get_unified_voice_service, get_voice_service
+from app.core.database import AsyncSessionLocal
+from app.core.security import decode_access_token
+from app.crud.core import user as user_crud
+from app.models.core import User
+from app.modules.core.services.voice_service import (
+    EDGE_VOICES,
+    get_unified_voice_service,
+    get_voice_service,
+)
 
 
-router = APIRouter(prefix="/voice", tags=["REEVU Voice"], dependencies=[Depends(get_current_user)])
+logger = logging.getLogger(__name__)
+VOICE_WS_POLICY_VIOLATION = 1008
+
+router = APIRouter(prefix="/voice", tags=["REEVU Voice"])
 
 
 # ============================================
 # SCHEMAS
 # ============================================
 
+
 class SynthesizeRequest(BaseModel):
     """Request to synthesize speech"""
+
     text: str = Field(..., min_length=1, max_length=10000, description="Text to synthesize")
     voice: str | None = Field(None, description="Voice preset name")
     backend: str | None = Field(None, description="TTS backend: vibevoice, edge_tts, or auto")
-    cfg_scale: float = Field(1.5, ge=0.1, le=5.0, description="Classifier-free guidance scale (VibeVoice)")
-    inference_steps: int = Field(5, ge=1, le=20, description="Number of diffusion steps (VibeVoice)")
+    cfg_scale: float = Field(
+        1.5, ge=0.1, le=5.0, description="Classifier-free guidance scale (VibeVoice)"
+    )
+    inference_steps: int = Field(
+        5, ge=1, le=20, description="Number of diffusion steps (VibeVoice)"
+    )
 
 
 class SynthesizeResponse(BaseModel):
     """Response with synthesis info"""
+
     success: bool
     duration_ms: float
     sample_rate: int = 24000
@@ -45,6 +64,7 @@ class SynthesizeResponse(BaseModel):
 
 class VoiceInfo(BaseModel):
     """Information about a voice preset"""
+
     name: str
     language: str = "en"
     description: str | None = None
@@ -52,12 +72,14 @@ class VoiceInfo(BaseModel):
 
 class VoicesResponse(BaseModel):
     """List of available voices"""
+
     voices: list[VoiceInfo]
     default: str | None
 
 
 class HealthResponse(BaseModel):
     """Voice service health status"""
+
     available: bool
     model_loaded: bool
     device: str
@@ -66,12 +88,56 @@ class HealthResponse(BaseModel):
     error: str | None
 
 
+def _extract_websocket_token(websocket: WebSocket) -> str | None:
+    auth_header = websocket.headers.get("authorization")
+    if auth_header and auth_header.lower().startswith("bearer "):
+        return auth_header.split(" ", 1)[1].strip()
+
+    token = websocket.query_params.get("token") or websocket.query_params.get("access_token")
+    if token:
+        return token
+
+    subprotocols = websocket.headers.get("sec-websocket-protocol", "")
+    for candidate in subprotocols.split(","):
+        candidate = candidate.strip()
+        if candidate.lower().startswith("bearer."):
+            return candidate.split(".", 1)[1].strip()
+
+    return None
+
+
+async def _authenticate_voice_websocket(websocket: WebSocket) -> User | None:
+    token = _extract_websocket_token(websocket)
+    payload = decode_access_token(token) if token else None
+    user_id = payload.get("sub") if payload else None
+
+    if user_id is None:
+        await websocket.close(code=VOICE_WS_POLICY_VIOLATION)
+        return None
+
+    try:
+        parsed_user_id = int(user_id)
+    except (TypeError, ValueError):
+        await websocket.close(code=VOICE_WS_POLICY_VIOLATION)
+        return None
+
+    async with AsyncSessionLocal() as db:
+        db_user = await user_crud.get(db, id=parsed_user_id)
+
+    if db_user is None or not db_user.is_active:
+        await websocket.close(code=VOICE_WS_POLICY_VIOLATION)
+        return None
+
+    return db_user
+
+
 # ============================================
 # ENDPOINTS
 # ============================================
 
+
 @router.get("/health")
-async def voice_health():
+async def voice_health(_current_user: User = Depends(get_current_user)):
     """
     Check all voice service backends.
 
@@ -82,7 +148,7 @@ async def voice_health():
 
 
 @router.get("/voices", response_model=VoicesResponse)
-async def list_voices():
+async def list_voices(_current_user: User = Depends(get_current_user)):
     """
     List available voice presets from all backends.
 
@@ -101,18 +167,27 @@ async def list_voices():
     # Add Edge TTS voices (always available)
     if status["edge_tts"]["available"]:
         for name, desc in EDGE_VOICES.items():
-            voices.append(VoiceInfo(name=name, language="en" if "en-" in name else "hi", description=f"Edge: {desc}"))
+            voices.append(
+                VoiceInfo(
+                    name=name, language="en" if "en-" in name else "hi", description=f"Edge: {desc}"
+                )
+            )
 
     # Fallback if nothing available
     if not voices:
         voices = [VoiceInfo(name="browser", language="en", description="Web Speech API (browser)")]
 
-    default = status["vibevoice"]["default_voice"] or status["edge_tts"]["default_voice"] or "browser"
+    default = (
+        status["vibevoice"]["default_voice"] or status["edge_tts"]["default_voice"] or "browser"
+    )
     return VoicesResponse(voices=voices, default=default)
 
 
 @router.post("/synthesize")
-async def synthesize_speech(request: SynthesizeRequest):
+async def synthesize_speech(
+    request: SynthesizeRequest,
+    _current_user: User = Depends(get_current_user),
+):
     """
     Synthesize speech from text with automatic backend selection.
 
@@ -122,13 +197,12 @@ async def synthesize_speech(request: SynthesizeRequest):
 
     try:
         import time
+
         start = time.time()
 
         # Synthesize with automatic fallback
         audio_data, audio_format, backend_used = await service.synthesize(
-            text=request.text,
-            voice=request.voice,
-            backend=request.backend
+            text=request.text, voice=request.voice, backend=request.backend
         )
 
         duration_ms = (time.time() - start) * 1000
@@ -143,8 +217,8 @@ async def synthesize_speech(request: SynthesizeRequest):
                 "X-Duration-Ms": str(int(duration_ms)),
                 "X-Backend": backend_used,
                 "X-Format": audio_format,
-                "Content-Disposition": f'attachment; filename="veena_speech.{audio_format}"'
-            }
+                "Content-Disposition": f'attachment; filename="veena_speech.{audio_format}"',
+            },
         )
 
     except RuntimeError as e:
@@ -158,7 +232,8 @@ async def synthesize_stream(
     text: str = Query(..., min_length=1, max_length=10000),
     voice: str | None = Query(None),
     cfg_scale: float = Query(1.5, ge=0.1, le=5.0),
-    inference_steps: int = Query(5, ge=1, le=20)
+    inference_steps: int = Query(5, ge=1, le=20),
+    _current_user: User = Depends(get_current_user),
 ):
     """
     Stream synthesized speech.
@@ -170,28 +245,18 @@ async def synthesize_stream(
 
     status = await service.check_health()
     if not status.available:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Voice service unavailable: {status.error}"
-        )
+        raise HTTPException(status_code=503, detail=f"Voice service unavailable: {status.error}")
 
     async def audio_generator():
         async for chunk in service.synthesize_stream(
-            text=text,
-            voice=voice,
-            cfg_scale=cfg_scale,
-            inference_steps=inference_steps
+            text=text, voice=voice, cfg_scale=cfg_scale, inference_steps=inference_steps
         ):
             yield chunk
 
     return StreamingResponse(
         audio_generator(),
         media_type="audio/pcm",
-        headers={
-            "X-Sample-Rate": "24000",
-            "X-Channels": "1",
-            "X-Bits-Per-Sample": "16"
-        }
+        headers={"X-Sample-Rate": "24000", "X-Channels": "1", "X-Bits-Per-Sample": "16"},
     )
 
 
@@ -207,8 +272,19 @@ async def voice_websocket(websocket: WebSocket):
 
     This enables ~300ms first-speech latency for natural conversations.
     """
+    current_user = await _authenticate_voice_websocket(websocket)
+    if current_user is None:
+        return
+
     await websocket.accept()
     service = get_voice_service()
+    logger.info(
+        "Voice websocket connected",
+        extra={
+            "user_id": current_user.id,
+            "organization_id": current_user.organization_id,
+        },
+    )
 
     try:
         while True:
@@ -220,53 +296,32 @@ async def voice_websocket(websocket: WebSocket):
             inference_steps = data.get("inference_steps", 5)
 
             if not text:
-                await websocket.send_json({
-                    "type": "error",
-                    "message": "No text provided"
-                })
+                await websocket.send_json({"type": "error", "message": "No text provided"})
                 continue
 
             # Send start notification
-            await websocket.send_json({
-                "type": "start",
-                "text_length": len(text)
-            })
+            await websocket.send_json({"type": "start", "text_length": len(text)})
 
             try:
                 chunk_count = 0
                 async for chunk in service.synthesize_stream(
-                    text=text,
-                    voice=voice,
-                    cfg_scale=cfg_scale,
-                    inference_steps=inference_steps
+                    text=text, voice=voice, cfg_scale=cfg_scale, inference_steps=inference_steps
                 ):
                     await websocket.send_bytes(chunk)
                     chunk_count += 1
 
                     # Send progress every 10 chunks
                     if chunk_count % 10 == 0:
-                        await websocket.send_json({
-                            "type": "progress",
-                            "chunks": chunk_count
-                        })
+                        await websocket.send_json({"type": "progress", "chunks": chunk_count})
 
                 # Send completion
-                await websocket.send_json({
-                    "type": "complete",
-                    "total_chunks": chunk_count
-                })
+                await websocket.send_json({"type": "complete", "total_chunks": chunk_count})
 
             except RuntimeError as e:
-                await websocket.send_json({
-                    "type": "error",
-                    "message": str(e)
-                })
+                await websocket.send_json({"type": "error", "message": str(e)})
 
     except WebSocketDisconnect:
         pass
     except Exception as e:
         with contextlib.suppress(BaseException):
-            await websocket.send_json({
-                "type": "error",
-                "message": str(e)
-            })
+            await websocket.send_json({"type": "error", "message": str(e)})

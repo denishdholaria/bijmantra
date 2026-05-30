@@ -25,7 +25,12 @@ from app.modules.environment.services.weather_service import WeatherForecastUnav
 from app.modules.germplasm.services.seedlot_search_service import seedlot_search_service
 from app.modules.phenotyping.services.observation_search_service import observation_search_service
 from app.modules.phenotyping.services.trait_search_service import trait_search_service
-from app.modules.ai.services.reevu.analytics_engine import AnalyticsEngine, AnalyticsResult, extract_observations
+from app.modules.ai.services.reevu.analytics_engine import (
+    AnalyticsEngine,
+    AnalyticsResult,
+    TemporalTrendResult,
+    extract_observations,
+)
 from app.schemas.reevu_envelope import EvidenceRef
 from app.schemas.reevu_plan import PlanStep, ReevuExecutionPlan
 
@@ -37,12 +42,21 @@ DOMAIN_ORDER: dict[str, int] = {
     "weather": 0,
     "trials": 1,
     "field": 2,
-    "phenotyping": 3,
-    "genomics": 4,
-    "breeding": 5,
-    "seed_ops": 6,
-    "protocols": 7,
-    "analytics": 8,
+    "sensors": 3,
+    "phenotyping": 4,
+    "genomics": 5,
+    "breeding": 6,
+    "seed_ops": 7,
+    "soil": 8,
+    "pest_disease": 9,
+    "protocols": 10,
+    "climate": 11,
+    "commercial": 12,
+    "harvest": 13,
+    "nursery": 14,
+    "vision": 15,
+    "analytics": 16,
+    "spatial": 17,
 }
 
 
@@ -582,8 +596,17 @@ class StepExecutor:
             "weather": self._execute_weather_step,
             "genomics": self._execute_genomics_step,
             "seed_ops": self._execute_seed_ops_step,
+            "soil": self._execute_soil_step,
+            "pest_disease": self._execute_pest_disease_step,
             "protocols": self._execute_protocols_step,
+            "climate": self._execute_climate_step,
+            "commercial": self._execute_commercial_step,
+            "harvest": self._execute_harvest_step,
+            "nursery": self._execute_nursery_step,
+            "vision": self._execute_vision_step,
             "analytics": self._execute_analytics_step,
+            "sensors": self._execute_sensors_step,
+            "spatial": self._execute_spatial_step,
         }
 
     # ── Dispatch ─────────────────────────────────────────────────────
@@ -596,6 +619,33 @@ class StepExecutor:
 
     def _seedlot_search_service(self) -> Any:
         return getattr(self._executor, "seedlot_search_service", seedlot_search_service)
+
+    def _soil_analysis_search_service(self) -> Any:
+        return getattr(self._executor, "soil_analysis_search_service", None)
+
+    def _disease_resistance_search_service(self) -> Any:
+        return getattr(self._executor, "disease_resistance_search_service", None)
+
+    def _iot_telemetry_service(self) -> Any:
+        return getattr(self._executor, "iot_telemetry_service", None)
+
+    def _spatial_query_service(self) -> Any:
+        return getattr(self._executor, "spatial_query_service", None)
+
+    def _climate_service(self) -> Any:
+        return getattr(self._executor, "climate_service", None)
+
+    def _commercial_service(self) -> Any:
+        return getattr(self._executor, "commercial_service", None)
+
+    def _harvest_service(self) -> Any:
+        return getattr(self._executor, "harvest_service", None)
+
+    def _nursery_service(self) -> Any:
+        return getattr(self._executor, "nursery_service", None)
+
+    def _vision_service(self) -> Any:
+        return getattr(self._executor, "vision_service", None)
 
     def _trait_search_service(self) -> Any:
         return getattr(self._executor, "trait_search_service", trait_search_service)
@@ -958,6 +1008,134 @@ class StepExecutor:
 
         return {"location_records": location_records}
 
+    def _narrow_from_weather(
+        self, context: IntermediateResultContext, prereq_step_id: str,
+    ) -> dict[str, Any]:
+        """Extract weather summary, location, and alerts from a completed weather step.
+
+        Passes weather_data to downstream steps (e.g. analytics) so they can
+        correlate trait observations with weather variables without re-querying.
+        """
+        result = context.get(prereq_step_id)
+        if result is None or result.status != "success":
+            return {}
+
+        weather = result.records.get("weather")
+        if not weather or not isinstance(weather, dict):
+            return {}
+
+        narrowing: dict[str, Any] = {"weather_data": weather}
+
+        location_name = weather.get("location")
+        if location_name:
+            narrowing["weather_location"] = location_name
+
+        alerts = weather.get("alerts")
+        if alerts:
+            narrowing["weather_alerts"] = alerts
+
+        return narrowing
+
+    def _narrow_from_seed_ops(
+        self, context: IntermediateResultContext, prereq_step_id: str,
+    ) -> dict[str, Any]:
+        """Extract available germplasm IDs (those with seedlots in stock) from a seed_ops step.
+
+        Passes available_germplasm_ids to downstream steps so they can filter
+        recommendations to only germplasm entries that have seed available.
+        """
+        result = context.get(prereq_step_id)
+        if result is None or result.status != "success":
+            return {}
+
+        seedlots = result.records.get("seedlots", [])
+        if not seedlots:
+            return {}
+
+        # Collect germplasm IDs for seedlots that have quantity > 0
+        available_germplasm_ids: list[int] = []
+        seen: set[int] = set()
+        for seedlot in seedlots:
+            if not isinstance(seedlot, dict):
+                continue
+            qty = seedlot.get("quantity") or seedlot.get("quantity_grams") or 0
+            try:
+                qty_val = float(qty)
+            except (TypeError, ValueError):
+                qty_val = 0.0
+            if qty_val <= 0:
+                continue
+            gid = seedlot.get("germplasm_id") or seedlot.get("germplasm")
+            if gid is None:
+                continue
+            try:
+                gid_int = int(gid)
+            except (TypeError, ValueError):
+                continue
+            if gid_int not in seen:
+                seen.add(gid_int)
+                available_germplasm_ids.append(gid_int)
+
+        if not available_germplasm_ids:
+            return {}
+
+        return {"available_germplasm_ids": available_germplasm_ids}
+
+    def _narrow_from_soil(
+        self, context: IntermediateResultContext, prereq_step_id: str,
+    ) -> dict[str, Any]:
+        """Extract nutrient_summary and soil_health_indicators from a soil step.
+
+        Passes soil context to downstream steps (e.g. analytics) so they can
+        correlate yield with soil conditions.
+        """
+        result = context.get(prereq_step_id)
+        if result is None or result.status != "success":
+            return {}
+
+        nutrient_summary = result.records.get("nutrient_summary")
+        if not nutrient_summary:
+            return {}
+
+        narrowing: dict[str, Any] = {"nutrient_summary": nutrient_summary}
+        soil_health = result.records.get("soil_health_indicators")
+        if soil_health:
+            narrowing["soil_health_indicators"] = soil_health
+
+        return narrowing
+
+    def _narrow_from_pest_disease(
+        self, context: IntermediateResultContext, prereq_step_id: str,
+    ) -> dict[str, Any]:
+        """Extract resistance_profiles from a pest_disease step.
+
+        Passes resistance data to downstream steps (e.g. recommendation engine)
+        so they can factor disease susceptibility into variety evaluation.
+        """
+        result = context.get(prereq_step_id)
+        if result is None or result.status != "success":
+            return {}
+
+        profiles = result.records.get("resistance_profiles")
+        if not profiles:
+            return {}
+
+        return {"resistance_profiles": profiles}
+
+    def _narrow_from_sensors(
+        self, context: IntermediateResultContext, prereq_step_id: str,
+    ) -> dict[str, Any]:
+        """Extract telemetry_summary from a sensors step for analytics correlation."""
+        result = context.get(prereq_step_id)
+        if result is None or result.status != "success":
+            return {}
+
+        summary = result.records.get("telemetry_summary")
+        if not summary:
+            return {}
+
+        return {"telemetry_summary": summary}
+
     def _get_narrowing_for_step(
         self, step: PlanStep, context: IntermediateResultContext,
     ) -> dict[str, Any]:
@@ -975,6 +1153,16 @@ class StepExecutor:
                 narrowing.update(self._narrow_from_phenotyping(context, prereq_id))
             elif prereq_result.domain in ("field",):
                 narrowing.update(self._narrow_from_field(context, prereq_id))
+            elif prereq_result.domain in ("weather",):
+                narrowing.update(self._narrow_from_weather(context, prereq_id))
+            elif prereq_result.domain in ("seed_ops",):
+                narrowing.update(self._narrow_from_seed_ops(context, prereq_id))
+            elif prereq_result.domain in ("soil",):
+                narrowing.update(self._narrow_from_soil(context, prereq_id))
+            elif prereq_result.domain in ("pest_disease",):
+                narrowing.update(self._narrow_from_pest_disease(context, prereq_id))
+            elif prereq_result.domain in ("sensors",):
+                narrowing.update(self._narrow_from_sensors(context, prereq_id))
         return narrowing
 
 
@@ -1009,6 +1197,15 @@ class StepExecutor:
                 program=program_query,
                 limit=20,
             )
+
+            # Progressive narrowing: filter to context trial IDs when provided
+            context_trial_ids = _as_list(self._params.get("_context_trials_ids"))
+            if context_trial_ids:
+                context_id_set = {str(cid).strip() for cid in context_trial_ids if cid}
+                trial_results = [
+                    t for t in trial_results
+                    if str(t.get("id", "")).strip() in context_id_set
+                ]
 
             # Extract trial IDs for downstream narrowing
             trial_ids = [str(t.get("id", "")).strip() for t in trial_results if t.get("id")]
@@ -1553,6 +1750,12 @@ class StepExecutor:
             metadata = {
                 "narrowing_applied": bool(narrowing_sources),
                 "narrowing_source": ",".join(narrowing_sources) if narrowing_sources else None,
+                "narrowing_sources": narrowing_sources,
+                "narrowing_counts": {
+                    "study_ids": len(study_ids),
+                    "germplasm_ids": len(germplasm_ids),
+                    "observations": len(observations),
+                },
                 "resolved_study_ids": resolved_study_ids,
                 "query_mode": query_mode,
             }
@@ -1665,6 +1868,15 @@ class StepExecutor:
                     limit=20,
                 )
 
+                # Progressive narrowing: filter to context germplasm IDs when provided
+                context_breeding_ids = _as_list(self._params.get("_context_breeding_ids"))
+                if context_breeding_ids:
+                    context_id_set = {str(cid).strip() for cid in context_breeding_ids if cid}
+                    germplasm_results = [
+                        g for g in germplasm_results
+                        if str(g.get("id", "")).strip() in context_id_set
+                    ]
+
                 # Fetch observations per germplasm
                 for germ in germplasm_results[:5]:
                     observations = await observation_service.get_by_germplasm(
@@ -1709,6 +1921,28 @@ class StepExecutor:
                 metadata["narrowing_applied"] = bool(narrowing)
             if step.prerequisites and not narrowing:
                 metadata["narrowing_skipped"] = True
+
+            # Narrowing audit trail
+            if narrowing:
+                narrowing_sources = [
+                    domain
+                    for domain in ("trials", "phenotyping", "weather", "field", "seed_ops")
+                    if any(
+                        context.get(pid) is not None
+                        and context.get(pid).status == "success"  # type: ignore[union-attr]
+                        and context.get(pid).domain == domain  # type: ignore[union-attr]
+                        for pid in step.prerequisites
+                    )
+                ]
+                narrowing_counts: dict[str, int] = {}
+                if narrowing.get("germplasm_ids"):
+                    narrowing_counts["germplasm_ids"] = len(narrowing["germplasm_ids"])
+                if narrowing.get("study_ids"):
+                    narrowing_counts["study_ids"] = len(narrowing["study_ids"])
+                if narrowing_sources:
+                    metadata["narrowing_sources"] = narrowing_sources
+                if narrowing_counts:
+                    metadata["narrowing_counts"] = narrowing_counts
 
             evidence_refs = [
                 EvidenceRef(
@@ -1827,6 +2061,13 @@ class StepExecutor:
                 )
             ]
 
+            # Build narrowing audit trail for seed_ops
+            seed_narrowing_sources: list[str] = []
+            seed_narrowing_counts: dict[str, int] = {}
+            if narrowing.get("germplasm_ids"):
+                seed_narrowing_sources.append("breeding")
+                seed_narrowing_counts["germplasm_ids"] = len(narrowing["germplasm_ids"])
+
             return StepResult(
                 step_id=step.step_id,
                 domain=step.domain,
@@ -1841,6 +2082,8 @@ class StepExecutor:
                 metadata={
                     "narrowing_applied": bool(germplasm_ids and narrowing),
                     "narrowing_source": "breeding" if narrowing.get("germplasm_ids") else None,
+                    "narrowing_sources": seed_narrowing_sources,
+                    "narrowing_counts": seed_narrowing_counts,
                     "query_mode": query_mode,
                     "resolved_germplasm_ids": list(dict.fromkeys(germplasm_ids)),
                 },
@@ -1856,6 +2099,811 @@ class StepExecutor:
                 error_message=str(exc),
             )
 
+    async def _execute_soil_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a soil analysis domain step.
+
+        Queries soil test records for the organization, optionally narrowed to
+        specific locations from a preceding field step. Returns soil analysis
+        records, nutrient summary, and soil health indicators.
+        """
+        try:
+            soil_service = self._soil_analysis_search_service()
+            if soil_service is None:
+                return StepResult(
+                    step_id=step.step_id,
+                    domain=step.domain,
+                    status="failed",
+                    error_category="missing_service",
+                    error_message="soil_analysis_search_service is not available",
+                    metadata={"missing_runtime_service": "soil_analysis_search_service"},
+                )
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            location_query = _as_nonempty_string(self._params.get("location"))
+            nutrient_filter = _as_nonempty_string(self._params.get("nutrient"))
+
+            # Resolve location_id from field narrowing or params
+            location_id: int | None = None
+            location_records = narrowing.get("location_records", [])
+            if location_records:
+                first_loc = location_records[0] if isinstance(location_records, list) else None
+                if first_loc and isinstance(first_loc, dict):
+                    location_id = _coerce_int(first_loc.get("id"))
+
+            if location_id is None:
+                location_id = _coerce_int(self._params.get("location_id"))
+
+            soil_analyses = await soil_service.search(
+                db=self._executor.db,
+                organization_id=self._organization_id,
+                location_id=location_id,
+                query=nutrient_filter or location_query,
+                limit=20,
+            )
+
+            nutrient_summary = await soil_service.get_nutrient_summary(
+                db=self._executor.db,
+                organization_id=self._organization_id,
+                location_id=location_id or 0,
+            )
+
+            soil_health_indicators = nutrient_summary.get("soil_health_indicators", {})
+
+            # Narrowing audit trail
+            narrowing_sources: list[str] = []
+            narrowing_counts: dict[str, int] = {}
+            if location_records:
+                narrowing_sources.append("field")
+                narrowing_counts["location_records"] = len(location_records)
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="database",
+                    entity_id=f"step:{step.step_id}:soil_search",
+                    query_or_method="soil_analysis_search_service.search",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="success",
+                records={
+                    "soil_analyses": soil_analyses,
+                    "nutrient_summary": nutrient_summary,
+                    "soil_health_indicators": soil_health_indicators,
+                },
+                entity_ids=[str(r["id"]) for r in soil_analyses if r.get("id")],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
+                    "location_id": location_id,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Soil step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="failed",
+                error_category="execution_error",
+                error_message=str(exc),
+            )
+
+    async def _execute_pest_disease_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a pest/disease domain step.
+
+        Queries disease resistance profiles (narrowed from breeding germplasm IDs)
+        and pest/disease scouting records (narrowed from trial locations).
+        """
+        try:
+            disease_service = self._disease_resistance_search_service()
+            if disease_service is None:
+                return StepResult(
+                    step_id=step.step_id,
+                    domain=step.domain,
+                    status="failed",
+                    error_category="missing_service",
+                    error_message="disease_resistance_search_service is not available",
+                    metadata={"missing_runtime_service": "disease_resistance_search_service"},
+                )
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            disease_query = _as_nonempty_string(self._params.get("disease"))
+            pest_query = _as_nonempty_string(self._params.get("pest"))
+            crop_query = _as_nonempty_string(self._params.get("crop"))
+
+            # Germplasm IDs from breeding narrowing
+            germplasm_ids = [
+                str(v).strip()
+                for v in _as_list(narrowing.get("germplasm_ids"))
+                if str(v).strip()
+            ]
+
+            # Location from trials narrowing
+            location_id: int | None = None
+            location_records = narrowing.get("location_records", [])
+            if location_records and isinstance(location_records, list):
+                first_loc = location_records[0] if location_records else None
+                if first_loc and isinstance(first_loc, dict):
+                    location_id = _coerce_int(first_loc.get("id"))
+
+            resistance_profiles = await disease_service.get_resistance_profiles(
+                db=self._executor.db,
+                organization_id=self._organization_id,
+                germplasm_ids=germplasm_ids if germplasm_ids else None,
+                disease=disease_query or pest_query,
+                limit=20,
+            )
+
+            scouting_records = await disease_service.search_scouting_records(
+                db=self._executor.db,
+                organization_id=self._organization_id,
+                location_id=location_id,
+                crop=crop_query,
+                limit=20,
+            )
+
+            # Narrowing audit trail
+            narrowing_sources: list[str] = []
+            narrowing_counts: dict[str, int] = {}
+            if germplasm_ids:
+                narrowing_sources.append("breeding")
+                narrowing_counts["germplasm_ids"] = len(germplasm_ids)
+            if location_records:
+                narrowing_sources.append("trials")
+                narrowing_counts["location_records"] = len(location_records)
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="database",
+                    entity_id=f"step:{step.step_id}:resistance_profiles",
+                    query_or_method="disease_resistance_search_service.get_resistance_profiles",
+                ),
+                EvidenceRef(
+                    source_type="database",
+                    entity_id=f"step:{step.step_id}:scouting_records",
+                    query_or_method="disease_resistance_search_service.search_scouting_records",
+                ),
+            ]
+
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="success",
+                records={
+                    "resistance_profiles": resistance_profiles,
+                    "scouting_records": scouting_records,
+                    "stress_observations": [],
+                },
+                entity_ids=[str(r["id"]) for r in resistance_profiles if r.get("id")],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
+                    "germplasm_ids_used": germplasm_ids,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Pest/disease step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="failed",
+                error_category="execution_error",
+                error_message=str(exc),
+            )
+
+    async def _execute_sensors_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute an IoT sensors domain step.
+
+        Queries sensor readings for the organization, optionally narrowed to
+        specific locations from a preceding field step. Computes per-sensor-type
+        telemetry summaries (min/max/mean).
+        """
+        try:
+            iot_service = self._iot_telemetry_service()
+            if iot_service is None:
+                return StepResult(
+                    step_id=step.step_id,
+                    domain=step.domain,
+                    status="failed",
+                    error_category="missing_service",
+                    error_message="iot_telemetry_service is not available",
+                    metadata={"missing_runtime_service": "iot_telemetry_service"},
+                )
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            sensor_type = _as_nonempty_string(self._params.get("sensor_type"))
+
+            # Resolve location_id from field narrowing
+            location_id: int | None = None
+            location_records = narrowing.get("location_records", [])
+            if location_records and isinstance(location_records, list):
+                first_loc = location_records[0] if location_records else None
+                if first_loc and isinstance(first_loc, dict):
+                    location_id = _coerce_int(first_loc.get("id"))
+
+            if location_id is None:
+                location_id = _coerce_int(self._params.get("location_id"))
+
+            sensor_readings = await iot_service.get_readings(
+                db=self._executor.db,
+                organization_id=self._organization_id,
+                location_id=location_id,
+                sensor_type=sensor_type,
+                limit=100,
+            )
+
+            device_status = await iot_service.get_device_status(
+                db=self._executor.db,
+                organization_id=self._organization_id,
+                location_id=location_id,
+            )
+
+            # Compute telemetry summary: min/max/mean per sensor_type
+            telemetry_summary: dict[str, Any] = {}
+            for reading in sensor_readings:
+                if not isinstance(reading, dict):
+                    continue
+                stype = reading.get("sensor_type") or reading.get("type") or "unknown"
+                val = reading.get("value")
+                try:
+                    val_f = float(val)
+                except (TypeError, ValueError):
+                    continue
+                if stype not in telemetry_summary:
+                    telemetry_summary[stype] = {"values": []}
+                telemetry_summary[stype]["values"].append(val_f)
+
+            for stype, data in telemetry_summary.items():
+                vals = data.pop("values")
+                if vals:
+                    telemetry_summary[stype] = {
+                        "min": min(vals),
+                        "max": max(vals),
+                        "mean": sum(vals) / len(vals),
+                        "count": len(vals),
+                    }
+
+            # Narrowing audit trail
+            narrowing_sources: list[str] = []
+            narrowing_counts: dict[str, int] = {}
+            if location_records:
+                narrowing_sources.append("field")
+                narrowing_counts["location_records"] = len(location_records)
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="database",
+                    entity_id=f"step:{step.step_id}:sensor_readings",
+                    query_or_method="iot_telemetry_service.get_readings",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="success",
+                records={
+                    "sensor_readings": sensor_readings,
+                    "telemetry_summary": telemetry_summary,
+                    "device_status": device_status,
+                },
+                entity_ids=[],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
+                    "location_id": location_id,
+                    "sensor_type": sensor_type,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Sensors step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="failed",
+                error_category="execution_error",
+                error_message=str(exc),
+            )
+
+    async def _execute_spatial_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a spatial domain step.
+
+        Performs proximity queries using PostGIS to find locations, trials, or
+        other entities within a specified radius of given coordinates.
+        """
+        try:
+            spatial_service = self._spatial_query_service()
+            if spatial_service is None:
+                return StepResult(
+                    step_id=step.step_id,
+                    domain=step.domain,
+                    status="failed",
+                    error_category="missing_service",
+                    error_message="spatial_query_service is not available",
+                    metadata={"missing_runtime_service": "spatial_query_service"},
+                )
+
+            lat = self._params.get("lat")
+            lon = self._params.get("lon")
+            radius_km = self._params.get("radius_km") or 50.0
+
+            try:
+                lat_f = float(lat) if lat is not None else None
+                lon_f = float(lon) if lon is not None else None
+                radius_f = float(radius_km)
+            except (TypeError, ValueError):
+                lat_f = lon_f = None
+                radius_f = 50.0
+
+            # If no coordinates provided, try to resolve from location name
+            if lat_f is None or lon_f is None:
+                location_query = _as_nonempty_string(self._params.get("location"))
+                if location_query and self._executor.location_search_service:
+                    locations = await self._executor.location_search_service.search(
+                        db=self._executor.db,
+                        organization_id=self._organization_id,
+                        query=location_query,
+                        limit=1,
+                    )
+                    if locations:
+                        lat_f = locations[0].get("latitude")
+                        lon_f = locations[0].get("longitude")
+
+            if lat_f is None or lon_f is None:
+                return StepResult(
+                    step_id=step.step_id,
+                    domain=step.domain,
+                    status="failed",
+                    error_category="spatial_resolution_error",
+                    error_message="no coordinates available for spatial query",
+                )
+
+            spatial_results = await spatial_service.find_nearest_locations(
+                db=self._executor.db,
+                lat=lat_f,
+                lon=lon_f,
+                radius_km=radius_f,
+                max_results=20,
+            )
+
+            region_summary = {
+                "total_found": len(spatial_results),
+                "radius_km": radius_f,
+                "center_lat": lat_f,
+                "center_lon": lon_f,
+            }
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="database",
+                    entity_id=f"step:{step.step_id}:spatial_query",
+                    query_or_method="spatial_query_service.find_nearest_locations",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="success",
+                records={
+                    "spatial_results": spatial_results,
+                    "proximity_records": spatial_results,
+                    "region_summary": region_summary,
+                },
+                entity_ids=[
+                    str(r["location_id"])
+                    for r in spatial_results
+                    if r.get("location_id")
+                ],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "radius_km": radius_f,
+                    "center_lat": lat_f,
+                    "center_lon": lon_f,
+                    "results_count": len(spatial_results),
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Spatial step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id,
+                domain=step.domain,
+                status="failed",
+                error_category="execution_error",
+                error_message=str(exc),
+            )
+
+    # ── Outer Ring Domain Handlers ───────────────────────────────────────────
+
+    _VALID_SSP_SCENARIOS: frozenset[str] = frozenset({
+        "SSP1-1.9", "SSP1-2.6", "SSP2-4.5", "SSP3-7.0", "SSP5-8.5",
+        "ssp1-1.9", "ssp1-2.6", "ssp2-4.5", "ssp3-7.0", "ssp5-8.5",
+        "RCP2.6", "RCP4.5", "RCP6.0", "RCP8.5",
+    })
+
+    async def _execute_climate_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a climate intelligence domain step.
+
+        Queries climate projections for a location under a specified SSP scenario.
+        Computes a simple crop suitability score from projected temperature/rainfall changes.
+        Narrows from field step (location coordinates).
+        """
+        try:
+            climate_svc = self._climate_service()
+            if climate_svc is None:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="missing_service",
+                    error_message="climate_service is not available",
+                    metadata={"missing_runtime_service": "climate_service"},
+                )
+
+            scenario = _as_nonempty_string(self._params.get("scenario")) or "SSP2-4.5"
+            if scenario not in self._VALID_SSP_SCENARIOS:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="invalid_parameter",
+                    error_message=f"Unrecognized climate scenario '{scenario}'. "
+                                  f"Valid values: {sorted(self._VALID_SSP_SCENARIOS)}",
+                )
+
+            year = _coerce_int(self._params.get("year")) or 2050
+            crop = _as_nonempty_string(self._params.get("crop"))
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            location_records = narrowing.get("location_records", [])
+            narrowing_sources: list[str] = []
+            if location_records:
+                narrowing_sources.append("field")
+
+            # Call service — sync or async, handle both
+            try:
+                projections = climate_svc.get_projections(
+                    scenario=scenario, year=year, crop=crop,
+                    location_records=location_records or None,
+                )
+            except Exception:
+                projections = {"scenario": scenario, "year": year}
+
+            # Simple crop suitability: stub — real scoring requires calibrated models
+            temp_change = projections.get("temp_change_c", 0.0) if isinstance(projections, dict) else 0.0
+            suitability_score = max(0.0, 1.0 - abs(temp_change) * 0.1)
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="function",
+                    entity_id=f"step:{step.step_id}:climate_projection",
+                    query_or_method="climate_service.get_projections",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="success",
+                records={
+                    "climate_projections": projections if isinstance(projections, list) else [projections],
+                    "crop_suitability": {"score": suitability_score, "scenario": scenario, "year": year},
+                    "adaptation_recommendations": [],
+                },
+                entity_ids=[],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "scenario": scenario,
+                    "year": year,
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Climate step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="failed",
+                error_category="execution_error", error_message=str(exc),
+            )
+
+    async def _execute_commercial_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a commercial/market domain step.
+
+        Queries variety release status and market demand data.
+        Narrows from breeding step (germplasm IDs → commercial data for those varieties).
+        """
+        try:
+            commercial_svc = self._commercial_service()
+            if commercial_svc is None:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="missing_service",
+                    error_message="commercial_service is not available",
+                    metadata={"missing_runtime_service": "commercial_service"},
+                )
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            germplasm_ids = [str(v) for v in _as_list(narrowing.get("germplasm_ids")) if str(v).strip()]
+            crop = _as_nonempty_string(self._params.get("crop"))
+
+            narrowing_sources: list[str] = []
+            narrowing_counts: dict[str, int] = {}
+            if germplasm_ids:
+                narrowing_sources.append("breeding")
+                narrowing_counts["germplasm_ids"] = len(germplasm_ids)
+
+            variety_releases = commercial_svc.list_varieties(
+                crop=crop,
+            ) if hasattr(commercial_svc, "list_varieties") else []
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="function",
+                    entity_id=f"step:{step.step_id}:variety_releases",
+                    query_or_method="commercial_service.list_varieties",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="success",
+                records={
+                    "variety_releases": variety_releases,
+                    "market_demand": [],
+                    "cost_analysis": {},
+                },
+                entity_ids=[str(v.get("variety_id", "")) for v in variety_releases if isinstance(v, dict)],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Commercial step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="failed",
+                error_category="execution_error", error_message=str(exc),
+            )
+
+    async def _execute_harvest_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a harvest/post-harvest domain step.
+
+        Queries harvest records and computes yield summary statistics.
+        Narrows from trials step (trial IDs) and field step (location IDs).
+        """
+        try:
+            harvest_svc = self._harvest_service()
+            if harvest_svc is None:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="missing_service",
+                    error_message="harvest_service is not available",
+                    metadata={"missing_runtime_service": "harvest_service"},
+                )
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            trial_ids = [str(v) for v in _as_list(narrowing.get("trial_ids")) if str(v).strip()]
+            crop = _as_nonempty_string(self._params.get("crop"))
+
+            narrowing_sources: list[str] = []
+            narrowing_counts: dict[str, int] = {}
+            if trial_ids:
+                narrowing_sources.append("trials")
+                narrowing_counts["trial_ids"] = len(trial_ids)
+            location_records = narrowing.get("location_records", [])
+            if location_records:
+                narrowing_sources.append("field")
+                narrowing_counts["location_records"] = len(location_records)
+
+            harvest_records = harvest_svc.list_harvests(
+                crop=crop,
+            ) if hasattr(harvest_svc, "list_harvests") else []
+
+            # Compute yield summary
+            yield_values = [
+                float(r["yield_kg_ha"])
+                for r in harvest_records
+                if isinstance(r, dict) and r.get("yield_kg_ha") is not None
+            ]
+            yield_summary: dict[str, Any] = {}
+            if yield_values:
+                yield_summary = {
+                    "mean_yield_kg_ha": sum(yield_values) / len(yield_values),
+                    "min_yield_kg_ha": min(yield_values),
+                    "max_yield_kg_ha": max(yield_values),
+                    "n": len(yield_values),
+                }
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="function",
+                    entity_id=f"step:{step.step_id}:harvest_records",
+                    query_or_method="harvest_service.list_harvests",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="success",
+                records={
+                    "harvest_records": harvest_records,
+                    "yield_summary": yield_summary,
+                    "quality_grades": [
+                        r.get("quality_grade") for r in harvest_records
+                        if isinstance(r, dict) and r.get("quality_grade")
+                    ],
+                },
+                entity_ids=[str(r.get("harvest_id", "")) for r in harvest_records if isinstance(r, dict)],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Harvest step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="failed",
+                error_category="execution_error", error_message=str(exc),
+            )
+
+    async def _execute_nursery_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a nursery/crop management domain step.
+
+        Queries nursery operations, seedling inventory, and crop management events.
+        Narrows from field step (location IDs).
+        """
+        try:
+            nursery_svc = self._nursery_service()
+            if nursery_svc is None:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="missing_service",
+                    error_message="nursery_service is not available",
+                    metadata={"missing_runtime_service": "nursery_service"},
+                )
+
+            narrowing = self._get_narrowing_for_step(step, context)
+            location_records = narrowing.get("location_records", [])
+            crop = _as_nonempty_string(self._params.get("crop"))
+
+            narrowing_sources: list[str] = []
+            narrowing_counts: dict[str, int] = {}
+            if location_records:
+                narrowing_sources.append("field")
+                narrowing_counts["location_records"] = len(location_records)
+
+            nursery_ops = nursery_svc.list_nurseries(
+                crop=crop,
+            ) if hasattr(nursery_svc, "list_nurseries") else []
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="function",
+                    entity_id=f"step:{step.step_id}:nursery_operations",
+                    query_or_method="nursery_service.list_nurseries",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="success",
+                records={
+                    "nursery_operations": nursery_ops,
+                    "transplanting_schedules": [],
+                    "crop_management_events": [],
+                },
+                entity_ids=[str(n.get("nursery_id", "")) for n in nursery_ops if isinstance(n, dict)],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "narrowing_applied": bool(narrowing_sources),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Nursery step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="failed",
+                error_category="execution_error", error_message=str(exc),
+            )
+
+    async def _execute_vision_step(
+        self, step: PlanStep, context: IntermediateResultContext,
+    ) -> StepResult:
+        """Execute a vision/image analysis domain step.
+
+        Accepts image_url or image_base64 in params. Returns disease identification,
+        confidence score, and management recommendation.
+        Safe-fails with instruction when no image is provided.
+        """
+        try:
+            vision_svc = self._vision_service()
+            if vision_svc is None:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="missing_service",
+                    error_message="vision_service is not available",
+                    metadata={"missing_runtime_service": "vision_service"},
+                )
+
+            image_url = _as_nonempty_string(self._params.get("image_url"))
+            image_b64 = _as_nonempty_string(self._params.get("image_base64"))
+            crop = _as_nonempty_string(self._params.get("crop"))
+
+            if not image_url and not image_b64:
+                return StepResult(
+                    step_id=step.step_id, domain=step.domain, status="failed",
+                    error_category="missing_input",
+                    error_message="No image provided. Please attach an image or provide an image_url "
+                                  "to use the vision analysis step.",
+                )
+
+            analysis_result = vision_svc.analyze(
+                image_url=image_url,
+                image_base64=image_b64,
+                crop=crop,
+            ) if hasattr(vision_svc, "analyze") else {}
+
+            classification = analysis_result.get("classification", "Unknown") if isinstance(analysis_result, dict) else "Unknown"
+            confidence = analysis_result.get("confidence", 0.0) if isinstance(analysis_result, dict) else 0.0
+            recommendation = analysis_result.get("recommendation", "") if isinstance(analysis_result, dict) else ""
+
+            evidence_refs = [
+                EvidenceRef(
+                    source_type="function",
+                    entity_id=f"step:{step.step_id}:vision_analysis",
+                    query_or_method="vision_service.analyze",
+                )
+            ]
+
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="success",
+                records={
+                    "classification_result": classification,
+                    "confidence_score": confidence,
+                    "management_recommendation": recommendation,
+                },
+                entity_ids=[],
+                evidence_refs=evidence_refs,
+                metadata={
+                    "image_source": "url" if image_url else "base64",
+                    "crop": crop,
+                },
+            )
+
+        except Exception as exc:
+            logger.error("Vision step %s failed: %s", step.step_id, exc)
+            return StepResult(
+                step_id=step.step_id, domain=step.domain, status="failed",
+                error_category="execution_error", error_message=str(exc),
+            )
 
     async def _execute_weather_step(
         self, step: PlanStep, context: IntermediateResultContext,
@@ -2188,6 +3236,18 @@ class StepExecutor:
         query_lower = self._original_query.lower()
         return any(keyword in query_lower for keyword in self._COMPARISON_KEYWORDS)
 
+    _TEMPORAL_KEYWORDS: tuple[str, ...] = (
+        "trend", "over time", "over the last", "last n years", "last n seasons",
+        "genetic gain", "breeding progress", "improved", "changed over",
+        "how has", "how have", "since 20", "between 20", "per year",
+        "per season", "per cycle", "year on year", "season on season",
+    )
+
+    def _query_suggests_temporal(self) -> bool:
+        """Return True when the query expresses a temporal/trend intent."""
+        query_lower = self._original_query.lower()
+        return any(keyword in query_lower for keyword in self._TEMPORAL_KEYWORDS)
+
     def _ranking_direction(self) -> Literal["desc", "asc"]:
         query_lower = self._original_query.lower()
         if any(keyword in query_lower for keyword in ("lowest", "worst", "bottom")):
@@ -2261,6 +3321,10 @@ class StepExecutor:
                     )
                 )
                 observations = extract_observations(narrowed_context)
+
+            # Weather data from narrowing — available for correlation queries
+            weather_data: dict[str, Any] | None = narrowing.get("weather_data")
+
             trait_name = self._select_analytics_trait(observations)
 
             computation_results: dict[str, AnalyticsResult] = {}
@@ -2328,12 +3392,90 @@ class StepExecutor:
                     }
                 ]
 
+            if weather_data:
+                records["weather_context"] = {
+                    "location": weather_data.get("location"),
+                    "summary": weather_data.get("summary"),
+                    "alerts_count": len(weather_data.get("alerts") or []),
+                }
+
+            # Temporal trend — computed when query expresses temporal intent
+            if trait_name and observations and self._query_suggests_temporal():
+                time_field = "season"
+                if any(kw in self._original_query.lower() for kw in ("year", "annual", "per year")):
+                    time_field = "year"
+                elif any(kw in self._original_query.lower() for kw in ("cycle", "generation", "breeding progress", "genetic gain")):
+                    time_field = "cycle"
+
+                compute_gain = any(
+                    kw in self._original_query.lower()
+                    for kw in ("genetic gain", "breeding progress")
+                )
+                temporal_result = engine.compute_temporal_trend(
+                    observations,
+                    trait_name=trait_name,
+                    time_field=time_field,
+                    compute_genetic_gain=compute_gain,
+                )
+                records["temporal_trend"] = {
+                    "trait_name": temporal_result.trait_name,
+                    "time_series": [
+                        {
+                            "period": tp.period,
+                            "mean": tp.mean,
+                            "n": tp.n,
+                            "ci_lower": tp.ci_lower,
+                            "ci_upper": tp.ci_upper,
+                        }
+                        for tp in temporal_result.time_series
+                    ],
+                    "trend_direction": temporal_result.trend_direction,
+                    "rate_of_change": temporal_result.rate_of_change,
+                    "r_squared": temporal_result.r_squared,
+                    "genetic_gain": (
+                        {
+                            "gain_per_cycle": temporal_result.genetic_gain.gain_per_cycle,
+                            "gain_percent_per_cycle": temporal_result.genetic_gain.gain_percent_per_cycle,
+                            "n_cycles": temporal_result.genetic_gain.n_cycles,
+                            "base_mean": temporal_result.genetic_gain.base_mean,
+                            "current_mean": temporal_result.genetic_gain.current_mean,
+                        }
+                        if temporal_result.genetic_gain
+                        else None
+                    ),
+                }
+                evidence_refs.extend(temporal_result.evidence_refs)
+                calculation_steps.extend(
+                    cs.model_dump() for cs in temporal_result.calculation_steps
+                )
+
             records["calculation_steps"] = calculation_steps
             records["uncertainty"] = {
                 "confidence": min(confidence_scores) if confidence_scores else None,
                 "missing_data": list(dict.fromkeys(missing_data)),
             }
             records["warnings"] = list(dict.fromkeys(warnings))
+
+            # Build narrowing audit trail
+            narrowing_sources = [
+                domain
+                for domain in ("trials", "breeding", "phenotyping", "weather", "field", "seed_ops")
+                if any(
+                    context.get(pid) is not None
+                    and context.get(pid).status == "success"  # type: ignore[union-attr]
+                    and context.get(pid).domain == domain  # type: ignore[union-attr]
+                    for pid in step.prerequisites
+                )
+            ]
+            narrowing_counts: dict[str, int] = {}
+            if narrowing.get("phenotyping_observations"):
+                narrowing_counts["phenotyping_observations"] = len(narrowing["phenotyping_observations"])
+            if narrowing.get("germplasm_ids"):
+                narrowing_counts["germplasm_ids"] = len(narrowing["germplasm_ids"])
+            if narrowing.get("study_ids"):
+                narrowing_counts["study_ids"] = len(narrowing["study_ids"])
+            if weather_data:
+                narrowing_counts["weather_data"] = 1
 
             return StepResult(
                 step_id=step.step_id,
@@ -2347,6 +3489,10 @@ class StepExecutor:
                     "observations_count": len(observations),
                     "trait_name": trait_name,
                     "used_phenotyping_observations": used_phenotyping_observations,
+                    "weather_data_available": weather_data is not None,
+                    "narrowing_applied": bool(narrowing),
+                    "narrowing_sources": narrowing_sources,
+                    "narrowing_counts": narrowing_counts,
                 },
             )
 

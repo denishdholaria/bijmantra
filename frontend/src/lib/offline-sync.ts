@@ -273,16 +273,19 @@ class OfflineSyncService {
         return acc
       }, {} as Record<string, SyncableDocument[]>)
 
+      let syncedCount = 0
+
       // Sync each type
       for (const [type, docs] of Object.entries(grouped)) {
-        await this.syncDocumentType(type as SyncableDocument['type'], docs)
+        syncedCount += await this.syncDocumentType(type as SyncableDocument['type'], docs)
       }
 
+      const pendingCount = this.getPendingDocuments().length
       this.syncStatus.lastSyncTime = Date.now()
-      this.syncStatus.pendingChanges = 0
-      this.emit('sync:complete', { syncedCount: pending.length })
+      this.syncStatus.pendingChanges = pendingCount
+      this.emit('sync:complete', { syncedCount, pendingCount })
       
-      logger.debug(`[OfflineSync] Synced ${pending.length} documents`)
+      logger.debug(`[OfflineSync] Synced ${syncedCount} documents`)
     } catch (error) {
       logger.error('[OfflineSync] Sync failed', error instanceof Error ? error : new Error(String(error)))
       this.emit('sync:error', { error })
@@ -294,7 +297,7 @@ class OfflineSyncService {
   private async syncDocumentType(
     type: SyncableDocument['type'],
     docs: SyncableDocument[]
-  ): Promise<void> {
+  ): Promise<number> {
     // Map document types to BrAPI endpoints
     const endpointMap: Record<SyncableDocument['type'], string> = {
       germplasm: '/brapi/v2/germplasm',
@@ -306,35 +309,38 @@ class OfflineSyncService {
 
     const endpoint = endpointMap[type]
     const token = localStorage.getItem('auth_token')
+    let syncedCount = 0
+
+    if (!token) {
+      logger.debug('[OfflineSync] No auth token, keeping pending changes queued')
+      return syncedCount
+    }
 
     for (const doc of docs) {
       try {
-        // Only sync if we have auth token
-        if (token) {
-          const isUpdate = !!doc.syncedAt
-          const url = isUpdate ? `${endpoint}/${doc.id}` : endpoint
+        const isUpdate = !!doc.syncedAt
+        const url = isUpdate ? `${endpoint}/${doc.id}` : endpoint
 
-          const response = await fetch(url, {
-            method: isUpdate ? 'PUT' : 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(doc.data),
-          })
+        const response = await fetch(url, {
+          method: isUpdate ? 'PUT' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(doc.data),
+        })
 
-          if (!response.ok) {
-            // If 401, token expired - don't throw, just skip sync
-            if (response.status === 401) {
-              logger.warn('[OfflineSync] Auth token expired, skipping sync')
-              return
-            }
-            // For other errors, log but continue with local marking
-            logger.warn(`[OfflineSync] Server sync failed for ${type}/${doc.id}: ${response.status}`)
+        if (!response.ok) {
+          if (response.status === 401) {
+            logger.warn('[OfflineSync] Auth token expired, keeping pending changes queued')
+            return syncedCount
           }
+
+          logger.warn(`[OfflineSync] Server sync failed for ${type}/${doc.id}: ${response.status}`)
+          continue
         }
 
-        // Mark as synced locally (even if server sync failed, to prevent retry loops)
+        // Mark as synced only after a server ACK. Failed writes must remain pending.
         const collection = this.getCollection(type)
         const updatedDoc: SyncableDocument = {
           ...doc,
@@ -342,12 +348,15 @@ class OfflineSyncService {
           localOnly: false,
         }
         collection.set(doc.id, updatedDoc)
+        syncedCount++
       } catch (error) {
         // Network error - mark as still pending
         logger.error(`[OfflineSync] Failed to sync ${type}/${doc.id}`, error instanceof Error ? error : new Error(String(error)))
         // Don't throw - continue with other documents
       }
     }
+
+    return syncedCount
   }
 
   /**

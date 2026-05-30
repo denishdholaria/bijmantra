@@ -5,16 +5,17 @@ This is the largest router, aggregating 80+ modules.
 """
 from fastapi import APIRouter
 
-# ============================================================================
-# APEX Core Imports
-# ============================================================================
-from app.api.bijmantra.developer.router import developer_router
 from app.api.bijmantra.ai.router import ai_router
 from app.api.bijmantra.breeding.router import breeding_router
 from app.api.bijmantra.collaboration.router import collaboration_router
 from app.api.bijmantra.compute.router import compute_router
 from app.api.bijmantra.control_plane.router import control_plane_router
 from app.api.bijmantra.data.router import data_router
+
+# ============================================================================
+# APEX Core Imports
+# ============================================================================
+from app.api.bijmantra.developer.router import developer_router
 from app.api.bijmantra.environment.router import environment_router
 from app.api.bijmantra.field.router import field_router
 from app.api.bijmantra.future.router import future_router
@@ -30,12 +31,12 @@ from app.api.bijmantra.security.router import security_router
 from app.api.bijmantra.system.router import system_router
 from app.api.bijmantra.trials.router import trials_router
 from app.modules.bio_analytics.router import router as bio_analytics_router
-from app.modules.weather.router import router as weather_module_router
+from app.modules.core.router import router as core_module_router
+from app.modules.crop_calendar.router import router as crop_calendar_module_router
+
 # Module routers that own real routes not covered by api/bijmantra/*
 from app.modules.seed_bank.router import router as seed_bank_module_router
-from app.modules.crop_calendar.router import router as crop_calendar_module_router
-from app.modules.soil.router import router as soil_module_router
-from app.modules.core.router import router as core_module_router
+from app.modules.weather.router import router as weather_module_router
 
 
 apex_router = APIRouter(tags=["APEX"])
@@ -117,7 +118,11 @@ apex_router.include_router(future_router, prefix="/future", tags=["Future"])
 # Module-owned routes (not covered by api/bijmantra/* packages)
 # These routers live in app/modules/ and own their own endpoints directly.
 # ============================================================================
-apex_router.include_router(seed_bank_module_router, prefix="/api/v2", tags=["Seed Bank"])
-apex_router.include_router(crop_calendar_module_router, prefix="/api/v2", tags=["Crop Calendar"])
-apex_router.include_router(soil_module_router, prefix="/api/v2/soil", tags=["Soil"])
-apex_router.include_router(core_module_router, prefix="/api/v2/core", tags=["Core Domain"])
+apex_router.include_router(seed_bank_module_router, tags=["Seed Bank"])
+apex_router.include_router(crop_calendar_module_router, tags=["Crop Calendar"])
+apex_router.include_router(core_module_router, tags=["Core Domain"])
+
+# NOTE: app.modules.soil.router is intentionally not mounted here yet. That module
+# currently has no organization_id model boundary, no tenant DB dependency, and no
+# auth dependency. Mounting it at the canonical /api/v2/soil path would turn route
+# cleanup into an unauthenticated tenant-isolation bypass.

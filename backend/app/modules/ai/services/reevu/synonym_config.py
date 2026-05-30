@@ -78,6 +78,12 @@ TEMPORAL_PATTERNS: list[tuple[str, str]] = [
     (r"\bprevious season\b", "previous_season"),
     (r"\blast year\b", "previous_year"),
     (r"\bthis year\b", "current_year"),
+    # Extended temporal qualifiers (Task 6 — temporal reasoning spec)
+    (r"\bover the last\s+(\d+)\s+years?\b", r"last_\1_years"),
+    (r"\bover the last\s+(\d+)\s+seasons?\b", r"last_\1_seasons"),
+    (r"\bover the last\s+(\d+)\s+cycles?\b", r"last_\1_cycles"),
+    (r"\bsince\s+(20\d{2})\b", r"since_\1"),
+    (r"\bbetween\s+(20\d{2})\s+and\s+(20\d{2})\b", r"between_\1_\2"),
     (r"\b(20\d{2})\b", r"\1"),
     (r"\b(kharif|rabi|zaid)\b", r"\1"),
 ]

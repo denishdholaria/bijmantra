@@ -6,6 +6,7 @@ import type { BijmantraGenomicsWasm } from './types';
 
 let wasmModule: BijmantraGenomicsWasm | null = null;
 let initPromise: Promise<BijmantraGenomicsWasm> | null = null;
+let wasmLoadError: Error | null = null;
 
 /**
  * Initialize the WASM module
@@ -30,10 +31,15 @@ export async function initWasm(): Promise<BijmantraGenomicsWasm> {
       console.log('🦀 Bijmantra Genomics WASM loaded, version:', wasm.get_version());
       
       return wasmModule;
-    } catch {
-      console.warn('⚠️ WASM module not available, using JavaScript fallback');
-      // Return a mock module that throws helpful errors
-      return createFallbackModule();
+    } catch (err) {
+      // Log the real error BEFORE falling back, so it appears in DevTools
+      console.error('⚠️ WASM module failed to load:', err);
+      console.warn('⚠️ WASM module not available, using JavaScript fallback — run `make wasm` to rebuild');
+      // Store the error so useWasm() can expose it to the UI
+      wasmLoadError = err instanceof Error ? err : new Error(String(err));
+      // Cache the fallback so getWasm() returns it and subsequent calls skip re-loading
+      wasmModule = createFallbackModule();
+      return wasmModule;
     }
   })();
 
@@ -55,11 +61,18 @@ export function isWasmReady(): boolean {
 }
 
 /**
+ * Get the WASM load error, if any (set when initWasm() falls back to the fallback module)
+ */
+export function getWasmLoadError(): Error | null {
+  return wasmLoadError;
+}
+
+/**
  * Create a fallback module for when WASM is not available
  */
 function createFallbackModule(): BijmantraGenomicsWasm {
   const notAvailable = () => {
-    throw new Error('WASM module not available. Build with: cd rust && ./build.sh');
+    throw new Error('WASM module not available. Run `make wasm` in the project root to rebuild.');
   };
 
   return {

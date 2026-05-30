@@ -16,7 +16,7 @@ BACKEND_DIR = ROOT_DIR / "backend"
 METRICS_FILE = ROOT_DIR / "metrics.json"
 OFFICIAL_BRAPI_V21_PUBLISHED_ENDPOINTS = 201
 SAFE_JSON_ENV_DEFAULTS = {
-    "BACKEND_CORS_ORIGINS": '["http://localhost:5173", "http://localhost:3000"]',
+    "BACKEND_CORS_ORIGINS": '["http://localhost:5656", "http://localhost:3000"]',
     "ALLOWED_IMAGE_TYPES": '["image/jpeg", "image/png", "image/webp"]',
     "TRUSTED_PROXIES": "[]",
 }

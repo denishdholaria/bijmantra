@@ -7,11 +7,14 @@ export interface ReevuBackendStatus {
   providerSource?: string
   providerSourceLabel?: string
   templateOnly?: boolean
+  providerConfigured?: boolean
+  deterministicToolsAvailable?: boolean
+  deterministicToolCount?: number
   authRequired?: boolean
 }
 
 export interface EffectiveBackend {
-  mode: 'cloud' | 'local' | 'none'
+  mode: 'cloud' | 'local' | 'deterministic' | 'none'
   name: string
   ready: boolean
 }
@@ -31,6 +34,8 @@ interface ReevuStatusPayload {
   active_model?: string
   active_provider_source?: string
   active_provider_source_label?: string
+  deterministic_tools_available?: boolean
+  deterministic_tool_count?: number
   providers?: Record<string, ReevuStatusProviderState>
 }
 
@@ -69,9 +74,13 @@ export function resolveReevuBackendStatus(payload: unknown): ReevuBackendStatus 
   }
 
   const providers = (payload.providers || {}) as Record<string, ReevuStatusProviderState>
-  const hasRealProvider = REAL_PROVIDER_IDS.some(providerId => {
+  const hasLiveProvider = REAL_PROVIDER_IDS.some(providerId => {
     const providerState = providers[providerId]
-    return Boolean(providerState?.available || providerState?.configured)
+    return Boolean(providerState?.available)
+  })
+  const hasConfiguredProvider = REAL_PROVIDER_IDS.some(providerId => {
+    const providerState = providers[providerId]
+    return Boolean(providerState?.configured)
   })
 
   return {
@@ -80,7 +89,12 @@ export function resolveReevuBackendStatus(payload: unknown): ReevuBackendStatus 
     model: payload.active_model,
     providerSource: payload.active_provider_source,
     providerSourceLabel: payload.active_provider_source_label,
-    templateOnly: payload.active_provider === 'template' && !hasRealProvider,
+    templateOnly: payload.active_provider === 'template' && !hasLiveProvider,
+    providerConfigured: hasConfiguredProvider,
+    deterministicToolsAvailable: Boolean(payload.deterministic_tools_available),
+    deterministicToolCount: typeof payload.deterministic_tool_count === 'number'
+      ? payload.deterministic_tool_count
+      : undefined,
     authRequired: false
   }
 }
@@ -95,9 +109,19 @@ export function getEffectiveReevuBackend(status: ReevuBackendStatus): EffectiveB
   }
 
   if (status.templateOnly) {
+    if (status.deterministicToolsAvailable) {
+      return {
+        mode: 'deterministic',
+        name: 'Deterministic REEVU tools',
+        ready: true
+      }
+    }
+
     return {
       mode: 'none',
-      name: 'Managed backend in template fallback (no provider configured)',
+      name: status.providerConfigured
+        ? 'Managed backend in template fallback (provider unavailable)'
+        : 'Managed backend in template fallback (no provider configured)',
       ready: false
     }
   }

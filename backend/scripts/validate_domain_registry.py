@@ -1,221 +1,133 @@
 #!/usr/bin/env python3
-"""
-Validate Domain Registry
+"""Validate the canonical domain ownership registry.
 
-This script validates that the domain_registry.yaml file is properly structured
-and that all services are registered to a domain.
-
-Usage:
-    python scripts/validate_domain_registry.py
+The registry is an architecture-spine file, not a service migration counter.
+It must describe the same seven canonical domains that exist under
+``backend/app/domains`` and it must keep the industry-standard code vocabulary
+(``domains``) distinct from BijMantra's product vocabulary (``LOKA``).
 """
+
+from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Any
+
 
 try:
     import yaml
 except ImportError:
-    print("❌ Error: PyYAML is required for this script")
-    print("   Install it with: pip install PyYAML")
+    print("Error: PyYAML is required. Install backend dependencies with `uv sync --extra dev`.")
     sys.exit(1)
 
 
-def load_domain_registry(registry_path: Path) -> Dict:
-    """Load the domain registry YAML file."""
-    if not registry_path.exists():
-        print(f"❌ Error: Domain registry not found at {registry_path}")
-        sys.exit(1)
-    
-    with open(registry_path, 'r') as f:
-        return yaml.safe_load(f)
+EXPECTED_DOMAINS = ("sristi", "bijkosha", "rupa", "kshetra", "medha", "vani", "vidya")
+EXPECTED_LAYERS = ("domain", "application", "ports", "schemas", "adapters")
+EXPECTED_CAPABILITY_OWNERS = ("shared_kernel", *EXPECTED_DOMAINS, "standards_spine")
+FORBIDDEN_DOMAIN_KEYS = {"bija_kosha", "bij_kosha", "bija-kosha", "bij-kosha"}
 
 
-def get_services_in_directory(services_dir: Path) -> Set[str]:
-    """Get all service files in the services directory."""
-    if not services_dir.exists():
-        return set()
-    
-    services = set()
-    for service_file in services_dir.rglob("*.py"):
-        if service_file.name == "__init__.py":
-            continue
-        # Get relative path from services directory
-        rel_path = service_file.relative_to(services_dir)
-        services.add(str(rel_path))
-    
-    return services
+def _load_yaml(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        raise AssertionError(f"Registry file does not exist: {path}")
+    with path.open("r", encoding="utf-8") as handle:
+        data = yaml.safe_load(handle)
+    if not isinstance(data, dict):
+        raise AssertionError("Registry root must be a mapping")
+    return data
 
 
-def get_services_in_modules(modules_dir: Path) -> Dict[str, List[str]]:
-    """Get all service files organized by domain module."""
-    if not modules_dir.exists():
-        return {}
-    
-    domain_services = {}
-    for domain_dir in modules_dir.iterdir():
-        if not domain_dir.is_dir() or domain_dir.name.startswith("_"):
-            continue
-        
-        services = []
-        service_file = domain_dir / "service.py"
-        if service_file.exists():
-            services.append("service.py")
-        
-        services_dir = domain_dir / "services"
-        if services_dir.exists():
-            for service_file in services_dir.rglob("*.py"):
-                if service_file.name == "__init__.py":
-                    continue
-                rel_path = service_file.relative_to(services_dir)
-                services.append(f"services/{rel_path}")
-        
-        if services:
-            domain_services[domain_dir.name] = services
-    
-    return domain_services
+def _require_mapping(data: dict[str, Any], key: str) -> dict[str, Any]:
+    value = data.get(key)
+    if not isinstance(value, dict):
+        raise AssertionError(f"`{key}` must be a mapping")
+    return value
 
 
-def validate_registry_structure(registry: Dict) -> List[str]:
-    """Validate the structure of the domain registry."""
-    errors = []
-    
-    if not isinstance(registry, dict):
-        errors.append("Registry must be a dictionary")
-        return errors
-    
-    required_domains = [
-        "core", "breeding", "genomics", "phenotyping", 
-        "germplasm", "environment", "spatial", "ai", "interop"
-    ]
-    
-    for domain in required_domains:
-        if domain not in registry:
-            errors.append(f"Missing required domain: {domain}")
-            continue
-        
-        domain_config = registry[domain]
+def _validate_architecture(registry: dict[str, Any]) -> None:
+    architecture = _require_mapping(registry, "architecture")
+    expected_type = "domain_bounded_modular_monolith_with_hexagonal_architecture"
+    if architecture.get("type") != expected_type:
+        raise AssertionError(f"architecture.type must be {expected_type!r}")
+    if architecture.get("code_surface") != "backend/app/domains":
+        raise AssertionError("architecture.code_surface must be backend/app/domains")
+    if architecture.get("code_vocabulary") != "domain":
+        raise AssertionError("architecture.code_vocabulary must be domain")
+    if architecture.get("product_vocabulary") != "LOKA":
+        raise AssertionError("architecture.product_vocabulary must be LOKA")
+    if architecture.get("migration_rule") != "wrap_extract_drain":
+        raise AssertionError("architecture.migration_rule must be wrap_extract_drain")
+
+
+def _validate_domains(registry: dict[str, Any], domains_root: Path) -> None:
+    domains = _require_mapping(registry, "domains")
+    found = tuple(domains)
+    if found != EXPECTED_DOMAINS:
+        raise AssertionError(f"domains must be ordered as {EXPECTED_DOMAINS!r}; found {found!r}")
+    forbidden_present = FORBIDDEN_DOMAIN_KEYS.intersection(domains)
+    if forbidden_present:
+        raise AssertionError(f"legacy Bijkosha aliases cannot be canonical keys: {sorted(forbidden_present)}")
+
+    for domain_name in EXPECTED_DOMAINS:
+        domain_config = domains.get(domain_name)
         if not isinstance(domain_config, dict):
-            errors.append(f"Domain '{domain}' must be a dictionary")
-            continue
-        
-        if "services" not in domain_config:
-            errors.append(f"Domain '{domain}' missing 'services' key")
-        elif not isinstance(domain_config["services"], list):
-            errors.append(f"Domain '{domain}' services must be a list")
-    
-    return errors
+            raise AssertionError(f"domain {domain_name!r} must be a mapping")
+        owns = domain_config.get("owns")
+        if not isinstance(owns, list) or not owns:
+            raise AssertionError(f"domain {domain_name!r} must declare non-empty owns list")
+
+        domain_root = domains_root / domain_name
+        if not domain_root.exists():
+            raise AssertionError(f"missing domain package: {domain_root}")
+        for layer_name in EXPECTED_LAYERS:
+            layer_root = domain_root / layer_name
+            if not layer_root.exists():
+                raise AssertionError(f"missing {domain_name}/{layer_name} layer")
 
 
-def validate_service_registration(
-    registry: Dict, 
-    flat_services: Set[str], 
-    module_services: Dict[str, List[str]]
-) -> List[str]:
-    """Validate that all services are properly registered."""
-    errors = []
-    warnings = []
-    
-    # Get all registered services from registry
-    registered_services = set()
-    for domain, config in registry.items():
-        if isinstance(config, dict) and "services" in config:
-            for service in config["services"]:
-                registered_services.add(service)
-    
-    # Check for unregistered services in flat directory
-    unregistered_flat = flat_services - registered_services
-    if unregistered_flat:
-        warnings.append(
-            f"⚠️  Warning: {len(unregistered_flat)} services in flat directory "
-            f"not registered (migration in progress)"
-        )
-        for service in sorted(unregistered_flat)[:5]:  # Show first 5
-            warnings.append(f"    - {service}")
-        if len(unregistered_flat) > 5:
-            warnings.append(f"    ... and {len(unregistered_flat) - 5} more")
-    
-    # Validate module services match registry
-    for domain, services in module_services.items():
-        if domain not in registry:
-            errors.append(f"Domain module '{domain}' exists but not in registry")
-            continue
-        
-        domain_config = registry[domain]
-        if "services" not in domain_config:
-            continue
-        
-        registered_for_domain = set(domain_config["services"])
-        actual_services = set(services)
-        
-        # Check for services in module but not registered
-        unregistered = actual_services - registered_for_domain
-        if unregistered:
-            errors.append(
-                f"Domain '{domain}' has unregistered services: {unregistered}"
-            )
-    
-    return errors, warnings
+def _validate_table_seed(registry: dict[str, Any]) -> None:
+    table_seed = _require_mapping(registry, "table_ownership_seed")
+    if table_seed.get("status") != "initial_not_exhaustive":
+        raise AssertionError("table_ownership_seed.status must be initial_not_exhaustive")
+    for owner in ("shared_kernel", *EXPECTED_DOMAINS):
+        tables = table_seed.get(owner)
+        if not isinstance(tables, list) or not tables:
+            raise AssertionError(f"table_ownership_seed.{owner} must list at least one table")
 
 
-def main():
-    """Main validation function."""
-    print("🔍 Validating Domain Registry...")
-    print()
-    
-    # Paths
-    backend_dir = Path(__file__).parent.parent
+def _validate_capability_layer(registry: dict[str, Any]) -> None:
+    capability_layer = _require_mapping(registry, "capability_layer")
+    if capability_layer.get("status") != "required_for_large_domain_growth":
+        raise AssertionError("capability_layer.status must be required_for_large_domain_growth")
+    if "domain -> capability -> hexagonal slice" not in capability_layer.get("rule", ""):
+        raise AssertionError("capability_layer.rule must include the domain -> capability -> hexagonal slice rule")
+
+    capability_inventory = _require_mapping(registry, "capability_inventory")
+    if capability_inventory.get("status") != "initial_not_exhaustive":
+        raise AssertionError("capability_inventory.status must be initial_not_exhaustive")
+    for owner in EXPECTED_CAPABILITY_OWNERS:
+        capabilities = capability_inventory.get(owner)
+        if not isinstance(capabilities, list) or not capabilities:
+            raise AssertionError(f"capability_inventory.{owner} must list at least one capability")
+
+
+def main() -> None:
+    backend_dir = Path(__file__).resolve().parent.parent
     registry_path = backend_dir / "app" / "domain_registry.yaml"
-    services_dir = backend_dir / "app" / "services"
-    modules_dir = backend_dir / "app" / "modules"
-    
-    # Load registry
-    registry = load_domain_registry(registry_path)
-    
-    # Validate structure
-    print("📋 Validating registry structure...")
-    structure_errors = validate_registry_structure(registry)
-    if structure_errors:
-        print("❌ Structure validation failed:")
-        for error in structure_errors:
-            print(f"   {error}")
-        sys.exit(1)
-    print("✅ Registry structure is valid")
-    print()
-    
-    # Get services
-    flat_services = get_services_in_directory(services_dir)
-    module_services = get_services_in_modules(modules_dir)
-    
-    print(f"📊 Service Statistics:")
-    print(f"   Flat services directory: {len(flat_services)} services")
-    print(f"   Domain modules: {len(module_services)} domains with services")
-    print()
-    
-    # Validate service registration
-    print("🔍 Validating service registration...")
-    errors, warnings = validate_service_registration(
-        registry, flat_services, module_services
-    )
-    
-    # Print warnings
-    for warning in warnings:
-        print(warning)
-    
-    if warnings:
-        print()
-    
-    # Print errors
-    if errors:
-        print("❌ Service registration validation failed:")
-        for error in errors:
-            print(f"   {error}")
-        sys.exit(1)
-    
-    print("✅ All services are properly registered")
-    print()
-    print("✨ Domain registry validation complete!")
+    domains_root = backend_dir / "app" / "domains"
+
+    print("Validating canonical domain registry...")
+    registry = _load_yaml(registry_path)
+    _validate_architecture(registry)
+    _validate_domains(registry, domains_root)
+    _validate_capability_layer(registry)
+    _validate_table_seed(registry)
+    print("Domain registry is valid.")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except AssertionError as exc:
+        print(f"Domain registry validation failed: {exc}")
+        sys.exit(1)

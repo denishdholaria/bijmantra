@@ -4,7 +4,18 @@ Programs, Trials, Studies, Locations, People, Lists
 """
 
 from geoalchemy2 import Geometry
-from sqlalchemy import JSON, Boolean, Column, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON,
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 
 from app.models.base import BaseModel
@@ -43,6 +54,11 @@ class User(BaseModel):
 
     # Relationships
     organization = relationship("Organization", back_populates="users")
+    auth_identities = relationship(
+        "AuthIdentity",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
     user_roles = relationship(
         "UserRole",
         back_populates="user",
@@ -63,6 +79,34 @@ class User(BaseModel):
             if ur.role and ur.role.permissions:
                 perms.update(ur.role.permissions)
         return list(perms)
+
+
+class AuthIdentity(BaseModel):
+    """External identity provider subject mapped to one local user."""
+
+    __tablename__ = "auth_identities"
+    __table_args__ = (
+        UniqueConstraint(
+            "provider",
+            "issuer",
+            "subject",
+            name="uq_auth_identities_provider_issuer_subject",
+        ),
+        {"extend_existing": True},
+    )
+
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
+    user_id = Column(
+        BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    provider = Column(String(50), nullable=False, default="keycloak", index=True)
+    issuer = Column(String(512), nullable=False)
+    subject = Column(String(255), nullable=False)
+    email_at_login = Column(String(255))
+    last_login_at = Column(DateTime(timezone=True))
+
+    organization = relationship("Organization")
+    user = relationship("User", back_populates="auth_identities")
 
 
 class Program(BaseModel):

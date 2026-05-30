@@ -226,11 +226,13 @@ export function useReevuChat() {
       return
     }
 
-    if (!effectiveBackend.ready) {
+    const latestEffectiveBackend = getEffectiveReevuBackend(latestStatus)
+
+    if (!latestEffectiveBackend.ready) {
       setMessages(prev => [...prev, createReevuSystemMessage({
         id: (Date.now() + 1).toString(),
-        content: '⚠️ **Managed backend is not AI-ready**\n\nREEVU cannot answer yet because no live provider is available.\n\nFix options:\n1) Add or enable a server-side provider in AI Settings\n2) Configure backend provider credentials for the managed REEVU runtime',
-        model: status.model || 'Not configured',
+        content: '⚠️ **REEVU backend is not ready**\n\nREEVU cannot answer yet because neither deterministic tools nor a live provider are available for this credential.\n\nFix options:\n1) Confirm this user belongs to the expected organization\n2) Enable REEVU tools or configure a server-side provider in AI Settings',
+        model: latestStatus.model || 'Not configured',
       })])
       return
     }
@@ -239,11 +241,13 @@ export function useReevuChat() {
 
     // Add temporary assistant message for streaming
     const assistantMsgId = (Date.now() + 1).toString()
-    const providerName = getReevuProviderDisplayName(status.provider, 'Managed backend')
+    const providerName = latestEffectiveBackend.mode === 'deterministic'
+      ? 'Deterministic REEVU tools'
+      : getReevuProviderDisplayName(latestStatus.provider, 'Managed backend')
     setMessages(prev => [...prev, createPendingReevuAssistantMessage({
       id: assistantMsgId,
       providerName,
-      model: status.model || 'auto',
+      model: latestStatus.model || 'auto',
     })])
 
     try {
@@ -272,7 +276,7 @@ export function useReevuChat() {
 
       let fullContent = ''
       let actualProvider = providerName
-      let actualModel = status.model || 'unknown'
+      let actualModel = latestStatus.model || 'unknown'
       let handledSafeFailure = false
 
       for await (const event of readReevuStreamEvents(response.body)) {

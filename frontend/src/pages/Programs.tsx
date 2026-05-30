@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
-import { RefreshCw } from 'lucide-react'
+import { QueryErrorDisplay } from '@/components/QueryErrorDisplay'
 
 interface Program {
   programDbId: string
@@ -86,18 +86,11 @@ export function Programs() {
             <Skeleton className="h-12 w-full" />
           </div>
         ) : error ? (
-          <div className="p-12 text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h3 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">Error Loading Programs</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{error instanceof Error ? error.message : 'Unknown error'}</p>
-            <Button
-              variant="outline"
-              onClick={() => queryClient.invalidateQueries({ queryKey: ['programs'] })}
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Retry
-            </Button>
-          </div>
+          <QueryErrorDisplay
+            error={error}
+            feature="Programs"
+            onRetry={() => queryClient.invalidateQueries({ queryKey: ['programs'] })}
+          />
         ) : programs.length === 0 ? (
           <div className="p-12 text-center">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full mb-6">

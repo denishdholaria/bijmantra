@@ -143,7 +143,7 @@ describe('useMem0TabController', () => {
       limit: 5,
     })
     expect(result.current.searchState).toBe('success')
-    expect(result.current.lastSearchResult?.result.results[0]?.id).toBe('mem-1')
+    expect((result.current.lastSearchResult?.result.results as Array<{id: string}>)?.[0]?.id).toBe('mem-1')
 
     await act(async () => {
       await result.current.handleCaptureLearning(42)

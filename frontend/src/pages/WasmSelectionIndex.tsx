@@ -8,9 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   Calculator, Target, TrendingUp, Award, Scale, 
-  ArrowUpDown, Download, Plus, Trash2, Sparkles
+  ArrowUpDown, Download, Plus, Trash2, Sparkles,
+  CheckCircle2, XCircle
 } from 'lucide-react';
 import { useWasm, useSelectionIndex } from '@/wasm/hooks';
+import { Spinner } from '@/components/ui/spinner';
 
 interface Trait {
   id: string;
@@ -28,7 +30,7 @@ interface Candidate {
 }
 
 function WasmSelectionIndex() {
-  const { isReady, version } = useWasm();
+  const { isLoading, isReady, error, version } = useWasm();
   const { calculate, result, isCalculating } = useSelectionIndex();
 
   const [traits, setTraits] = useState<Trait[]>([
@@ -155,6 +157,17 @@ function WasmSelectionIndex() {
     a.click();
   };
 
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6" aria-label="Loading genomics engine">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Spinner aria-label="Loading genomics engine..." className="text-indigo-500" />
+          Loading genomics engine...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -167,10 +180,21 @@ function WasmSelectionIndex() {
             Multi-trait selection with economic weights and genetic parameters
           </p>
         </div>
-        <Badge variant={isReady ? "default" : "secondary"} className={isReady ? "bg-green-500" : ""}>
-          {isReady ? `⚡ WebAssembly v${version}` : 'Loading...'}
+        <Badge variant={isReady ? "success" : "destructive"}>
+          {isReady ? <><CheckCircle2 className="h-3 w-3 mr-1" />WASM v{version}</> : <><XCircle className="h-3 w-3 mr-1" />Engine Not Available</>}
         </Badge>
       </div>
+
+      {error && (
+        <div role="alert" className="wasm-error-detail mt-2 rounded border border-destructive/50 bg-destructive/10 p-3 text-sm">
+          <p className="wasm-error-message font-medium text-destructive">
+            {error.message || 'An unknown error occurred during WASM initialisation'}
+          </p>
+          <p className="wasm-error-rebuild mt-1 text-muted-foreground">
+            Run <code className="font-mono">make wasm</code> in the project root to rebuild the engine.
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>

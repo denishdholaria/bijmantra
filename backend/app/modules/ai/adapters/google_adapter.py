@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import urllib.parse
 from collections.abc import AsyncGenerator, Awaitable, Callable
 
 from app.modules.ai.adapters.base import IProviderAdapter
@@ -51,8 +52,9 @@ class GoogleAdapter(IProviderAdapter):
             if system_instruction:
                 body["systemInstruction"] = {"parts": [{"text": system_instruction}]}
 
+            safe_model = urllib.parse.quote(config.model)
             response = await client.post(
-                f"{config.base_url}/models/{config.model}:generateContent?key={config.api_key}",
+                f"{config.base_url}/models/{safe_model}:generateContent?key={config.api_key}",
                 json=body,
             )
 
@@ -75,9 +77,18 @@ class GoogleAdapter(IProviderAdapter):
                             input_tokens=input_tokens,
                             output_tokens=output_tokens,
                         )
+            else:
+                error_text = response.text
+                try:
+                    error_json = response.json()
+                    error_msg = error_json.get("error", {}).get("message", error_text)
+                except Exception:
+                    error_msg = error_text
+                
+                raise RuntimeError(f"Google API Error {response.status_code}: {error_msg}")
         except Exception as e:
             logger.error("[REEVU] Google AI error: %s", e)
-        return None
+            raise e
 
     async def stream(
         self,
@@ -110,15 +121,22 @@ class GoogleAdapter(IProviderAdapter):
             if system_instruction:
                 body["systemInstruction"] = {"parts": [{"text": system_instruction}]}
 
+            safe_model = urllib.parse.quote(config.model)
             async with client.stream(
                 "POST",
-                f"{config.base_url}/models/{config.model}:streamGenerateContent?alt=sse&key={config.api_key}",
+                f"{config.base_url}/models/{safe_model}:streamGenerateContent?alt=sse&key={config.api_key}",
                 json=body,
             ) as response:
                 if response.status_code != 200:
                     error_text = await response.aread()
-                    logger.error("[REEVU] Google API error %s: %s", response.status_code, error_text)
-                    yield f"[API Error: {response.status_code}]"
+                    try:
+                        error_json = json.loads(error_text)
+                        error_msg = error_json.get("error", {}).get("message", error_text.decode("utf-8") if isinstance(error_text, bytes) else error_text)
+                    except Exception:
+                        error_msg = error_text.decode("utf-8") if isinstance(error_text, bytes) else error_text
+
+                    logger.error("[REEVU] Google API error %s: %s", response.status_code, error_msg)
+                    yield f"[API Error {response.status_code}: {error_msg}]"
                     return
 
                 async for line in response.aiter_lines():

@@ -3,7 +3,7 @@ import { useState } from "react"
 import {
   Building2,
   ArrowRight,
-  Chrome,
+  Globe2,
   ShieldCheck,
   Globe,
   Loader2,
@@ -166,7 +166,7 @@ export function EnterpriseSSOLoginCard({ className, onSSOSubmit }: EnterpriseSSO
             onClick={() => handleProviderLogin("Google")}
             disabled={isLoading}
           >
-            <Chrome className="mr-2 h-4 w-4" />
+            <Globe2 className="mr-2 h-4 w-4" />
             Google
           </Button>
           <Button

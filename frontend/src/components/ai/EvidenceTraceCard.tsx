@@ -52,10 +52,9 @@ export interface EvidenceEnvelope {
 
 /* ── Helpers -------------------------------------------------------- */
 
-function confidenceColor(c: number | null | undefined): string {
-    if (c == null) return 'var(--text-muted, #888)';
-    if (c >= 0.8) return 'var(--color-success, #22c55e)';
-    if (c >= 0.5) return 'var(--color-warning, #f59e0b)';
+function trustColor(level: TrustStatus['level']): string {
+    if (level === 'complete') return 'var(--color-success, #22c55e)';
+    if (level === 'partial') return 'var(--color-warning, #f59e0b)';
     return 'var(--color-error, #ef4444)';
 }
 
@@ -107,6 +106,69 @@ function buildUncertaintyCue(
     return issueCount > 0 ? `${confidence} · ${pluralize(issueCount, 'issue', 'issues')}` : confidence;
 }
 
+type TrustStatus = {
+    label: string;
+    level: 'complete' | 'partial' | 'unsupported';
+};
+
+function hasEvidencePolicyFlag(flags: string[]): boolean {
+    return flags.some(flag => {
+        const normalized = flag.toLowerCase();
+        return (
+            normalized.includes('missing_evidence') ||
+            normalized.includes('no_evidence') ||
+            normalized.includes('citation_mismatch') ||
+            normalized.includes('percentage_without_calc') ||
+            normalized.includes('missing_calculation')
+        );
+    });
+}
+
+function buildTrustStatus(envelope: EvidenceEnvelope): TrustStatus {
+    const evidenceCount = envelope.evidence_refs.length;
+    const calculationCount = envelope.calculation_steps.length;
+    const missingEvidenceCount = envelope.missing_evidence_signals?.length ?? 0;
+    const missingDataCount = envelope.uncertainty?.missing_data?.length ?? 0;
+    const hasEvidence = evidenceCount > 0;
+    const hasCalculation = calculationCount > 0;
+    const hasSupport = hasEvidence || hasCalculation;
+    const hasEvidenceGap =
+        missingEvidenceCount > 0 || missingDataCount > 0 || hasEvidencePolicyFlag(envelope.policy_flags);
+
+    if (!hasSupport) {
+        return {
+            label: hasEvidenceGap ? 'Insufficient evidence' : 'Unverified synthesis',
+            level: 'unsupported',
+        };
+    }
+
+    if (hasEvidenceGap) {
+        return {
+            label: 'Partially supported',
+            level: 'partial',
+        };
+    }
+
+    if (hasEvidence && hasCalculation) {
+        return {
+            label: 'Evidence + calculation backed',
+            level: 'complete',
+        };
+    }
+
+    if (hasEvidence) {
+        return {
+            label: 'Evidence-backed',
+            level: 'complete',
+        };
+    }
+
+    return {
+        label: 'Calculation-backed',
+        level: 'complete',
+    };
+}
+
 function groupClaimTraces(claimTraces: ClaimTrace[] | undefined): Record<ClaimTrace['support_type'], ClaimTrace[]> {
     return (claimTraces ?? []).reduce<Record<ClaimTrace['support_type'], ClaimTrace[]>>(
         (groups, claimTrace) => {
@@ -141,13 +203,13 @@ interface Props {
 
 const EvidenceTraceCard: React.FC<Props> = ({ envelope }) => {
     const [expanded, setExpanded] = useState(false);
-    const conf = envelope.uncertainty?.confidence;
     const hasFlags = envelope.policy_flags.length > 0;
     const hasMissing = (envelope.uncertainty?.missing_data?.length ?? 0) > 0;
     const hasMissingEvidenceSignals = (envelope.missing_evidence_signals?.length ?? 0) > 0;
     const sourceCue = buildSourceCue(envelope.evidence_refs);
     const calculationCue = buildCalculationCue(envelope.calculation_steps);
     const uncertaintyCue = buildUncertaintyCue(envelope.uncertainty, envelope.missing_evidence_signals);
+    const trustStatus = buildTrustStatus(envelope);
     const claimTraceGroups = groupClaimTraces(envelope.claim_traces);
     const hasClaimTraces = Object.values(claimTraceGroups).some(group => group.length > 0);
 
@@ -166,12 +228,12 @@ const EvidenceTraceCard: React.FC<Props> = ({ envelope }) => {
                             width: 8,
                             height: 8,
                             borderRadius: '50%',
-                            background: confidenceColor(conf),
+                            background: trustColor(trustStatus.level),
                             display: 'inline-block',
                         }}
                     />
                     <span style={{ fontWeight: 600, fontSize: 12 }}>
-                        Evidence · {confidenceLabel(conf)}
+                        Trust · {trustStatus.label}
                     </span>
                 </span>
 

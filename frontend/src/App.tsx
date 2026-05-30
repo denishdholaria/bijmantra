@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
-import { BrowserRouter as Router, useLocation, useRoutes } from 'react-router-dom';
+import { Suspense, useEffect } from 'react';
+import { BrowserRouter as Router, Navigate, useLocation, useRoutes } from 'react-router-dom';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import {
   breedingRoutes,
@@ -17,6 +17,7 @@ import {
 } from '@/routes';
 import { BijMantraDesktop, SyncProvider } from '@/framework';
 import { NotificationProvider } from '@/components/notifications/NotificationSystem';
+import { useAuthHydrated, useAuthStore } from '@/store/auth';
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
@@ -69,10 +70,60 @@ function AppRoutes() {
 function AppLayout() {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
+  const hasHydrated = useAuthHydrated();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthInitialized = useAuthStore((state) => state.isAuthInitialized);
+  const isExternalAuthEnabled = useAuthStore((state) => state.isExternalAuthEnabled());
+  const initializeAuth = useAuthStore((state) => state.initializeAuth);
+  const loginWithIdentityProvider = useAuthStore((state) => state.loginWithIdentityProvider);
+  const token = useAuthStore((state) => state.token);
+
+  useEffect(() => {
+    if (!hasHydrated) {
+      return
+    }
+
+    if (isLogin && isExternalAuthEnabled) {
+      return
+    }
+
+    void initializeAuth()
+  }, [hasHydrated, initializeAuth, isExternalAuthEnabled, isLogin])
+
+  useEffect(() => {
+    if (isLogin || !hasHydrated || !isAuthInitialized || isAuthenticated || !isExternalAuthEnabled) {
+      return
+    }
+
+    void loginWithIdentityProvider()
+  }, [
+    hasHydrated,
+    isAuthInitialized,
+    isAuthenticated,
+    isExternalAuthEnabled,
+    isLogin,
+    loginWithIdentityProvider,
+  ])
 
   // Login page renders without shell
   if (isLogin) {
+    if (hasHydrated && isAuthInitialized && isAuthenticated && token) {
+      return <Navigate to="/gateway" replace />;
+    }
+
     return <AppRoutes />;
+  }
+
+  if (!hasHydrated || !isAuthInitialized) {
+    return null;
+  }
+
+  if (!isAuthenticated || !token) {
+    if (isExternalAuthEnabled) {
+      return null;
+    }
+
+    return <Navigate to="/login" replace />;
   }
 
   // Everything else renders inside the Web-OS Desktop Shell

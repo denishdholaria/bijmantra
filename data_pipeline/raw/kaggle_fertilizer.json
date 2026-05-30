@@ -1,0 +1,902 @@
+{
+  "data": [
+    {
+      "crop_type": "Maize",
+      "fertilizer_name": "Urea",
+      "nitrogen": 37.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "DAP",
+      "nitrogen": 12.0,
+      "phosphorus": 36.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 7.0,
+      "phosphorus": 30.0,
+      "potassium": 9.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "28-28",
+      "nitrogen": 22.0,
+      "phosphorus": 20.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "Urea",
+      "nitrogen": 35.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 12.0,
+      "phosphorus": 13.0,
+      "potassium": 10.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "20-20",
+      "nitrogen": 9.0,
+      "phosphorus": 10.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "Urea",
+      "nitrogen": 41.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "28-28",
+      "nitrogen": 21.0,
+      "phosphorus": 18.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 9.0,
+      "phosphorus": 30.0,
+      "potassium": 7.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "DAP",
+      "nitrogen": 13.0,
+      "phosphorus": 40.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Maize",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 14.0,
+      "phosphorus": 12.0,
+      "potassium": 15.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "Urea",
+      "nitrogen": 36.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "28-28",
+      "nitrogen": 24.0,
+      "phosphorus": 22.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "DAP",
+      "nitrogen": 14.0,
+      "phosphorus": 41.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 10.0,
+      "phosphorus": 14.0,
+      "potassium": 13.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "Urea",
+      "nitrogen": 38.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "28-28",
+      "nitrogen": 21.0,
+      "phosphorus": 19.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "Urea",
+      "nitrogen": 39.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "DAP",
+      "nitrogen": 13.0,
+      "phosphorus": 36.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "20-20",
+      "nitrogen": 10.0,
+      "phosphorus": 9.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 12.0,
+      "phosphorus": 12.0,
+      "potassium": 14.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "DAP",
+      "nitrogen": 11.0,
+      "phosphorus": 37.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "Urea",
+      "nitrogen": 36.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "20-20",
+      "nitrogen": 13.0,
+      "phosphorus": 10.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Maize",
+      "fertilizer_name": "28-28",
+      "nitrogen": 23.0,
+      "phosphorus": 20.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 9.0,
+      "phosphorus": 29.0,
+      "potassium": 9.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "Urea",
+      "nitrogen": 38.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "DAP",
+      "nitrogen": 12.0,
+      "phosphorus": 39.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "20-20",
+      "nitrogen": 14.0,
+      "phosphorus": 13.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "28-28",
+      "nitrogen": 24.0,
+      "phosphorus": 23.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "DAP",
+      "nitrogen": 12.0,
+      "phosphorus": 40.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "Urea",
+      "nitrogen": 39.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 7.0,
+      "phosphorus": 30.0,
+      "potassium": 9.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "28-28",
+      "nitrogen": 23.0,
+      "phosphorus": 19.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "Urea",
+      "nitrogen": 41.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 8.0,
+      "phosphorus": 31.0,
+      "potassium": 10.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "DAP",
+      "nitrogen": 12.0,
+      "phosphorus": 41.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 15.0,
+      "phosphorus": 11.0,
+      "potassium": 14.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "DAP",
+      "nitrogen": 15.0,
+      "phosphorus": 37.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "20-20",
+      "nitrogen": 13.0,
+      "phosphorus": 13.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 10.0,
+      "phosphorus": 32.0,
+      "potassium": 7.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "28-28",
+      "nitrogen": 22.0,
+      "phosphorus": 24.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "Urea",
+      "nitrogen": 35.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "DAP",
+      "nitrogen": 10.0,
+      "phosphorus": 35.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 8.0,
+      "phosphorus": 28.0,
+      "potassium": 8.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "20-20",
+      "nitrogen": 12.0,
+      "phosphorus": 8.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "28-28",
+      "nitrogen": 24.0,
+      "phosphorus": 18.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "Urea",
+      "nitrogen": 41.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Maize",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 5.0,
+      "phosphorus": 29.0,
+      "potassium": 9.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "28-28",
+      "nitrogen": 23.0,
+      "phosphorus": 21.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "20-20",
+      "nitrogen": 13.0,
+      "phosphorus": 14.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "Urea",
+      "nitrogen": 40.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "DAP",
+      "nitrogen": 12.0,
+      "phosphorus": 42.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 11.0,
+      "phosphorus": 15.0,
+      "potassium": 12.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "28-28",
+      "nitrogen": 23.0,
+      "phosphorus": 24.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "Urea",
+      "nitrogen": 38.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "20-20",
+      "nitrogen": 8.0,
+      "phosphorus": 15.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "17-17-17",
+      "nitrogen": 11.0,
+      "phosphorus": 15.0,
+      "potassium": 13.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "DAP",
+      "nitrogen": 15.0,
+      "phosphorus": 37.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "Urea",
+      "nitrogen": 36.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "20-20",
+      "nitrogen": 13.0,
+      "phosphorus": 9.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "28-28",
+      "nitrogen": 24.0,
+      "phosphorus": 20.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 5.0,
+      "phosphorus": 15.0,
+      "potassium": 18.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "Urea",
+      "nitrogen": 37.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "DAP",
+      "nitrogen": 15.0,
+      "phosphorus": 40.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "20-20",
+      "nitrogen": 9.0,
+      "phosphorus": 13.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 8.0,
+      "phosphorus": 33.0,
+      "potassium": 8.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 6.0,
+      "phosphorus": 16.0,
+      "potassium": 19.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "20-20",
+      "nitrogen": 10.0,
+      "phosphorus": 14.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "28-28",
+      "nitrogen": 21.0,
+      "phosphorus": 23.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "Urea",
+      "nitrogen": 39.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "28-28",
+      "nitrogen": 23.0,
+      "phosphorus": 19.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "Urea",
+      "nitrogen": 42.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "DAP",
+      "nitrogen": 13.0,
+      "phosphorus": 39.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 9.0,
+      "phosphorus": 22.0,
+      "potassium": 10.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Maize",
+      "fertilizer_name": "28-28",
+      "nitrogen": 22.0,
+      "phosphorus": 21.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "20-20",
+      "nitrogen": 10.0,
+      "phosphorus": 15.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 7.0,
+      "phosphorus": 20.0,
+      "potassium": 16.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "DAP",
+      "nitrogen": 14.0,
+      "phosphorus": 38.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 10.0,
+      "phosphorus": 29.0,
+      "potassium": 8.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "Urea",
+      "nitrogen": 41.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "DAP",
+      "nitrogen": 14.0,
+      "phosphorus": 35.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "20-20",
+      "nitrogen": 11.0,
+      "phosphorus": 9.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Barley",
+      "fertilizer_name": "28-28",
+      "nitrogen": 21.0,
+      "phosphorus": 28.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 8.0,
+      "phosphorus": 31.0,
+      "potassium": 7.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 13.0,
+      "phosphorus": 16.0,
+      "potassium": 17.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "Urea",
+      "nitrogen": 35.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 12.0,
+      "phosphorus": 19.0,
+      "potassium": 18.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Cotton",
+      "fertilizer_name": "DAP",
+      "nitrogen": 11.0,
+      "phosphorus": 38.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Oil seeds",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 8.0,
+      "phosphorus": 30.0,
+      "potassium": 9.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Paddy",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 6.0,
+      "phosphorus": 21.0,
+      "potassium": 19.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Ground Nuts",
+      "fertilizer_name": "Urea",
+      "nitrogen": 41.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Maize",
+      "fertilizer_name": "14-35-14",
+      "nitrogen": 9.0,
+      "phosphorus": 30.0,
+      "potassium": 10.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Pulses",
+      "fertilizer_name": "28-28",
+      "nitrogen": 24.0,
+      "phosphorus": 19.0,
+      "potassium": 0.0,
+      "soil_type": "Clayey",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Tobacco",
+      "fertilizer_name": "10-26-26",
+      "nitrogen": 4.0,
+      "phosphorus": 17.0,
+      "potassium": 17.0,
+      "soil_type": "Red",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Wheat",
+      "fertilizer_name": "Urea",
+      "nitrogen": 39.0,
+      "phosphorus": 0.0,
+      "potassium": 0.0,
+      "soil_type": "Loamy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Millets",
+      "fertilizer_name": "DAP",
+      "nitrogen": 15.0,
+      "phosphorus": 41.0,
+      "potassium": 0.0,
+      "soil_type": "Sandy",
+      "source": "kaggle_fertilizer"
+    },
+    {
+      "crop_type": "Sugarcane",
+      "fertilizer_name": "20-20",
+      "nitrogen": 12.0,
+      "phosphorus": 10.0,
+      "potassium": 0.0,
+      "soil_type": "Black",
+      "source": "kaggle_fertilizer"
+    }
+  ],
+  "metadata": {
+    "csv_file": "Fertilizer Prediction.csv",
+    "dataset_path": "/Volumes/hfs/kaggle-data/fertilizer-prediction",
+    "fetched_at": "2026-05-15T08:17:09.751405+00:00",
+    "record_count": 99,
+    "source": "kaggle_fertilizer"
+  }
+}

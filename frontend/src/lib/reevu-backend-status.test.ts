@@ -85,11 +85,14 @@ describe('resolveReevuBackendStatus', () => {
       providerSource: undefined,
       providerSourceLabel: undefined,
       templateOnly: true,
+      providerConfigured: false,
+      deterministicToolsAvailable: false,
+      deterministicToolCount: undefined,
       authRequired: false,
     })
   })
 
-  it('treats template provider as acceptable when a real provider is configured', () => {
+  it('keeps configured-but-unavailable providers in template-only mode', () => {
     expect(resolveReevuBackendStatus({
       active_provider: 'template',
       active_model: 'fallback',
@@ -102,7 +105,34 @@ describe('resolveReevuBackendStatus', () => {
       model: 'fallback',
       providerSource: undefined,
       providerSourceLabel: undefined,
-      templateOnly: false,
+      templateOnly: true,
+      providerConfigured: true,
+      deterministicToolsAvailable: false,
+      deterministicToolCount: undefined,
+      authRequired: false,
+    })
+  })
+
+  it('captures deterministic tool readiness separately from live LLM availability', () => {
+    expect(resolveReevuBackendStatus({
+      active_provider: 'template',
+      active_model: 'fallback',
+      deterministic_tools_available: true,
+      deterministic_tool_count: 27,
+      providers: {
+        ollama: { configured: true, available: false },
+        template: { available: true },
+      },
+    })).toEqual({
+      reachable: true,
+      provider: 'template',
+      model: 'fallback',
+      providerSource: undefined,
+      providerSourceLabel: undefined,
+      templateOnly: true,
+      providerConfigured: true,
+      deterministicToolsAvailable: true,
+      deterministicToolCount: 27,
       authRequired: false,
     })
   })
@@ -123,6 +153,9 @@ describe('resolveReevuBackendStatus', () => {
       providerSource: 'server_env',
       providerSourceLabel: 'Server env key',
       templateOnly: false,
+      providerConfigured: false,
+      deterministicToolsAvailable: false,
+      deterministicToolCount: undefined,
       authRequired: false,
     })
   })
@@ -143,6 +176,9 @@ describe('resolveReevuBackendStatus', () => {
       providerSource: 'local_runtime',
       providerSourceLabel: 'Local Ollama host',
       templateOnly: false,
+      providerConfigured: false,
+      deterministicToolsAvailable: false,
+      deterministicToolCount: undefined,
       authRequired: false,
     })
   })
@@ -202,6 +238,39 @@ describe('getEffectiveReevuBackend', () => {
       mode: 'local',
       name: 'Ollama (Local) · llama3.2:3b (Local Ollama host)',
       ready: true,
+    })
+  })
+
+  it('allows deterministic database tools when no live LLM provider is available', () => {
+    expect(getEffectiveReevuBackend({
+      reachable: true,
+      provider: 'template',
+      model: 'template-v1',
+      templateOnly: true,
+      providerConfigured: true,
+      deterministicToolsAvailable: true,
+      deterministicToolCount: 27,
+      authRequired: false,
+    })).toEqual({
+      mode: 'deterministic',
+      name: 'Deterministic REEVU tools',
+      ready: true,
+    })
+  })
+
+  it('blocks template fallback when neither live LLM nor deterministic tools are available', () => {
+    expect(getEffectiveReevuBackend({
+      reachable: true,
+      provider: 'template',
+      model: 'template-v1',
+      templateOnly: true,
+      providerConfigured: true,
+      deterministicToolsAvailable: false,
+      authRequired: false,
+    })).toEqual({
+      mode: 'none',
+      name: 'Managed backend in template fallback (provider unavailable)',
+      ready: false,
     })
   })
 })

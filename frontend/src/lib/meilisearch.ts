@@ -1,8 +1,7 @@
-// @ts-nocheck
 /**
  * Meilisearch Integration
  * Instant, typo-tolerant search across all breeding data
- * 
+ *
  * Updated Dec 2025:
  * - Federated multi-index search (v1.10+)
  * - Similar documents API (v1.9+)
@@ -10,146 +9,178 @@
  * - Geo search for locations
  */
 
-import { MeiliSearch, Index, SearchResponse, SearchParams, MultiSearchParams } from 'meilisearch'
-import { MEILISEARCH_HOST, MEILISEARCH_API_KEY } from '@/config'
+import { ApiClientCore } from "@/lib/api/core/client";
+
+type SearchParamPrimitive = string | number | boolean;
+type SearchParamValue =
+  | SearchParamPrimitive
+  | readonly SearchParamPrimitive[]
+  | null
+  | undefined;
+type SearchParams = Record<string, SearchParamValue>;
+type SearchResponse<T> = {
+  hits: T[];
+  query: string;
+  processingTimeMs: number;
+  limit: number;
+  offset: number;
+  estimatedTotalHits?: number;
+};
 
 // Search result types
 export interface GermplasmSearchResult {
-  id: string
-  germplasmDbId: string
-  germplasmName: string
-  accessionNumber?: string
-  species?: string
-  genus?: string
-  subtaxa?: string
-  instituteCode?: string
-  biologicalStatus?: string
-  countryOfOrigin?: string
-  synonyms?: string[]
-  pedigree?: string
-  _rankingScore?: number
-  [key: string]: unknown  // Index signature for Record<string, unknown> compatibility
+  id: string;
+  germplasmDbId: string;
+  germplasmName: string;
+  accessionNumber?: string;
+  species?: string;
+  genus?: string;
+  subtaxa?: string;
+  instituteCode?: string;
+  biologicalStatus?: string;
+  countryOfOrigin?: string;
+  synonyms?: string[];
+  pedigree?: string;
+  _rankingScore?: number;
+  [key: string]: unknown; // Index signature for Record<string, unknown> compatibility
 }
 
 export interface TraitSearchResult {
-  id: string
-  observationVariableDbId: string
-  observationVariableName: string
+  id: string;
+  observationVariableDbId: string;
+  observationVariableName: string;
   trait?: {
-    traitName: string
-    traitDescription?: string
-    traitClass?: string
-  }
+    traitName: string;
+    traitDescription?: string;
+    traitClass?: string;
+  };
   method?: {
-    methodName: string
-    methodDescription?: string
-  }
+    methodName: string;
+    methodDescription?: string;
+  };
   scale?: {
-    scaleName: string
-    dataType?: string
-  }
+    scaleName: string;
+    dataType?: string;
+  };
   ontologyReference?: {
-    ontologyName: string
-  }
-  _rankingScore?: number
+    ontologyName: string;
+  };
+  _rankingScore?: number;
 }
 
 export interface TrialSearchResult {
-  id: string
-  trialDbId: string
-  trialName: string
-  trialDescription?: string
-  programName?: string
-  locationName?: string
-  startDate?: string
-  endDate?: string
-  active?: boolean
-  trialType?: string
-  _rankingScore?: number
+  id: string;
+  trialDbId: string;
+  trialName: string;
+  trialDescription?: string;
+  programName?: string;
+  locationName?: string;
+  startDate?: string;
+  endDate?: string;
+  active?: boolean;
+  trialType?: string;
+  _rankingScore?: number;
 }
 
 export interface LocationSearchResult {
-  id: string
-  locationDbId: string
-  locationName: string
-  locationType?: string
-  countryCode?: string
-  countryName?: string
-  instituteName?: string
+  id: string;
+  locationDbId: string;
+  locationName: string;
+  locationType?: string;
+  countryCode?: string;
+  countryName?: string;
+  instituteName?: string;
   _geo?: {
-    lat: number
-    lng: number
-  }
-  _geoDistance?: number
-  _rankingScore?: number
+    lat: number;
+    lng: number;
+  };
+  _geoDistance?: number;
+  _rankingScore?: number;
 }
 
 export interface ProgramSearchResult {
-  id: string
-  programDbId: string
-  programName: string
-  programDescription?: string
-  objective?: string
-  commonCropName?: string
-  leadPerson?: string
-  active?: boolean
-  _rankingScore?: number
+  id: string;
+  programDbId: string;
+  programName: string;
+  programDescription?: string;
+  objective?: string;
+  commonCropName?: string;
+  leadPerson?: string;
+  active?: boolean;
+  _rankingScore?: number;
 }
 
 export interface StudySearchResult {
-  id: string
-  studyDbId: string
-  studyName: string
-  studyDescription?: string
-  studyType?: string
-  trialName?: string
-  locationName?: string
-  _rankingScore?: number
+  id: string;
+  studyDbId: string;
+  studyName: string;
+  studyDescription?: string;
+  studyType?: string;
+  trialName?: string;
+  locationName?: string;
+  _rankingScore?: number;
 }
 
 export interface UnifiedSearchResult {
-  type: 'germplasm' | 'trait' | 'trial' | 'location' | 'program' | 'study'
-  id: string
-  title: string
-  subtitle?: string
-  description?: string
-  path: string
-  icon: string
-  score?: number
+  type: "germplasm" | "trait" | "trial" | "location" | "program" | "study";
+  id: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  path: string;
+  icon: string;
+  score?: number;
 }
 
 export interface FederatedSearchResult {
-  hits: Array<UnifiedSearchResult>
-  query: string
-  processingTimeMs: number
-  estimatedTotalHits?: number
+  hits: Array<UnifiedSearchResult>;
+  query: string;
+  processingTimeMs: number;
+  estimatedTotalHits?: number;
 }
 
-// Configuration — ADR-007: sourced from centralized config
-const MEILISEARCH_CONFIG = {
-  host: MEILISEARCH_HOST,
-  apiKey: MEILISEARCH_API_KEY,
-}
+type BackendSearchResponse<T> = Partial<SearchResponse<T>> & {
+  results?: T[];
+  total?: number;
+};
+
+type BackendUnifiedSearchResult = Omit<UnifiedSearchResult, "icon"> & {
+  icon?: string;
+};
+
+type BackendFederatedSearchResponse = {
+  query?: string;
+  results?: BackendUnifiedSearchResult[];
+  total?: number;
+  processingTimeMs?: number;
+};
+
+type BackendStatsResponse = {
+  connected: boolean;
+  version: string | null;
+  databaseSize?: number;
+  indexes?: Record<string, { numberOfDocuments: number; isIndexing: boolean }>;
+};
 
 // Index names
 export const INDEXES = {
-  GERMPLASM: 'germplasm',
-  TRAITS: 'traits',
-  TRIALS: 'trials',
-  LOCATIONS: 'locations',
-  PROGRAMS: 'programs',
-  STUDIES: 'studies',
-} as const
+  GERMPLASM: "germplasm",
+  TRAITS: "traits",
+  TRIALS: "trials",
+  LOCATIONS: "locations",
+  PROGRAMS: "programs",
+  STUDIES: "studies",
+} as const;
 
 // Icon mapping for unified results
 const INDEX_ICONS: Record<string, string> = {
-  germplasm: '🌱',
-  traits: '🔬',
-  trials: '🧪',
-  locations: '📍',
-  programs: '🎯',
-  studies: '📊',
-}
+  germplasm: "🌱",
+  traits: "🔬",
+  trials: "🧪",
+  locations: "📍",
+  programs: "🎯",
+  studies: "📊",
+};
 
 // Path mapping for unified results
 const INDEX_PATHS: Record<string, (id: string) => string> = {
@@ -159,591 +190,448 @@ const INDEX_PATHS: Record<string, (id: string) => string> = {
   locations: (id) => `/locations/${id}`,
   programs: (id) => `/programs/${id}`,
   studies: (id) => `/studies/${id}`,
-}
+};
 
-class MeilisearchService {
-  private client: MeiliSearch | null = null
-  private isConnected = false
-  private connectionPromise: Promise<boolean> | null = null
-  private version: string | null = null
+class BackendSearchService {
+  private client = new ApiClientCore();
+  private isConnected = false;
+  private connectionPromise: Promise<boolean> | null = null;
+  private version: string | null = null;
 
-  /**
-   * Initialize connection to Meilisearch
-   */
   async connect(): Promise<boolean> {
-    if (this.isConnected) return true
-    if (this.connectionPromise) return this.connectionPromise
+    if (this.isConnected) return true;
+    if (this.connectionPromise) return this.connectionPromise;
 
-    this.connectionPromise = this._doConnect()
-    return this.connectionPromise
+    this.connectionPromise = this._doConnect();
+    return this.connectionPromise;
   }
 
   private async _doConnect(): Promise<boolean> {
     try {
-      this.client = new MeiliSearch({
-        host: MEILISEARCH_CONFIG.host,
-        apiKey: MEILISEARCH_CONFIG.apiKey,
-      })
+      const stats = await this.client.get<BackendStatsResponse>(
+        "/api/v2/search/stats",
+      );
 
-      // Test connection and get version
-      await this.client.health()
-      const versionInfo = await this.client.getVersion()
-      this.version = versionInfo.pkgVersion
-      this.isConnected = true
-      console.log(`[Meilisearch] Connected successfully (v${this.version})`)
-      return true
+      this.version = stats.version;
+      this.isConnected = stats.connected;
+      return this.isConnected;
     } catch (error) {
-      console.warn('[Meilisearch] Connection failed, falling back to local search:', error)
-      this.isConnected = false
-      return false
+      console.warn("[Search] Backend search facade unavailable:", error);
+      this.isConnected = false;
+      return false;
+    } finally {
+      this.connectionPromise = null;
     }
   }
 
-  /**
-   * Get an index
-   */
-  getIndex<T extends Record<string, unknown>>(indexName: string): Index<T> | null {
-    if (!this.client) return null
-    return this.client.index<T>(indexName)
-  }
-
-  /**
-   * Get Meilisearch version
-   */
   getVersion(): string | null {
-    return this.version
+    return this.version;
   }
 
-  /**
-   * Search germplasm
-   */
-  async searchGermplasm(
+  getIndex(_indexName: string): null {
+    console.warn(
+      "[Search] Direct browser Meilisearch index access is disabled.",
+    );
+    return null;
+  }
+
+  private buildUrl(
+    endpoint: string,
+    params: Record<string, SearchParamValue>,
+  ): string {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") return;
+      searchParams.set(
+        key,
+        Array.isArray(value) ? value.join(",") : String(value),
+      );
+    });
+
+    const query = searchParams.toString();
+    return query ? `${endpoint}?${query}` : endpoint;
+  }
+
+  private emptyResponse<T>(query: string, limit = 0): SearchResponse<T> {
+    return {
+      hits: [],
+      query,
+      processingTimeMs: 0,
+      limit,
+      offset: 0,
+      estimatedTotalHits: 0,
+    };
+  }
+
+  private async searchEndpoint<T>(
+    endpoint: string,
     query: string,
-    options?: SearchParams
-  ): Promise<SearchResponse<GermplasmSearchResult>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query, processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
-
-    const index = this.client.index<GermplasmSearchResult>(INDEXES.GERMPLASM)
-    return index.search(query, {
-      limit: 20,
-      showRankingScore: true,
-      attributesToHighlight: ['germplasmName', 'accessionNumber', 'species'],
-      ...options,
-    })
-  }
-
-  /**
-   * Search traits/observation variables
-   */
-  async searchTraits(
-    query: string,
-    options?: SearchParams
-  ): Promise<SearchResponse<TraitSearchResult>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query, processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
-
-    const index = this.client.index<TraitSearchResult>(INDEXES.TRAITS)
-    return index.search(query, {
-      limit: 20,
-      showRankingScore: true,
-      attributesToHighlight: ['observationVariableName', 'trait.traitName'],
-      ...options,
-    })
-  }
-
-  /**
-   * Search trials
-   */
-  async searchTrials(
-    query: string,
-    options?: SearchParams
-  ): Promise<SearchResponse<TrialSearchResult>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query, processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
-
-    const index = this.client.index<TrialSearchResult>(INDEXES.TRIALS)
-    return index.search(query, {
-      limit: 20,
-      showRankingScore: true,
-      attributesToHighlight: ['trialName', 'trialDescription'],
-      ...options,
-    })
-  }
-
-  /**
-   * Search locations with optional geo filtering
-   */
-  async searchLocations(
-    query: string,
-    options?: SearchParams & { 
-      nearLat?: number
-      nearLng?: number
-      radiusKm?: number 
-    }
-  ): Promise<SearchResponse<LocationSearchResult>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query, processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
-
-    const index = this.client.index<LocationSearchResult>(INDEXES.LOCATIONS)
-    const searchOptions: SearchParams = {
-      limit: 20,
-      showRankingScore: true,
-      attributesToHighlight: ['locationName', 'countryName'],
-      ...options,
-    }
-
-    // Add geo filter if coordinates provided
-    if (options?.nearLat !== undefined && options?.nearLng !== undefined) {
-      const radiusM = (options.radiusKm || 100) * 1000
-      searchOptions.filter = `_geoRadius(${options.nearLat}, ${options.nearLng}, ${radiusM})`
-      searchOptions.sort = [`_geoPoint(${options.nearLat}, ${options.nearLng}):asc`]
-    }
-
-    return index.search(query, searchOptions)
-  }
-
-  /**
-   * Search programs
-   */
-  async searchPrograms(
-    query: string,
-    options?: SearchParams
-  ): Promise<SearchResponse<ProgramSearchResult>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query, processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
-
-    const index = this.client.index<ProgramSearchResult>(INDEXES.PROGRAMS)
-    return index.search(query, {
-      limit: 20,
-      showRankingScore: true,
-      attributesToHighlight: ['programName', 'programDescription'],
-      ...options,
-    })
-  }
-
-  /**
-   * Search studies
-   */
-  async searchStudies(
-    query: string,
-    options?: SearchParams
-  ): Promise<SearchResponse<StudySearchResult>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query, processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
-
-    const index = this.client.index<StudySearchResult>(INDEXES.STUDIES)
-    return index.search(query, {
-      limit: 20,
-      showRankingScore: true,
-      attributesToHighlight: ['studyName', 'studyDescription'],
-      ...options,
-    })
-  }
-
-  /**
-   * Federated search across multiple indexes (v1.10+ feature)
-   * Merges results from all indexes into a single ranked response
-   */
-  async federatedSearch(
-    query: string, 
-    options?: {
-      indexes?: string[]
-      limit?: number
-      scoreThreshold?: number
-    }
-  ): Promise<FederatedSearchResult> {
-    await this.connect()
-    if (!this.client || !query.trim()) {
-      return { hits: [], query, processingTimeMs: 0 }
-    }
-
-    const targetIndexes = options?.indexes || Object.values(INDEXES)
-    const limit = options?.limit || 20
+    options?: SearchParams,
+    extraParams: Record<string, SearchParamValue> = {},
+  ): Promise<SearchResponse<T>> {
+    const limit = Number(options?.limit ?? 20);
+    const connected = await this.connect();
+    if (!connected) return this.emptyResponse<T>(query, limit);
 
     try {
-      // Build multi-search queries
-      const queries = targetIndexes.map(indexUid => ({
-        indexUid,
-        q: query,
+      const response = await this.client.get<BackendSearchResponse<T>>(
+        this.buildUrl(endpoint, {
+          q: query,
+          limit,
+          ...extraParams,
+        }),
+      );
+
+      const hits = response.hits ?? response.results ?? [];
+      return {
+        ...response,
+        hits,
+        query: response.query ?? query,
+        processingTimeMs: response.processingTimeMs ?? 0,
         limit,
-        showRankingScore: true,
-        ...(options?.scoreThreshold && { rankingScoreThreshold: options.scoreThreshold }),
-      }))
-
-      // Try federated search first (v1.10+)
-      try {
-        const result = await this.client.multiSearch({
-          queries,
-          federation: { limit },
-        } as MultiSearchParams)
-
-        // Map federated results to unified format
-        const hits = this.mapFederatedHits(result)
-        return {
-          hits,
-          query,
-          processingTimeMs: (result as any).processingTimeMs || 0,
-          estimatedTotalHits: hits.length,
-        }
-      } catch {
-        // Fallback to regular multi-search if federation not supported
-        const result = await this.client.multiSearch({ queries })
-        const hits = this.mapMultiSearchHits(result)
-        return {
-          hits,
-          query,
-          processingTimeMs: 0,
-          estimatedTotalHits: hits.length,
-        }
-      }
+        offset: response.offset ?? 0,
+        estimatedTotalHits:
+          response.estimatedTotalHits ?? response.total ?? hits.length,
+      };
     } catch (error) {
-      console.error('[Meilisearch] Federated search failed:', error)
-      return { hits: [], query, processingTimeMs: 0 }
+      console.warn("[Search] Backend search request failed:", error);
+      return this.emptyResponse<T>(query, limit);
     }
   }
 
-  /**
-   * Map federated search results to unified format
-   */
-  private mapFederatedHits(result: any): UnifiedSearchResult[] {
-    const hits: UnifiedSearchResult[] = []
-    
-    // Federated results come in a single hits array with _federation metadata
-    for (const hit of result.hits || []) {
-      const indexName = hit._federation?.indexUid || 'unknown'
-      const mapped = this.mapHitToUnified(hit, indexName)
-      if (mapped) hits.push(mapped)
-    }
-
-    return hits
+  async searchGermplasm(
+    query: string,
+    options?: SearchParams,
+  ): Promise<SearchResponse<GermplasmSearchResult>> {
+    return this.searchEndpoint<GermplasmSearchResult>(
+      "/api/v2/search/germplasm",
+      query,
+      options,
+    );
   }
 
-  /**
-   * Map multi-search results to unified format
-   */
-  private mapMultiSearchHits(result: any): UnifiedSearchResult[] {
-    const hits: UnifiedSearchResult[] = []
-    
-    for (const indexResult of result.results || []) {
-      const indexName = indexResult.indexUid
-      for (const hit of indexResult.hits || []) {
-        const mapped = this.mapHitToUnified(hit, indexName)
-        if (mapped) hits.push(mapped)
-      }
-    }
-
-    // Sort by ranking score
-    hits.sort((a, b) => (b.score || 0) - (a.score || 0))
-    return hits
+  async searchTraits(
+    query: string,
+    options?: SearchParams,
+  ): Promise<SearchResponse<TraitSearchResult>> {
+    return this.searchEndpoint<TraitSearchResult>(
+      "/api/v2/search/traits",
+      query,
+      options,
+    );
   }
 
-  /**
-   * Map a single hit to unified format
-   */
-  private mapHitToUnified(hit: any, indexName: string): UnifiedSearchResult | null {
-    const icon = INDEX_ICONS[indexName] || '📄'
-    const pathFn = INDEX_PATHS[indexName]
-    
-    switch (indexName) {
-      case 'germplasm':
-        return {
-          type: 'germplasm',
-          id: hit.germplasmDbId,
-          title: hit.germplasmName,
-          subtitle: hit.accessionNumber,
-          description: [hit.species, hit.countryOfOrigin].filter(Boolean).join(' • '),
-          path: pathFn?.(hit.germplasmDbId) || `/germplasm/${hit.germplasmDbId}`,
-          icon,
-          score: hit._rankingScore,
-        }
-      case 'traits':
-        return {
-          type: 'trait',
-          id: hit.observationVariableDbId,
-          title: hit.observationVariableName,
-          subtitle: hit.trait?.traitName,
-          description: hit.method?.methodName,
-          path: pathFn?.(hit.observationVariableDbId) || `/traits/${hit.observationVariableDbId}`,
-          icon,
-          score: hit._rankingScore,
-        }
-      case 'trials':
-        return {
-          type: 'trial',
-          id: hit.trialDbId,
-          title: hit.trialName,
-          subtitle: hit.programName,
-          description: hit.locationName,
-          path: pathFn?.(hit.trialDbId) || `/trials/${hit.trialDbId}`,
-          icon,
-          score: hit._rankingScore,
-        }
-      case 'locations':
-        return {
-          type: 'location',
-          id: hit.locationDbId,
-          title: hit.locationName,
-          subtitle: hit.locationType,
-          description: hit.countryName,
-          path: pathFn?.(hit.locationDbId) || `/locations/${hit.locationDbId}`,
-          icon,
-          score: hit._rankingScore,
-        }
-      case 'programs':
-        return {
-          type: 'program',
-          id: hit.programDbId,
-          title: hit.programName,
-          subtitle: hit.commonCropName,
-          description: hit.objective,
-          path: pathFn?.(hit.programDbId) || `/programs/${hit.programDbId}`,
-          icon,
-          score: hit._rankingScore,
-        }
-      case 'studies':
-        return {
-          type: 'study',
-          id: hit.studyDbId,
-          title: hit.studyName,
-          subtitle: hit.studyType,
-          description: hit.locationName,
-          path: pathFn?.(hit.studyDbId) || `/studies/${hit.studyDbId}`,
-          icon,
-          score: hit._rankingScore,
-        }
-      default:
-        return null
+  async searchTrials(
+    query: string,
+    options?: SearchParams,
+  ): Promise<SearchResponse<TrialSearchResult>> {
+    return this.searchEndpoint<TrialSearchResult>(
+      "/api/v2/search/trials",
+      query,
+      options,
+    );
+  }
+
+  async searchLocations(
+    query: string,
+    options?: SearchParams & {
+      nearLat?: number;
+      nearLng?: number;
+      radiusKm?: number;
+    },
+  ): Promise<SearchResponse<LocationSearchResult>> {
+    if (options?.nearLat !== undefined && options?.nearLng !== undefined) {
+      return this.searchEndpoint<LocationSearchResult>(
+        "/api/v2/search/geo/locations",
+        query,
+        options,
+        {
+          lat: options.nearLat,
+          lng: options.nearLng,
+          radius_km: options.radiusKm ?? 100,
+        },
+      );
+    }
+
+    return this.searchEndpoint<LocationSearchResult>(
+      "/api/v2/search/locations",
+      query,
+      options,
+    );
+  }
+
+  async searchPrograms(
+    query: string,
+    options?: SearchParams,
+  ): Promise<SearchResponse<ProgramSearchResult>> {
+    return this.searchEndpoint<ProgramSearchResult>(
+      "/api/v2/search/programs",
+      query,
+      options,
+    );
+  }
+
+  async searchStudies(
+    query: string,
+    options?: SearchParams,
+  ): Promise<SearchResponse<StudySearchResult>> {
+    return this.searchEndpoint<StudySearchResult>(
+      "/api/v2/search/studies",
+      query,
+      options,
+    );
+  }
+
+  async federatedSearch(
+    query: string,
+    options?: {
+      indexes?: string[];
+      limit?: number;
+      scoreThreshold?: number;
+    },
+  ): Promise<FederatedSearchResult> {
+    if (!query.trim()) return { hits: [], query, processingTimeMs: 0 };
+
+    const limit = options?.limit ?? 20;
+    const connected = await this.connect();
+    if (!connected) return { hits: [], query, processingTimeMs: 0 };
+
+    try {
+      const response = await this.client.get<BackendFederatedSearchResponse>(
+        this.buildUrl("/api/v2/search/federated", {
+          q: query,
+          limit,
+          indexes: options?.indexes,
+          score_threshold: options?.scoreThreshold,
+        }),
+      );
+
+      const hits = (response.results ?? []).map((hit) =>
+        this.mapBackendResult(hit),
+      );
+      return {
+        hits,
+        query: response.query ?? query,
+        processingTimeMs: response.processingTimeMs ?? 0,
+        estimatedTotalHits: response.total ?? hits.length,
+      };
+    } catch (error) {
+      console.warn("[Search] Federated backend search failed:", error);
+      return { hits: [], query, processingTimeMs: 0 };
     }
   }
 
-  /**
-   * Unified search across all indexes (legacy method)
-   * Use federatedSearch for v1.10+ for better ranking
-   */
+  private mapBackendResult(
+    hit: BackendUnifiedSearchResult,
+  ): UnifiedSearchResult {
+    const iconKey =
+      {
+        germplasm: "germplasm",
+        trait: "traits",
+        trial: "trials",
+        location: "locations",
+        program: "programs",
+        study: "studies",
+      }[hit.type] ?? hit.type;
+
+    const pathFn = INDEX_PATHS[iconKey];
+    return {
+      type: hit.type,
+      id: hit.id,
+      title: hit.title,
+      subtitle: hit.subtitle,
+      description: hit.description,
+      path: hit.path ?? pathFn?.(hit.id) ?? "/",
+      icon: INDEX_ICONS[iconKey] ?? "📄",
+      score: hit.score,
+    };
+  }
+
   async searchAll(query: string, limit = 10): Promise<UnifiedSearchResult[]> {
-    const result = await this.federatedSearch(query, { limit })
-    return result.hits
+    const result = await this.federatedSearch(query, { limit });
+    return result.hits;
   }
 
-  /**
-   * Get similar documents (v1.9+ feature)
-   * Finds documents similar to the given document
-   */
   async getSimilarDocuments<T extends Record<string, unknown>>(
     indexName: string,
     documentId: string,
     options?: {
-      limit?: number
-      filter?: string
-    }
+      limit?: number;
+      filter?: string;
+    },
   ): Promise<SearchResponse<T>> {
-    await this.connect()
-    if (!this.client) {
-      return { hits: [], query: '', processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
-    }
+    const connected = await this.connect();
+    if (!connected) return this.emptyResponse<T>("", options?.limit ?? 10);
 
-    const index = this.client.index<T>(indexName)
-    
     try {
-      // @ts-ignore - searchSimilarDocuments may not be in types yet
-      return await index.searchSimilarDocuments(documentId, {
-        limit: options?.limit || 10,
-        showRankingScore: true,
-        ...(options?.filter && { filter: options.filter }),
-      })
+      const response = await this.client.get<{
+        results?: T[];
+        total?: number;
+      }>(
+        this.buildUrl(`/api/v2/search/similar/${indexName}/${documentId}`, {
+          limit: options?.limit ?? 10,
+          filter: options?.filter,
+        }),
+      );
+
+      return {
+        hits: response.results ?? [],
+        query: "",
+        processingTimeMs: 0,
+        limit: options?.limit ?? 10,
+        offset: 0,
+        estimatedTotalHits: response.total ?? 0,
+      };
     } catch (error) {
-      console.warn('[Meilisearch] Similar documents not available:', error)
-      return { hits: [], query: '', processingTimeMs: 0, limit: 0, offset: 0, estimatedTotalHits: 0 }
+      console.warn("[Search] Similar documents request failed:", error);
+      return this.emptyResponse<T>("", options?.limit ?? 10);
     }
   }
 
-  /**
-   * Get similar germplasm
-   */
   async getSimilarGermplasm(
     germplasmDbId: string,
-    options?: { limit?: number; sameSpecies?: boolean }
+    options?: { limit?: number; sameSpecies?: boolean },
   ): Promise<GermplasmSearchResult[]> {
-    const filter = options?.sameSpecies ? `species EXISTS` : undefined
+    const filter = options?.sameSpecies ? `species EXISTS` : undefined;
     const result = await this.getSimilarDocuments<GermplasmSearchResult>(
       INDEXES.GERMPLASM,
       germplasmDbId,
-      { limit: options?.limit, filter }
-    )
-    return result.hits
+      { limit: options?.limit, filter },
+    );
+    return result.hits;
   }
 
-  /**
-   * Index documents (for admin/sync operations)
-   */
   async indexDocuments<T extends Record<string, unknown>>(
-    indexName: string,
-    documents: T[],
-    primaryKey?: string
+    _indexName: string,
+    _documents: T[],
+    _primaryKey?: string,
   ): Promise<void> {
-    await this.connect()
-    if (!this.client) {
-      throw new Error('Meilisearch not connected')
-    }
-
-    const index = this.client.index<T>(indexName)
-    await index.addDocuments(documents, { primaryKey })
-    console.log(`[Meilisearch] Indexed ${documents.length} documents to ${indexName}`)
+    throw new Error(
+      "Search indexing is backend-only; browser clients may not write Meilisearch indexes.",
+    );
   }
 
-  /**
-   * Configure index settings
-   */
-  async configureIndex(indexName: string, settings: {
-    searchableAttributes?: string[]
-    filterableAttributes?: string[]
-    sortableAttributes?: string[]
-    displayedAttributes?: string[]
-    rankingRules?: string[]
-    typoTolerance?: {
-      enabled?: boolean
-      minWordSizeForTypos?: { oneTypo?: number; twoTypos?: number }
-    }
-  }): Promise<void> {
-    await this.connect()
-    if (!this.client) {
-      throw new Error('Meilisearch not connected')
-    }
-
-    const index = this.client.index(indexName)
-    await index.updateSettings(settings)
-    console.log(`[Meilisearch] Configured index ${indexName}`)
+  async configureIndex(
+    _indexName: string,
+    _settings: Record<string, unknown>,
+  ): Promise<void> {
+    throw new Error(
+      "Search index configuration is backend-only; browser clients may not mutate Meilisearch.",
+    );
   }
 
-  /**
-   * Get index statistics
-   */
   async getStats(): Promise<{
-    databaseSize: number
-    indexes: Record<string, { numberOfDocuments: number; isIndexing: boolean }>
-    version: string | null
+    databaseSize: number;
+    indexes: Record<string, { numberOfDocuments: number; isIndexing: boolean }>;
+    version: string | null;
   }> {
-    await this.connect()
-    if (!this.client) {
-      return { databaseSize: 0, indexes: {}, version: null }
-    }
-
     try {
-      const stats = await this.client.getStats()
+      const stats = await this.client.get<BackendStatsResponse>(
+        "/api/v2/search/stats",
+      );
+      this.version = stats.version;
+      this.isConnected = stats.connected;
       return {
-        databaseSize: stats.databaseSize,
-        indexes: Object.fromEntries(
-          Object.entries(stats.indexes).map(([name, idx]) => [
-            name,
-            { numberOfDocuments: idx.numberOfDocuments, isIndexing: idx.isIndexing },
-          ])
-        ),
+        databaseSize: stats.databaseSize ?? 0,
+        indexes: stats.indexes ?? {},
         version: this.version,
-      }
+      };
     } catch (error) {
-      console.error('[Meilisearch] Stats error:', error)
-      return { databaseSize: 0, indexes: {}, version: this.version }
+      console.warn("[Search] Search stats request failed:", error);
+      this.isConnected = false;
+      return { databaseSize: 0, indexes: {}, version: this.version };
     }
   }
 
-  /**
-   * Check if connected
-   */
   get connected(): boolean {
-    return this.isConnected
+    return this.isConnected;
   }
 }
 
 // Singleton instance
-export const meilisearch = new MeilisearchService()
+export const meilisearch = new BackendSearchService();
 
 // React hook for Meilisearch
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export interface UseMeilisearchOptions {
-  debounceMs?: number
-  scoreThreshold?: number
-  indexes?: string[]
+  debounceMs?: number;
+  scoreThreshold?: number;
+  indexes?: string[];
 }
 
-export function useMeilisearch(initialQuery = '', options?: UseMeilisearchOptions) {
-  const [query, setQuery] = useState(initialQuery)
-  const [results, setResults] = useState<UnifiedSearchResult[]>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
-  const [version, setVersion] = useState<string | null>(null)
-  const timeoutRef = useRef<number | null>(null)
+export function useMeilisearch(
+  initialQuery = "",
+  options?: UseMeilisearchOptions,
+) {
+  const [query, setQuery] = useState(initialQuery);
+  const [results, setResults] = useState<UnifiedSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [version, setVersion] = useState<string | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
-  const debounceMs = options?.debounceMs ?? 100
+  const debounceMs = options?.debounceMs ?? 100;
 
   // Check connection on mount
   useEffect(() => {
     meilisearch.connect().then((connected) => {
-      setIsConnected(connected)
+      setIsConnected(connected);
       if (connected) {
-        setVersion(meilisearch.getVersion())
+        setVersion(meilisearch.getVersion());
       }
-    })
-  }, [])
+    });
+  }, []);
 
   // Debounced search
   useEffect(() => {
     if (timeoutRef.current !== null) {
-      clearTimeout(timeoutRef.current)
+      clearTimeout(timeoutRef.current);
     }
 
     if (!query.trim()) {
-      setResults([])
-      return
+      setResults([]);
+      return;
     }
 
     timeoutRef.current = window.setTimeout(async () => {
-      setIsSearching(true)
+      setIsSearching(true);
       try {
         const searchResult = await meilisearch.federatedSearch(query, {
           indexes: options?.indexes,
           scoreThreshold: options?.scoreThreshold,
-        })
-        setResults(searchResult.hits)
+        });
+        setResults(searchResult.hits);
       } finally {
-        setIsSearching(false)
+        setIsSearching(false);
       }
-    }, debounceMs)
+    }, debounceMs);
 
     return () => {
       if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current)
+        clearTimeout(timeoutRef.current);
       }
-    }
-  }, [query, debounceMs, options?.indexes, options?.scoreThreshold])
+    };
+  }, [query, debounceMs, options?.indexes, options?.scoreThreshold]);
 
   // Manual search function
-  const search = useCallback(async (searchQuery: string) => {
-    setIsSearching(true)
-    try {
-      const searchResult = await meilisearch.federatedSearch(searchQuery, {
-        indexes: options?.indexes,
-        scoreThreshold: options?.scoreThreshold,
-      })
-      setResults(searchResult.hits)
-      return searchResult.hits
-    } finally {
-      setIsSearching(false)
-    }
-  }, [options?.indexes, options?.scoreThreshold])
+  const search = useCallback(
+    async (searchQuery: string) => {
+      setIsSearching(true);
+      try {
+        const searchResult = await meilisearch.federatedSearch(searchQuery, {
+          indexes: options?.indexes,
+          scoreThreshold: options?.scoreThreshold,
+        });
+        setResults(searchResult.hits);
+        return searchResult.hits;
+      } finally {
+        setIsSearching(false);
+      }
+    },
+    [options?.indexes, options?.scoreThreshold],
+  );
 
   return {
     query,
@@ -753,7 +641,7 @@ export function useMeilisearch(initialQuery = '', options?: UseMeilisearchOption
     isConnected,
     version,
     search,
-  }
+  };
 }
 
 /**
@@ -762,24 +650,43 @@ export function useMeilisearch(initialQuery = '', options?: UseMeilisearchOption
 export function useSimilarDocuments<T extends Record<string, unknown>>(
   indexName: string,
   documentId: string | null,
-  options?: { limit?: number; filter?: string }
+  options?: { limit?: number; filter?: string },
 ) {
-  const [results, setResults] = useState<T[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [results, setResults] = useState<T[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const limit = options?.limit;
+  const filter = options?.filter;
 
   useEffect(() => {
-    if (!documentId) {
-      setResults([])
-      return
+    let cancelled = false;
+
+    async function loadSimilarDocuments() {
+      await Promise.resolve();
+      if (!documentId) {
+        setResults([]);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const response = await meilisearch.getSimilarDocuments<T>(
+          indexName,
+          documentId,
+          { limit, filter },
+        );
+        if (!cancelled) setResults(response.hits);
+      } catch {
+        if (!cancelled) setResults([]);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
     }
 
-    setIsLoading(true)
-    meilisearch
-      .getSimilarDocuments<T>(indexName, documentId, options)
-      .then((response) => setResults(response.hits))
-      .catch(() => setResults([]))
-      .finally(() => setIsLoading(false))
-  }, [indexName, documentId, options?.limit, options?.filter])
+    void loadSimilarDocuments();
+    return () => {
+      cancelled = true;
+    };
+  }, [indexName, documentId, limit, filter]);
 
-  return { results, isLoading }
+  return { results, isLoading };
 }

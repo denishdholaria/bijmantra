@@ -23,7 +23,7 @@
     "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
     "test:ci": "playwright test --reporter=github,html",
     "report": "playwright show-report",
-    "codegen": "playwright codegen http://localhost:5173",
+    "codegen": "playwright codegen http://localhost:5656",
     "update-snapshots": "playwright test --update-snapshots"
   },
   "devDependencies": {

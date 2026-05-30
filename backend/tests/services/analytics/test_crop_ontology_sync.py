@@ -69,7 +69,9 @@ async def test_sync_ontology_creates_new(async_db_session: AsyncSession):
                 "method": {"methodDbId": "M001", "methodName": "Measuring"},
                 "scale": {"scaleDbId": "S001", "scaleName": "cm"},
                 "ontologyDbId": "CO_320",
-                "ontologyName": "Rice"
+                "ontologyName": "Rice",
+                "version": "v2.1",
+                "documentationURL": "https://cropontology.org/term/CO_320:0000001",
             }
         ]
 
@@ -97,6 +99,11 @@ async def test_sync_ontology_creates_new(async_db_session: AsyncSession):
     assert var.observation_variable_name == "Plant Height"
     assert var.organization_id == org_id
     assert var.trait_name == "Height"
+    assert var.ontology_term_id == "CO_320:0000001"
+    assert var.ontology_version == "v2.1"
+    assert var.ontology_documentation_links == [
+        {"URL": "https://cropontology.org/term/CO_320:0000001"}
+    ]
 
 @pytest.mark.asyncio
 async def test_sync_ontology_updates_existing(async_db_session: AsyncSession):

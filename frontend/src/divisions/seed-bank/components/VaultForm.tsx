@@ -48,8 +48,8 @@ export function VaultForm({ initialData, onSuccess, onCancel }: VaultFormProps) 
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<VaultFormData>({
-    resolver: zodResolver(vaultSchema),
+  } = useForm<VaultFormData, unknown, VaultFormData>({
+    resolver: zodResolver(vaultSchema) as any,
     defaultValues: {
       type: 'base',
       temperature: -18,

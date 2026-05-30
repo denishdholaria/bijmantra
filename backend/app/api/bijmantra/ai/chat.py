@@ -41,11 +41,11 @@ from app.services.chat.message_service import MessageService
 from app.services.chat.orchestration_service import OrchestrationService
 from app.services.chat.session_service import SessionService
 
+
 # Legacy compatibility aliases — kept for test patch targets
-from app.modules.ai.services.reevu_service import (  # noqa: F401
-    ReevuService as VeenaService,
-    get_reevu_service as get_veena_service,
-)
+VeenaService = ReevuService
+get_veena_service = get_reevu_service
+
 
 logger = logging.getLogger(__name__)
 REEVU_BENCHMARK_REPORT_PATH = (
@@ -209,7 +209,9 @@ async def get_llm_status(
     current_user: User = Depends(get_current_user),
 ):
     """Get status of all LLM providers."""
-    return await (await SessionService.get_request_llm_service(db, current_user)).get_status()
+    status = await (await SessionService.get_request_llm_service(db, current_user)).get_status()
+    status.update(await SessionService.get_deterministic_tool_status(db, current_user))
+    return status
 
 
 @router.get("/usage", response_model=ChatUsageResponse)
@@ -231,6 +233,7 @@ async def reevu_health(
 ):
     """Check REEVU AI health status."""
     status = await (await SessionService.get_request_llm_service(db, current_user)).get_status()
+    deterministic_tool_status = await SessionService.get_deterministic_tool_status(db, current_user)
     return {
         "status": "healthy",
         "assistant": "REEVU",
@@ -244,6 +247,7 @@ async def reevu_health(
         ],
         "rag_enabled": True,
         "llm_enabled": status["active_provider"] != "template",
+        **deterministic_tool_status,
         "free_tier_available": any(p["available"] and p["free_tier"] for p in status["providers"].values()),
     }
 

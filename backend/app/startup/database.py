@@ -62,6 +62,30 @@ async def initialize_redis_security():
         logger.warning("Redis security storage initialization skipped: %s", e)
 
 
+async def initialize_domain_embeddings():
+    """Initialize REEVU domain embedding prototypes when the feature flag is enabled.
+
+    Embeds all domain corpus examples and upserts prototype vectors into
+    ``reevu_domain_prototypes`` via pgvector.  Safe to call on every startup —
+    the upsert is idempotent.  Skipped entirely when
+    ``REEVU_EMBEDDING_DETECTION_ENABLED`` is False (default).
+    """
+    from app.core.config import settings
+
+    if not settings.REEVU_EMBEDDING_DETECTION_ENABLED:
+        return
+
+    try:
+        from app.core.database import AsyncSessionLocal
+        from app.modules.ai.services.reevu.domain_embedding_service import DomainEmbeddingService
+
+        async with AsyncSessionLocal() as db:
+            await DomainEmbeddingService().initialize(db)
+        logger.info("REEVU domain embedding prototypes initialized")
+    except Exception as e:
+        logger.warning("REEVU domain embedding initialization skipped: %s", e)
+
+
 async def shutdown_redis():
     """Disconnect Redis on shutdown."""
     try:
@@ -97,6 +121,7 @@ async def lifespan(app: FastAPI):
     await initialize_meilisearch()
     await initialize_task_queue()
     await initialize_redis_security()
+    await initialize_domain_embeddings()
     
     yield
     

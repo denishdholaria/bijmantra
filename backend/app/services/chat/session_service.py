@@ -17,8 +17,13 @@ from app.models.core import User
 from app.modules.ai.service import get_ai_provider_service
 from app.modules.ai.services.capability_registry import CapabilityRegistry
 from app.modules.ai.services.engine import MultiTierLLMService, get_llm_service
-from app.modules.ai.services.memory import BreedingVectorService, EmbeddingService, VectorStoreService
+from app.modules.ai.services.memory import (
+    BreedingVectorService,
+    EmbeddingService,
+    VectorStoreService,
+)
 from app.modules.ai.services.quota import AIQuotaService
+
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +92,19 @@ class SessionService:
         if agent_setting is None:
             return CapabilityRegistry()
         return CapabilityRegistry.from_agent_setting(agent_setting)
+
+    @staticmethod
+    async def get_deterministic_tool_status(
+        db: AsyncSession,
+        current_user: User,
+    ) -> dict[str, Any]:
+        """Return deterministic REEVU function-tool availability for this tenant."""
+        capability_registry = await SessionService.get_request_capability_registry(db, current_user)
+        allowed_function_names = capability_registry.get_allowed_function_names()
+        return {
+            "deterministic_tools_available": bool(allowed_function_names),
+            "deterministic_tool_count": len(allowed_function_names),
+        }
 
     # ------------------------------------------------------------------ #
     # Vector / breeding service                                            #

@@ -42,8 +42,8 @@ export function WeatherStationForm({ station, onSuccess }: WeatherStationFormPro
     setValue,
     watch,
     formState: { errors },
-  } = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  } = useForm<z.infer<typeof formSchema>, unknown, z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       name: station?.name || "",
       latitude: station?.latitude || 0,

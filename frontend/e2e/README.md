@@ -92,7 +92,7 @@ bun run test:ci           # CI-optimized run
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `E2E_BASE_URL` | `http://localhost:5173` | Frontend URL |
+| `E2E_BASE_URL` | `http://localhost:5656` | Frontend URL |
 | `E2E_API_URL` | `http://localhost:8000` | Backend API URL |
 | `E2E_TEST_EMAIL` | `demo@bijmantra.org` | Test user email |
 | `E2E_TEST_PASSWORD` | `Demo123!` | Test user password |

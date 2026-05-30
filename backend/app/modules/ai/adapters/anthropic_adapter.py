@@ -73,7 +73,7 @@ class AnthropicAdapter(IProviderAdapter):
                     )
         except Exception as e:
             logger.error("[REEVU] Anthropic error: %s", e)
-        return None
+            raise e
 
     async def stream(
         self,

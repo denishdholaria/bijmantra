@@ -128,13 +128,13 @@ export const ChatResponseSchema = z.object({
   suggestions: z.array(z.string()).nullable().optional(),
   cached: z.boolean().optional(),
   latency_ms: z.number().nullable().optional(),
-  function_call: z.record(z.unknown()).nullable().optional(),
-  function_result: z.record(z.unknown()).nullable().optional(),
-  policy_validation: z.record(z.unknown()).nullable().optional(),
-  evidence_envelope: z.record(z.unknown()).nullable().optional(),
-  retrieval_audit: z.record(z.unknown()).nullable().optional(),
-  plan_execution_summary: z.record(z.unknown()).nullable().optional(),
-  comparison_result: z.record(z.unknown()).nullable().optional(),
+  function_call: z.record(z.string(), z.unknown()).nullable().optional(),
+  function_result: z.record(z.string(), z.unknown()).nullable().optional(),
+  policy_validation: z.record(z.string(), z.unknown()).nullable().optional(),
+  evidence_envelope: z.record(z.string(), z.unknown()).nullable().optional(),
+  retrieval_audit: z.record(z.string(), z.unknown()).nullable().optional(),
+  plan_execution_summary: z.record(z.string(), z.unknown()).nullable().optional(),
+  comparison_result: z.record(z.string(), z.unknown()).nullable().optional(),
 });
 
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;

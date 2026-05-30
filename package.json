@@ -9,7 +9,7 @@
     "@mem0/cli": "^0.2.1",
     "@webgpu/types": "^0.1.69",
     "baseline-browser-mapping": "^2.9.19",
-    "wrangler": "^4.69.0"
+    "wrangler": "^4.87.0"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.5"

@@ -71,6 +71,7 @@ from app.models.collaboration import (
 )
 from app.models.compute_lineage import ComputeLineageRecord
 from app.models.core import (
+    AuthIdentity,
     List,
     Location,
     Ontology,
@@ -140,6 +141,12 @@ from app.models.dispatch import Dispatch, DispatchItem, Firm
 from app.models.doubled_haploid import DHBatch, DHProtocol
 from app.models.dus import DUSEntry, DUSResult, DUSScore, DUSTrial, DUSTrialStatus
 from app.models.environmental import EnvironmentalUnit, SoilProfile
+from app.models.fair_metadata import FairAssetMetadata
+from app.models.federated_assets import (
+    FederatedAssetConnector,
+    FederatedAssetRecord,
+    FederatedAssetSyncReceipt,
+)
 from app.models.field_operations import (
     FieldBookEntry,
     FieldBookObservation,
@@ -304,6 +311,10 @@ __all__ = [
     "User",
     "ImportJob",
     "ComputeLineageRecord",
+    "FairAssetMetadata",
+    "FederatedAssetConnector",
+    "FederatedAssetRecord",
+    "FederatedAssetSyncReceipt",
     "ReevuRoutingPolicy",
     "OrchestratorMission",
     "OrchestratorSubtask",

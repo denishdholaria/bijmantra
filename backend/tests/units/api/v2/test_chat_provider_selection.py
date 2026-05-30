@@ -170,6 +170,7 @@ def client():
     from app.api.deps import get_current_user, get_db
     from app.api.bijmantra.ai.chat import get_breeding_service, get_reevu_service
     from app.main import app
+    from app.middleware.tenant_context import get_tenant_db
 
     reevu_service = SimpleNamespace(
         get_or_create_user_context=AsyncMock(return_value={"context": "ok"}),
@@ -199,6 +200,7 @@ def client():
 
     app.dependency_overrides[get_current_user] = override_current_user
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_tenant_db] = override_get_db
     app.dependency_overrides[get_reevu_service] = override_reevu_service
     app.dependency_overrides[get_breeding_service] = override_breeding_service
 
@@ -212,6 +214,35 @@ def client():
 def mock_chat_infra():
     FakeMultiTierLLMService.instances.clear()
     ReevuMetrics.reset()
+
+    async def patched_get_request_llm_service(db, current_user):
+        from app.api.bijmantra.ai import chat as chat_module
+
+        base_service = chat_module.get_llm_service()
+        if not isinstance(base_service, chat_module.MultiTierLLMService):
+            return base_service
+
+        registry = await chat_module.get_ai_provider_service().load_registry(
+            db,
+            int(current_user.organization_id),
+            is_superuser=bool(getattr(current_user, "is_superuser", False)),
+        )
+        llm_service = chat_module.MultiTierLLMService()
+        llm_service.set_provider_registry(registry)
+        return llm_service
+
+    async def patched_get_request_agent_setting(db, current_user):
+        from app.api.bijmantra.ai import chat as chat_module
+
+        get_agent_setting = getattr(chat_module.get_ai_provider_service(), "get_agent_setting", None)
+        if get_agent_setting is None:
+            return None
+        return await get_agent_setting(
+            db,
+            int(current_user.organization_id),
+            is_superuser=bool(getattr(current_user, "is_superuser", False)),
+        )
+
     with patch("app.api.bijmantra.chat.AIQuotaService.check_and_increment_usage", new=AsyncMock(return_value=None)) as mock_quota, patch(
         "app.api.bijmantra.chat.AIQuotaService.record_generation_usage",
         new=AsyncMock(return_value=None),
@@ -227,6 +258,14 @@ def mock_chat_infra():
     ), patch(
         "app.api.bijmantra.chat._build_reevu_envelope",
         return_value={"evidence_refs": [], "calculations": [], "uncertainty": [], "policy_flags": []},
+    ), patch.object(
+        SessionService,
+        "get_request_llm_service",
+        new=staticmethod(patched_get_request_llm_service),
+    ), patch.object(
+        SessionService,
+        "get_request_agent_setting",
+        new=staticmethod(patched_get_request_agent_setting),
     ):
         yield {"quota": mock_quota, "usage_telemetry": mock_usage_telemetry}
 
@@ -447,6 +486,7 @@ def test_usage_route_returns_richer_telemetry_payload(client):
 def test_status_route_loads_registry_with_current_org(organization_id, is_superuser):
     from app.api.deps import get_current_user, get_db
     from app.main import app
+    from app.middleware.tenant_context import get_tenant_db
 
     registry = _build_registry()
     provider_service = SimpleNamespace(load_registry=AsyncMock(return_value=registry))
@@ -466,11 +506,16 @@ def test_status_route_loads_registry_with_current_org(organization_id, is_superu
 
     app.dependency_overrides[get_current_user] = override_current_user
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_tenant_db] = override_get_db
 
     with TestClient(app) as test_client, patch(
         "app.api.bijmantra.chat.MultiTierLLMService", FakeMultiTierLLMService
     ), patch("app.api.bijmantra.chat.get_llm_service", return_value=FakeMultiTierLLMService()), patch(
         "app.api.bijmantra.chat.get_ai_provider_service", return_value=provider_service
+    ), patch("app.services.chat.session_service.MultiTierLLMService", FakeMultiTierLLMService), patch(
+        "app.services.chat.session_service.get_llm_service", return_value=FakeMultiTierLLMService()
+    ), patch(
+        "app.services.chat.session_service.get_ai_provider_service", return_value=provider_service
     ):
         response = test_client.get("/api/v2/chat/status")
 
@@ -482,6 +527,8 @@ def test_status_route_loads_registry_with_current_org(organization_id, is_superu
     assert payload["active_model"] == "gpt-4.1-mini"
     assert payload["active_provider_source"] == "server_env"
     assert payload["active_provider_source_label"] == "Server env key"
+    assert payload["deterministic_tools_available"] is True
+    assert payload["deterministic_tool_count"] > 0
     provider_service.load_registry.assert_awaited_once()
     assert provider_service.load_registry.await_args.args == (db_session, organization_id)
     assert provider_service.load_registry.await_args.kwargs == {"is_superuser": is_superuser}
@@ -497,7 +544,11 @@ def test_health_route_reflects_request_scoped_provider_and_free_tier(client):
 
     with patch("app.api.bijmantra.chat.MultiTierLLMService", FakeMultiTierLLMService), patch(
         "app.api.bijmantra.chat.get_llm_service", return_value=FakeMultiTierLLMService()
-    ), patch("app.api.bijmantra.chat.get_ai_provider_service", return_value=provider_service):
+    ), patch("app.api.bijmantra.chat.get_ai_provider_service", return_value=provider_service), patch(
+        "app.services.chat.session_service.MultiTierLLMService", FakeMultiTierLLMService
+    ), patch("app.services.chat.session_service.get_llm_service", return_value=FakeMultiTierLLMService()), patch(
+        "app.services.chat.session_service.get_ai_provider_service", return_value=provider_service
+    ):
         response = test_client.get("/api/v2/chat/health")
 
     assert response.status_code == 200
@@ -507,6 +558,8 @@ def test_health_route_reflects_request_scoped_provider_and_free_tier(client):
     assert payload["active_provider_source"] == "server_env"
     assert payload["active_provider_source_label"] == "Server env key"
     assert payload["llm_enabled"] is True
+    assert payload["deterministic_tools_available"] is True
+    assert payload["deterministic_tool_count"] > 0
     assert payload["free_tier_available"] is True
 
 
@@ -526,7 +579,11 @@ def test_health_route_reports_template_fallback_when_registry_defaults_to_templa
 
     with patch("app.api.bijmantra.chat.MultiTierLLMService", FakeMultiTierLLMService), patch(
         "app.api.bijmantra.chat.get_llm_service", return_value=FakeMultiTierLLMService()
-    ), patch("app.api.bijmantra.chat.get_ai_provider_service", return_value=provider_service):
+    ), patch("app.api.bijmantra.chat.get_ai_provider_service", return_value=provider_service), patch(
+        "app.services.chat.session_service.MultiTierLLMService", FakeMultiTierLLMService
+    ), patch("app.services.chat.session_service.get_llm_service", return_value=FakeMultiTierLLMService()), patch(
+        "app.services.chat.session_service.get_ai_provider_service", return_value=provider_service
+    ):
         response = test_client.get("/api/v2/chat/health")
 
     assert response.status_code == 200
@@ -536,6 +593,8 @@ def test_health_route_reports_template_fallback_when_registry_defaults_to_templa
     assert payload["active_provider_source"] == "template_builtin"
     assert payload["active_provider_source_label"] == "Built-in template fallback"
     assert payload["llm_enabled"] is False
+    assert payload["deterministic_tools_available"] is True
+    assert payload["deterministic_tool_count"] > 0
     assert payload["free_tier_available"] is True
 
 
@@ -1038,6 +1097,7 @@ def test_stream_route_injects_current_organization_into_function_execution(clien
 def test_diagnostics_route_returns_provider_latencies_and_safe_failures():
     from app.api.deps import get_current_user, get_db
     from app.main import app
+    from app.middleware.tenant_context import get_tenant_db
 
     registry = _build_registry(
         active_provider="openai",
@@ -1066,6 +1126,7 @@ def test_diagnostics_route_returns_provider_latencies_and_safe_failures():
 
     app.dependency_overrides[get_current_user] = override_current_user
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_tenant_db] = override_get_db
 
     metrics = ReevuMetrics.get()
     metrics.record_request(

@@ -37,6 +37,9 @@ const WeatherForecast = lazy(() => import('@/pages/WeatherForecast').then(m => (
 // Plant Sciences Hub
 const PlantSciencesHub = lazy(() => import('@/divisions/plant-sciences/pages/PlantSciencesHub').then(m => ({ default: m.PlantSciencesHub })));
 
+// Outer Rims Initiative
+const OuterRimsInitiative = lazy(() => import('@/pages/OuterRimsInitiative').then(m => ({ default: m.OuterRimsInitiative })));
+
 export const futureRoutes: RouteObject[] = [
   // Integrations
   { path: '/integrations', element: wrapWithAppShell(IntegrationsHub) },
@@ -78,4 +81,7 @@ export const futureRoutes: RouteObject[] = [
 
   // Plant Sciences Hub
   { path: '/plant-sciences', element: wrapWithAppShell(PlantSciencesHub) },
+
+  // Outer Rims Initiative
+  { path: '/outer-rims', element: wrapWithAppShell(OuterRimsInitiative) },
 ];

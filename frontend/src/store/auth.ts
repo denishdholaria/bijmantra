@@ -13,7 +13,17 @@
 
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { AUTH_PROVIDER, type AuthProvider } from '@/config'
+import { clearTenantClientState } from '@/lib/auth-lifecycle'
 import { apiClient } from '@/lib/api-client'
+import {
+  clearKeycloakSession,
+  initializeKeycloakAuth,
+  isKeycloakAuthEnabled,
+  loginWithKeycloak,
+  logoutFromKeycloak,
+  subscribeKeycloakToken,
+} from '@/lib/keycloak-auth'
 
 interface User {
   id: number
@@ -29,29 +39,40 @@ interface User {
 }
 
 interface AuthState {
+  authProvider: AuthProvider
   user: User | null
   token: string | null
   isAuthenticated: boolean
   isLoading: boolean
+  isAuthInitialized: boolean
   error: string | null
   _hasHydrated: boolean  // Track hydration state
+  isExternalAuthEnabled: () => boolean
   isDemoUser: () => boolean
+  initializeAuth: () => Promise<void>
   login: (email: string, password: string) => Promise<void>
-  logout: () => void
+  loginWithIdentityProvider: () => Promise<void>
+  logout: () => Promise<void>
   clearError: () => void
   validateToken: () => Promise<boolean>
   setHasHydrated: (state: boolean) => void
 }
 
+let unsubscribeKeycloakToken: (() => void) | null = null
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
+      authProvider: AUTH_PROVIDER,
       user: null,
       token: apiClient.getToken(),
       isAuthenticated: !!apiClient.getToken(),
       isLoading: false,
+      isAuthInitialized: AUTH_PROVIDER !== 'keycloak',
       error: null,
       _hasHydrated: false,
+
+      isExternalAuthEnabled: () => get().authProvider === 'keycloak',
 
       // Server-determined demo status - no client-side guessing
       isDemoUser: () => {
@@ -63,10 +84,72 @@ export const useAuthStore = create<AuthState>()(
         set({ _hasHydrated: state })
       },
 
+      initializeAuth: async () => {
+        if (!isKeycloakAuthEnabled()) {
+          set({ authProvider: 'local', isAuthInitialized: true })
+          return
+        }
+
+        if (get().isAuthInitialized) {
+          return
+        }
+
+        set({ authProvider: 'keycloak', isLoading: true, error: null })
+
+        try {
+          if (!unsubscribeKeycloakToken) {
+            unsubscribeKeycloakToken = subscribeKeycloakToken((token) => {
+              apiClient.setToken(token)
+              set({
+                token,
+                isAuthenticated: Boolean(token),
+              })
+            })
+          }
+
+          const session = await initializeKeycloakAuth()
+          if (!session.authenticated || !session.token) {
+            apiClient.setToken(null)
+            set({
+              user: null,
+              token: null,
+              isAuthenticated: false,
+              isAuthInitialized: true,
+              isLoading: false,
+            })
+            return
+          }
+
+          apiClient.setToken(session.token)
+          const userData = await apiClient.authService.me()
+          set({
+            token: session.token,
+            user: userData as User,
+            isAuthenticated: true,
+            isAuthInitialized: true,
+            isLoading: false,
+            error: null,
+          })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Keycloak session initialization failed'
+          apiClient.setToken(null)
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isAuthInitialized: true,
+            isLoading: false,
+            error: message,
+          })
+        }
+      },
+
       login: async (email: string, password: string) => {
         set({ isLoading: true, error: null })
         try {
-          const response = await apiClient.authService.login(email, password)
+          const normalizedEmail = email.trim().toLowerCase()
+          const response = await apiClient.authService.login(normalizedEmail, password)
+          await clearTenantClientState()
           apiClient.setToken(response.access_token)
           
           // Extract user info from login response
@@ -81,6 +164,7 @@ export const useAuthStore = create<AuthState>()(
           })
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Login failed'
+          apiClient.setToken(null)
           set({
             error: message,
             isLoading: false,
@@ -92,19 +176,49 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
+      loginWithIdentityProvider: async () => {
+        set({ isLoading: true, error: null })
+        try {
+          await loginWithKeycloak()
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to start Keycloak login'
+          set({ isLoading: false, error: message })
+          throw error
+        }
+      },
+
+      logout: async () => {
+        const shouldLogoutFromKeycloak = get().authProvider === 'keycloak'
         apiClient.setToken(null)
+        try {
+          localStorage.removeItem('bijmantra-auth')
+        } catch {
+          // localStorage may not be available
+        }
         set({
           user: null,
           token: null,
           isAuthenticated: false,
           error: null,
         })
+        await clearTenantClientState()
+
+        if (shouldLogoutFromKeycloak) {
+          try {
+            await logoutFromKeycloak()
+          } catch {
+            clearKeycloakSession()
+          }
+        }
       },
 
       clearError: () => set({ error: null }),
 
       validateToken: async () => {
+        if (get().authProvider === 'keycloak') {
+          await get().initializeAuth()
+        }
+
         const token = get().token
         if (!token) {
           set({ isAuthenticated: false })
@@ -113,6 +227,8 @@ export const useAuthStore = create<AuthState>()(
         
         const isValid = await apiClient.validateToken()
         if (!isValid) {
+          await clearTenantClientState()
+          apiClient.setToken(null)
           set({
             user: null,
             token: null,
@@ -128,9 +244,29 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({ 
         token: state.token,
         user: state.user,
-        isAuthenticated: state.isAuthenticated,
       }),
-      onRehydrateStorage: () => (state) => {
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<AuthState> | undefined
+        const persistedToken = typeof persisted?.token === 'string' ? persisted.token : null
+        const token = persistedToken || currentState.token || null
+        const user = token ? (persisted?.user ?? currentState.user) : null
+
+        if (token && token !== apiClient.getToken()) {
+          apiClient.setToken(token)
+        }
+
+        return {
+          ...currentState,
+          ...persisted,
+          token,
+          user,
+          isAuthenticated: Boolean(token),
+          isAuthInitialized: AUTH_PROVIDER !== 'keycloak',
+          isLoading: false,
+          error: null,
+        }
+      },
+      onRehydrateStorage: () => () => {
         // This callback fires when rehydration completes
         // Set _hasHydrated directly on the store
         useAuthStore.setState({ _hasHydrated: true })
@@ -180,7 +316,7 @@ if (typeof window !== 'undefined') {
     // Only logout if currently authenticated to avoid loops
     if (state.isAuthenticated) {
       console.debug('Auth store: Received unauthorized event, logging out')
-      state.logout()
+      void state.logout()
       // Force reload to clear any stale state
       window.location.href = '/login'
     }

@@ -458,7 +458,7 @@ export function ControlPlanePage() {
           onWriteQueueEntry={handleWriteQueueEntry}
         />
 
-  <Mem0Tab />
+        <Mem0Tab />
 
         <ArielmaTab parsedBoard={parsedBoard} jsonError={jsonError} />
 

@@ -175,4 +175,57 @@ async def handle_predict(
                 "message": "Failed to predict harvest timing",
             }
 
+    # What-if predictive queries
+    if function_name in (
+        "what_if_cross_prediction",
+        "what_if_selection_scenario",
+        "what_if_environmental_scenario",
+    ):
+        from app.modules.ai.services.reevu.what_if_handler import WhatIfQueryHandler
+
+        query_type = function_name.replace("what_if_", "")
+        org_id = params.get("organization_id", 1)
+        handler = WhatIfQueryHandler()
+        try:
+            result = await handler.handle(
+                query_type=query_type,
+                params=params,
+                db=executor.db,
+                organization_id=org_id,
+                germplasm_search_service=getattr(executor, "germplasm_search_service", None),
+                observation_search_service=shared.observation_search_service,
+            )
+            label = "MODEL PREDICTION — not observed data"
+            return {
+                "success": True,
+                "function": function_name,
+                "result_type": "what_if_prediction",
+                "is_prediction": result.is_prediction,
+                "prediction_label": label,
+                "data": {
+                    "query_type": result.query_type,
+                    "prediction": result.prediction,
+                    "confidence": result.confidence,
+                    "assumptions": result.assumptions,
+                    "limitations": result.limitations,
+                    "insufficient_data": result.insufficient_data,
+                    "reason": result.reason,
+                },
+                "message": (
+                    f"{label}: {result.prediction.get('predicted_mean', result.prediction)}"
+                    if not result.insufficient_data
+                    else f"Insufficient data: {result.reason}"
+                ),
+                "evidence_refs": [
+                    ref.entity_id for ref in result.evidence_refs
+                ],
+            }
+        except Exception as exc:
+            logger.error("What-if query %s failed: %s", function_name, exc)
+            return {
+                "success": False,
+                "error": str(exc),
+                "message": f"Failed to execute what-if query: {function_name}",
+            }
+
     return {"success": False, "error": f"Unhandled predict function: {function_name}"}

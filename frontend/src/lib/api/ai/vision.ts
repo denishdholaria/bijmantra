@@ -20,13 +20,53 @@ export type VisionDatasetSummary = {
   total_images?: number;
 };
 
+export type VisionImageMetadata = {
+  filename: string;
+  content_type: string;
+  format: string;
+  width: number;
+  height: number;
+  size_bytes: number;
+  quality_warnings: string[];
+};
+
+export type VisionPrediction = {
+  type?: string;
+  label?: string;
+  confidence?: number;
+  description?: string;
+  severity?: string;
+  recommendations?: string[];
+};
+
+export type VisionAnalyzeResponse = {
+  success: boolean;
+  status: string;
+  image: VisionImageMetadata;
+  predictions: VisionPrediction[];
+  explainability?: {
+    message?: string;
+    crop?: string;
+  };
+  model?: unknown;
+};
+
 export class VisionService {
   constructor(private client: ApiClientCore) {}
 
-  async analyzeImage(file: File) {
+  async analyzeImage(file: File, crop?: string, modelId?: string) {
     const formData = new FormData();
     formData.append("file", file);
-    return this.client.post<any>("/api/v2/vision/analyze", formData);
+    if (crop) {
+      formData.append("crop", crop);
+    }
+    if (modelId) {
+      formData.append("model_id", modelId);
+    }
+    return this.client.request<VisionAnalyzeResponse>("/api/v2/vision/analyze", {
+      method: "POST",
+      body: formData,
+    });
   }
 
   async getAnalysisResults(analysisId: string) {

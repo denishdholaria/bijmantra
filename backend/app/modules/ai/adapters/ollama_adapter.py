@@ -75,7 +75,7 @@ class OllamaAdapter(IProviderAdapter):
 				)
 		except Exception as exc:
 			logger.error("[REEVU] Ollama error: %s", exc)
-		return None
+			raise exc
 
 	async def stream(
 		self,

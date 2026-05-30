@@ -44,7 +44,7 @@ def verify_carbon_dashboard():
         # We need to set localStorage before navigation
         # Playwright doesn't allow setting localStorage directly on new context without a page
         page = context.new_page()
-        page.goto("http://localhost:5173")
+        page.goto("http://localhost:5656")
 
         page.evaluate(
             f"localStorage.setItem('bijmantra-workspace', '{str(workspace_state).replace(chr(39), chr(34))}')"
@@ -55,7 +55,7 @@ def verify_carbon_dashboard():
 
         # Navigate to Carbon Dashboard
         print("Navigating to Carbon Dashboard...")
-        page.goto("http://localhost:5173/earth-systems/carbon")
+        page.goto("http://localhost:5656/earth-systems/carbon")
 
         # Wait for load
         time.sleep(5)

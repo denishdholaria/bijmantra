@@ -62,6 +62,14 @@ class VisionTrainingStatus(StrEnum):
     FAILED = "FAILED"
     CANCELLED = "CANCELLED"
 
+
+class VisionModelLifecycleState(StrEnum):
+    CANDIDATE = "candidate"
+    VALIDATED = "validated"
+    PRODUCTION = "production"
+    ARCHIVED = "archived"
+
+
 class AnnotationTask(BaseModel):
     __tablename__ = "annotation_tasks"
 
@@ -84,6 +92,7 @@ class AnnotationTask(BaseModel):
     # Relationships
     items = relationship("AnnotationTaskItem", back_populates="task", cascade="all, delete-orphan")
 
+
 class AnnotationTaskItem(BaseModel):
     __tablename__ = "annotation_task_items"
 
@@ -94,10 +103,11 @@ class AnnotationTaskItem(BaseModel):
     # Link to the actual annotation result
     annotation_id = Column(Integer, ForeignKey("vision_annotations.id"), nullable=True)
 
-    assigned_to = Column(String, nullable=True) # specific assignment if needed
+    assigned_to = Column(String, nullable=True)  # specific assignment if needed
 
     task = relationship("AnnotationTask", back_populates="items")
     annotation = relationship("VisionAnnotation", back_populates="task_item")
+
 
 class VisionAnnotation(BaseModel):
     __tablename__ = "vision_annotations"
@@ -118,6 +128,7 @@ class VisionAnnotation(BaseModel):
     # Relationships
     task_item = relationship("AnnotationTaskItem", back_populates="annotation", uselist=False)
 
+
 class VisionModel(BaseModel):
     __tablename__ = "vision_models"
 
@@ -127,26 +138,42 @@ class VisionModel(BaseModel):
     version = Column(String, default="1.0.0", nullable=False)
 
     # Artifact details
-    format = Column(String, nullable=False) # e.g. "savedmodel", "pytorch"
-    file_path = Column(String, nullable=False) # Path to the source model directory/file
+    format = Column(String, nullable=False)  # e.g. "savedmodel", "pytorch"
+    file_path = Column(String, nullable=False)  # Path to the source model directory/file
 
     # Metrics (e.g. {"accuracy": 0.95})
     metrics = Column(JSON, default=dict)
     size_bytes = Column(Integer, default=0)
 
+    # Production lifecycle and artifact provenance
+    lifecycle_state = Column(
+        String(32), nullable=False, default=VisionModelLifecycleState.CANDIDATE.value
+    )
+    artifact_checksum = Column(String(128), nullable=True)
+    label_mapping = Column(JSON, nullable=False, default=dict)
+    preprocessing_config = Column(JSON, nullable=False, default=dict)
+    training_provenance = Column(JSON, nullable=False, default=dict)
+    readiness_score = Column(Float, nullable=False, default=0.0)
+    approved_by = Column(String, nullable=True)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+    archived_at = Column(DateTime(timezone=True), nullable=True)
+
     is_public = Column(Boolean, default=False)
-    created_by = Column(String, nullable=True) # User ID
+    created_by = Column(String, nullable=True)  # User ID
 
     # Relationships
-    deployments = relationship("VisionDeployment", back_populates="model", cascade="all, delete-orphan")
+    deployments = relationship(
+        "VisionDeployment", back_populates="model", cascade="all, delete-orphan"
+    )
+
 
 class VisionDeployment(BaseModel):
     __tablename__ = "vision_deployments"
 
     organization_id = Column(Integer, index=True, nullable=False)
     model_id = Column(Integer, ForeignKey("vision_models.id"), nullable=False)
-    target = Column(String, nullable=False) # "browser", "mobile", etc.
-    format = Column(String, nullable=False) # "tfjs", "tflite", etc.
+    target = Column(String, nullable=False)  # "browser", "mobile", etc.
+    format = Column(String, nullable=False)  # "tfjs", "tflite", etc.
     endpoint_url = Column(String, nullable=False)
     status = Column(String, default="pending")
 
@@ -183,15 +210,21 @@ class VisionDataset(BaseModel):
     created_by = Column(String, nullable=True)
 
     organization = relationship("Organization")
-    images = relationship("VisionDatasetImage", back_populates="dataset", cascade="all, delete-orphan")
-    training_jobs = relationship("VisionTrainingJob", back_populates="dataset", cascade="all, delete-orphan")
+    images = relationship(
+        "VisionDatasetImage", back_populates="dataset", cascade="all, delete-orphan"
+    )
+    training_jobs = relationship(
+        "VisionTrainingJob", back_populates="dataset", cascade="all, delete-orphan"
+    )
 
 
 class VisionDatasetImage(BaseModel):
     __tablename__ = "vision_dataset_images"
 
     image_code = Column(String(64), unique=True, index=True, nullable=False)
-    dataset_id = Column(Integer, ForeignKey("vision_datasets.id", ondelete="CASCADE"), nullable=False, index=True)
+    dataset_id = Column(
+        Integer, ForeignKey("vision_datasets.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
     filename = Column(String(255), nullable=False)
     url = Column(Text, nullable=True)
@@ -206,12 +239,60 @@ class VisionDatasetImage(BaseModel):
     organization = relationship("Organization")
 
 
+class VisionDatasetVersion(BaseModel):
+    __tablename__ = "vision_dataset_versions"
+
+    version_code = Column(String(64), unique=True, index=True, nullable=False)
+    dataset_id = Column(
+        Integer, ForeignKey("vision_datasets.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
+    source_slug = Column(String(128), nullable=False, index=True)
+    source_name = Column(String(255), nullable=False)
+    source_url = Column(Text, nullable=False)
+    source_license = Column(String(128), nullable=False)
+    source_license_url = Column(Text, nullable=True)
+    license_verified = Column(Boolean, nullable=False, default=False)
+    source_version = Column(String(128), nullable=False, default="manual-export")
+    raw_root_uri = Column(Text, nullable=False)
+    source_checksum = Column(String(128), nullable=False)
+    manifest_checksum = Column(String(128), nullable=False)
+    preprocessing_version = Column(String(128), nullable=False)
+    split_seed = Column(Integer, nullable=False)
+    image_count = Column(Integer, nullable=False, default=0)
+    class_distribution = Column(JSON, nullable=False, default=dict)
+    split_distribution = Column(JSON, nullable=False, default=dict)
+    canonical_taxonomy = Column(JSON, nullable=False, default=dict)
+    metadata_json = Column("metadata", JSON, nullable=False, default=dict)
+    created_by = Column(String, nullable=True)
+
+    dataset = relationship("VisionDataset")
+    organization = relationship("Organization")
+
+
+class VisionDatasetAuditLog(BaseModel):
+    __tablename__ = "vision_dataset_audit_logs"
+
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
+    dataset_id = Column(
+        Integer, ForeignKey("vision_datasets.id", ondelete="CASCADE"), nullable=True, index=True
+    )
+    event_type = Column(String(96), nullable=False, index=True)
+    actor = Column(String, nullable=True)
+    details = Column(JSON, nullable=False, default=dict)
+
+    dataset = relationship("VisionDataset")
+    organization = relationship("Organization")
+
+
 class VisionTrainingJob(BaseModel):
     __tablename__ = "vision_training_jobs"
 
     job_code = Column(String(64), unique=True, index=True, nullable=False)
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
-    dataset_id = Column(Integer, ForeignKey("vision_datasets.id", ondelete="CASCADE"), nullable=False, index=True)
+    dataset_id = Column(
+        Integer, ForeignKey("vision_datasets.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     name = Column(String(255), nullable=False)
     base_model = Column(String(128), nullable=False)
     backend = Column(SAEnum(VisionTrainingBackend, name="visiontrainingbackend"), nullable=False)
@@ -241,7 +322,12 @@ class VisionTrainingLog(BaseModel):
     __tablename__ = "vision_training_logs"
 
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
-    job_id = Column(Integer, ForeignKey("vision_training_jobs.id", ondelete="CASCADE"), nullable=False, index=True)
+    job_id = Column(
+        Integer,
+        ForeignKey("vision_training_jobs.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     event_type = Column(String(64), nullable=False, index=True)
     level = Column(String(16), nullable=False, default="info")
     message = Column(Text, nullable=False)

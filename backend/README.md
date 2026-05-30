@@ -18,7 +18,9 @@ uv sync --extra dev --extra analytics --extra geo
 # Run migrations
 uv run alembic upgrade head
 
-# Seed database with initial data
+# Seed database with bootstrap admin/reference data and demo data
+uv run python -m app.db.seed --env=dev --scope=system --only=admin_user
+uv run python -m app.db.seed --env=dev --scope=system --only=reference_data
 uv run python -m app.db.seed --env=dev
 
 # Start development server
@@ -32,6 +34,22 @@ uv sync --extra ml       # sentence-transformers, transformers, xgboost, etc.
 uv sync --extra vision   # opencv-python-headless (add McAfee exclusion on macOS first)
 uv sync --extra memory   # mem0ai, pgvector
 uv sync --extra pdf      # weasyprint
+```
+
+### REEVU Semantic Domain Detection (optional)
+
+The semantic domain detection feature uses the `all-MiniLM-L6-v2` embedding model (~80MB). It is only active when `REEVU_EMBEDDING_DETECTION_ENABLED=true`.
+
+The model is downloaded automatically by `sentence-transformers` on first use and cached in `~/.cache/torch/sentence_transformers/`. To pre-download it before first use:
+
+```bash
+uv run python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+```
+
+This requires the `ml` extra to be installed:
+
+```bash
+uv sync --extra ml
 ```
 
 ## API Documentation
@@ -135,6 +153,8 @@ make dev
 
 # Run migrations and seed
 uv run alembic upgrade head
+uv run python -m app.db.seed --env=dev --scope=system --only=admin_user
+uv run python -m app.db.seed --env=dev --scope=system --only=reference_data
 uv run python -m app.db.seed --env=dev
 
 # Start backend

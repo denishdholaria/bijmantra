@@ -1,0 +1,32 @@
+{
+  "data": {
+    "ontology_id": "CO_321",
+    "source": "https://cropontology.org/rdf/CO_321",
+    "traits": [
+      {
+        "ontologyDbId": "CO_321:0001218",
+        "traitName": "Grain Yield"
+      },
+      {
+        "ontologyDbId": "CO_321:0000994",
+        "traitName": "Plant Height"
+      },
+      {
+        "ontologyDbId": "CO_321:0000183",
+        "traitName": "Days to Heading"
+      },
+      {
+        "ontologyDbId": "CO_321:0000175",
+        "traitName": "Blast Resistance"
+      },
+      {
+        "ontologyDbId": "CO_321:0000433",
+        "traitName": "Drought Tolerance Score"
+      }
+    ]
+  },
+  "metadata": {
+    "fetched_at": "2026-05-07T11:02:05.586385+00:00",
+    "source": "crop_ontology"
+  }
+}

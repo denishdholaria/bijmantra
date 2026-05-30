@@ -1,0 +1,10 @@
+{
+  "error": "No module named 'kagglehub'",
+  "metadata": {
+    "fetched_at": "2026-05-14T11:02:22.174443+00:00",
+    "ok": false,
+    "source": "kaggle_crop_yield"
+  },
+  "ok": false,
+  "source": "kaggle_crop_yield"
+}

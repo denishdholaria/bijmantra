@@ -4,11 +4,11 @@ Database Seeder CLI
 
 Usage:
     python -m app.db.seed --env=dev      # Seed demo data for development
-    python -m app.db.seed --env=test     # Seed test fixtures
-    python -m app.db.seed --env=prod     # No seeding (production)
-    python -m app.db.seed --clear        # Clear all seeded data
+    python -m app.db.seed --env=test     # Seed deterministic demo fixtures
+    python -m app.db.seed --clear        # Clear demo-owned seeded data
     python -m app.db.seed --list         # List available seeders
     python -m app.db.seed --only=demo_germplasm  # Run specific seeder
+    python -m app.db.seed --scope=system # Run admin/reference seeders
 """
 
 import argparse
@@ -41,10 +41,7 @@ def get_db_session():
 def import_seeders():
     """Import all seeder modules to register them"""
     # Import seeder modules - they auto-register via @register_seeder decorator
-    # Add more seeder imports here as they are created:
-    # from app.db.seeders import demo_trials
-    # from app.db.seeders import demo_brapi
-    # from app.db.seeders import test_fixtures
+    import app.db.seeders  # noqa: F401
 
 
 def list_seeders():
@@ -64,34 +61,42 @@ def list_seeders():
     print("\n📦 Available Seeders:")
     print("-" * 50)
     for seeder_class in seeders:
-        print(f"  • {seeder_class.name}: {seeder_class.description}")
+        scope = "demo" if getattr(seeder_class, "is_demo_data", True) else "system"
+        print(f"  • [{scope}] {seeder_class.name}: {seeder_class.description}")
     print("-" * 50)
     print(f"Total: {len(seeders)} seeders\n")
 
 
-def run_seed(env: str, only: list[str] | None = None):
+def _scope_includes_demo(scope: str) -> bool:
+    return scope in {"demo", "all"}
+
+
+def run_seed(env: str, only: list[str] | None = None, scope: str = "demo"):
     """Run seeders for the specified environment"""
-    from app.core.demo_dataset import DEMO_DATASET
     from app.core.config import settings
+    from app.core.demo_dataset import DEMO_DATASET, assert_demo_dataset_mutation_allowed
     from app.db.seeders.base import run_seeders
 
     import_seeders()
 
+    if _scope_includes_demo(scope):
+        assert_demo_dataset_mutation_allowed(
+            requested_env=env,
+            runtime_environment=settings.ENVIRONMENT,
+            operation="seed",
+        )
+
     print(f"\n🌱 Running seeders for '{env}' environment...")
+    print(f"   SCOPE: {scope}")
     print(f"   SEED_DEMO_DATA: {settings.SEED_DEMO_DATA}")
     print(
         f"   DATASET: {DEMO_DATASET.name} ({DEMO_DATASET.version}) -> demo creds/TDD only"
     )
     print("-" * 50)
 
-    if env == "prod":
-        print("⚠️  Production environment - no seeding performed")
-        print("   Run migrations only: alembic upgrade head")
-        return
-
     db = get_db_session()
     try:
-        results = run_seeders(db, env=env, seeders=only)
+        results = run_seeders(db, env=env, seeders=only, scope=scope)
 
         print("\n✅ Seeding complete:")
         total = 0
@@ -109,18 +114,31 @@ def run_seed(env: str, only: list[str] | None = None):
         db.close()
 
 
-def clear_seed(only: list[str] | None = None):
+def clear_seed(
+    env: str = "dev",
+    only: list[str] | None = None,
+    scope: str = "demo",
+):
     """Clear seeded data"""
+    from app.core.config import settings
+    from app.core.demo_dataset import assert_demo_dataset_mutation_allowed
     from app.db.seeders.base import clear_seeders
 
     import_seeders()
 
+    assert_demo_dataset_mutation_allowed(
+        requested_env=env,
+        runtime_environment=settings.ENVIRONMENT,
+        operation="clear",
+    )
+
     print("\n🧹 Clearing seeded data...")
+    print(f"   SCOPE: {scope}")
     print("-" * 50)
 
     db = get_db_session()
     try:
-        results = clear_seeders(db, seeders=only)
+        results = clear_seeders(db, seeders=only, scope=scope)
 
         print("\n✅ Clearing complete:")
         total = 0
@@ -144,11 +162,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python -m app.db.seed --env=dev          # Seed demo data
-  python -m app.db.seed --env=test         # Seed test fixtures
+  python -m app.db.seed --env=dev          # Seed demo data only
+  python -m app.db.seed --env=test         # Seed demo fixtures for tests
   python -m app.db.seed --list             # List available seeders
-  python -m app.db.seed --clear            # Clear all seeded data
+  python -m app.db.seed --clear            # Clear demo data only
   python -m app.db.seed --only=demo_germplasm  # Run specific seeder
+  python -m app.db.seed --scope=system     # Run admin/reference seeders
         """,
     )
 
@@ -165,6 +184,13 @@ Examples:
 
     parser.add_argument("--only", type=str, help="Comma-separated list of seeder names to run")
 
+    parser.add_argument(
+        "--scope",
+        choices=["demo", "system", "all"],
+        default="demo",
+        help="Seeder scope to run or clear (default: demo)",
+    )
+
     args = parser.parse_args()
 
     # Parse --only into list
@@ -176,9 +202,9 @@ Examples:
         if args.list:
             list_seeders()
         elif args.clear:
-            clear_seed(only=only)
+            clear_seed(env=args.env, only=only, scope=args.scope)
         else:
-            run_seed(env=args.env, only=only)
+            run_seed(env=args.env, only=only, scope=args.scope)
     except Exception as e:
         logger.error(f"Error: {e}")
         sys.exit(1)

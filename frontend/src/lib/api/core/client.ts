@@ -228,13 +228,6 @@ export class ApiClientCore {
 
     if (this.token) {
       headers["Authorization"] = `Bearer ${this.token}`;
-      if (endpoint.includes('notifications')) {
-         console.error(`[CLIENT-DEBUG] Sending request to ${endpoint} with token: ${this.token.substring(0, 15)}...`)
-      }
-    } else {
-      if (endpoint.includes('notifications')) {
-         console.error(`[CLIENT-DEBUG] Sending request to ${endpoint} WITHOUT TOKEN`)
-      }
     }
 
     // Merge any additional headers from options
@@ -257,6 +250,33 @@ export class ApiClientCore {
           endpoint,
           method,
         });
+
+        // In the preview environment, full-backend endpoints (/api/v2/*, etc.)
+        // return 404. Replace the raw error with a clean, human-readable message
+        // so pages never show "[object Object]" to users.
+        if (
+          response.status === 404 &&
+          !endpoint.startsWith('/api/auth') &&
+          !endpoint.startsWith('/api/germplasm') &&
+          !endpoint.startsWith('/api/trials') &&
+          !endpoint.startsWith('/api/observations') &&
+          !endpoint.startsWith('/api/programs') &&
+          !endpoint.startsWith('/api/locations') &&
+          !endpoint.startsWith('/api/seed-lots') &&
+          !endpoint.startsWith('/api/dashboard') &&
+          !endpoint.startsWith('/api/export') &&
+          !endpoint.startsWith('/brapi/v2')
+        ) {
+          const previewError = new ApiError(
+            'This feature is part of the full BijMantra platform and is not available in the current preview environment.',
+            apiError.type,
+            404,
+            undefined,
+            apiError.context,
+            false
+          );
+          throw previewError;
+        }
 
         // Handle 401 Unauthorized - clear token and redirect to login
         if (apiError.isAuthError()) {

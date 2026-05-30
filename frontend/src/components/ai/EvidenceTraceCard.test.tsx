@@ -54,9 +54,38 @@ describe('EvidenceTraceCard', () => {
   it('shows source, calculation, and uncertainty trust cues in the collapsed header', () => {
     render(<EvidenceTraceCard envelope={envelope} />)
 
+    expect(screen.getByText('Trust · Partially supported')).toBeInTheDocument()
     expect(screen.getByText('Source: Database + Function')).toBeInTheDocument()
     expect(screen.getByText('Calculation: 1 step')).toBeInTheDocument()
     expect(screen.getByText('Uncertainty: Medium · 2 issues')).toBeInTheDocument()
+  })
+
+  it('does not label unsupported output as high evidence', () => {
+    const unsupportedEnvelope: EvidenceEnvelope = {
+      claims: [],
+      claim_traces: [
+        {
+          statement: 'Found 20 trials.',
+          support_type: 'model_synthesis',
+        },
+      ],
+      evidence_refs: [],
+      calculation_steps: [],
+      uncertainty: {
+        confidence: 1,
+        missing_data: ['no_rag_context', 'no_calculation_ids'],
+      },
+      missing_evidence_signals: ['missing_evidence'],
+      policy_flags: [],
+    }
+
+    render(<EvidenceTraceCard envelope={unsupportedEnvelope} />)
+
+    expect(screen.getByText('Trust · Insufficient evidence')).toBeInTheDocument()
+    expect(screen.queryByText('Evidence · High')).not.toBeInTheDocument()
+    expect(screen.getByText('Source: none')).toBeInTheDocument()
+    expect(screen.getByText('Calculation: none')).toBeInTheDocument()
+    expect(screen.getByText('0 refs')).toBeInTheDocument()
   })
 
   it('renders detailed trust metadata when expanded', () => {

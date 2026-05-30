@@ -1,0 +1,428 @@
+{
+  "data": {
+    "@context": null,
+    "metadata": {
+      "datafiles": [],
+      "pagination": {
+        "currentPage": 0,
+        "pageSize": 4,
+        "totalCount": 4,
+        "totalPages": 1
+      },
+      "status": []
+    },
+    "result": {
+      "data": [
+        {
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "commonCropName": "Paw Paw",
+          "contextOfUse": [
+            "Trial evaluation",
+            "Nursery evaluation"
+          ],
+          "defaultValue": null,
+          "documentationURL": "https://brapi.org",
+          "externalReferences": [],
+          "growthStage": "1",
+          "institution": "Cornell",
+          "language": "English",
+          "method": {
+            "additionalInfo": {},
+            "bibliographicalReference": "brapi.org",
+            "description": "Weight on a digital scale",
+            "externalReferences": [],
+            "formula": "kg per plot * number of plots per hectare",
+            "methodClass": "Numeric",
+            "methodDbId": "method_variable3",
+            "methodName": "Digital Scale",
+            "methodPUI": "http://dx.doi.org/10.1234/brapi_m003",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            }
+          },
+          "observationVariableDbId": "variable3",
+          "observationVariableName": "Pawpaw Fruit Yield",
+          "ontologyReference": {
+            "documentationLinks": [],
+            "ontologyDbId": "O_003",
+            "ontologyName": "Custom Pawpaw Ontology",
+            "version": "17"
+          },
+          "scale": {
+            "additionalInfo": {},
+            "dataType": "Numerical",
+            "decimalPlaces": 1,
+            "externalReferences": [],
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            },
+            "scaleDbId": "scale_variable3",
+            "scaleName": "Kilos per Hectare",
+            "scalePUI": "http://dx.doi.org/10.1234/brapi_s003",
+            "units": "kg/hectare",
+            "validValues": {
+              "categories": [],
+              "max": 99999,
+              "maximumValue": "99999",
+              "min": 0,
+              "minimumValue": "0"
+            }
+          },
+          "scientist": "Bob",
+          "status": "active",
+          "submissionTimestamp": "2025-06-24T22:22:52Z",
+          "synonyms": [
+            "Yield",
+            "Pawpaw yield",
+            "wet yield"
+          ],
+          "trait": {
+            "additionalInfo": {},
+            "alternativeAbbreviations": [],
+            "attribute": "yield",
+            "attributePUI": "http://dx.doi.org/10.1234/brapi_ta003",
+            "entity": "fruit",
+            "entityPUI": "http://dx.doi.org/10.1234/brapi_te003",
+            "externalReferences": [],
+            "mainAbbreviation": "Y",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            },
+            "status": "active",
+            "synonyms": [],
+            "traitClass": "Phenological",
+            "traitDbId": "trait_variable3",
+            "traitDescription": "fruit yield",
+            "traitName": "Fruit Yield",
+            "traitPUI": "http://dx.doi.org/10.1234/brapi_t003"
+          }
+        },
+        {
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "commonCropName": "Paw Paw",
+          "contextOfUse": [
+            "Trial evaluation",
+            "Nursery evaluation"
+          ],
+          "defaultValue": "20",
+          "documentationURL": "https://brapi.org",
+          "externalReferences": [
+            {
+              "referenceID": "https://brapi.org/specification",
+              "referenceId": "https://brapi.org/specification",
+              "referenceSource": "BrAPI Doc"
+            }
+          ],
+          "growthStage": "1",
+          "institution": "Cornell",
+          "language": "English",
+          "method": {
+            "additionalInfo": {},
+            "bibliographicalReference": "google.com",
+            "description": "Standard rolled measuring tape",
+            "externalReferences": [],
+            "formula": "a^2 + b^2 = c^2",
+            "methodClass": "Numeric",
+            "methodDbId": "method_variable1",
+            "methodName": "Tape Measure",
+            "methodPUI": "http://dx.doi.org/10.1234/brapi000",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            }
+          },
+          "observationVariableDbId": "variable2",
+          "observationVariableName": "Pawpaw Height",
+          "ontologyReference": {
+            "documentationLinks": [],
+            "ontologyDbId": "O_003",
+            "ontologyName": "Custom Pawpaw Ontology",
+            "version": "17"
+          },
+          "scale": {
+            "additionalInfo": {},
+            "dataType": "Numerical",
+            "decimalPlaces": 1,
+            "externalReferences": [],
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            },
+            "scaleDbId": "scale_variable1",
+            "scaleName": "Centimeter",
+            "scalePUI": "http://dx.doi.org/10.1234/brapi000",
+            "units": "cm",
+            "validValues": {
+              "categories": [],
+              "max": 99999,
+              "maximumValue": "99999",
+              "min": 0,
+              "minimumValue": "0"
+            }
+          },
+          "scientist": "Bob",
+          "status": "active",
+          "submissionTimestamp": "2012-06-24T22:22:52Z",
+          "synonyms": [
+            "Pawpaw Canopy",
+            "Tree Height",
+            "Pawpaw Fruit Height"
+          ],
+          "trait": {
+            "additionalInfo": {},
+            "alternativeAbbreviations": [],
+            "attribute": "height",
+            "attributePUI": "http://dx.doi.org/10.1234/brapi000",
+            "entity": "stalk",
+            "entityPUI": "http://dx.doi.org/10.1234/brapi000",
+            "externalReferences": [],
+            "mainAbbreviation": "H",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            },
+            "status": "active",
+            "synonyms": [],
+            "traitClass": "Phenological",
+            "traitDbId": "trait_variable2",
+            "traitDescription": "plant height",
+            "traitName": "Plant Height",
+            "traitPUI": "http://dx.doi.org/10.1234/brapi000"
+          }
+        },
+        {
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "commonCropName": "Paw Paw",
+          "contextOfUse": [
+            "Trial evaluation"
+          ],
+          "defaultValue": null,
+          "documentationURL": "https://brapi.org",
+          "externalReferences": [],
+          "growthStage": "1",
+          "institution": "Cornell",
+          "language": "English",
+          "method": {
+            "additionalInfo": {},
+            "bibliographicalReference": "brapi.org",
+            "description": "Match to a color code template",
+            "externalReferences": [],
+            "formula": null,
+            "methodClass": "Categorical",
+            "methodDbId": "method_variable4",
+            "methodName": "Color Code",
+            "methodPUI": "http://dx.doi.org/10.1234/brapi_m004",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_003",
+              "ontologyName": "Custom Pawpaw Ontology",
+              "version": "17"
+            }
+          },
+          "observationVariableDbId": "variable4",
+          "observationVariableName": "Pawpaw Fruit Color",
+          "ontologyReference": {
+            "documentationLinks": [],
+            "ontologyDbId": "O_003",
+            "ontologyName": "Custom Pawpaw Ontology",
+            "version": "17"
+          },
+          "scale": {
+            "additionalInfo": {},
+            "dataType": "Code",
+            "decimalPlaces": null,
+            "externalReferences": [],
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_003",
+              "ontologyName": "Custom Pawpaw Ontology",
+              "version": "17"
+            },
+            "scaleDbId": "scale_variable4",
+            "scaleName": "Color Code",
+            "scalePUI": "http://dx.doi.org/10.1234/brapi_s004",
+            "units": "color code",
+            "validValues": {
+              "categories": [
+                {
+                  "label": "Green 001",
+                  "value": "G001"
+                },
+                {
+                  "label": "Green 002",
+                  "value": "G002"
+                },
+                {
+                  "label": "Green 003",
+                  "value": "G003"
+                }
+              ],
+              "max": null,
+              "maximumValue": null,
+              "min": null,
+              "minimumValue": null
+            }
+          },
+          "scientist": "Bob",
+          "status": "active",
+          "submissionTimestamp": "2025-06-24T22:22:52Z",
+          "synonyms": [
+            "Color",
+            "Pawpaw Color",
+            "Greenness"
+          ],
+          "trait": {
+            "additionalInfo": {},
+            "alternativeAbbreviations": [],
+            "attribute": "color",
+            "attributePUI": "http://dx.doi.org/10.1234/brapi_ta004",
+            "entity": "fruit",
+            "entityPUI": "http://dx.doi.org/10.1234/brapi_te004",
+            "externalReferences": [],
+            "mainAbbreviation": "C",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_003",
+              "ontologyName": "Custom Pawpaw Ontology",
+              "version": "17"
+            },
+            "status": "active",
+            "synonyms": [],
+            "traitClass": "Quality",
+            "traitDbId": "trait_variable4",
+            "traitDescription": "Fruit Color",
+            "traitName": "Fruit Color",
+            "traitPUI": "http://dx.doi.org/10.1234/brapi_t004"
+          }
+        },
+        {
+          "additionalInfo": {
+            "dummyData": true
+          },
+          "commonCropName": "Maize",
+          "contextOfUse": [
+            "Trial evaluation",
+            "Nursery evaluation"
+          ],
+          "defaultValue": "10",
+          "documentationURL": "https://brapi.org",
+          "externalReferences": [
+            {
+              "referenceID": "https://brapi.org/specification",
+              "referenceId": "https://brapi.org/specification",
+              "referenceSource": "BrAPI Doc"
+            }
+          ],
+          "growthStage": "1",
+          "institution": "Cornell",
+          "language": "English",
+          "method": {
+            "additionalInfo": {},
+            "bibliographicalReference": "google.com",
+            "description": "Standard rolled measuring tape",
+            "externalReferences": [],
+            "formula": "a^2 + b^2 = c^2",
+            "methodClass": "Numeric",
+            "methodDbId": "method_variable1",
+            "methodName": "Tape Measure",
+            "methodPUI": "http://dx.doi.org/10.1234/brapi000",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            }
+          },
+          "observationVariableDbId": "variable1",
+          "observationVariableName": "Corn Stalk Height",
+          "ontologyReference": {
+            "documentationLinks": [],
+            "ontologyDbId": "O_002",
+            "ontologyName": "Custom Maize Ontology",
+            "version": "17"
+          },
+          "scale": {
+            "additionalInfo": {},
+            "dataType": "Numerical",
+            "decimalPlaces": 1,
+            "externalReferences": [],
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            },
+            "scaleDbId": "scale_variable1",
+            "scaleName": "Centimeter",
+            "scalePUI": "http://dx.doi.org/10.1234/brapi000",
+            "units": "cm",
+            "validValues": {
+              "categories": [],
+              "max": 99999,
+              "maximumValue": "99999",
+              "min": 0,
+              "minimumValue": "0"
+            }
+          },
+          "scientist": "Bob",
+          "status": "active",
+          "submissionTimestamp": "2011-06-14T22:12:51Z",
+          "synonyms": [
+            "Maize Height",
+            "Stalk Height",
+            "Corn Height"
+          ],
+          "trait": {
+            "additionalInfo": {},
+            "alternativeAbbreviations": [],
+            "attribute": "height",
+            "attributePUI": "http://dx.doi.org/10.1234/brapi000",
+            "entity": "stalk",
+            "entityPUI": "http://dx.doi.org/10.1234/brapi000",
+            "externalReferences": [],
+            "mainAbbreviation": "H",
+            "ontologyReference": {
+              "documentationLinks": [],
+              "ontologyDbId": "O_002",
+              "ontologyName": "Custom Maize Ontology",
+              "version": "17"
+            },
+            "status": "active",
+            "synonyms": [],
+            "traitClass": "Phenological",
+            "traitDbId": "trait_variable1",
+            "traitDescription": "plant height",
+            "traitName": "Plant Height",
+            "traitPUI": "http://dx.doi.org/10.1234/brapi000"
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "fetched_at": "2026-05-07T11:02:06.703082+00:00",
+    "page_size": 100,
+    "source": "brapi_test_server"
+  }
+}

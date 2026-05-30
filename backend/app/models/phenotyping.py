@@ -51,6 +51,9 @@ class ObservationVariable(BaseModel):
     # Ontology
     ontology_db_id = Column(String(255))
     ontology_name = Column(String(255))
+    ontology_term_id = Column(String(255), index=True)
+    ontology_version = Column(String(100))
+    ontology_documentation_links = Column(JSON)
 
     # BrAPI additional info
     additional_info = Column(JSON)

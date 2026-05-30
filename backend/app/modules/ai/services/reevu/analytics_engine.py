@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import math
+import statistics as _stats
 from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from typing import Any, Literal, TYPE_CHECKING
@@ -141,6 +142,44 @@ class AnalyticsResult:
     calculation_steps: list[CalculationStep] = field(default_factory=list)
     uncertainty: UncertaintyInfo = field(default_factory=UncertaintyInfo)
     warnings: list[str] = field(default_factory=list)
+
+
+# ── Temporal Reasoning Data Models ────────────────────────────────────────────
+
+@dataclass(slots=True)
+class TimePoint:
+    """A single period in a time series with mean and 95% confidence interval."""
+
+    period: str         # e.g. "2023", "kharif-2024", "cycle-5"
+    mean: float
+    n: int
+    ci_lower: float     # mean - 1.96 * std / sqrt(n)
+    ci_upper: float     # mean + 1.96 * std / sqrt(n)
+
+
+@dataclass(slots=True)
+class GeneticGainResult:
+    """Genetic gain estimation across breeding cycles."""
+
+    gain_per_cycle: float           # absolute gain per cycle
+    gain_percent_per_cycle: float   # percentage gain per cycle
+    n_cycles: int
+    base_mean: float                # mean of first cycle
+    current_mean: float             # mean of last cycle
+
+
+@dataclass(slots=True)
+class TemporalTrendResult:
+    """Time-series trend analysis result."""
+
+    trait_name: str
+    time_series: list[TimePoint]
+    trend_direction: Literal["increasing", "decreasing", "stable", "insufficient_data"]
+    rate_of_change: float | None    # units per period
+    r_squared: float | None         # linear fit quality
+    genetic_gain: GeneticGainResult | None
+    evidence_refs: list[EvidenceRef] = field(default_factory=list)
+    calculation_steps: list[CalculationStep] = field(default_factory=list)
 
 
 class AnalyticsEngine:
@@ -653,6 +692,257 @@ class AnalyticsEngine:
                 missing_data=[explanation],
             ),
             warnings=[explanation],
+        )
+
+    # ── Temporal Reasoning ────────────────────────────────────────────────────
+
+    def compute_temporal_trend(
+        self,
+        observations: list[dict[str, Any]],
+        trait_name: str,
+        time_field: str = "season",
+        compute_genetic_gain: bool = False,
+    ) -> TemporalTrendResult:
+        """Compute time-series statistics and trend direction for a trait.
+
+        Args:
+            observations: List of observation dicts from domain steps.
+            trait_name: Trait to analyse (filters observations by name).
+            time_field: "season", "year", or "cycle" — how to group observations.
+            compute_genetic_gain: When True, also estimate genetic gain.
+
+        Returns:
+            TemporalTrendResult with time_series, trend_direction, and optional
+            genetic_gain. Returns insufficient_data when no grouping is possible.
+        """
+        # Filter by trait
+        filtered = [
+            o for o in observations
+            if (o.get("observation_variable_name") or "").lower() == trait_name.lower()
+        ]
+
+        time_points = self._group_observations_by_period(filtered, time_field)
+
+        if not time_points:
+            return TemporalTrendResult(
+                trait_name=trait_name,
+                time_series=[],
+                trend_direction="insufficient_data",
+                rate_of_change=None,
+                r_squared=None,
+                genetic_gain=None,
+                evidence_refs=[],
+                calculation_steps=[
+                    CalculationStep(
+                        step_id="temporal_grouping",
+                        description=f"No temporal grouping possible for trait '{trait_name}' "
+                                    f"using time_field='{time_field}'",
+                        inputs={"n_observations": len(filtered)},
+                        outputs={},
+                    )
+                ],
+            )
+
+        direction = self._trend_direction(time_points)
+        slope = intercept = r_squared = None
+        if len(time_points) >= 3:
+            slope, intercept, r_squared = self._compute_trend(time_points)
+
+        genetic_gain = None
+        if compute_genetic_gain:
+            genetic_gain = self._estimate_genetic_gain(time_points)
+
+        evidence_refs = [
+            EvidenceRef(
+                source_type="database",
+                entity_id=f"temporal_trend:{trait_name}:{time_field}",
+                query_or_method="analytics_engine.compute_temporal_trend",
+            )
+        ]
+        calculation_steps = [
+            CalculationStep(
+                step_id="temporal_grouping",
+                description=f"Grouped {len(filtered)} observations into {len(time_points)} "
+                            f"time periods by {time_field}",
+                inputs={"n_observations": len(filtered), "time_field": time_field},
+                outputs={"n_periods": len(time_points)},
+            ),
+            CalculationStep(
+                step_id="trend_direction",
+                description=f"Trend direction: {direction}",
+                inputs={"n_time_points": len(time_points)},
+                outputs={
+                    "direction": direction,
+                    "slope": slope,
+                    "r_squared": r_squared,
+                },
+            ),
+        ]
+
+        return TemporalTrendResult(
+            trait_name=trait_name,
+            time_series=time_points,
+            trend_direction=direction,
+            rate_of_change=slope,
+            r_squared=r_squared,
+            genetic_gain=genetic_gain,
+            evidence_refs=evidence_refs,
+            calculation_steps=calculation_steps,
+        )
+
+    def _group_observations_by_period(
+        self,
+        observations: list[dict[str, Any]],
+        time_field: str,
+    ) -> list[TimePoint]:
+        """Group observations by period and compute per-period statistics.
+
+        Supports time_field values: "season", "year", "cycle".
+        Returns TimePoints sorted chronologically (earliest first).
+        """
+        groups: dict[str, list[float]] = defaultdict(list)
+
+        for obs in observations:
+            period = self._extract_period(obs, time_field)
+            if period is None:
+                continue
+            val = obs.get("value")
+            try:
+                groups[period].append(float(val))
+            except (TypeError, ValueError):
+                continue
+
+        if not groups:
+            return []
+
+        time_points: list[TimePoint] = []
+        for period, values in groups.items():
+            if not values:
+                continue
+            n = len(values)
+            mean = _stats.mean(values)
+            if n >= 2:
+                std = _stats.stdev(values)
+                margin = 1.96 * std / math.sqrt(n)
+            else:
+                margin = 0.0
+            time_points.append(TimePoint(
+                period=period,
+                mean=mean,
+                n=n,
+                ci_lower=mean - margin,
+                ci_upper=mean + margin,
+            ))
+
+        # Sort chronologically — numeric periods sort numerically, strings lexicographically
+        def _sort_key(tp: TimePoint) -> tuple[int, str]:
+            try:
+                return (0, str(int(tp.period)).zfill(10))
+            except ValueError:
+                return (1, tp.period)
+
+        time_points.sort(key=_sort_key)
+        return time_points
+
+    @staticmethod
+    def _extract_period(obs: dict[str, Any], time_field: str) -> str | None:
+        """Extract the period label from an observation dict."""
+        if time_field == "season":
+            # Try explicit season field first, then year from timestamp
+            season = obs.get("season") or obs.get("season_name")
+            if season:
+                return str(season).strip()
+            ts = obs.get("observation_time_stamp") or obs.get("timestamp")
+            if ts:
+                try:
+                    return str(ts)[:4]  # year from ISO timestamp
+                except Exception:
+                    pass
+            return None
+
+        if time_field == "year":
+            ts = obs.get("observation_time_stamp") or obs.get("timestamp")
+            if ts:
+                try:
+                    return str(ts)[:4]
+                except Exception:
+                    pass
+            year = obs.get("year")
+            if year:
+                return str(year).strip()
+            return None
+
+        if time_field == "cycle":
+            cycle = obs.get("cycle") or obs.get("generation") or obs.get("breeding_cycle")
+            if cycle is not None:
+                return str(cycle).strip()
+            return None
+
+        return None
+
+    @staticmethod
+    def _compute_trend(time_points: list[TimePoint]) -> tuple[float, float, float]:
+        """Linear regression over time points. Returns (slope, intercept, r_squared)."""
+        x = list(range(len(time_points)))
+        y = [tp.mean for tp in time_points]
+        slope, intercept = _stats.linear_regression(x, y)
+        y_pred = [slope * xi + intercept for xi in x]
+        ss_res = sum((yi - yp) ** 2 for yi, yp in zip(y, y_pred))
+        y_mean = _stats.mean(y)
+        ss_tot = sum((yi - y_mean) ** 2 for yi in y)
+        r_squared = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
+        return slope, intercept, r_squared
+
+    @staticmethod
+    def _trend_direction(
+        time_points: list[TimePoint],
+    ) -> Literal["increasing", "decreasing", "stable", "insufficient_data"]:
+        """Classify trend direction from time points.
+
+        Requires at least 3 points. Threshold: 5% of base_mean.
+        """
+        if len(time_points) < 3:
+            return "insufficient_data"
+
+        x = list(range(len(time_points)))
+        y = [tp.mean for tp in time_points]
+        slope, _ = _stats.linear_regression(x, y)
+        base_mean = time_points[0].mean
+        threshold = 0.05 * abs(base_mean) if base_mean != 0 else 0.05
+
+        if slope > threshold:
+            return "increasing"
+        if slope < -threshold:
+            return "decreasing"
+        return "stable"
+
+    @staticmethod
+    def _estimate_genetic_gain(
+        time_points: list[TimePoint],
+    ) -> GeneticGainResult | None:
+        """Estimate genetic gain across breeding cycles.
+
+        Returns None when fewer than 2 time points.
+        """
+        if len(time_points) < 2:
+            return None
+
+        base_mean = time_points[0].mean
+        current_mean = time_points[-1].mean
+        n_cycles = len(time_points) - 1
+
+        if n_cycles == 0 or base_mean == 0:
+            return None
+
+        gain_per_cycle = (current_mean - base_mean) / n_cycles
+        gain_percent = (gain_per_cycle / abs(base_mean)) * 100.0
+
+        return GeneticGainResult(
+            gain_per_cycle=gain_per_cycle,
+            gain_percent_per_cycle=gain_percent,
+            n_cycles=n_cycles,
+            base_mean=base_mean,
+            current_mean=current_mean,
         )
 
 

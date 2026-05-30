@@ -31,15 +31,15 @@ else
 fi
 
 # Start Frontend
-if check_port 5173; then
-    echo -e "${YELLOW}⚠️  Frontend already running on :5173${NC}"
+if check_port 5656; then
+    echo -e "${YELLOW}⚠️  Frontend already running on :5656${NC}"
 else
     echo "Starting frontend..."
     cd frontend
     "$_JS_PACKAGE_MANAGER" run dev &
     cd ..
     sleep 3
-    echo -e "${GREEN}✅ Frontend started on :5173${NC}"
+    echo -e "${GREEN}✅ Frontend started on :5656${NC}"
 fi
 
 # Start Caddy

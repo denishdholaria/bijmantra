@@ -8,7 +8,6 @@ import os
 import shutil
 import socket
 import subprocess
-import sys
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -19,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BACKEND_DIR = ROOT / "backend"
 FRONTEND_DIR = ROOT / "frontend"
 REQUIRED_SERVICES = ("postgres",)
-OPTIONAL_SERVICES = ("redis", "minio", "meilisearch")
+OPTIONAL_SERVICES = ("redis", "minio", "meilisearch", "keycloak", "beingbijmantra-surrealdb")
 
 
 @dataclass
@@ -59,6 +58,20 @@ def detect_container_runtime() -> str | None:
 
 def run_command(command: list[str], cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
     return subprocess.run(command, cwd=cwd, capture_output=True, text=True, check=False)
+
+
+def env_int(name: str, default: int) -> int:
+    raw_value = os.environ.get(name)
+    env_file = ROOT / ".env"
+    if raw_value is None and env_file.exists():
+        for line in env_file.read_text().splitlines():
+            if line.startswith(f"{name}="):
+                raw_value = line.split("=", 1)[1].strip()
+                break
+    try:
+        return int(raw_value) if raw_value is not None else default
+    except ValueError:
+        return default
 
 
 def check_command(name: str, command: str) -> CheckResult:
@@ -106,7 +119,7 @@ def check_compose_services(runtime: str | None) -> CheckResult:
         return CheckResult(
             "Core infrastructure",
             "WARN",
-            "Core database not running: " + ", ".join(missing) + ". Start with 'make dev' or 'bash ./start-bijmantra-app.sh'",
+            "Core database not running: " + ", ".join(missing) + ". Start with 'make dev' or 'bash ./dev.sh --minimal'",
         )
     return CheckResult("Core infrastructure", "PASS", "postgres is running")
 
@@ -125,7 +138,7 @@ def check_optional_services(runtime: str | None) -> CheckResult:
         return CheckResult(
             "Optional infrastructure",
             "PASS",
-            "Redis, MinIO, and Meilisearch are off by default. Start only the ones your current feature needs.",
+            "Redis, MinIO, Meilisearch, and Keycloak are off by default. Start only the ones your current feature needs.",
         )
 
     detail = "Running: " + ", ".join(active)
@@ -171,18 +184,19 @@ def check_runtime_preference(runtime: str | None) -> CheckResult:
 def run_doctor(strict: bool) -> int:
     runtime = detect_container_runtime()
     js_package_manager = os.environ.get("BIJMANTRA_JS_PACKAGE_MANAGER", "bun")
+    frontend_port = env_int("FRONTEND_PORT", 5656)
 
     results = [
         check_runtime_preference(runtime),
         check_command("Python", "python3"),
         check_command("Node.js", "node"),
         check_command("JavaScript package manager", js_package_manager),
-        check_path("Backend virtualenv", BACKEND_DIR / "venv" / "bin" / "python", "Missing backend virtualenv; run 'bash ./setup.sh' or 'make install'"),
+        check_path("Backend virtualenv", BACKEND_DIR / ".venv" / "bin" / "python", "Missing backend .venv; run 'cd backend && uv sync --extra dev --extra analytics --extra geo'"),
         check_path("Frontend dependencies", FRONTEND_DIR / "node_modules", "Missing frontend/node_modules; run 'cd frontend && bun install'"),
         check_compose_services(runtime),
         check_optional_services(runtime),
         check_http("Backend health", "http://localhost:8000/health"),
-        check_port("Frontend dev server", "127.0.0.1", 5173, "Frontend not responding on 5173; run 'make dev-frontend' after dependencies are installed"),
+        check_port("Frontend dev server", "127.0.0.1", frontend_port, f"Frontend not responding on {frontend_port}; run 'make dev-frontend' after dependencies are installed"),
     ]
 
     has_fail = False

@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_active_user, get_organization_id
 from app.core.config import settings
-from app.middleware.tenant_context import get_tenant_db
 from app.core.rls import set_tenant_context
 from app.crud.core import study as study_crud
+from app.middleware.tenant_context import get_tenant_db
 from app.models.core import User
 from app.schemas.brapi import BrAPIResponse, Metadata, Pagination, Status
 from app.schemas.core import Study, StudyCreate, StudyUpdate
@@ -77,7 +77,9 @@ async def list_studies(
 
 @router.get("/studies/{studyDbId}", response_model=BrAPIResponse[dict])
 async def get_study(
-    studyDbId: str, db: AsyncSession = Depends(get_tenant_db), org_id: int = Depends(get_organization_id)
+    studyDbId: str,
+    db: AsyncSession = Depends(get_tenant_db),
+    org_id: int = Depends(get_organization_id),
 ):
     """Get a single study by its database ID.
 
@@ -120,7 +122,9 @@ async def create_study(
     Returns:
         BrAPIResponse[dict]: A BrAPIResponse object containing the created study.
     """
-    await set_tenant_context(db, current_user.organization_id, current_user.is_superuser)
+    await set_tenant_context(
+        db, current_user.organization_id, current_user.is_superuser, user_id=current_user.id
+    )
 
     study = await study_crud.create(db, obj_in=study_in, org_id=current_user.organization_id)
     await db.commit()
@@ -171,7 +175,9 @@ async def update_study(
 
 @router.delete("/studies/{studyDbId}", status_code=204)
 async def delete_study(
-    studyDbId: str, db: AsyncSession = Depends(get_tenant_db), org_id: int = Depends(get_organization_id)
+    studyDbId: str,
+    db: AsyncSession = Depends(get_tenant_db),
+    org_id: int = Depends(get_organization_id),
 ):
     """Delete a study.
 

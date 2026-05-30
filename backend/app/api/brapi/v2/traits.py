@@ -6,12 +6,14 @@ Demo data is seeded into Demo Organization via seeders.
 """
 
 import uuid
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.brapi.shared.ontology import build_ontology_reference, extract_ontology_fields
 from app.api.deps import get_current_user, get_optional_user
 from app.middleware.tenant_context import get_tenant_db
 from app.models.phenotyping import ObservationVariable
@@ -32,7 +34,7 @@ class TraitBase(BaseModel):
     scaleValidValueMin: float | None = None
     scaleValidValueMax: float | None = None
     defaultValue: str | None = None
-    ontologyReference: dict | None = None
+    ontologyReference: dict[str, Any] | None = None
     commonCropName: str | None = None
     status: str | None = None
 
@@ -67,6 +69,13 @@ def _model_to_brapi(var: ObservationVariable) -> dict:
         "defaultValue": var.default_value,
         "commonCropName": var.common_crop_name,
         "status": var.status,
+        "ontologyReference": build_ontology_reference(
+            ontology_db_id=var.ontology_db_id,
+            ontology_name=var.ontology_name,
+            ontology_term_id=var.ontology_term_id,
+            ontology_version=var.ontology_version,
+            ontology_documentation_links=var.ontology_documentation_links,
+        ),
         "additionalInfo": var.additional_info,
         "externalReferences": var.external_references,
     }
@@ -167,6 +176,7 @@ async def create_trait(
         valid_values["min"] = trait.scaleValidValueMin
     if trait.scaleValidValueMax is not None:
         valid_values["max"] = trait.scaleValidValueMax
+    ontology_fields = extract_ontology_fields(trait.ontologyReference)
 
     new_var = ObservationVariable(
         organization_id=org_id,
@@ -183,6 +193,11 @@ async def create_trait(
         common_crop_name=trait.commonCropName,
         status=trait.status or "active",
         valid_values=valid_values if valid_values else None,
+        ontology_db_id=ontology_fields["ontology_db_id"],
+        ontology_name=ontology_fields["ontology_name"],
+        ontology_term_id=ontology_fields["ontology_term_id"],
+        ontology_version=ontology_fields["ontology_version"],
+        ontology_documentation_links=ontology_fields["ontology_documentation_links"],
     )
 
     db.add(new_var)
@@ -221,6 +236,8 @@ async def get_trait(
     query = select(ObservationVariable).where(
         ObservationVariable.observation_variable_db_id == observationVariableDbId
     )
+    if current_user and current_user.organization_id:
+        query = query.where(ObservationVariable.organization_id == current_user.organization_id)
     result = await db.execute(query)
     var = result.scalar_one_or_none()
 
@@ -261,6 +278,8 @@ async def update_trait(
     query = select(ObservationVariable).where(
         ObservationVariable.observation_variable_db_id == traitDbId
     )
+    if current_user and current_user.organization_id:
+        query = query.where(ObservationVariable.organization_id == current_user.organization_id)
     result = await db.execute(query)
     var = result.scalar_one_or_none()
 
@@ -280,6 +299,11 @@ async def update_trait(
     var.common_crop_name = trait.commonCropName
     if trait.status:
         var.status = trait.status
+    if trait.ontologyReference is not None:
+        ontology_fields = extract_ontology_fields(trait.ontologyReference)
+        for attr, value in ontology_fields.items():
+            if value is not None:
+                setattr(var, attr, value)
 
     # Update valid_values
     valid_values = {}

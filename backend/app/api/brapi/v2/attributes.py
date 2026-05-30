@@ -8,15 +8,13 @@ Production-ready: All data from database, no in-memory mock data.
 Uses GermplasmAttributeService for business logic.
 """
 
-
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
 from app.core.rls import set_tenant_context
-from app.schemas.germplasm_attribute import GermplasmAttributeDefinitionNewRequest
-from app.modules.germplasm.services.attribute_service import GermplasmAttributeService
 from app.middleware.tenant_context import get_tenant_db
+from app.modules.germplasm.services.attribute_service import GermplasmAttributeService
+from app.schemas.germplasm_attribute import GermplasmAttributeDefinitionNewRequest
 
 
 router = APIRouter()
@@ -34,11 +32,11 @@ def create_response(data, page=0, page_size=1000, total_count=1):
                 "currentPage": page,
                 "pageSize": page_size,
                 "totalCount": total_count,
-                "totalPages": total_pages
+                "totalPages": total_pages,
             },
-            "status": [{"message": "Success", "messageType": "INFO"}]
+            "status": [{"message": "Success", "messageType": "INFO"}],
         },
-        "result": data
+        "result": data,
     }
 
 
@@ -75,7 +73,7 @@ def attr_to_brapi(attr) -> dict:
         "scaleName": attr.scale_name,
         "dataType": attr.data_type,
         "additionalInfo": attr.additional_info or {},
-        "externalReferences": attr.external_references or []
+        "externalReferences": attr.external_references or [],
     }
 
 
@@ -96,33 +94,44 @@ async def get_attributes(
     scaleDbId: str | None = Query(None),
     externalReferenceId: str | None = Query(None, alias="externalReferenceID"),
     externalReferenceSource: str | None = Query(None),
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """
     Get a list of germplasm attributes.
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     attrs = await GermplasmAttributeService.get_attributes(
-        db, page, pageSize, attributeCategory, attributeDbId, attributeName,
-        common_crop_name=commonCropName, trait_db_id=traitDbId,
-        method_db_id=methodDbId, scale_db_id=scaleDbId,
-        organization_id=org_id if not is_superuser else None
+        db,
+        page,
+        pageSize,
+        attributeCategory,
+        attributeDbId,
+        attributeName,
+        common_crop_name=commonCropName,
+        trait_db_id=traitDbId,
+        method_db_id=methodDbId,
+        scale_db_id=scaleDbId,
+        organization_id=org_id if not is_superuser else None,
     )
 
     total_count = await GermplasmAttributeService.get_total_count(
-        db, attributeCategory, attributeDbId, attributeName,
-        common_crop_name=commonCropName, trait_db_id=traitDbId,
-        method_db_id=methodDbId, scale_db_id=scaleDbId,
-        organization_id=org_id if not is_superuser else None
+        db,
+        attributeCategory,
+        attributeDbId,
+        attributeName,
+        common_crop_name=commonCropName,
+        trait_db_id=traitDbId,
+        method_db_id=methodDbId,
+        scale_db_id=scaleDbId,
+        organization_id=org_id if not is_superuser else None,
     )
 
-    return create_response(
-        {"data": [attr_to_brapi(a) for a in attrs]},
-        page, pageSize, total_count
-    )
+    return create_response({"data": [attr_to_brapi(a) for a in attrs]}, page, pageSize, total_count)
 
 
 @router.get("/attributes/categories")
@@ -130,37 +139,39 @@ async def get_attribute_categories(
     request: Request,
     page: int = Query(0, ge=0),
     pageSize: int = Query(1000, ge=1, le=2000),
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """
     Get a list of attribute categories.
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     categories = await GermplasmAttributeService.get_attribute_categories(
         db, page, pageSize, organization_id=org_id if not is_superuser else None
     )
 
     # We might need a separate count for categories, but here we assume list is small or paginated
-    total_count = len(categories) # This is approximate if paginated inside service
+    total_count = len(categories)  # This is approximate if paginated inside service
 
     return create_response({"data": categories}, page, pageSize, total_count)
 
 
 @router.get("/attributes/{attributeDbId}")
 async def get_attribute(
-    attributeDbId: str,
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    attributeDbId: str, request: Request, db: AsyncSession = Depends(get_tenant_db)
 ):
     """
     Get a single attribute by DbId.
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     attr = await GermplasmAttributeService.get_attribute(
         db, attributeDbId, organization_id=org_id if not is_superuser else None
@@ -176,14 +187,16 @@ async def get_attribute(
 async def create_attributes(
     attributes: list[GermplasmAttributeDefinitionNewRequest],
     request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """
     Create new attributes.
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     if not org_id and not is_superuser:
         raise HTTPException(status_code=401, detail="Authentication required")
@@ -195,10 +208,7 @@ async def create_attributes(
         db, attributes, organization_id=target_org_id
     )
 
-    return create_response(
-        {"data": [attr_to_brapi(a) for a in created]},
-        total_count=len(created)
-    )
+    return create_response({"data": [attr_to_brapi(a) for a in created]}, total_count=len(created))
 
 
 @router.put("/attributes/{attributeDbId}")
@@ -206,14 +216,16 @@ async def update_attribute(
     attributeDbId: str,
     attr_in: GermplasmAttributeDefinitionNewRequest,
     request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """
     Update an attribute.
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     updated = await GermplasmAttributeService.update_attribute(
         db, attributeDbId, attr_in, organization_id=org_id if not is_superuser else None
@@ -227,16 +239,16 @@ async def update_attribute(
 
 @router.delete("/attributes/{attributeDbId}", status_code=200)
 async def delete_attribute(
-    attributeDbId: str,
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    attributeDbId: str, request: Request, db: AsyncSession = Depends(get_tenant_db)
 ):
     """
     Delete an attribute.
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     success = await GermplasmAttributeService.delete_attribute(
         db, attributeDbId, organization_id=org_id if not is_superuser else None

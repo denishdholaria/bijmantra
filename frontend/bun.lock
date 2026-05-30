@@ -64,6 +64,7 @@
         "echarts-for-react": "^3.0.6",
         "framer-motion": "^12.38.0",
         "html5-qrcode": "^2.3.8",
+        "keycloak-js": "^26.2.4",
         "lamina": "^1.2.2",
         "leaflet": "^1.9.4",
         "lucide-react": "^1.8.0",
@@ -1851,6 +1852,8 @@
     "jws": ["jws@4.0.1", "", { "dependencies": { "jwa": "^2.0.1", "safe-buffer": "^5.0.1" } }, ""],
 
     "katex": ["katex@0.16.38", "", { "dependencies": { "commander": "^8.3.0" }, "bin": "cli.js" }, "sha512-cjHooZUmIAUmDsHBN+1n8LaZdpmbj03LtYeYPyuYB7OuloiaeaV6N4LcfjcnHVzGWjVQmKrxxTrpDcmSzEZQwQ=="],
+
+    "keycloak-js": ["keycloak-js@26.2.4", "", {}, "sha512-PnXpR3ubETGOt0B/Qt2lxmPbkZr5bc3vlQsOqDoTPPQsZRp7JjhTKxlJ187uWh8qJhvBab6Gsjb06a8ayOPfuw=="],
 
     "keyv": ["keyv@4.5.4", "", { "dependencies": { "json-buffer": "3.0.1" } }, "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw=="],
 

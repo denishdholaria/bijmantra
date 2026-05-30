@@ -292,6 +292,21 @@ BIJMANTRA_FUNCTIONS: list[dict[str, Any]] = [
                     "type": "string",
                     "description": "Trial status (active, completed, planned)",
                 },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of trial records to return in one response window (default: 20, max: 50)",
+                    "default": 20,
+                },
+                "page": {
+                    "type": "integer",
+                    "description": "1-based result page for deterministic name-sorted trial browsing",
+                    "default": 1,
+                },
+                "summary_only": {
+                    "type": "boolean",
+                    "description": "True when the user asks only for a count or total rather than a record preview",
+                    "default": False,
+                },
             },
         },
     },

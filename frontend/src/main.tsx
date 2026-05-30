@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { SyncProvider } from '@/lib/sync/SyncProvider'
+import { queryClient } from '@/lib/query-client'
 import App from './App.tsx'
 // import App from './AppDebug.tsx'
 import './index.css'
@@ -39,17 +40,6 @@ window.onerror = (message, source, lineno, colno, error) => {
 window.onunhandledrejection = (event) => {
   console.error('[Bijmantra] Unhandled promise rejection:', event.reason)
 }
-
-// Create React Query client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
-  },
-})
 
 // Simple error boundary
 class SimpleErrorBoundary extends React.Component<

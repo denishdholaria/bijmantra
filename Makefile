@@ -1,10 +1,10 @@
-.PHONY: help dev dev-redis dev-minio dev-meilisearch dev-all dev-beingbijmantra dev-beingbijmantra-down dev-beingbijmantra-logs start start-all stop restart logs clean build test test-backend test-backend-all test-backend-integration test-backend-integration-ci test-backend-integration-postgres test-backend-performance test-frontend test-frontend-watch lint format install dx-check reevu-gate overnight-plan update-state public-exclude-check control-surfaces-check devil-flags-check control-surfaces-ci ai-history-audit startup-doctor migration-doctor pr-review-pack mem0-help mem0-status control-plane-completion-assist control-plane-auth-token update-graphify
+.PHONY: help dev dev-redis dev-minio dev-meilisearch dev-all dev-auth dev-auth-down dev-auth-logs dev-beingbijmantra dev-beingbijmantra-down dev-beingbijmantra-logs start start-all stop restart logs clean build bij test test-backend test-backend-all test-backend-integration test-backend-integration-ci test-backend-integration-postgres test-backend-performance test-frontend test-frontend-watch lint format install dx-check reevu-gate overnight-plan update-state public-exclude-check control-surfaces-check devil-flags-check control-surfaces-ci ai-history-audit startup-doctor migration-doctor rls-drift-check pr-review-pack mem0-help mem0-status control-plane-completion-assist control-plane-auth-token update-graphify wasm check-wasm-sync test-wasm-props
 
 # ============================================
 # Container Runtime Configuration
 # Standardized on Podman (rootless, daemonless, OCI-compliant)
 # ============================================
-CONTAINER_RUNTIME := /opt/podman/bin/podman
+CONTAINER_RUNTIME := /opt/homebrew/bin/podman
 COMPOSE_CMD := $(CONTAINER_RUNTIME) compose
 BIJMANTRA_JS_PACKAGE_MANAGER ?= bun
 JS_INSTALL_CMD = $(BIJMANTRA_JS_PACKAGE_MANAGER) install
@@ -49,6 +49,52 @@ control-plane-auth-token: ## Refresh the local superuser JWT used for hidden dev
 migration-doctor: ## Diagnose Alembic revision-chain and schema-drift issues
 	cd backend && uv run python scripts/migration_doctor.py
 
+# ============================================
+# Kaggle Integration
+# ============================================
+
+kaggle-list: ## List downloaded Kaggle datasets and models
+	cd backend && uv run python scripts/kaggle_download.py list
+
+kaggle-plant-diseases: ## Download plant disease image dataset (87,900 images, ~3-5 GB)
+	cd backend && uv run python scripts/kaggle_download.py plant-diseases
+
+kaggle-crop-yield: ## Download crop yield dataset (replaces FAOSTAT)
+	cd backend && uv run python scripts/kaggle_download.py crop-yield
+
+kaggle-crop-recommendation: ## Download crop recommendation dataset (for REEVU)
+	cd backend && uv run python scripts/kaggle_download.py crop-recommendation
+
+kaggle-fertilizer: ## Download fertilizer prediction dataset (~500 KB)
+	cd backend && uv run python scripts/kaggle_download.py fertilizer
+
+kaggle-weather: ## Download daily climate time series dataset (~50 MB)
+	cd backend && uv run python scripts/kaggle_download.py weather
+
+kaggle-rice-diseases: ## Download rice disease image dataset (~500 MB)
+	cd backend && uv run python scripts/kaggle_download.py rice-diseases
+
+kaggle-wheat-diseases: ## Download wheat leaf disease dataset (~300 MB)
+	cd backend && uv run python scripts/kaggle_download.py wheat-diseases
+
+kaggle-indian-agriculture: ## Download Indian agriculture crop production dataset (~2 MB)
+	cd backend && uv run python scripts/kaggle_download.py indian-agriculture
+
+kaggle-download-all: ## Download all recommended Kaggle datasets
+	$(MAKE) kaggle-crop-yield
+	$(MAKE) kaggle-crop-recommendation
+	$(MAKE) kaggle-fertilizer
+	$(MAKE) kaggle-weather
+	$(MAKE) kaggle-rice-diseases
+	$(MAKE) kaggle-wheat-diseases
+	$(MAKE) kaggle-indian-agriculture
+
+kaggle-info: ## Get info about a Kaggle dataset (usage: make kaggle-info SLUG=owner/dataset-name)
+	cd backend && uv run python scripts/kaggle_download.py info $(SLUG)
+
+rls-drift-check: ## Fail if tenant tables lack enabled/forced RLS or registry coverage
+	cd backend && uv run python scripts/check_rls_drift.py
+
 control-surfaces-ci: ## Run CI-safe control-surface and publication guardrails
 	$(MAKE) control-surfaces-check
 	$(MAKE) devil-flags-check
@@ -61,7 +107,7 @@ pr-review-pack: ## Run deterministic baseline PR review checks
 
 dev: ## Start core infrastructure (PostgreSQL only)
 	$(COMPOSE_CMD) up -d postgres
-	@echo "✓ PostgreSQL started. Use './dev.sh' for the full stack."
+	@echo "✓ PostgreSQL started. Use './dev.sh --all' for the product-development stack."
 
 dev-redis: ## Start optional Redis service
 	$(COMPOSE_CMD) --profile infra up -d redis
@@ -75,20 +121,32 @@ dev-meilisearch: ## Start optional Meilisearch service
 	$(COMPOSE_CMD) --profile infra up -d meilisearch
 	@echo "✓ Meilisearch started on http://localhost:7700"
 
-dev-all: ## Start PostgreSQL plus all optional development services
+dev-all: ## Start PostgreSQL plus product infra (Redis, MinIO, Meilisearch)
 	$(COMPOSE_CMD) --profile infra up -d postgres redis minio meilisearch
-	@echo "✓ All infrastructure started"
+	@echo "✓ Product infrastructure started"
 
-dev-beingbijmantra: ## Start optional Being Bijmantra project-brain sidecar
+dev-auth: ## Start local Keycloak identity provider and auth database
+	$(COMPOSE_CMD) --profile auth up -d keycloak-postgres keycloak
+	@echo "✓ Keycloak started on http://localhost:8084"
+
+dev-auth-down: ## Stop local Keycloak identity provider
+	-$(CONTAINER_RUNTIME) stop bijmantra-keycloak bijmantra-keycloak-postgres
+	-$(CONTAINER_RUNTIME) rm -f bijmantra-keycloak bijmantra-keycloak-postgres
+	@echo "✓ Keycloak stopped"
+
+dev-auth-logs: ## Show local Keycloak logs
+	$(COMPOSE_CMD) --profile auth logs -f keycloak
+
+dev-beingbijmantra: ## Start explicit experimental BeingBijmantra autonomy sidecar
 	$(COMPOSE_CMD) --profile beingbijmantra up -d beingbijmantra-surrealdb
 	@echo "✓ Being Bijmantra sidecar started on http://localhost:$(BEINGBIJMANTRA_SURREAL_PORT)"
 
-dev-beingbijmantra-down: ## Stop optional Being Bijmantra project-brain sidecar
+dev-beingbijmantra-down: ## Stop explicit experimental BeingBijmantra autonomy sidecar
 	-$(CONTAINER_RUNTIME) stop beingbijmantra-surrealdb
 	-$(CONTAINER_RUNTIME) rm -f beingbijmantra-surrealdb
 	@echo "✓ Being Bijmantra sidecar stopped"
 
-dev-beingbijmantra-logs: ## Show Being Bijmantra project-brain sidecar logs
+dev-beingbijmantra-logs: ## Show explicit experimental BeingBijmantra sidecar logs
 	$(COMPOSE_CMD) logs -f beingbijmantra-surrealdb
 
 dev-backend: ## Start backend development server
@@ -124,6 +182,9 @@ clean: ## Stop and remove all containers, volumes
 
 build: ## Build production containers
 	$(COMPOSE_CMD) build
+
+bij: ## Build the Bij developer CLI
+	$(MAKE) -C tools/bij bij
 
 # ============================================
 # Testing Commands
@@ -163,6 +224,41 @@ reevu-gate: ## Run REEVU backend validation gate (tests + eval + ops report)
 	cd backend && bash scripts/run_reevu_gate_v2.sh
 
 # ============================================
+# WASM Engine
+# ============================================
+
+wasm: ## Build Rust WASM module and copy artifacts to frontend/public/wasm/
+	@if ! command -v wasm-pack > /dev/null 2>&1; then \
+	    echo "⚙️  wasm-pack not found — installing..."; \
+	    cargo install wasm-pack || { \
+	        echo "❌ wasm-pack installation failed. Install manually: cargo install wasm-pack"; \
+	        exit 1; \
+	    }; \
+	fi
+	@cd rust && bash build.sh
+	@echo "✅ WASM artifacts in frontend/public/wasm/ — restart the dev server if it is already running."
+
+check-wasm-sync: ## Warn if WASM binary is older than Cargo.lock (exits 1 if stale)
+	@LOCK=rust/Cargo.lock; \
+	WASM=frontend/public/wasm/bijmantra_genomics_bg.wasm; \
+	if [ ! -f "$$LOCK" ]; then \
+	    echo "❌ Cargo.lock missing — run 'make wasm' to build the engine."; \
+	    exit 1; \
+	fi; \
+	if [ ! -f "$$WASM" ]; then \
+	    echo "⚠️  WASM binary missing — run 'make wasm' to build the engine."; \
+	    exit 1; \
+	fi; \
+	if [ "$$LOCK" -nt "$$WASM" ]; then \
+	    echo "⚠️  WASM binary is stale — Cargo.lock is newer than the binary. Run 'make wasm' to rebuild."; \
+	    exit 1; \
+	fi; \
+	echo "✅ WASM binary is up to date."
+
+test-wasm-props: ## Run property-based tests for the WASM genomics engine (native target)
+	cd rust && cargo test --test genomics_props
+
+# ============================================
 # Code Quality Commands
 # ============================================
 
@@ -197,15 +293,19 @@ db-reset: ## Reset database (WARNING: destroys all data)
 	cd backend && uv run alembic upgrade head
 	@echo "✓ Database reset complete"
 
-db-seed: ## Seed database with demo data (development)
-	cd backend && uv run python -m app.db.seed --env=dev
+db-seed: ## Seed deterministic Demo Organization data (development)
+	cd backend && uv run python -m app.db.seed --env=dev --scope=system --only=admin_user
+	cd backend && uv run python -m app.db.seed --env=dev --scope=system --only=reference_data
+	cd backend && SEED_DEMO_DATA=true uv run python -m app.db.seed --env=dev
 	@echo "✓ Demo data seeded"
 
-db-seed-test: ## Seed database with test fixtures
-	cd backend && uv run python -m app.db.seed --env=test
+db-seed-test: ## Seed deterministic Demo Organization fixtures for tests
+	cd backend && uv run python -m app.db.seed --env=test --scope=system --only=admin_user
+	cd backend && uv run python -m app.db.seed --env=test --scope=system --only=reference_data
+	cd backend && SEED_DEMO_DATA=true uv run python -m app.db.seed --env=test
 	@echo "✓ Test fixtures seeded"
 
-db-seed-clear: ## Clear all seeded data
+db-seed-clear: ## Clear Demo Organization seeded data only
 	cd backend && uv run python -m app.db.seed --clear
 	@echo "✓ Seeded data cleared"
 
@@ -233,7 +333,7 @@ shell-db: ## Open PostgreSQL shell
 
 info: ## Show service URLs
 	@echo "=== BijMantra Services ==="
-	@echo "Frontend:        http://localhost:5173"
+	@echo "Frontend:        http://localhost:5656"
 	@echo "Backend API:     http://localhost:8000"
 	@echo "API Docs:        http://localhost:8000/docs"
 	@echo "PostgreSQL:      localhost:5432"
@@ -241,15 +341,16 @@ info: ## Show service URLs
 	@echo "MinIO Console:   http://localhost:9001 (optional)"
 	@echo "MinIO API:       http://localhost:9000 (optional)"
 	@echo "Meilisearch:     http://localhost:7700 (optional)"
-	@echo "Being Sidecar:   http://localhost:$(BEINGBIJMANTRA_SURREAL_PORT) (optional, separate)"
+	@echo "Keycloak:        http://localhost:8084 (optional auth)"
+	@echo "Being Sidecar:   http://localhost:$(BEINGBIJMANTRA_SURREAL_PORT) (experimental, explicit)"
 
 # ============================================
-# Development Environment (Full Stack)
+# Development Environment (Product Infra + Tools)
 # ============================================
 
-dev-full: ## Start full development environment (all infra + tools)
+dev-full: ## Start product infra plus local dev tools
 	$(COMPOSE_CMD) --profile infra --profile tools up -d
-	@echo "✓ Full development environment started"
+	@echo "✓ Product infra and development tools started"
 
 dev-tools: ## Start dev tools (Adminer, Redis Commander, OmShriMaatreNamahaDB)
 	$(COMPOSE_CMD) --profile infra --profile tools up -d
@@ -259,7 +360,7 @@ dev-tools: ## Start dev tools (Adminer, Redis Commander, OmShriMaatreNamahaDB)
 	@echo "OmShriMaatreNamahaDB: http://localhost:8082"
 
 dev-down: ## Stop all development services
-	$(COMPOSE_CMD) --profile infra --profile tools --profile beingbijmantra down
+	$(COMPOSE_CMD) --profile infra --profile auth --profile tools --profile beingbijmantra --profile chloe down
 	@echo "✓ Development environment stopped"
 
 # ============================================
@@ -275,7 +376,7 @@ dev-down: ## Stop all development services
 # ============================================
 
 clean-all: ## Remove all containers, volumes, and images for this project
-	$(COMPOSE_CMD) --profile infra --profile tools --profile beingbijmantra down -v --rmi local
+	$(COMPOSE_CMD) --profile infra --profile auth --profile tools --profile beingbijmantra --profile chloe down -v --rmi local
 	@echo "✓ All container resources cleaned"
 
 status: ## Show container status

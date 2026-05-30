@@ -10,8 +10,10 @@ import httpx
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.brapi.shared.ontology import extract_ontology_fields
 from app.core.http_tracing import create_traced_async_client
 from app.models.phenotyping import ObservationVariable
+
 
 logger = logging.getLogger(__name__)
 
@@ -140,6 +142,19 @@ class CropOntologySyncWorker:
             trait = var_data.get("trait") or {}
             method = var_data.get("method") or {}
             scale = var_data.get("scale") or {}
+            ontology_reference = var_data.get("ontologyReference") or {}
+            ontology_term_id = var_data.get("ontologyTermId") or var_data.get("termId")
+            if ontology_term_id is None and isinstance(db_id, str) and ":" in db_id:
+                ontology_term_id = db_id
+            ontology_fields = extract_ontology_fields(
+                ontology_reference,
+                ontology_db_id=var_data.get("ontologyDbId"),
+                ontology_name=var_data.get("ontologyName"),
+                ontology_term_id=ontology_term_id,
+                ontology_version=var_data.get("version"),
+                ontology_documentation_links=var_data.get("documentationLinks")
+                or var_data.get("documentationURL"),
+            )
 
             # Prepare model data
             model_data = {
@@ -178,8 +193,13 @@ class CropOntologySyncWorker:
                 "valid_values": scale.get("validValues"),
 
                 # Ontology
-                "ontology_db_id": var_data.get("ontologyDbId"),
-                "ontology_name": var_data.get("ontologyName"),
+                "ontology_db_id": ontology_fields["ontology_db_id"],
+                "ontology_name": ontology_fields["ontology_name"],
+                "ontology_term_id": ontology_fields["ontology_term_id"],
+                "ontology_version": ontology_fields["ontology_version"],
+                "ontology_documentation_links": ontology_fields[
+                    "ontology_documentation_links"
+                ],
             }
 
             if db_id in existing_vars:

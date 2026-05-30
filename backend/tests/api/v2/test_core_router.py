@@ -10,6 +10,27 @@ from unittest.mock import AsyncMock, patch
 from app.main import app
 
 
+def _route_paths() -> set[str]:
+    return {getattr(route, "path", "") for route in app.routes}
+
+
+def test_apex_module_routes_use_canonical_prefixes():
+    """Module routers should be mounted below the startup /api/v2 prefix only once."""
+    route_paths = _route_paths()
+
+    assert not any("/api/v2/api/v2" in path for path in route_paths)
+    assert not any("/core/core" in path for path in route_paths)
+    assert "/api/v2/core/health" in route_paths
+    assert "/api/v2/seed-bank/vaults" in route_paths
+    assert "/api/v2/crop-calendar/activity-types" in route_paths
+
+
+def test_incomplete_soil_module_is_not_exposed_on_canonical_api():
+    route_paths = _route_paths()
+
+    assert "/api/v2/soil/nutrient-tests" not in route_paths
+
+
 @pytest.mark.asyncio
 async def test_health_check():
     """Test the core domain health check endpoint"""

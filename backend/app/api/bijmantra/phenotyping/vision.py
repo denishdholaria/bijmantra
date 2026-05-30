@@ -3,8 +3,7 @@ Vision API - AI Plant Vision Training Ground
 Phase 1: Dataset management, image upload, model inference
 """
 
-
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,6 +31,17 @@ from app.modules.phenotyping.services.vision.deployment_service import (
     model_version_service,
     vision_deployment_service,
 )
+from app.modules.phenotyping.services.vision.inference_service import (
+    VisionImageValidationError,
+    vision_inference_service,
+)
+from app.modules.phenotyping.services.vision.public_dataset_catalog import (
+    PROJECT_USE_OPEN_SOURCE_NON_COMMERCIAL,
+)
+from app.modules.phenotyping.services.vision.registry_lifecycle_service import (
+    vision_model_lifecycle_service,
+)
+from app.modules.phenotyping.services.vision.training_runner import vision_training_runner
 from app.modules.phenotyping.services.vision.training_service import (
     TrainingBackend,
     TrainingStatus,
@@ -56,6 +66,7 @@ def _raise_vision_service_error(detail: str) -> None:
 
 
 # ============ Schemas ============
+
 
 class DatasetCreate(BaseModel):
     name: str = Field(..., description="Dataset name")
@@ -99,6 +110,7 @@ class PredictRequest(BaseModel):
 
 # ============ Dataset Endpoints ============
 
+
 @router.post("/datasets", summary="Create dataset")
 async def create_dataset(
     data: DatasetCreate,
@@ -110,14 +122,20 @@ async def create_dataset(
     if abs(data.train_split + data.val_split + data.test_split - 1.0) > 0.01:
         raise HTTPException(400, "Train, val, and test splits must sum to 1.0")
 
-    dataset = await vision_dataset_service.create_dataset(db, current_user.organization_id, name=data.name,
+    dataset = await vision_dataset_service.create_dataset(
+        db,
+        current_user.organization_id,
+        name=data.name,
         description=data.description,
         dataset_type=data.dataset_type,
         crop=data.crop,
         classes=data.classes,
         train_split=data.train_split,
         val_split=data.val_split,
-        test_split=data.test_split,)
+        test_split=data.test_split,
+    )
+    if "error" in dataset:
+        raise HTTPException(400, dataset["error"])
     return {"success": True, "dataset": dataset}
 
 
@@ -126,13 +144,17 @@ async def list_datasets(
     crop: str | None = Query(None, description="Filter by crop"),
     status: DatasetStatus | None = Query(None, description="Filter by status"),
     dataset_type: DatasetType | None = Query(None, description="Filter by type"),
-        db: AsyncSession = Depends(get_tenant_db),
-        current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
 ):
     """List all vision datasets"""
-    datasets = vision_dataset_service.list_datasets(crop=crop,
+    datasets = await vision_dataset_service.list_datasets(
+        db,
+        current_user.organization_id,
+        crop=crop,
         status=status,
-        dataset_type=dataset_type,)
+        dataset_type=dataset_type,
+    )
     return {
         "success": True,
         "count": len(datasets),
@@ -155,7 +177,8 @@ async def get_dataset(
 
 @router.put("/datasets/{dataset_id}", summary="Update dataset")
 async def update_dataset(
-    dataset_id: str, data: DatasetUpdate,
+    dataset_id: str,
+    data: DatasetUpdate,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
@@ -164,7 +187,9 @@ async def update_dataset(
 
     # Validate splits if provided
     if any(k in updates for k in ["train_split", "val_split", "test_split"]):
-        dataset = await vision_dataset_service.get_dataset(db, current_user.organization_id, dataset_id)
+        dataset = await vision_dataset_service.get_dataset(
+            db, current_user.organization_id, dataset_id
+        )
         if dataset:
             train = updates.get("train_split", dataset["train_split"])
             val = updates.get("val_split", dataset["val_split"])
@@ -172,9 +197,13 @@ async def update_dataset(
             if abs(train + val + test - 1.0) > 0.01:
                 raise HTTPException(400, "Train, val, and test splits must sum to 1.0")
 
-    dataset = await vision_dataset_service.update_dataset(db, current_user.organization_id, dataset_id, updates)
+    dataset = await vision_dataset_service.update_dataset(
+        db, current_user.organization_id, dataset_id, updates
+    )
     if not dataset:
         raise HTTPException(404, "Dataset not found")
+    if "error" in dataset:
+        raise HTTPException(400, dataset["error"])
     return {"success": True, "dataset": dataset}
 
 
@@ -185,7 +214,9 @@ async def delete_dataset(
     current_user=Depends(get_current_user),
 ):
     """Delete a dataset and all its images"""
-    success = await vision_dataset_service.delete_dataset(db, current_user.organization_id, dataset_id)
+    success = await vision_dataset_service.delete_dataset(
+        db, current_user.organization_id, dataset_id
+    )
     if not success:
         raise HTTPException(404, "Dataset not found")
     return {"success": True, "message": "Dataset deleted"}
@@ -193,17 +224,24 @@ async def delete_dataset(
 
 # ============ Image Endpoints ============
 
+
 @router.post("/datasets/{dataset_id}/images", summary="Upload images")
 async def upload_images(
-    dataset_id: str, data: ImageBatchUpload,
+    dataset_id: str,
+    data: ImageBatchUpload,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Upload images to a dataset"""
-    result = await vision_dataset_service.add_images(db, current_user.organization_id, dataset_id=dataset_id,
-        images=[img.model_dump() for img in data.images],)
+    result = await vision_dataset_service.add_images(
+        db,
+        current_user.organization_id,
+        dataset_id=dataset_id,
+        images=[img.model_dump() for img in data.images],
+    )
     if "error" in result:
-        raise HTTPException(404, result["error"])
+        status_code = 404 if result["error"] == "Dataset not found" else 400
+        raise HTTPException(status_code, result["error"])
     return {"success": True, **result}
 
 
@@ -214,15 +252,19 @@ async def get_dataset_images(
     annotated_only: bool = Query(False, description="Only return annotated images"),
     limit: int = Query(100, ge=1, le=1000, description="Max images to return"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
-        db: AsyncSession = Depends(get_tenant_db),
-        current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
 ):
     """Get images from a dataset"""
-    images = await vision_dataset_service.get_dataset_images(db, current_user.organization_id, dataset_id=dataset_id,
+    images = await vision_dataset_service.get_dataset_images(
+        db,
+        current_user.organization_id,
+        dataset_id=dataset_id,
         split=split,
         annotated_only=annotated_only,
         limit=limit,
-        offset=offset,)
+        offset=offset,
+    )
     return {
         "success": True,
         "count": len(images),
@@ -232,6 +274,7 @@ async def get_dataset_images(
 
 # ============ Statistics Endpoints ============
 
+
 @router.get("/datasets/{dataset_id}/stats", summary="Get dataset statistics")
 async def get_dataset_stats(
     dataset_id: str,
@@ -239,7 +282,9 @@ async def get_dataset_stats(
     current_user=Depends(get_current_user),
 ):
     """Get detailed statistics for a dataset"""
-    stats = await vision_dataset_service.get_dataset_stats(db, current_user.organization_id, dataset_id)
+    stats = await vision_dataset_service.get_dataset_stats(
+        db, current_user.organization_id, dataset_id
+    )
     if not stats:
         raise HTTPException(404, "Dataset not found")
     return {"success": True, "stats": stats}
@@ -247,15 +292,18 @@ async def get_dataset_stats(
 
 # ============ Export Endpoints ============
 
+
 @router.post("/datasets/{dataset_id}/export", summary="Export annotations")
 async def export_annotations(
     dataset_id: str,
     format: str = Query("coco", description="Export format (coco, yolo, csv)"),
-        db: AsyncSession = Depends(get_tenant_db),
-        current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
 ):
     """Export dataset annotations in specified format"""
-    result = await vision_dataset_service.export_annotations(db, current_user.organization_id, dataset_id, format)
+    result = await vision_dataset_service.export_annotations(
+        db, current_user.organization_id, dataset_id, format
+    )
     if not result:
         raise HTTPException(404, "Dataset not found")
     if "error" in result:
@@ -265,18 +313,23 @@ async def export_annotations(
 
 # ============ Model Endpoints ============
 
+
 @router.get("/models", summary="List available models")
 async def list_models(
     crop: str | None = Query(None, description="Filter by crop"),
     task: str | None = Query(None, description="Filter by task (classification, detection)"),
     status: str | None = Query(None, description="Filter by status (ready, deployed)"),
-        db: AsyncSession = Depends(get_tenant_db),
-        current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
 ):
     """List available pre-trained and custom models"""
-    models = vision_model_service.list_models(crop=crop,
+    models = await vision_model_service.list_models(
+        db,
+        current_user.organization_id,
+        crop=crop,
         task=task,
-        status=status,)
+        status=status,
+    )
     return {
         "success": True,
         "count": len(models),
@@ -301,21 +354,65 @@ async def get_model(
 async def predict(
     model_id: str = Query(..., description="Model ID to use for prediction"),
     data: PredictRequest = None,
-        db: AsyncSession = Depends(get_tenant_db),
-        current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
 ):
     """Run inference on an image using a trained model"""
     if not data:
         data = PredictRequest(image_data="")
 
-    result = await vision_model_service.predict(db, current_user.organization_id, model_id=model_id,
-        image_data=data.image_data,)
+    result = await vision_model_service.predict(
+        db,
+        current_user.organization_id,
+        model_id=model_id,
+        image_data=data.image_data,
+    )
     if "error" in result:
-        raise HTTPException(404, result["error"])
+        _raise_vision_service_error(result["error"])
+    return {"success": True, **result}
+
+
+@router.post("/analyze", summary="Validate image and run available inference")
+async def analyze_image(
+    file: UploadFile = File(..., description="Plant image to analyze"),
+    crop: str | None = Form(None, description="Optional crop context"),
+    model_id: str | None = Form(None, description="Optional model ID"),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
+):
+    """Validate an uploaded plant image and fail closed when no runtime exists."""
+    model = None
+    if model_id:
+        model = await vision_model_lifecycle_service.get_model(
+            db, current_user.organization_id, model_id
+        )
+        if not model:
+            raise HTTPException(404, "Model not found")
+    else:
+        model = await vision_model_lifecycle_service.get_active_production_model(
+            db,
+            current_user.organization_id,
+            crop=crop,
+        )
+
+    payload = await file.read()
+    try:
+        result = await vision_inference_service.analyze_image(
+            filename=file.filename or "upload",
+            content_type=file.content_type,
+            payload=payload,
+            organization_id=current_user.organization_id,
+            crop=crop,
+            model=model,
+        )
+    except VisionImageValidationError as exc:
+        raise HTTPException(exc.status_code, str(exc)) from exc
+
     return {"success": True, **result}
 
 
 # ============ Reference Data ============
+
 
 @router.get("/crops", summary="List supported crops")
 async def list_crops():
@@ -366,6 +463,7 @@ async def list_base_models():
 
 # ============ Phase 2: Annotation Endpoints ============
 
+
 class BoundingBoxCreate(BaseModel):
     image_id: str = Field(..., description="Image ID")
     boxes: list[dict] = Field(..., description="Bounding boxes [{x, y, width, height, label}]")
@@ -390,27 +488,37 @@ class ReviewRequest(BaseModel):
 
 @router.post("/annotations/bounding-box", summary="Create bounding box annotation")
 async def create_bounding_box(
-    dataset_id: str, data: BoundingBoxCreate,
+    dataset_id: str,
+    data: BoundingBoxCreate,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Create bounding box annotations for an image"""
-    annotation = await vision_annotation_service.create_bounding_box(db, current_user.organization_id, image_id=data.image_id,
+    annotation = await vision_annotation_service.create_bounding_box(
+        db,
+        current_user.organization_id,
+        image_id=data.image_id,
         dataset_id=dataset_id,
-        boxes=data.boxes,)
+        boxes=data.boxes,
+    )
     return {"success": True, "annotation": annotation}
 
 
 @router.post("/annotations/segmentation", summary="Create segmentation annotation")
 async def create_segmentation(
-    dataset_id: str, data: SegmentationCreate,
+    dataset_id: str,
+    data: SegmentationCreate,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Create segmentation annotations for an image"""
-    annotation = await vision_annotation_service.create_segmentation(db, current_user.organization_id, image_id=data.image_id,
+    annotation = await vision_annotation_service.create_segmentation(
+        db,
+        current_user.organization_id,
+        image_id=data.image_id,
         dataset_id=dataset_id,
-        polygons=data.polygons,)
+        polygons=data.polygons,
+    )
     return {"success": True, "annotation": annotation}
 
 
@@ -421,18 +529,23 @@ async def get_image_annotations(
     current_user=Depends(get_current_user),
 ):
     """Get all annotations for an image"""
-    annotations = await vision_annotation_service.get_image_annotations(db, current_user.organization_id, image_id)
+    annotations = await vision_annotation_service.get_image_annotations(
+        db, current_user.organization_id, image_id
+    )
     return {"success": True, "count": len(annotations), "annotations": annotations}
 
 
 @router.put("/annotations/{annotation_id}", summary="Update annotation")
 async def update_annotation(
-    annotation_id: str, data: dict,
+    annotation_id: str,
+    data: dict,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Update annotation data"""
-    annotation = await vision_annotation_service.update_annotation(db, current_user.organization_id, annotation_id, data)
+    annotation = await vision_annotation_service.update_annotation(
+        db, current_user.organization_id, annotation_id, data
+    )
     if not annotation:
         raise HTTPException(404, "Annotation not found")
     return {"success": True, "annotation": annotation}
@@ -445,7 +558,9 @@ async def submit_annotation_for_review(
     current_user=Depends(get_current_user),
 ):
     """Submit annotation for review"""
-    annotation = await vision_annotation_service.submit_for_review(db, current_user.organization_id, annotation_id)
+    annotation = await vision_annotation_service.submit_for_review(
+        db, current_user.organization_id, annotation_id
+    )
     if not annotation:
         raise HTTPException(404, "Annotation not found")
     return {"success": True, "annotation": annotation}
@@ -453,15 +568,21 @@ async def submit_annotation_for_review(
 
 @router.post("/annotations/{annotation_id}/review", summary="Review annotation")
 async def review_annotation(
-    annotation_id: str, data: ReviewRequest, reviewer_id: str = "reviewer",
+    annotation_id: str,
+    data: ReviewRequest,
+    reviewer_id: str = "reviewer",
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Approve or reject an annotation"""
-    annotation = await vision_annotation_service.review_annotation(db, current_user.organization_id, annotation_id=annotation_id,
+    annotation = await vision_annotation_service.review_annotation(
+        db,
+        current_user.organization_id,
+        annotation_id=annotation_id,
         approved=data.approved,
         reviewer_id=reviewer_id,
-        notes=data.notes,)
+        notes=data.notes,
+    )
     if not annotation:
         raise HTTPException(404, "Annotation not found")
     return {"success": True, "annotation": annotation}
@@ -474,7 +595,9 @@ async def delete_annotation(
     current_user=Depends(get_current_user),
 ):
     """Delete an annotation"""
-    success = await vision_annotation_service.delete_annotation(db, current_user.organization_id, annotation_id)
+    success = await vision_annotation_service.delete_annotation(
+        db, current_user.organization_id, annotation_id
+    )
     if not success:
         raise HTTPException(404, "Annotation not found")
     return {"success": True, "message": "Annotation deleted"}
@@ -483,16 +606,21 @@ async def delete_annotation(
 # Annotation Tasks (Collaborative Workflow)
 @router.post("/datasets/{dataset_id}/tasks", summary="Create annotation task")
 async def create_annotation_task(
-    dataset_id: str, data: AnnotationTaskCreate,
+    dataset_id: str,
+    data: AnnotationTaskCreate,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Create a collaborative annotation task"""
-    task = await annotation_task_service.create_task(db, current_user.organization_id, dataset_id=dataset_id,
+    task = await annotation_task_service.create_task(
+        db,
+        current_user.organization_id,
+        dataset_id=dataset_id,
         name=data.name,
         annotation_type=data.annotation_type,
         image_ids=data.image_ids,
-        assigned_to=data.assigned_to,)
+        assigned_to=data.assigned_to,
+    )
     return {"success": True, "task": task}
 
 
@@ -506,7 +634,8 @@ async def list_annotation_tasks(
 ):
     """List annotation tasks"""
     tasks = await annotation_task_service.list_tasks(
-        db, current_user.organization_id,
+        db,
+        current_user.organization_id,
         dataset_id=dataset_id,
         status=status,
         annotator_id=annotator_id,
@@ -545,7 +674,9 @@ async def get_annotator_stats(
     current_user=Depends(get_current_user),
 ):
     """Get statistics for an annotator"""
-    stats = await quality_control_service.get_annotator_stats(db, current_user.organization_id, annotator_id)
+    stats = await quality_control_service.get_annotator_stats(
+        db, current_user.organization_id, annotator_id
+    )
     if "error" in stats:
         raise HTTPException(404, stats["error"])
     return {"success": True, "stats": stats}
@@ -558,11 +689,14 @@ async def get_quality_metrics(
     current_user=Depends(get_current_user),
 ):
     """Get annotation quality metrics for a dataset"""
-    metrics = await quality_control_service.get_quality_metrics(db, current_user.organization_id, dataset_id)
+    metrics = await quality_control_service.get_quality_metrics(
+        db, current_user.organization_id, dataset_id
+    )
     return {"success": True, "metrics": metrics}
 
 
 # ============ Phase 3: Training Endpoints ============
+
 
 class TrainingJobCreate(BaseModel):
     name: str = Field(..., description="Job name")
@@ -584,11 +718,17 @@ async def create_training_job(
     current_user=Depends(get_current_user),
 ):
     """Create a new training job"""
-    job = await vision_training_service.create_job(db, current_user.organization_id, name=data.name,
+    job = await vision_training_service.create_job(
+        db,
+        current_user.organization_id,
+        name=data.name,
         dataset_id=data.dataset_id,
         base_model=data.base_model,
         backend=data.backend,
-        hyperparameters=data.hyperparameters,)
+        hyperparameters=data.hyperparameters,
+    )
+    if "error" in job:
+        raise HTTPException(404, job["error"])
     return {"success": True, "job": job}
 
 
@@ -600,7 +740,9 @@ async def list_training_jobs(
     current_user=Depends(get_current_user),
 ):
     """List training jobs"""
-    jobs = await vision_training_service.list_jobs(db, current_user.organization_id, dataset_id=dataset_id, status=status)
+    jobs = await vision_training_service.list_jobs(
+        db, current_user.organization_id, dataset_id=dataset_id, status=status
+    )
     return {"success": True, "count": len(jobs), "jobs": jobs}
 
 
@@ -624,7 +766,7 @@ async def start_training_job(
     current_user=Depends(get_current_user),
 ):
     """Start a queued training job"""
-    result = await vision_training_service.start_job(db, current_user.organization_id, job_id)
+    result = await vision_training_runner.run_job(db, current_user.organization_id, job_id)
     if not result:
         raise HTTPException(404, "Job not found")
     if "error" in result:
@@ -649,7 +791,8 @@ async def cancel_training_job(
 
 @router.get("/training/jobs/{job_id}/logs", summary="Get training logs")
 async def get_training_logs(
-    job_id: str, last_n: int | None = None,
+    job_id: str,
+    last_n: int | None = None,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
@@ -665,7 +808,9 @@ async def compare_training_jobs(
     current_user=Depends(get_current_user),
 ):
     """Compare multiple training jobs"""
-    comparison = await vision_training_service.compare_jobs(db, current_user.organization_id, job_ids)
+    comparison = await vision_training_service.compare_jobs(
+        db, current_user.organization_id, job_ids
+    )
     if "error" in comparison:
         raise HTTPException(400, comparison["error"])
     return {"success": True, "comparison": comparison}
@@ -675,11 +820,13 @@ async def compare_training_jobs(
 async def get_recommended_hyperparameters(
     dataset_size: int = Query(..., description="Number of images in dataset"),
     task_type: str = Query("classification", description="Task type"),
-        db: AsyncSession = Depends(get_tenant_db),
-        current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
 ):
     """Get recommended hyperparameters based on dataset size"""
-    config = await hyperparameter_service.get_recommended_config(db, current_user.organization_id, dataset_size, task_type)
+    config = await hyperparameter_service.get_recommended_config(
+        db, current_user.organization_id, dataset_size, task_type
+    )
     return {"success": True, "config": config}
 
 
@@ -694,6 +841,7 @@ async def get_augmentation_options(
 
 
 # ============ Phase 4: Deployment & Registry Endpoints ============
+
 
 class ExportRequest(BaseModel):
     format: ExportFormat = Field(..., description="Export format")
@@ -719,17 +867,30 @@ class PublishRequest(BaseModel):
     license: str = Field("CC-BY-4.0", description="License")
 
 
+class ModelApprovalRequest(BaseModel):
+    approved_by: str = Field(..., description="Approver identifier")
+    deployment_mode: str = Field(
+        PROJECT_USE_OPEN_SOURCE_NON_COMMERCIAL,
+        description="Intended model use mode for license-policy gating",
+    )
+
+
 @router.post("/models/{model_id}/export", summary="Export model")
 async def export_model(
-    model_id: str, data: ExportRequest,
+    model_id: str,
+    data: ExportRequest,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Export model to specified format"""
-    result = await vision_deployment_service.export_model(db, current_user.organization_id, model_id=model_id,
+    result = await vision_deployment_service.export_model(
+        db,
+        current_user.organization_id,
+        model_id=model_id,
         format=data.format,
         optimize=data.optimize,
-        quantize=data.quantize,)
+        quantize=data.quantize,
+    )
     if "error" in result:
         _raise_vision_service_error(result["error"])
     return {"success": True, "export": result}
@@ -737,14 +898,19 @@ async def export_model(
 
 @router.post("/models/{model_id}/deploy", summary="Deploy model")
 async def deploy_model(
-    model_id: str, data: DeployRequest,
+    model_id: str,
+    data: DeployRequest,
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Deploy model to a target"""
-    deployment = await vision_deployment_service.deploy_model(db, current_user.organization_id, model_id=model_id,
+    deployment = await vision_deployment_service.deploy_model(
+        db,
+        current_user.organization_id,
+        model_id=model_id,
         target=data.target,
-        format=data.format,)
+        format=data.format,
+    )
     if "error" in deployment:
         _raise_vision_service_error(deployment["error"])
     return {"success": True, "deployment": deployment}
@@ -757,7 +923,9 @@ async def list_deployments(
     current_user=Depends(get_current_user),
 ):
     """List model deployments"""
-    deployments = await vision_deployment_service.list_deployments(db, current_user.organization_id, model_id)
+    deployments = await vision_deployment_service.list_deployments(
+        db, current_user.organization_id, model_id
+    )
     return {"success": True, "count": len(deployments), "deployments": deployments}
 
 
@@ -768,7 +936,9 @@ async def get_deployment(
     current_user=Depends(get_current_user),
 ):
     """Get deployment details"""
-    deployment = await vision_deployment_service.get_deployment(db, current_user.organization_id, deploy_id)
+    deployment = await vision_deployment_service.get_deployment(
+        db, current_user.organization_id, deploy_id
+    )
     if not deployment:
         raise HTTPException(404, "Deployment not found")
     return {"success": True, "deployment": deployment}
@@ -781,7 +951,9 @@ async def get_deployment_stats(
     current_user=Depends(get_current_user),
 ):
     """Get deployment statistics"""
-    stats = await vision_deployment_service.get_deployment_stats(db, current_user.organization_id, deploy_id)
+    stats = await vision_deployment_service.get_deployment_stats(
+        db, current_user.organization_id, deploy_id
+    )
     if not stats:
         raise HTTPException(404, "Deployment not found")
     return {"success": True, "stats": stats}
@@ -800,15 +972,79 @@ async def undeploy_model(
     return {"success": True, "message": "Model undeployed"}
 
 
+@router.post("/models/{model_id}/validate", summary="Validate candidate model")
+async def validate_model_for_registry(
+    model_id: str,
+    data: ModelApprovalRequest,
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
+):
+    """Move a candidate model to validated after artifact checks pass."""
+    result = await vision_model_lifecycle_service.validate_model(
+        db,
+        current_user.organization_id,
+        model_id,
+        approved_by=data.approved_by,
+    )
+    if "error" in result:
+        raise HTTPException(400, result["error"])
+    return {"success": True, "model": result}
+
+
+@router.post("/models/{model_id}/promote", summary="Promote validated model to production")
+async def promote_model_to_production(
+    model_id: str,
+    data: ModelApprovalRequest,
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
+):
+    """Promote a validated model to production and archive prior active versions."""
+    result = await vision_model_lifecycle_service.promote_model(
+        db,
+        current_user.organization_id,
+        model_id,
+        approved_by=data.approved_by,
+        deployment_mode=data.deployment_mode,
+    )
+    if "error" in result:
+        raise HTTPException(400, result["error"])
+    return {"success": True, "model": result}
+
+
+@router.post("/models/{model_id}/rollback", summary="Rollback production model")
+async def rollback_model_to_production(
+    model_id: str,
+    data: ModelApprovalRequest,
+    db: AsyncSession = Depends(get_tenant_db),
+    current_user=Depends(get_current_user),
+):
+    """Promote a validated or archived model back to production."""
+    result = await vision_model_lifecycle_service.rollback_to_model(
+        db,
+        current_user.organization_id,
+        model_id,
+        approved_by=data.approved_by,
+        deployment_mode=data.deployment_mode,
+    )
+    if "error" in result:
+        raise HTTPException(400, result["error"])
+    return {"success": True, "model": result}
+
+
 # Model Registry
 @router.post("/models/{model_id}/publish", summary="Publish to registry")
 async def publish_to_registry(
-    model_id: str, data: PublishRequest, author: str = "Anonymous",
+    model_id: str,
+    data: PublishRequest,
+    author: str = "Anonymous",
     db: AsyncSession = Depends(get_tenant_db),
     current_user=Depends(get_current_user),
 ):
     """Publish a model to the community registry"""
-    entry = await model_registry_service.publish_model(db, current_user.organization_id, model_id=model_id,
+    entry = await model_registry_service.publish_model(
+        db,
+        current_user.organization_id,
+        model_id=model_id,
         name=data.name,
         description=data.description,
         author=author,
@@ -819,7 +1055,8 @@ async def publish_to_registry(
         size_mb=data.size_mb,
         tags=data.tags,
         visibility=data.visibility,
-        license=data.license,)
+        license=data.license,
+    )
     return {"success": True, "registry_entry": entry}
 
 
@@ -835,7 +1072,8 @@ async def search_registry(
 ):
     """Search the community model registry"""
     models = await model_registry_service.search_registry(
-        db, current_user.organization_id,
+        db,
+        current_user.organization_id,
         _query=query,
         _crop=crop,
         _task=task,
@@ -852,7 +1090,9 @@ async def get_featured_models(
     current_user=Depends(get_current_user),
 ):
     """Get featured/popular models from registry"""
-    models = await model_registry_service.get_featured_models(db, current_user.organization_id, _limit=limit)
+    models = await model_registry_service.get_featured_models(
+        db, current_user.organization_id, _limit=limit
+    )
     return {"success": True, "models": models}
 
 
@@ -863,7 +1103,9 @@ async def get_registry_model(
     current_user=Depends(get_current_user),
 ):
     """Get model details from registry"""
-    model = await model_registry_service.get_registry_model(db, current_user.organization_id, registry_id)
+    model = await model_registry_service.get_registry_model(
+        db, current_user.organization_id, registry_id
+    )
     if not model:
         raise HTTPException(404, "Model not found in registry")
     return {"success": True, "model": model}
@@ -876,7 +1118,9 @@ async def download_registry_model(
     current_user=Depends(get_current_user),
 ):
     """Download a model from registry"""
-    result = await model_registry_service.download_model(db, current_user.organization_id, registry_id)
+    result = await model_registry_service.download_model(
+        db, current_user.organization_id, registry_id
+    )
     if not result:
         raise HTTPException(404, "Model not found in registry")
     return {"success": True, **result}
@@ -914,7 +1158,9 @@ async def get_latest_model_version(
     current_user=Depends(get_current_user),
 ):
     """Get the latest version of a model"""
-    version = await model_version_service.get_latest_version(db, current_user.organization_id, model_id)
+    version = await model_version_service.get_latest_version(
+        db, current_user.organization_id, model_id
+    )
     if not version:
         return {"success": True, "version": None, "message": "No versions found"}
     return {"success": True, "version": version}

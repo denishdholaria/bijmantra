@@ -5,16 +5,16 @@ Measurement scales for observation variables
 Production-ready: Uses Service layer and Pydantic schemas.
 """
 
-
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import or_, select
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
 from app.core.rls import set_tenant_context
+from app.middleware.tenant_context import get_tenant_db
 from app.models.brapi_phenotyping import Scale as ScaleModel
 from app.models.phenotyping import ObservationVariable
+from app.modules.core.services.scales_service import ScalesService
 from app.schemas.brapi_scales import (
     Category,
     ExternalReference,
@@ -27,8 +27,6 @@ from app.schemas.brapi_scales import (
     ScaleUpdate,
     ValidValues,
 )
-from app.modules.core.services.scales_service import ScalesService
-from app.middleware.tenant_context import get_tenant_db
 
 
 router = APIRouter()
@@ -73,15 +71,13 @@ def _build_scale_schema(
         valid_values = ValidValues(
             min=valid_values_min,
             max=valid_values_max,
-            categories=_normalize_categories(valid_values_categories)
+            categories=_normalize_categories(valid_values_categories),
         )
 
     ontology_ref = None
     if ontology_db_id:
         ontology_ref = OntologyReference(
-            ontologyDbId=ontology_db_id,
-            ontologyName=ontology_name,
-            version=ontology_version
+            ontologyDbId=ontology_db_id, ontologyName=ontology_name, version=ontology_version
         )
 
     return Scale(
@@ -152,7 +148,7 @@ async def _list_scales_from_variables(
     scales = list(deduped.values())
     total = len(scales)
     start = page * page_size
-    return scales[start:start + page_size], total
+    return scales[start : start + page_size], total
 
 
 async def _get_scale_from_variables(db: AsyncSession, scale_db_id: str) -> Scale | None:
@@ -168,6 +164,7 @@ async def _get_scale_from_variables(db: AsyncSession, scale_db_id: str) -> Scale
     if not variable:
         return None
     return _scale_from_variable(variable)
+
 
 def scale_to_schema(scale: ScaleModel) -> Scale:
     """Converts a Scale SQLAlchemy model to Pydantic schema."""
@@ -187,8 +184,14 @@ def scale_to_schema(scale: ScaleModel) -> Scale:
         additional_info=scale.additional_info,
     )
 
+
 # DEPRECATED (ADR-005): Use schemas.brapi.BrAPIResponse[T] instead of this local helper.
-def brapi_response(result: list[Scale] | Scale, page: int = 0, page_size: int = 1000, total_count: int | None = None) -> dict:
+def brapi_response(
+    result: list[Scale] | Scale,
+    page: int = 0,
+    page_size: int = 1000,
+    total_count: int | None = None,
+) -> dict:
     if isinstance(result, list):
         if total_count is None:
             total_count = len(result)
@@ -199,20 +202,23 @@ def brapi_response(result: list[Scale] | Scale, page: int = 0, page_size: int = 
                     "currentPage": page,
                     "pageSize": page_size,
                     "totalCount": total_count,
-                    "totalPages": (total_count + page_size - 1) // page_size if total_count > 0 else 1
+                    "totalPages": (total_count + page_size - 1) // page_size
+                    if total_count > 0
+                    else 1,
                 },
-                "status": [{"message": "Success", "messageType": "INFO"}]
+                "status": [{"message": "Success", "messageType": "INFO"}],
             },
-            "result": {"data": result}
+            "result": {"data": result},
         }
     return {
         "metadata": {
             "datafiles": [],
             "pagination": {"currentPage": 0, "pageSize": 1, "totalCount": 1, "totalPages": 1},
-            "status": [{"message": "Success", "messageType": "INFO"}]
+            "status": [{"message": "Success", "messageType": "INFO"}],
         },
-        "result": result
+        "result": result,
     }
+
 
 @router.get("/scales", response_model=ScaleListResponse)
 async def get_scales(
@@ -223,20 +229,24 @@ async def get_scales(
     ontologyDbId: str | None = None,
     page: int = Query(0, ge=0),
     pageSize: int = Query(1000, ge=1, le=10000),
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """Retrieves a list of scales based on search criteria."""
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     try:
         scales, total = await ScalesService.get_all(
-            db, page, pageSize,
+            db,
+            page,
+            pageSize,
             scale_db_id=scaleDbId,
             scale_name=scaleName,
             data_type=dataType,
-            ontology_db_id=ontologyDbId
+            ontology_db_id=ontologyDbId,
         )
         data = [scale_to_schema(s) for s in scales]
     except ProgrammingError as error:
@@ -255,16 +265,15 @@ async def get_scales(
 
     return brapi_response(data, page, pageSize, total)
 
+
 @router.get("/scales/{scaleDbId}", response_model=ScaleSingleResponse)
-async def get_scale(
-    scaleDbId: str,
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
-):
+async def get_scale(scaleDbId: str, request: Request, db: AsyncSession = Depends(get_tenant_db)):
     """Retrieves a single scale by its unique identifier."""
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     try:
         scale = await ScalesService.get_by_id(db, scaleDbId)
@@ -280,23 +289,24 @@ async def get_scale(
             "metadata": {
                 "datafiles": [],
                 "pagination": {"currentPage": 0, "pageSize": 0, "totalCount": 0, "totalPages": 0},
-                "status": [{"message": f"Scale {scaleDbId} not found", "messageType": "ERROR"}]
+                "status": [{"message": f"Scale {scaleDbId} not found", "messageType": "ERROR"}],
             },
-            "result": None
+            "result": None,
         }
 
     return brapi_response(scale_data)
 
+
 @router.post("/scales", response_model=ScaleListResponse)
 async def create_scales(
-    scales: list[ScaleCreate],
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    scales: list[ScaleCreate], request: Request, db: AsyncSession = Depends(get_tenant_db)
 ):
     """Creates one or more new scales."""
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     if not org_id and not is_superuser:
         raise HTTPException(status_code=401, detail="Authentication required")
@@ -312,17 +322,20 @@ async def create_scales(
     await db.commit()
     return brapi_response(created)
 
+
 @router.put("/scales/{scaleDbId}", response_model=ScaleSingleResponse)
 async def update_scale(
     scaleDbId: str,
     scale_in: ScaleUpdate,
     request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """Updates an existing scale."""
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     updated_scale = await ScalesService.update(db, scaleDbId, scale_in)
 
@@ -331,35 +344,34 @@ async def update_scale(
             "metadata": {
                 "datafiles": [],
                 "pagination": {"currentPage": 0, "pageSize": 0, "totalCount": 0, "totalPages": 0},
-                "status": [{"message": f"Scale {scaleDbId} not found", "messageType": "ERROR"}]
+                "status": [{"message": f"Scale {scaleDbId} not found", "messageType": "ERROR"}],
             },
-            "result": None
+            "result": None,
         }
 
     await db.commit()
     return brapi_response(scale_to_schema(updated_scale))
 
+
 @router.delete("/scales/{scaleDbId}", response_model=ScaleDeleteResponse)
-async def delete_scale(
-    scaleDbId: str,
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
-):
+async def delete_scale(scaleDbId: str, request: Request, db: AsyncSession = Depends(get_tenant_db)):
     """Deletes a scale."""
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     success = await ScalesService.delete(db, scaleDbId)
 
     if not success:
-         return {
+        return {
             "metadata": {
                 "datafiles": [],
                 "pagination": {"currentPage": 0, "pageSize": 0, "totalCount": 0, "totalPages": 0},
-                "status": [{"message": f"Scale {scaleDbId} not found", "messageType": "ERROR"}]
+                "status": [{"message": f"Scale {scaleDbId} not found", "messageType": "ERROR"}],
             },
-            "result": None
+            "result": None,
         }
 
     await db.commit()
@@ -367,7 +379,7 @@ async def delete_scale(
         "metadata": {
             "datafiles": [],
             "pagination": {"currentPage": 0, "pageSize": 0, "totalCount": 0, "totalPages": 0},
-            "status": [{"message": "Scale deleted successfully", "messageType": "INFO"}]
+            "status": [{"message": "Scale deleted successfully", "messageType": "INFO"}],
         },
-        "result": None
+        "result": None,
     }

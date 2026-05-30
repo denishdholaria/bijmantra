@@ -79,7 +79,7 @@ def test_gene_bank_dashboard(page: Page):
     ))
 
     print("Navigating to test dashboard...")
-    page.goto("http://localhost:5173/genebank-dashboard-test")
+        page.goto("http://localhost:5656/genebank-dashboard-test")
 
     # Dump body text
     print(f"Page content: {page.content()}")
@@ -91,7 +91,7 @@ def test_gene_bank_dashboard(page: Page):
         page.click("button[type='submit']")
         page.wait_for_url(lambda url: "login" not in url)
         if "genebank-dashboard-test" not in page.url:
-             page.goto("http://localhost:5173/genebank-dashboard-test")
+             page.goto("http://localhost:5656/genebank-dashboard-test")
 
     print(f"Current URL: {page.url}")
 

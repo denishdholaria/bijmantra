@@ -7,7 +7,7 @@ import pytest
 import sys
 import os
 from pathlib import Path
-from sqlalchemy import create_engine, event
+from sqlalchemy import BigInteger, create_engine, event, select
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -21,7 +21,6 @@ from app.models.base import Base
 from app.core.security import create_access_token
 from app.core.database import get_db
 from datetime import timedelta
-from sqlalchemy import select
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -46,6 +45,11 @@ def compile_array(element, compiler, **kw):
 @compiles(JSONB, "sqlite")
 def compile_jsonb(element, compiler, **kw):
     return "JSON"
+
+
+@compiles(BigInteger, "sqlite")
+def compile_big_integer(element, compiler, **kw):
+    return "INTEGER"
 
 
 # Sync Engine (for legacy tests and fixtures)
@@ -103,6 +107,7 @@ def setup_db():
     tables = [
         "organizations",
         "users",
+        "auth_identities",
         "user_profiles",
         "collaboration_activities",
         "shared_items",
@@ -147,6 +152,8 @@ def setup_db():
         "bio_qtls",
         "bio_gwas_runs",
         "bio_gwas_results",
+        "call_sets",
+        "calls",
         "import_jobs",
         "activity_logs",
         "ai_providers",
@@ -164,6 +171,7 @@ def setup_db():
         "orchestrator_verification_runs",
         "orchestrator_decision_notes",
         "orchestrator_blockers",
+        "organization_capability_installations",
         "phenology_records",
         "phenology_observations",
         "perf_database_indexes",

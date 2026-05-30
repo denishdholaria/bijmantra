@@ -1046,3 +1046,282 @@ def test_analytics_query_intent_helpers():
     assert se._ranking_direction() == "desc"
     assert se._analytics_group_ids() == ["G1", "G2"]
     assert se._has_trial_data(context) is True
+
+
+# ── Cross-Domain Narrowing: weather and seed_ops extractors ──────────────────
+
+def test_narrowing_from_weather_extracts_weather_data():
+    """_narrow_from_weather extracts weather_data, weather_location, and weather_alerts."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    weather_payload = {
+        "location": "Ludhiana",
+        "source": "live_provider",
+        "summary": {"temp_max": 35, "rainfall_mm": 12},
+        "alerts": ["heat stress advisory"],
+        "impacts_count": 1,
+    }
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="weather-1",
+            domain="weather",
+            status="success",
+            records={"weather": weather_payload},
+        )
+    )
+
+    narrowing = se._narrow_from_weather(ctx, "weather-1")
+
+    assert narrowing["weather_data"] == weather_payload
+    assert narrowing["weather_location"] == "Ludhiana"
+    assert narrowing["weather_alerts"] == ["heat stress advisory"]
+
+
+def test_narrowing_from_weather_returns_empty_on_failed_step():
+    """_narrow_from_weather returns {} when the prerequisite step failed."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="weather-1",
+            domain="weather",
+            status="failed",
+            error_category="weather_resolution_error",
+        )
+    )
+
+    assert se._narrow_from_weather(ctx, "weather-1") == {}
+
+
+def test_narrowing_from_weather_returns_empty_when_no_weather_record():
+    """_narrow_from_weather returns {} when the step has no weather record."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="weather-1",
+            domain="weather",
+            status="success",
+            records={},  # no "weather" key
+        )
+    )
+
+    assert se._narrow_from_weather(ctx, "weather-1") == {}
+
+
+def test_narrowing_from_seed_ops_extracts_available_germplasm_ids():
+    """_narrow_from_seed_ops returns germplasm IDs for seedlots with quantity > 0."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    seedlots = [
+        {"id": "SL-1", "germplasm_id": 10, "quantity_grams": 500},
+        {"id": "SL-2", "germplasm_id": 20, "quantity_grams": 0},    # out of stock
+        {"id": "SL-3", "germplasm_id": 30, "quantity_grams": 200},
+        {"id": "SL-4", "germplasm_id": 10, "quantity_grams": 100},  # duplicate germplasm
+    ]
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="seed-1",
+            domain="seed_ops",
+            status="success",
+            records={"seedlots": seedlots},
+        )
+    )
+
+    narrowing = se._narrow_from_seed_ops(ctx, "seed-1")
+
+    # germplasm 20 is out of stock; germplasm 10 appears twice but deduped
+    assert set(narrowing["available_germplasm_ids"]) == {10, 30}
+    assert narrowing["available_germplasm_ids"].count(10) == 1  # deduped
+
+
+def test_narrowing_from_seed_ops_returns_empty_when_all_out_of_stock():
+    """_narrow_from_seed_ops returns {} when no seedlots have quantity > 0."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="seed-1",
+            domain="seed_ops",
+            status="success",
+            records={"seedlots": [{"id": "SL-1", "germplasm_id": 5, "quantity_grams": 0}]},
+        )
+    )
+
+    assert se._narrow_from_seed_ops(ctx, "seed-1") == {}
+
+
+def test_narrowing_from_seed_ops_returns_empty_on_failed_step():
+    """_narrow_from_seed_ops returns {} when the prerequisite step failed."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="seed-1",
+            domain="seed_ops",
+            status="failed",
+            error_category="missing_service",
+        )
+    )
+
+    assert se._narrow_from_seed_ops(ctx, "seed-1") == {}
+
+
+def test_get_narrowing_for_step_includes_weather_and_seed_ops():
+    """_get_narrowing_for_step dispatches to weather and seed_ops extractors."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="test",
+        params={},
+    )
+
+    weather_payload = {
+        "location": "Delhi",
+        "summary": {"temp_max": 38},
+        "alerts": [],
+        "impacts_count": 0,
+    }
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="weather-1",
+            domain="weather",
+            status="success",
+            records={"weather": weather_payload},
+        )
+    )
+    ctx.add(
+        StepResult(
+            step_id="seed-1",
+            domain="seed_ops",
+            status="success",
+            records={"seedlots": [{"germplasm_id": 42, "quantity_grams": 300}]},
+        )
+    )
+
+    analytics_step = _make_step(
+        "analytics-1", "analytics", prerequisites=["weather-1", "seed-1"]
+    )
+    narrowing = se._get_narrowing_for_step(analytics_step, ctx)
+
+    assert "weather_data" in narrowing
+    assert narrowing["weather_data"]["location"] == "Delhi"
+    assert 42 in narrowing["available_germplasm_ids"]
+
+
+def test_phenotyping_step_metadata_includes_narrowing_audit_trail():
+    """Phenotyping step metadata includes narrowing_sources and narrowing_counts."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="show plant height observations",
+        params={"trait": "plant height"},
+    )
+
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="trials-1",
+            domain="trials",
+            status="success",
+            entity_ids=["T1"],
+            metadata={"resolved_study_ids": ["S1", "S2"]},
+        )
+    )
+
+    # The phenotyping step metadata should carry narrowing_sources and narrowing_counts
+    # even when the observation service is absent (safe failure path still records metadata)
+    step = _make_step("pheno-1", "phenotyping", prerequisites=["trials-1"])
+    # We test the metadata keys exist on a successful result by checking the
+    # narrowing_sources list is populated when trials narrowing is applied.
+    # Use a mock observation service that returns empty results.
+    import unittest.mock as mock
+    mock_obs_service = mock.AsyncMock()
+    mock_obs_service.search = mock.AsyncMock(return_value=[])
+    se._executor.observation_search_service = mock_obs_service
+
+    import asyncio
+    result = asyncio.get_event_loop().run_until_complete(
+        se._execute_phenotyping_step(step, ctx)
+    )
+
+    assert result.status == "success"
+    assert "narrowing_sources" in result.metadata
+    assert "narrowing_counts" in result.metadata
+    assert isinstance(result.metadata["narrowing_counts"], dict)
+
+
+def test_seed_ops_step_metadata_includes_narrowing_audit_trail():
+    """Seed ops step metadata includes narrowing_sources and narrowing_counts."""
+    se = StepExecutor(
+        executor=_make_executor(),
+        organization_id=1,
+        original_query="check seed availability",
+        params={},
+    )
+
+    ctx = IntermediateResultContext()
+    ctx.add(
+        StepResult(
+            step_id="breeding-1",
+            domain="breeding",
+            status="success",
+            entity_ids=["10", "20"],
+            records={"traits": []},
+        )
+    )
+
+    import unittest.mock as mock
+    mock_seedlot_service = mock.AsyncMock()
+    mock_seedlot_service.search = mock.AsyncMock(return_value=[])
+    se._executor.seedlot_search_service = mock_seedlot_service
+
+    step = _make_step("seed-1", "seed_ops", prerequisites=["breeding-1"])
+
+    import asyncio
+    result = asyncio.get_event_loop().run_until_complete(
+        se._execute_seed_ops_step(step, ctx)
+    )
+
+    assert result.status == "success"
+    assert "narrowing_sources" in result.metadata
+    assert "narrowing_counts" in result.metadata
+    assert result.metadata["narrowing_sources"] == ["breeding"]
+    assert result.metadata["narrowing_counts"]["germplasm_ids"] == 2

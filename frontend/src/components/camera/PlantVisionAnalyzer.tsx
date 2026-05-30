@@ -5,11 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CameraCapture } from './CameraCapture';
 import { cn } from '@/lib/utils';
+import { apiClient } from '@/lib/api-client';
+import type { VisionAnalyzeResponse, VisionPrediction } from '@/lib/api/ai/vision';
 
 interface AnalysisResult {
-  type: 'disease' | 'growth_stage' | 'nutrient' | 'pest';
+  type: 'disease' | 'growth_stage' | 'nutrient' | 'pest' | 'stress' | 'trait';
   confidence: number;
   label: string;
   description: string;
@@ -23,125 +26,179 @@ interface PlantVisionAnalyzerProps {
   className?: string;
 }
 
-// Demo analysis results (simulated ML inference)
-const DEMO_DISEASES: Record<string, AnalysisResult[]> = {
-  rice: [
-    { type: 'disease', confidence: 0.89, label: 'Bacterial Leaf Blight', description: 'Xanthomonas oryzae infection detected', severity: 'high', recommendations: ['Apply copper-based bactericide', 'Improve field drainage', 'Use resistant varieties like Xa21'] },
-    { type: 'disease', confidence: 0.72, label: 'Rice Blast', description: 'Magnaporthe oryzae fungal infection', severity: 'medium', recommendations: ['Apply tricyclazole fungicide', 'Reduce nitrogen fertilization', 'Consider Pi-ta resistant varieties'] },
-  ],
-  wheat: [
-    { type: 'disease', confidence: 0.85, label: 'Stem Rust', description: 'Puccinia graminis infection detected', severity: 'high', recommendations: ['Apply propiconazole fungicide', 'Plant Sr31 resistant varieties', 'Monitor neighboring fields'] },
-    { type: 'disease', confidence: 0.68, label: 'Powdery Mildew', description: 'Blumeria graminis infection', severity: 'low', recommendations: ['Apply sulfur-based fungicide', 'Improve air circulation', 'Reduce plant density'] },
-  ],
-  maize: [
-    { type: 'disease', confidence: 0.91, label: 'Northern Corn Leaf Blight', description: 'Exserohilum turcicum infection', severity: 'medium', recommendations: ['Apply strobilurin fungicide', 'Use Ht1 resistant hybrids', 'Rotate crops'] },
-  ],
-};
+const ACCEPTED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 
-const GROWTH_STAGES: Record<string, AnalysisResult[]> = {
-  rice: [
-    { type: 'growth_stage', confidence: 0.94, label: 'Tillering (BBCH 21-29)', description: 'Active tiller formation stage', recommendations: ['Apply nitrogen top-dressing', 'Maintain 5cm water level', 'Scout for stem borers'] },
-  ],
-  wheat: [
-    { type: 'growth_stage', confidence: 0.88, label: 'Heading (BBCH 51-59)', description: 'Ear emergence stage', recommendations: ['Apply fungicide if needed', 'Monitor for aphids', 'Avoid water stress'] },
-  ],
-  maize: [
-    { type: 'growth_stage', confidence: 0.92, label: 'V6 - Six Leaf Stage', description: 'Vegetative growth phase', recommendations: ['Side-dress nitrogen', 'Scout for corn borers', 'Check for nutrient deficiencies'] },
-  ],
-};
+function validateLocalFile(file: File): string | null {
+  if (!ACCEPTED_IMAGE_TYPES.has(file.type)) {
+    return 'Unsupported file type. Use JPEG, PNG, or WebP.';
+  }
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    return 'Image is larger than the 10 MB upload limit.';
+  }
+  return null;
+}
 
-const NUTRIENT_DEFICIENCIES: AnalysisResult[] = [
-  { type: 'nutrient', confidence: 0.78, label: 'Nitrogen Deficiency', description: 'Yellowing of older leaves (chlorosis)', severity: 'medium', recommendations: ['Apply urea or ammonium sulfate', 'Split nitrogen applications', 'Check soil pH'] },
-  { type: 'nutrient', confidence: 0.65, label: 'Potassium Deficiency', description: 'Leaf margin necrosis detected', severity: 'low', recommendations: ['Apply potassium chloride', 'Improve soil drainage', 'Test soil K levels'] },
-];
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => resolve(event.target?.result as string);
+    reader.onerror = () => reject(new Error('Unable to read image file.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function dataUrlToFile(dataUrl: string, filename: string): File {
+  const [header, payload] = dataUrl.split(',');
+  const mime = header?.match(/data:(.*?);base64/)?.[1] || 'image/jpeg';
+  const binary = window.atob(payload || '');
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return new File([bytes], filename, { type: mime });
+}
+
+function normalizeSeverity(value?: string): AnalysisResult['severity'] | undefined {
+  if (value === 'low' || value === 'medium' || value === 'high' || value === 'critical') {
+    return value;
+  }
+  return undefined;
+}
+
+function normalizeType(value?: string): AnalysisResult['type'] {
+  if (
+    value === 'disease' ||
+    value === 'growth_stage' ||
+    value === 'nutrient' ||
+    value === 'pest' ||
+    value === 'stress' ||
+    value === 'trait'
+  ) {
+    return value;
+  }
+  return 'disease';
+}
+
+function normalizePredictions(predictions: VisionPrediction[] | undefined): AnalysisResult[] {
+  return (predictions || []).map((prediction, index) => ({
+    type: normalizeType(prediction.type),
+    confidence: Math.max(0, Math.min(1, prediction.confidence ?? 0)),
+    label: prediction.label || `Finding ${index + 1}`,
+    description: prediction.description || 'Backend model prediction',
+    severity: normalizeSeverity(prediction.severity),
+    recommendations: prediction.recommendations || [],
+  }));
+}
+
+function getAnalysisMessage(response: VisionAnalyzeResponse): string | null {
+  if (response.explainability?.message) {
+    return response.explainability.message;
+  }
+  if (response.status === 'runtime_unavailable') {
+    return 'Image validated, but no production Plant Vision runtime is deployed for this organization.';
+  }
+  return null;
+}
 
 export function PlantVisionAnalyzer({ onAnalysisComplete, cropType = 'rice', className }: PlantVisionAnalyzerProps) {
   const [showCamera, setShowCamera] = useState(false);
   const [imageData, setImageData] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [analysisMessage, setAnalysisMessage] = useState<string | null>(null);
+  const [analysisStatus, setAnalysisStatus] = useState<string | null>(null);
+  const [localError, setLocalError] = useState<string | null>(null);
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [activeTab, setActiveTab] = useState('capture');
 
+  const analyzeFile = useCallback(async (file: File, previewData: string) => {
+    const validationError = validateLocalFile(file);
+    if (validationError) {
+      setLocalError(validationError);
+      setIsAnalyzing(false);
+      setAnalysisProgress(0);
+      return;
+    }
 
-  // Simulate ML analysis (in production, this would call TensorFlow.js or backend API)
-  const analyzeImage = useCallback(async (image: string) => {
+    setLocalError(null);
+    setAnalysisMessage(null);
+    setAnalysisStatus(null);
     setIsAnalyzing(true);
-    setAnalysisProgress(0);
+    setAnalysisProgress(15);
     setResults([]);
 
-    // Simulate progressive analysis
-    const stages = [
-      { progress: 20, delay: 300, message: 'Preprocessing image...' },
-      { progress: 40, delay: 500, message: 'Detecting plant regions...' },
-      { progress: 60, delay: 400, message: 'Analyzing disease symptoms...' },
-      { progress: 80, delay: 300, message: 'Identifying growth stage...' },
-      { progress: 100, delay: 200, message: 'Generating recommendations...' },
-    ];
+    try {
+      setAnalysisProgress(65);
+      const response = await apiClient.visionService.analyzeImage(file, cropType);
+      const normalizedResults = normalizePredictions(response.predictions);
 
-    for (const stage of stages) {
-      await new Promise(resolve => setTimeout(resolve, stage.delay));
-      setAnalysisProgress(stage.progress);
-    }
+      setAnalysisProgress(100);
+      setResults(normalizedResults);
+      setAnalysisStatus(response.status);
+      setAnalysisMessage(getAnalysisMessage(response));
+      setActiveTab('results');
 
-    // Generate demo results based on crop type
-    const diseases = DEMO_DISEASES[cropType] || DEMO_DISEASES.rice;
-    const growthStage = GROWTH_STAGES[cropType] || GROWTH_STAGES.rice;
-    
-    // Randomly select results to simulate real detection
-    const detectedResults: AnalysisResult[] = [];
-    
-    // Always include growth stage
-    detectedResults.push(growthStage[0]);
-    
-    // Randomly include disease (70% chance)
-    if (Math.random() > 0.3) {
-      detectedResults.push(diseases[Math.floor(Math.random() * diseases.length)]);
-    }
-    
-    // Randomly include nutrient deficiency (40% chance)
-    if (Math.random() > 0.6) {
-      detectedResults.push(NUTRIENT_DEFICIENCIES[Math.floor(Math.random() * NUTRIENT_DEFICIENCIES.length)]);
-    }
-
-    setResults(detectedResults);
-    setIsAnalyzing(false);
-    setActiveTab('results');
-
-    if (onAnalysisComplete) {
-      onAnalysisComplete(detectedResults, image);
+      if (normalizedResults.length > 0 && onAnalysisComplete) {
+        onAnalysisComplete(normalizedResults, previewData);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Plant Vision analysis failed.';
+      setLocalError(message);
+      setActiveTab('capture');
+    } finally {
+      setIsAnalyzing(false);
     }
   }, [cropType, onAnalysisComplete]);
 
-  // Handle image capture
   const handleCapture = (image: string) => {
-    setImageData(image);
-    setShowCamera(false);
-    analyzeImage(image);
+    try {
+      const file = dataUrlToFile(image, `plant-${Date.now()}.jpg`);
+      setImageData(image);
+      setShowCamera(false);
+      void analyzeFile(file, image);
+    } catch {
+      setLocalError('Captured image could not be prepared for analysis.');
+      setShowCamera(false);
+    }
   };
 
-  // Handle file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const image = event.target?.result as string;
+    const validationError = validateLocalFile(file);
+    if (validationError) {
+      setLocalError(validationError);
+      setImageData(null);
+      setResults([]);
+      setAnalysisMessage(null);
+      setAnalysisStatus(null);
+      e.target.value = '';
+      return;
+    }
+
+    try {
+      const image = await readFileAsDataUrl(file);
       setImageData(image);
-      analyzeImage(image);
-    };
-    reader.readAsDataURL(file);
+      void analyzeFile(file, image);
+    } catch (error) {
+      setLocalError(error instanceof Error ? error.message : 'Unable to load image preview.');
+    } finally {
+      e.target.value = '';
+    }
   };
 
-  // Clear results
   const clearResults = () => {
     setImageData(null);
     setResults([]);
+    setAnalysisMessage(null);
+    setAnalysisStatus(null);
+    setLocalError(null);
+    setAnalysisProgress(0);
     setActiveTab('capture');
   };
 
-  // Get severity color
   const getSeverityColor = (severity?: string) => {
     switch (severity) {
       case 'critical': return 'bg-destructive';
@@ -152,13 +209,13 @@ export function PlantVisionAnalyzer({ onAnalysisComplete, cropType = 'rice', cla
     }
   };
 
-  // Get type icon
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'disease': return <Bug className="h-4 w-4" />;
       case 'growth_stage': return <Leaf className="h-4 w-4" />;
       case 'nutrient': return <Thermometer className="h-4 w-4" />;
-      case 'pest': return <AlertTriangle className="h-4 w-4" />;
+      case 'pest':
+      case 'stress': return <AlertTriangle className="h-4 w-4" />;
       default: return <Leaf className="h-4 w-4" />;
     }
   };
@@ -186,10 +243,18 @@ export function PlantVisionAnalyzer({ onAnalysisComplete, cropType = 'rice', cla
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {localError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Analysis unavailable</AlertTitle>
+            <AlertDescription>{localError}</AlertDescription>
+          </Alert>
+        )}
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="capture">Capture</TabsTrigger>
-            <TabsTrigger value="results" disabled={results.length === 0}>
+            <TabsTrigger value="results" disabled={!imageData && !analysisMessage && results.length === 0}>
               Results {results.length > 0 && `(${results.length})`}
             </TabsTrigger>
           </TabsList>
@@ -241,7 +306,7 @@ export function PlantVisionAnalyzer({ onAnalysisComplete, cropType = 'rice', cla
                   </Button>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp"
                     onChange={handleFileUpload}
                     className="hidden"
                   />
@@ -255,8 +320,22 @@ export function PlantVisionAnalyzer({ onAnalysisComplete, cropType = 'rice', cla
               <img src={imageData} alt="Analyzed" className="w-full h-48 object-cover rounded-lg" />
             )}
 
+            {analysisMessage && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>{analysisStatus === 'runtime_unavailable' ? 'Runtime unavailable' : 'Analysis status'}</AlertTitle>
+                <AlertDescription>{analysisMessage}</AlertDescription>
+              </Alert>
+            )}
+
+            {results.length === 0 && analysisMessage && (
+              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                No predictions were returned. Plant Vision will only show findings produced by a configured backend model.
+              </div>
+            )}
+
             {results.map((result, index) => (
-              <Card key={index} className="overflow-hidden">
+              <Card key={`${result.type}-${result.label}-${index}`} className="overflow-hidden">
                 <div className={cn('h-1', getSeverityColor(result.severity))} />
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-start justify-between">
@@ -295,7 +374,7 @@ export function PlantVisionAnalyzer({ onAnalysisComplete, cropType = 'rice', cla
               </Card>
             ))}
 
-            {results.length > 0 && (
+            {(results.length > 0 || imageData) && (
               <Button variant="outline" onClick={clearResults} className="w-full">
                 Analyze Another Image
               </Button>

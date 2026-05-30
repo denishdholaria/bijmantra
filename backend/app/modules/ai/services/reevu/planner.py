@@ -7,11 +7,20 @@ with domain tags, dependency ordering, and deterministic routing markers.
 
 from __future__ import annotations
 
+import logging
 import re
 from os import getenv
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from app.schemas.reevu_plan import PlanStep, ReevuExecutionPlan
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from app.modules.ai.services.reevu.domain_embedding_service import DomainEmbeddingService
+
+logger = logging.getLogger(__name__)
 
 # ── domain keyword registry ──────────────────────────────────────────
 # Maps keywords/phrases to canonical domain tags.
@@ -60,6 +69,53 @@ DOMAIN_KEYWORDS: dict[str, list[str]] = {
         "seed quantity", "storage", "viability", "accession inventory",
         "seed bank", "seed supply", "germplasm stock",
     ],
+    "soil": [
+        "soil", "nutrient", "pH", "organic matter", "nitrogen", "phosphorus",
+        "potassium", "soil type", "soil health", "fertility", "soil analysis",
+        "soil test", "NPK", "soil profile", "soil texture", "soil moisture",
+    ],
+    "pest_disease": [
+        "disease", "pest", "pathogen", "insect", "fungal",
+        "bacterial", "rust", "blight", "wilt", "aphid", "borer",
+        "susceptible", "susceptibility", "scouting",
+        "mildew", "nematode", "pest pressure", "disease pressure",
+        "disease resistance", "pest scouting",
+    ],
+    "sensors": [
+        "sensor", "IoT", "telemetry", "soil moisture sensor", "data logger",
+        "sensor reading", "device reading", "environmental data",
+        "monitoring station", "weather station sensor",
+    ],
+    "spatial": [
+        "map", "spatial", "nearby", "within", "radius", "proximity",
+        "GIS", "region", "km", "miles", "area", "near", "closest",
+        "distance", "coordinates", "location map",
+    ],
+    "climate": [
+        "climate change", "SSP", "future climate", "climate risk",
+        "climate projection", "global warming", "adaptation", "2050",
+        "temperature rise", "rainfall change", "climate scenario",
+    ],
+    "commercial": [
+        "variety release", "market demand", "licensing", "royalty",
+        "commercial", "market", "price", "revenue", "released variety",
+        "variety registration", "seed market",
+    ],
+    "harvest": [
+        "harvest", "yield data", "quality grade", "post-harvest",
+        "storage loss", "moisture content", "harvested", "crop yield",
+        "harvest record", "threshing", "milling",
+    ],
+    "nursery": [
+        "nursery", "seedling", "transplant", "irrigation schedule",
+        "fertilizer schedule", "crop management", "growth stage",
+        "planting schedule", "nursery management",
+    ],
+    "vision": [
+        "identify disease", "plant image", "leaf photo", "visual scan",
+        "image analysis", "photo", "camera", "scan leaf",
+        "disease identification", "plant counting",
+    ],
 }
 
 # Domain dependency ordering (lower index = earlier in plan).
@@ -67,12 +123,21 @@ DOMAIN_ORDER: dict[str, int] = {
     "weather": 0,
     "trials": 1,
     "field": 2,
-    "phenotyping": 3,
-    "genomics": 4,
-    "breeding": 5,
-    "seed_ops": 6,
-    "protocols": 7,
-    "analytics": 8,
+    "sensors": 3,
+    "phenotyping": 4,
+    "genomics": 5,
+    "breeding": 6,
+    "seed_ops": 7,
+    "soil": 8,
+    "pest_disease": 9,
+    "protocols": 10,
+    "climate": 11,
+    "commercial": 12,
+    "harvest": 13,
+    "nursery": 14,
+    "vision": 15,
+    "analytics": 16,
+    "spatial": 17,
 }
 
 EXPLICIT_WEATHER_TERMS: tuple[str, ...] = (
@@ -195,6 +260,24 @@ def _dependency_hints(domains: list[str]) -> dict[str, set[str]]:
         hints["genomics"].add("breeding")
     if "seed_ops" in available and "breeding" in available:
         hints["seed_ops"].add("breeding")
+    if "soil" in available and "field" in available:
+        hints["soil"].add("field")
+    if "sensors" in available and "field" in available:
+        hints["sensors"].add("field")
+    if "climate" in available and "field" in available:
+        hints["climate"].add("field")
+    if "commercial" in available and "breeding" in available:
+        hints["commercial"].add("breeding")
+    if "harvest" in available and "trials" in available:
+        hints["harvest"].add("trials")
+    if "harvest" in available and "field" in available:
+        hints["harvest"].add("field")
+    if "nursery" in available and "field" in available:
+        hints["nursery"].add("field")
+    if "pest_disease" in available and "breeding" in available:
+        hints["pest_disease"].add("breeding")
+    if "pest_disease" in available and "trials" in available:
+        hints["pest_disease"].add("trials")
     if "protocols" in available and "breeding" in available:
         hints["protocols"].add("breeding")
     if "analytics" in available:
@@ -361,6 +444,15 @@ def _step_description(domain: str) -> str:
         "genomics": "Retrieve genomic and molecular marker information",
         "breeding": "Fetch breeding program, germplasm, and trait data",
         "seed_ops": "Retrieve seed inventory, availability, and seedlot records",
+        "soil": "Retrieve soil analysis records, nutrient levels, and soil health indicators",
+        "pest_disease": "Retrieve disease resistance profiles and pest/disease scouting records",
+        "sensors": "Retrieve IoT sensor readings, telemetry summaries, and device status",
+        "spatial": "Retrieve spatially proximate locations, trials, or entities within a radius",
+        "climate": "Retrieve climate projections, crop suitability scores, and adaptation recommendations",
+        "commercial": "Retrieve variety release status, market demand, and commercial licensing data",
+        "harvest": "Retrieve harvest records, yield summaries, and quality grading results",
+        "nursery": "Retrieve nursery operations, seedling inventory, and crop management events",
+        "vision": "Analyse plant images for disease identification, counting, or morphology",
         "protocols": "Retrieve breeding protocol or speed-breeding configuration data",
         "analytics": "Run analytical computations and statistical comparisons",
     }
@@ -378,6 +470,15 @@ def _expected_outputs(domain: str) -> list[str]:
         "genomics": ["marker_data", "genomic_profiles"],
         "breeding": ["germplasm_list", "trait_summaries"],
         "seed_ops": ["seedlot_records", "inventory_levels", "request_status"],
+        "soil": ["soil_analysis_records", "nutrient_summaries", "soil_health_indicators"],
+        "pest_disease": ["resistance_profiles", "scouting_records", "stress_observations"],
+        "sensors": ["sensor_readings", "telemetry_summaries", "device_status"],
+        "spatial": ["spatial_results", "proximity_records", "region_summaries"],
+        "climate": ["climate_projections", "crop_suitability", "adaptation_recommendations"],
+        "commercial": ["variety_releases", "market_demand", "cost_analysis"],
+        "harvest": ["harvest_records", "yield_summary", "quality_grades"],
+        "nursery": ["nursery_operations", "transplanting_schedules", "crop_management_events"],
+        "vision": ["classification_result", "confidence_score", "management_recommendation"],
         "protocols": ["protocol_records", "protocol_conditions"],
         "analytics": ["comparison_table", "ranked_recommendations"],
     }
@@ -402,6 +503,7 @@ class ReevuPlanner:
         *,
         nlp_enabled: bool | None = None,
         dag_enabled: bool | None = None,
+        embedding_service: "DomainEmbeddingService | None" = None,
     ) -> None:
         self.nlp_enabled = (
             _env_flag("REEVU_PLANNER_NLP_ENABLED", True)
@@ -413,6 +515,7 @@ class ReevuPlanner:
             if dag_enabled is None
             else dag_enabled
         )
+        self._embedding_service = embedding_service
 
     def _detect_domains_nlp(self, message: str) -> tuple[list[str], float]:
         """Advanced domain detection path; currently deterministic and patchable in tests."""
@@ -512,6 +615,116 @@ class ReevuPlanner:
             is_deterministic = bool(
                 domain == "analytics"
                 or (function_call_name is not None and function_call_name.startswith(DETERMINISTIC_PREFIXES))
+            )
+
+            prerequisites: list[str] = []
+            if self.dag_enabled:
+                prerequisites = [
+                    step_ids_by_domain[prerequisite_domain]
+                    for prerequisite_domain in domains
+                    if prerequisite_domain in dependency_map.get(domain, set())
+                    and prerequisite_domain in step_ids_by_domain
+                ]
+
+            steps.append(
+                PlanStep(
+                    step_id=step_id,
+                    domain=domain,
+                    description=_step_description(domain),
+                    prerequisites=prerequisites,
+                    expected_outputs=_expected_outputs(domain),
+                    completed=False,
+                    deterministic=is_deterministic,
+                )
+            )
+            step_ids_by_domain[domain] = step_id
+
+        return ReevuExecutionPlan(
+            plan_id=f"plan-{uuid4().hex[:8]}",
+            original_query=message,
+            is_compound=is_compound,
+            steps=steps,
+            domains_involved=domains,
+            metadata={"fallback_reasons": fallback_reasons},
+        )
+
+    async def build_plan_async(
+        self,
+        message: str,
+        db: "AsyncSession | None" = None,
+        *,
+        function_call_name: str | None = None,
+    ) -> ReevuExecutionPlan:
+        """Async version of build_plan that optionally uses embedding detection.
+
+        Runs keyword detection first, then — if an embedding service and a db
+        session are both available — runs embedding detection and fuses scores
+        using ``max(keyword_score, embedding_score)`` per domain.
+
+        If the embedding call fails for any reason, a warning is logged and
+        keyword-only scores are used (safe fallback).
+
+        Args:
+            message:            The user's query string.
+            db:                 An open async SQLAlchemy session (optional).
+            function_call_name: Optional function name for deterministic routing.
+
+        Returns:
+            A :class:`ReevuExecutionPlan` built from the fused domain scores.
+        """
+        fallback_reasons: list[str] = []
+
+        # ── Step 1: keyword detection ─────────────────────────────────────────
+        fused_scores: dict[str, float] = _nlp_detect_domains(message)
+
+        # ── Step 2: optional embedding detection + score fusion ───────────────
+        if self._embedding_service is not None and db is not None:
+            try:
+                embedding_scores = await self._embedding_service.detect_domains(message, db)
+                for domain, emb_score in embedding_scores.items():
+                    fused_scores[domain] = max(fused_scores.get(domain, 0.0), emb_score)
+            except Exception:
+                logger.warning(
+                    "ReevuPlanner.build_plan_async: embedding detection failed — "
+                    "falling back to keyword-only scores"
+                )
+                fallback_reasons.append("embedding_detection_failed")
+
+        # ── Step 3: threshold filter (same as build_plan: score >= 0.8) ───────
+        detected = {d for d, s in fused_scores.items() if s >= 0.8}
+        domains = sorted(detected, key=lambda d: DOMAIN_ORDER.get(d, 99))
+
+        # ── Step 4: validate and default ─────────────────────────────────────
+        valid_domains = [domain for domain in domains if domain in DOMAIN_ORDER]
+        if len(valid_domains) != len(domains):
+            fallback_reasons.append("ambiguous_domain_filtered")
+        domains = valid_domains
+
+        if not domains:
+            domains = ["breeding"]
+            fallback_reasons.append("default_breeding_fallback")
+
+        # ── Step 5: DAG ordering ──────────────────────────────────────────────
+        try:
+            domains = self._build_domain_order_dag(domains)
+        except Exception:
+            fallback_reasons.append("dag_builder_error")
+            domains = sorted(set(domains), key=lambda d: DOMAIN_ORDER.get(d, 99))
+
+        # ── Step 6: build plan steps (identical logic to build_plan) ──────────
+        dependency_map = _dependency_hints(domains)
+        is_compound = len(domains) > 1
+        steps: list[PlanStep] = []
+        step_ids_by_domain: dict[str, str] = {}
+
+        for idx, domain in enumerate(domains):
+            step_id = f"step-{idx + 1}"
+            is_deterministic = bool(
+                domain == "analytics"
+                or (
+                    function_call_name is not None
+                    and function_call_name.startswith(DETERMINISTIC_PREFIXES)
+                )
             )
 
             prerequisites: list[str] = []

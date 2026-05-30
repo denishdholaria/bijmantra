@@ -13,7 +13,7 @@
 
 import { Navigate } from 'react-router-dom'
 import { useAuthStore, useAuthHydrated } from '@/store/auth'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -22,40 +22,35 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, requireSuperuser = false }: ProtectedRouteProps) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isExternalAuthEnabled = useAuthStore((state) => state.isExternalAuthEnabled())
+  const isAuthInitialized = useAuthStore((state) => state.isAuthInitialized)
+  const loginWithIdentityProvider = useAuthStore((state) => state.loginWithIdentityProvider)
   const user = useAuthStore((state) => state.user)
   const hasHydrated = useAuthHydrated()
   
-  // Local state to force re-render after hydration
-  const [isReady, setIsReady] = useState(hasHydrated)
-  
+  const isReady = hasHydrated
+
   useEffect(() => {
-    // If already hydrated, we're ready
-    if (hasHydrated) {
-      setIsReady(true)
+    if (!isReady || !isAuthInitialized || isAuthenticated || !isExternalAuthEnabled) {
       return
     }
-    
-    // Subscribe to store changes to catch hydration
-    const unsubscribe = useAuthStore.subscribe((state) => {
-      if (state._hasHydrated) {
-        setIsReady(true)
-      }
-    })
-    
-    // Also set a maximum wait time (500ms) to prevent infinite loading
-    const timeout = setTimeout(() => {
-      setIsReady(true)
-    }, 500)
-    
-    return () => {
-      unsubscribe()
-      clearTimeout(timeout)
-    }
-  }, [hasHydrated])
+
+    void loginWithIdentityProvider()
+  }, [
+    isAuthInitialized,
+    isAuthenticated,
+    isExternalAuthEnabled,
+    isReady,
+    loginWithIdentityProvider,
+  ])
 
   // Wait for hydration to complete
   if (!isReady) {
     // Return a minimal loading state - null causes no flash
+    return null
+  }
+
+  if (!isAuthInitialized || (!isAuthenticated && isExternalAuthEnabled)) {
     return null
   }
 

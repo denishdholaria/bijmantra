@@ -5,6 +5,7 @@
  */
 
 export * from './types';
+export * from './capabilities';
 export * from './divisions';
 export { useDivisionRegistry } from './useDivisionRegistry';
 export * from './moduleRegistry';

@@ -65,7 +65,7 @@ async def compute_umap(
 @router.post("/distance-matrix", response_model=dict[str, Any])
 async def compute_distance_matrix_endpoint(
     genotypes: list[list[int]] = Body(..., description="Genotype matrix (n_inds x n_markers)"),
-    method: str = Body("modified_rogers", regex="^(euclidean|modified_rogers|nei|identity_by_state)$"),
+    method: str = Body("modified_rogers", pattern="^(euclidean|modified_rogers|nei|identity_by_state)$"),
     ploidy: int = Body(2, ge=1),
     current_user: Any = Depends(deps.get_current_active_user),
 ):

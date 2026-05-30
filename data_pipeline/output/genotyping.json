@@ -1,0 +1,3586 @@
+{
+  "call_sets": [
+    {
+      "call_set_db_id": "pipeline_org1_maize_corn_callset_1",
+      "call_set_name": "DH86",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:1",
+      "sample_db_id": "pipeline_org1_maize_corn_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_maize_corn_callset_2",
+      "call_set_name": "HQPM-1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:2",
+      "sample_db_id": "pipeline_org1_maize_corn_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_maize_corn_callset_3",
+      "call_set_name": "Pusa HM4",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:3",
+      "sample_db_id": "pipeline_org1_maize_corn_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_maize_fodder_callset_1",
+      "call_set_name": "DH86",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:1",
+      "sample_db_id": "pipeline_org1_maize_fodder_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_maize_fodder_callset_2",
+      "call_set_name": "HQPM-1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:2",
+      "sample_db_id": "pipeline_org1_maize_fodder_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_maize_fodder_callset_3",
+      "call_set_name": "Pusa HM4",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:3",
+      "sample_db_id": "pipeline_org1_maize_fodder_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_sugarcane_callset_1",
+      "call_set_name": "Co 86032",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:1",
+      "sample_db_id": "pipeline_org1_sugarcane_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_sugarcane_callset_2",
+      "call_set_name": "Co 0238",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:2",
+      "sample_db_id": "pipeline_org1_sugarcane_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_sugarcane_callset_3",
+      "call_set_name": "Co 419",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:3",
+      "sample_db_id": "pipeline_org1_sugarcane_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_rice_callset_1",
+      "call_set_name": "IR64",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:1",
+      "sample_db_id": "pipeline_org1_rice_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_rice_callset_2",
+      "call_set_name": "Swarna",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:2",
+      "sample_db_id": "pipeline_org1_rice_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_rice_callset_3",
+      "call_set_name": "Pusa Basmati 1121",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:3",
+      "sample_db_id": "pipeline_org1_rice_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_wheat_callset_1",
+      "call_set_name": "HD2967",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:1",
+      "sample_db_id": "pipeline_org1_wheat_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_wheat_callset_2",
+      "call_set_name": "PBW343",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:2",
+      "sample_db_id": "pipeline_org1_wheat_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org1_wheat_callset_3",
+      "call_set_name": "Kalyan Sona",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:3",
+      "sample_db_id": "pipeline_org1_wheat_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_maize_corn_callset_1",
+      "call_set_name": "DH86",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:1",
+      "sample_db_id": "pipeline_org2_maize_corn_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_maize_corn_callset_2",
+      "call_set_name": "HQPM-1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:2",
+      "sample_db_id": "pipeline_org2_maize_corn_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_maize_corn_callset_3",
+      "call_set_name": "Pusa HM4",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:3",
+      "sample_db_id": "pipeline_org2_maize_corn_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_maize_fodder_callset_1",
+      "call_set_name": "DH86",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:1",
+      "sample_db_id": "pipeline_org2_maize_fodder_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_maize_fodder_callset_2",
+      "call_set_name": "HQPM-1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:2",
+      "sample_db_id": "pipeline_org2_maize_fodder_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_maize_fodder_callset_3",
+      "call_set_name": "Pusa HM4",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:3",
+      "sample_db_id": "pipeline_org2_maize_fodder_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_sugarcane_callset_1",
+      "call_set_name": "Co 86032",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:1",
+      "sample_db_id": "pipeline_org2_sugarcane_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_sugarcane_callset_2",
+      "call_set_name": "Co 0238",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:2",
+      "sample_db_id": "pipeline_org2_sugarcane_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_sugarcane_callset_3",
+      "call_set_name": "Co 419",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:3",
+      "sample_db_id": "pipeline_org2_sugarcane_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_rice_callset_1",
+      "call_set_name": "IR64",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:1",
+      "sample_db_id": "pipeline_org2_rice_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_rice_callset_2",
+      "call_set_name": "Swarna",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:2",
+      "sample_db_id": "pipeline_org2_rice_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_rice_callset_3",
+      "call_set_name": "Pusa Basmati 1121",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:3",
+      "sample_db_id": "pipeline_org2_rice_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_wheat_callset_1",
+      "call_set_name": "HD2967",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:1",
+      "sample_db_id": "pipeline_org2_wheat_sample_1",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_wheat_callset_2",
+      "call_set_name": "PBW343",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:2",
+      "sample_db_id": "pipeline_org2_wheat_sample_2",
+      "synthetic_method": "deterministic_training_population_callset"
+    },
+    {
+      "call_set_db_id": "pipeline_org2_wheat_callset_3",
+      "call_set_name": "Kalyan Sona",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:3",
+      "sample_db_id": "pipeline_org2_wheat_sample_3",
+      "synthetic_method": "deterministic_training_population_callset"
+    }
+  ],
+  "calls": [
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_1_1",
+      "call_set_key": "org1:maize_corn:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_1_2",
+      "call_set_key": "org1:maize_corn:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_1_3",
+      "call_set_key": "org1:maize_corn:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_2_1",
+      "call_set_key": "org1:maize_corn:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_2_2",
+      "call_set_key": "org1:maize_corn:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_2_3",
+      "call_set_key": "org1:maize_corn:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_3_1",
+      "call_set_key": "org1:maize_corn:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_3_2",
+      "call_set_key": "org1:maize_corn:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_corn_call_3_3",
+      "call_set_key": "org1:maize_corn:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_corn:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_1_1",
+      "call_set_key": "org1:maize_fodder:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_1_2",
+      "call_set_key": "org1:maize_fodder:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_1_3",
+      "call_set_key": "org1:maize_fodder:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_2_1",
+      "call_set_key": "org1:maize_fodder:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_2_2",
+      "call_set_key": "org1:maize_fodder:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_2_3",
+      "call_set_key": "org1:maize_fodder:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_3_1",
+      "call_set_key": "org1:maize_fodder:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_3_2",
+      "call_set_key": "org1:maize_fodder:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_maize_fodder_call_3_3",
+      "call_set_key": "org1:maize_fodder:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:maize_fodder:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_1_1",
+      "call_set_key": "org1:sugarcane:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_1_2",
+      "call_set_key": "org1:sugarcane:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_1_3",
+      "call_set_key": "org1:sugarcane:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_2_1",
+      "call_set_key": "org1:sugarcane:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_2_2",
+      "call_set_key": "org1:sugarcane:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_2_3",
+      "call_set_key": "org1:sugarcane:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_3_1",
+      "call_set_key": "org1:sugarcane:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_3_2",
+      "call_set_key": "org1:sugarcane:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_sugarcane_call_3_3",
+      "call_set_key": "org1:sugarcane:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:sugarcane:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_1_1",
+      "call_set_key": "org1:rice:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_1_2",
+      "call_set_key": "org1:rice:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_1_3",
+      "call_set_key": "org1:rice:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_2_1",
+      "call_set_key": "org1:rice:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_2_2",
+      "call_set_key": "org1:rice:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_2_3",
+      "call_set_key": "org1:rice:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_3_1",
+      "call_set_key": "org1:rice:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_3_2",
+      "call_set_key": "org1:rice:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_rice_call_3_3",
+      "call_set_key": "org1:rice:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:rice:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_1_1",
+      "call_set_key": "org1:wheat:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_1_2",
+      "call_set_key": "org1:wheat:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_1_3",
+      "call_set_key": "org1:wheat:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_2_1",
+      "call_set_key": "org1:wheat:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_2_2",
+      "call_set_key": "org1:wheat:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_2_3",
+      "call_set_key": "org1:wheat:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_3_1",
+      "call_set_key": "org1:wheat:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_3_2",
+      "call_set_key": "org1:wheat:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org1_wheat_call_3_3",
+      "call_set_key": "org1:wheat:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org1:wheat:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_1_1",
+      "call_set_key": "org2:maize_corn:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_1_2",
+      "call_set_key": "org2:maize_corn:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_1_3",
+      "call_set_key": "org2:maize_corn:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_2_1",
+      "call_set_key": "org2:maize_corn:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_2_2",
+      "call_set_key": "org2:maize_corn:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_2_3",
+      "call_set_key": "org2:maize_corn:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_3_1",
+      "call_set_key": "org2:maize_corn:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_3_2",
+      "call_set_key": "org2:maize_corn:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_corn_call_3_3",
+      "call_set_key": "org2:maize_corn:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_corn:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_1_1",
+      "call_set_key": "org2:maize_fodder:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_1_2",
+      "call_set_key": "org2:maize_fodder:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_1_3",
+      "call_set_key": "org2:maize_fodder:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_2_1",
+      "call_set_key": "org2:maize_fodder:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_2_2",
+      "call_set_key": "org2:maize_fodder:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_2_3",
+      "call_set_key": "org2:maize_fodder:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_3_1",
+      "call_set_key": "org2:maize_fodder:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_3_2",
+      "call_set_key": "org2:maize_fodder:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_maize_fodder_call_3_3",
+      "call_set_key": "org2:maize_fodder:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:maize_fodder:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_1_1",
+      "call_set_key": "org2:sugarcane:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_1_2",
+      "call_set_key": "org2:sugarcane:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_1_3",
+      "call_set_key": "org2:sugarcane:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_2_1",
+      "call_set_key": "org2:sugarcane:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_2_2",
+      "call_set_key": "org2:sugarcane:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_2_3",
+      "call_set_key": "org2:sugarcane:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_3_1",
+      "call_set_key": "org2:sugarcane:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_3_2",
+      "call_set_key": "org2:sugarcane:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_sugarcane_call_3_3",
+      "call_set_key": "org2:sugarcane:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:sugarcane:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_1_1",
+      "call_set_key": "org2:rice:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_1_2",
+      "call_set_key": "org2:rice:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_1_3",
+      "call_set_key": "org2:rice:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_2_1",
+      "call_set_key": "org2:rice:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_2_2",
+      "call_set_key": "org2:rice:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_2_3",
+      "call_set_key": "org2:rice:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_3_1",
+      "call_set_key": "org2:rice:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_3_2",
+      "call_set_key": "org2:rice:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_rice_call_3_3",
+      "call_set_key": "org2:rice:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:rice:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_1_1",
+      "call_set_key": "org2:wheat:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:1:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_1_2",
+      "call_set_key": "org2:wheat:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:1:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_1_3",
+      "call_set_key": "org2:wheat:callset:1",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:1:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_2_1",
+      "call_set_key": "org2:wheat:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:2:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_2_2",
+      "call_set_key": "org2:wheat:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:2:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_2_3",
+      "call_set_key": "org2:wheat:callset:2",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:2:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:3"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_3_1",
+      "call_set_key": "org2:wheat:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "0"
+        ]
+      },
+      "genotype_value": "0/0",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:3:call:1",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:1"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_3_2",
+      "call_set_key": "org2:wheat:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "0",
+          "1"
+        ]
+      },
+      "genotype_value": "0/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:3:call:2",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:2"
+    },
+    {
+      "call_db_id": "pipeline_org2_wheat_call_3_3",
+      "call_set_key": "org2:wheat:callset:3",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "genotype": {
+        "values": [
+          "1",
+          "1"
+        ]
+      },
+      "genotype_value": "1/1",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:callset:3:call:3",
+      "synthetic_method": "deterministic_training_population_genotype",
+      "variant_key": "org2:wheat:map:variant:3"
+    }
+  ],
+  "genome_maps": [
+    {
+      "common_crop_name": "Maize (Corn)",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org1_maize_corn_map",
+      "map_name": "Maize (Corn) Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:map",
+      "scientific_name": "Zea mays",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Maize (Fodder)",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org1_maize_fodder_map",
+      "map_name": "Maize (Fodder) Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:map",
+      "scientific_name": "Zea mays",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Sugarcane",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org1_sugarcane_map",
+      "map_name": "Sugarcane Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:map",
+      "scientific_name": "Saccharum officinarum",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Rice",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org1_rice_map",
+      "map_name": "Rice Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:map",
+      "scientific_name": "Oryza sativa",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Wheat",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org1_wheat_map",
+      "map_name": "Wheat Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:map",
+      "scientific_name": "Triticum aestivum",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Maize (Corn)",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org2_maize_corn_map",
+      "map_name": "Maize (Corn) Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:map",
+      "scientific_name": "Zea mays",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Maize (Fodder)",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org2_maize_fodder_map",
+      "map_name": "Maize (Fodder) Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:map",
+      "scientific_name": "Zea mays",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Sugarcane",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org2_sugarcane_map",
+      "map_name": "Sugarcane Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:map",
+      "scientific_name": "Saccharum officinarum",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Rice",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org2_rice_map",
+      "map_name": "Rice Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:map",
+      "scientific_name": "Oryza sativa",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    },
+    {
+      "common_crop_name": "Wheat",
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "map_db_id": "pipeline_org2_wheat_map",
+      "map_name": "Wheat Pipeline SNP Map",
+      "marker_count": 3,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:map",
+      "scientific_name": "Triticum aestivum",
+      "synthetic_method": "marker_map_template",
+      "type": "physical",
+      "unit": "bp"
+    }
+  ],
+  "linkage_groups": [
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org1:maize_corn:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org1:maize_corn:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org1:maize_corn:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org1:maize_fodder:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org1:maize_fodder:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org1:maize_fodder:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org1:sugarcane:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org1:sugarcane:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org1:sugarcane:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org1:rice:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org1:rice:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org1:rice:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org1:wheat:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org1:wheat:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org1:wheat:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org2:maize_corn:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org2:maize_corn:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org2:maize_corn:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org2:maize_fodder:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org2:maize_fodder:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org2:maize_fodder:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org2:sugarcane:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org2:sugarcane:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org2:sugarcane:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org2:rice:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org2:rice:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org2:rice:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr1",
+      "map_key": "org2:wheat:map",
+      "marker_count": 1,
+      "max_position": 31000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr2",
+      "map_key": "org2:wheat:map",
+      "marker_count": 1,
+      "max_position": 32000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "linkage_group_name": "Chr3",
+      "map_key": "org2:wheat:map",
+      "marker_count": 1,
+      "max_position": 33000000.0,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "synthetic_method": "linkage_group_template"
+    }
+  ],
+  "reference_sets": [
+    {
+      "assembly_pui": "pipeline:maize_corn:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Maize (Corn)",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:refset",
+      "reference_set_db_id": "pipeline_org1_maize_corn_refset",
+      "reference_set_name": "Maize (Corn) Pipeline Reference",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:maize_fodder:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Maize (Fodder)",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:refset",
+      "reference_set_db_id": "pipeline_org1_maize_fodder_refset",
+      "reference_set_name": "Maize (Fodder) Pipeline Reference",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:sugarcane:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Sugarcane",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:refset",
+      "reference_set_db_id": "pipeline_org1_sugarcane_refset",
+      "reference_set_name": "Sugarcane Pipeline Reference",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:rice:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Rice",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:refset",
+      "reference_set_db_id": "pipeline_org1_rice_refset",
+      "reference_set_name": "Rice Pipeline Reference",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:wheat:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Wheat",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:refset",
+      "reference_set_db_id": "pipeline_org1_wheat_refset",
+      "reference_set_name": "Wheat Pipeline Reference",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:maize_corn:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Maize (Corn)",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:refset",
+      "reference_set_db_id": "pipeline_org2_maize_corn_refset",
+      "reference_set_name": "Maize (Corn) Pipeline Reference",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:maize_fodder:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Maize (Fodder)",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:refset",
+      "reference_set_db_id": "pipeline_org2_maize_fodder_refset",
+      "reference_set_name": "Maize (Fodder) Pipeline Reference",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:sugarcane:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Sugarcane",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:refset",
+      "reference_set_db_id": "pipeline_org2_sugarcane_refset",
+      "reference_set_name": "Sugarcane Pipeline Reference",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:rice:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Rice",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:refset",
+      "reference_set_db_id": "pipeline_org2_rice_refset",
+      "reference_set_name": "Rice Pipeline Reference",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "reference_metadata_template"
+    },
+    {
+      "assembly_pui": "pipeline:wheat:assembly",
+      "data_source": "hybrid",
+      "description": "Source-registered reference placeholder for Wheat",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:refset",
+      "reference_set_db_id": "pipeline_org2_wheat_refset",
+      "reference_set_name": "Wheat Pipeline Reference",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "reference_metadata_template"
+    }
+  ],
+  "references": [
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:refset:chr1",
+      "reference_db_id": "pipeline_org1_maize_corn_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org1:maize_corn:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:refset:chr2",
+      "reference_db_id": "pipeline_org1_maize_corn_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org1:maize_corn:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:refset:chr3",
+      "reference_db_id": "pipeline_org1_maize_corn_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org1:maize_corn:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:refset:chr1",
+      "reference_db_id": "pipeline_org1_maize_fodder_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org1:maize_fodder:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:refset:chr2",
+      "reference_db_id": "pipeline_org1_maize_fodder_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org1:maize_fodder:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:refset:chr3",
+      "reference_db_id": "pipeline_org1_maize_fodder_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org1:maize_fodder:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:refset:chr1",
+      "reference_db_id": "pipeline_org1_sugarcane_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org1:sugarcane:refset",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:refset:chr2",
+      "reference_db_id": "pipeline_org1_sugarcane_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org1:sugarcane:refset",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:refset:chr3",
+      "reference_db_id": "pipeline_org1_sugarcane_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org1:sugarcane:refset",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:refset:chr1",
+      "reference_db_id": "pipeline_org1_rice_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org1:rice:refset",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:refset:chr2",
+      "reference_db_id": "pipeline_org1_rice_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org1:rice:refset",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:refset:chr3",
+      "reference_db_id": "pipeline_org1_rice_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org1:rice:refset",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:refset:chr1",
+      "reference_db_id": "pipeline_org1_wheat_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org1:wheat:refset",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:refset:chr2",
+      "reference_db_id": "pipeline_org1_wheat_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org1:wheat:refset",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:refset:chr3",
+      "reference_db_id": "pipeline_org1_wheat_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org1:wheat:refset",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:refset:chr1",
+      "reference_db_id": "pipeline_org2_maize_corn_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org2:maize_corn:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:refset:chr2",
+      "reference_db_id": "pipeline_org2_maize_corn_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org2:maize_corn:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:refset:chr3",
+      "reference_db_id": "pipeline_org2_maize_corn_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org2:maize_corn:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:refset:chr1",
+      "reference_db_id": "pipeline_org2_maize_fodder_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org2:maize_fodder:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:refset:chr2",
+      "reference_db_id": "pipeline_org2_maize_fodder_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org2:maize_fodder:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:refset:chr3",
+      "reference_db_id": "pipeline_org2_maize_fodder_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org2:maize_fodder:refset",
+      "species": {
+        "term": "Zea mays"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:refset:chr1",
+      "reference_db_id": "pipeline_org2_sugarcane_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org2:sugarcane:refset",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:refset:chr2",
+      "reference_db_id": "pipeline_org2_sugarcane_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org2:sugarcane:refset",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:refset:chr3",
+      "reference_db_id": "pipeline_org2_sugarcane_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org2:sugarcane:refset",
+      "species": {
+        "term": "Saccharum officinarum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:refset:chr1",
+      "reference_db_id": "pipeline_org2_rice_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org2:rice:refset",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:refset:chr2",
+      "reference_db_id": "pipeline_org2_rice_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org2:rice:refset",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:refset:chr3",
+      "reference_db_id": "pipeline_org2_rice_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org2:rice:refset",
+      "species": {
+        "term": "Oryza sativa"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 31000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:refset:chr1",
+      "reference_db_id": "pipeline_org2_wheat_chr1",
+      "reference_name": "Chr1",
+      "reference_set_key": "org2:wheat:refset",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 32000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:refset:chr2",
+      "reference_db_id": "pipeline_org2_wheat_chr2",
+      "reference_name": "Chr2",
+      "reference_set_key": "org2:wheat:refset",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "length": 33000000,
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:refset:chr3",
+      "reference_db_id": "pipeline_org2_wheat_chr3",
+      "reference_name": "Chr3",
+      "reference_set_key": "org2:wheat:refset",
+      "species": {
+        "term": "Triticum aestivum"
+      },
+      "synthetic_method": "chromosome_length_template"
+    }
+  ],
+  "variants": [
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org1:maize_corn:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_maize_corn_snp_1",
+      "variant_name": "MAIZE_CORN_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org1:maize_corn:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_maize_corn_snp_2",
+      "variant_name": "MAIZE_CORN_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_corn:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org1:maize_corn:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_maize_corn_snp_3",
+      "variant_name": "MAIZE_CORN_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org1:maize_fodder:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_maize_fodder_snp_1",
+      "variant_name": "MAIZE_FODDER_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org1:maize_fodder:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_maize_fodder_snp_2",
+      "variant_name": "MAIZE_FODDER_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:maize_fodder:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org1:maize_fodder:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_maize_fodder_snp_3",
+      "variant_name": "MAIZE_FODDER_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org1:sugarcane:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_sugarcane_snp_1",
+      "variant_name": "SUGARCANE_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org1:sugarcane:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_sugarcane_snp_2",
+      "variant_name": "SUGARCANE_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:sugarcane:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org1:sugarcane:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_sugarcane_snp_3",
+      "variant_name": "SUGARCANE_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org1:rice:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_rice_snp_1",
+      "variant_name": "RICE_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org1:rice:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_rice_snp_2",
+      "variant_name": "RICE_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:rice:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org1:rice:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_rice_snp_3",
+      "variant_name": "RICE_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org1:wheat:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_wheat_snp_1",
+      "variant_name": "WHEAT_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org1:wheat:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_wheat_snp_2",
+      "variant_name": "WHEAT_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "record_key": "org1:wheat:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org1:wheat:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org1_wheat_snp_3",
+      "variant_name": "WHEAT_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org2:maize_corn:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_maize_corn_snp_1",
+      "variant_name": "MAIZE_CORN_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org2:maize_corn:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_maize_corn_snp_2",
+      "variant_name": "MAIZE_CORN_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_corn:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org2:maize_corn:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_maize_corn_snp_3",
+      "variant_name": "MAIZE_CORN_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org2:maize_fodder:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_maize_fodder_snp_1",
+      "variant_name": "MAIZE_FODDER_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org2:maize_fodder:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_maize_fodder_snp_2",
+      "variant_name": "MAIZE_FODDER_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:maize_fodder:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org2:maize_fodder:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_maize_fodder_snp_3",
+      "variant_name": "MAIZE_FODDER_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org2:sugarcane:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_sugarcane_snp_1",
+      "variant_name": "SUGARCANE_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org2:sugarcane:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_sugarcane_snp_2",
+      "variant_name": "SUGARCANE_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:sugarcane:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org2:sugarcane:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_sugarcane_snp_3",
+      "variant_name": "SUGARCANE_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org2:rice:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_rice_snp_1",
+      "variant_name": "RICE_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org2:rice:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_rice_snp_2",
+      "variant_name": "RICE_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:rice:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org2:rice:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_rice_snp_3",
+      "variant_name": "RICE_SNP_3",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 1000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:map:variant:1",
+      "reference_bases": "A",
+      "reference_key": "org2:wheat:refset:chr1",
+      "start": 1000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_wheat_snp_1",
+      "variant_name": "WHEAT_SNP_1",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 2000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:map:variant:2",
+      "reference_bases": "A",
+      "reference_key": "org2:wheat:refset:chr2",
+      "start": 2000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_wheat_snp_2",
+      "variant_name": "WHEAT_SNP_2",
+      "variant_type": "SNP"
+    },
+    {
+      "alternate_bases": [
+        "G"
+      ],
+      "data_source": "synthetic",
+      "end": 3000001,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "record_key": "org2:wheat:map:variant:3",
+      "reference_bases": "A",
+      "reference_key": "org2:wheat:refset:chr3",
+      "start": 3000000,
+      "synthetic_method": "qtl_marker_template",
+      "variant_db_id": "pipeline_org2_wheat_snp_3",
+      "variant_name": "WHEAT_SNP_3",
+      "variant_type": "SNP"
+    }
+  ]
+}

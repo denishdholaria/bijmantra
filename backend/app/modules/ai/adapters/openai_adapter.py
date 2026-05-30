@@ -59,7 +59,7 @@ class OpenAIAdapter(IProviderAdapter):
                 )
         except Exception as e:
             logger.error("[REEVU] OpenAI error: %s", e)
-        return None
+            raise e
 
     async def stream(
         self,

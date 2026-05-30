@@ -45,6 +45,7 @@ from app.services.chat.message_evidence import (
 )
 from app.services.chat.message_plan import (
     build_plan_summary,
+    build_plan_summary_async,
     extract_plan_execution_summary,
     get_primary_domain,
 )
@@ -270,6 +271,20 @@ class MessageService:
         function_call_name: str | None = None,
     ) -> dict[str, Any]:
         return build_plan_summary(request_message, function_call_name=function_call_name)
+
+    @staticmethod
+    async def build_plan_summary_async(
+        request_message: str,
+        db: Any = None,
+        *,
+        function_call_name: str | None = None,
+    ) -> dict[str, Any]:
+        """Async variant — uses embedding detection when the feature flag is on."""
+        return await build_plan_summary_async(
+            request_message,
+            db,
+            function_call_name=function_call_name,
+        )
 
     @staticmethod
     def extract_plan_execution_summary(

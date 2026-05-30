@@ -11,6 +11,7 @@ vi.mock('@/lib/api-client', () => ({
   apiClient: {
     getToken: vi.fn(() => null),
     setToken: vi.fn(),
+    validateToken: vi.fn(),
     authService: {
       login: vi.fn(),
     },
@@ -21,6 +22,7 @@ import { apiClient } from '@/lib/api-client'
 
 describe('useAuthStore', () => {
   beforeEach(() => {
+    window.localStorage.clear()
     // Reset store state
     useAuthStore.setState({
       user: null,
@@ -68,6 +70,18 @@ describe('useAuthStore', () => {
       expect(state.isLoading).toBe(false)
       expect(state.error).toBeNull()
       expect(apiClient.setToken).toHaveBeenCalledWith('test-token')
+      expect(apiClient.authService.login).toHaveBeenCalledWith('test@example.com', 'password')
+    })
+
+    it('should normalize email before login', async () => {
+      vi.mocked(apiClient.authService.login).mockResolvedValue({
+        access_token: 'test-token',
+        token_type: 'bearer',
+      })
+
+      await useAuthStore.getState().login(' Test@Example.Com ', 'password')
+
+      expect(apiClient.authService.login).toHaveBeenCalledWith('test@example.com', 'password')
     })
 
     it('should set error on failed login', async () => {
@@ -79,11 +93,15 @@ describe('useAuthStore', () => {
       expect(state.error).toBe('Invalid credentials')
       expect(state.isAuthenticated).toBe(false)
       expect(state.isLoading).toBe(false)
+      expect(apiClient.setToken).toHaveBeenCalledWith(null)
     })
   })
 
   describe('logout', () => {
     it('should clear auth state on logout', () => {
+      window.localStorage.setItem('auth_token', 'test-token')
+      window.localStorage.setItem('bijmantra-auth', JSON.stringify({ state: { token: 'test-token' } }))
+
       // Set authenticated state first
       useAuthStore.setState({
         user: { id: 1, email: 'test@example.com', full_name: 'Test', organization_id: 1, is_active: true, is_superuser: false, is_demo: false },
@@ -98,6 +116,8 @@ describe('useAuthStore', () => {
       expect(state.token).toBeNull()
       expect(state.isAuthenticated).toBe(false)
       expect(apiClient.setToken).toHaveBeenCalledWith(null)
+      const persisted = JSON.parse(window.localStorage.getItem('bijmantra-auth') ?? '{}')
+      expect(persisted.state).toMatchObject({ token: null, user: null })
     })
   })
 

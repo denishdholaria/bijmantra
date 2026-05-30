@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_active_user, get_organization_id
 from app.core.config import settings
-from app.middleware.tenant_context import get_tenant_db
 from app.core.rls import set_tenant_context
 from app.crud.core import program as program_crud
+from app.middleware.tenant_context import get_tenant_db
 from app.models.core import User
 from app.schemas.brapi import BrAPIResponse, Metadata, Pagination, Status
 from app.schemas.core import Program, ProgramCreate, ProgramUpdate
@@ -87,7 +87,9 @@ async def list_programs(
 
 @router.get("/programs/{programDbId}", response_model=BrAPIResponse[dict])
 async def get_program(
-    programDbId: str, db: AsyncSession = Depends(get_tenant_db), org_id: int = Depends(get_organization_id)
+    programDbId: str,
+    db: AsyncSession = Depends(get_tenant_db),
+    org_id: int = Depends(get_organization_id),
 ):
     """Gets a single program by its BrAPI-compliant database ID.
 
@@ -138,7 +140,9 @@ async def create_program(
     """
     try:
         # logger.debug(f"create_program called for user {current_user.email} org_id={current_user.organization_id}")
-        await set_tenant_context(db, current_user.organization_id, current_user.is_superuser)
+        await set_tenant_context(
+            db, current_user.organization_id, current_user.is_superuser, user_id=current_user.id
+        )
 
         program = await program_crud.create(
             db, obj_in=program_in, org_id=current_user.organization_id
@@ -199,7 +203,9 @@ async def update_program(
 
 @router.delete("/programs/{programDbId}", status_code=204)
 async def delete_program(
-    programDbId: str, db: AsyncSession = Depends(get_tenant_db), org_id: int = Depends(get_organization_id)
+    programDbId: str,
+    db: AsyncSession = Depends(get_tenant_db),
+    org_id: int = Depends(get_organization_id),
 ):
     """Deletes a breeding program.
 

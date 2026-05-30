@@ -27,6 +27,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 logger = logging.getLogger(__name__)
 
 
+def _safe_rls_int(value: object | None, default: int = -1) -> int:
+    if value is None or value == "":
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        logger.warning("Invalid RLS context value; using restricted default")
+        return default
+
+
 # Tables that have organization_id and need RLS
 # Updated: 2026-01-13 (Session 79 - Future Modules Migration 029)
 # Evidence: 103 tables with RLS enabled (87 existing + 16 new future module tables)
@@ -39,7 +49,6 @@ RLS_ENABLED_TABLES = [
     "locations",
     "people",
     "users",
-
     # AI configuration
     "ai_usage_daily",
     "ai_providers",
@@ -52,14 +61,12 @@ RLS_ENABLED_TABLES = [
     "orchestrator_verification_runs",
     "orchestrator_decision_notes",
     "orchestrator_blockers",
-
     # Seed Bank tables (migration 007)
     "seed_bank_vaults",
     "seed_bank_accessions",
     "seed_bank_viability_tests",
     "seed_bank_regeneration_tasks",
     "seed_bank_exchanges",
-
     # Germplasm domain (migration 023)
     "germplasm",
     "germplasm_attributes",
@@ -72,7 +79,6 @@ RLS_ENABLED_TABLES = [
     "seedlots",
     "seedlot_transactions",
     "breeding_methods",
-
     # Phenotyping domain (migration 023)
     "traits",
     "methods",
@@ -82,7 +88,6 @@ RLS_ENABLED_TABLES = [
     "observation_levels",
     "observations",
     "images",
-
     # Genotyping domain (migration 023)
     "samples",
     "plates",
@@ -95,7 +100,6 @@ RLS_ENABLED_TABLES = [
     "genome_maps",
     "linkage_groups",
     "marker_positions",
-
     # User management (migration 023)
     "teams",
     "roles",
@@ -112,7 +116,6 @@ RLS_ENABLED_TABLES = [
     # IoT/Sensors (migration 023)
     "iot_devices",
     "iot_alert_rules",
-
     # Data management (migration 023)
     "validation_rules",
     "validation_issues",
@@ -120,7 +123,6 @@ RLS_ENABLED_TABLES = [
     "backups",
     "trial_health",
     "health_alerts",
-
     # Collaboration (migration 023)
     "report_templates",
     "report_schedules",
@@ -132,31 +134,26 @@ RLS_ENABLED_TABLES = [
     "sync_items",
     "sync_history",
     "offline_data_cache",
-
     # Field operations (migration 023)
     "field_book_studies",
     "field_book_traits",
     "field_book_entries",
     "field_book_observations",
     "events",
-
     # Stress resistance (migration 023)
     "abiotic_stresses",
     "diseases",
     "resistance_genes",
     "tolerance_genes",
     "pyramiding_strategies",
-
     # Nursery (migration 023)
     "nursery_locations",
     "seedling_batches",
-
     # Other (migration 023)
     "lists",
     "ontologies",
     "seasons",
     "vendor_orders",
-
     # Future Modules - Tier 1 (migration 029)
     # Crop Intelligence
     "growing_degree_day_logs",
@@ -178,26 +175,20 @@ RLS_ENABLED_TABLES = [
     "spray_applications",
     "pest_observations",
     "ipm_strategies",
-
     # Dispatch & Firms (migration 030)
     "firms",
     "dispatches",
-
     # DUS Testing (migration 031)
     "dus_trials",
-
     # Doubled Haploid (migration 032)
     "dh_protocols",
     "dh_batches",
-
     # Phenomic Selection (migration 033)
     "phenomic_datasets",
     "phenomic_models",
-
     # Space Research (migration 034)
     "space_crops",
     "space_experiments",
-
     # Bio-Analytics (migration 035)
     "bio_gs_models",
     "bio_marker_effects",
@@ -206,37 +197,30 @@ RLS_ENABLED_TABLES = [
     "bio_gwas_results",
     "bio_qtls",
     "bio_candidate_genes",
-
     # ============================================
     # ADR-006: Previously unregistered tables
     # These tables have organization_id but were missing from RLS.
     # Added: 2026-03-13 (Architecture Remediation Phase 2)
     # ============================================
-
     # Audit & Compliance
     "audit_logs",
     "cfr_audit_logs",
-
     # Proposals
     "proposals",
-
     # Speed Breeding
     "speed_breeding_protocols",
     "speed_breeding_chambers",
     "speed_breeding_batches",
-
     # Economics & Cost Analysis
     "cost_benefit_analyses",
     "market_trends",
     "budget_categories",
     "expenses",
-
     # Spatial & Environmental
     "gis_layers",
     "remote_sensing_data",
     "crop_models",
     "simulation_runs",
-
     # Genomics & Breeding Analytics
     "gs_models",
     "cross_predictions",
@@ -244,24 +228,19 @@ RLS_ENABLED_TABLES = [
     "genes",
     "stability_results",
     "variety_releases",
-
     # Mars Research
     "mars_environment_profiles",
     "mars_trials",
-
     # Computer Vision
     "vision_models",
     "vision_deployments",
-
     # Operations
     "print_jobs",
     "barcode_scans",
-
     # Field & Phenology
     "field_scans",
     "phenology_observations",
     "phenology_records",
-
     # Veena AI (legacy generic tables + v2 tables with custom tenant/user RLS)
     "veena_memories",
     "veena_reasoning_traces",
@@ -270,14 +249,11 @@ RLS_ENABLED_TABLES = [
     "veena_reasoning_traces_v2",
     "veena_user_contexts_v2",
     "veena_audit_logs",
-
     # Conversations
     "conversations",
-
     # GDD & Predictions
     "gdd_audit_logs",
     "gdd_predictions",
-
     # Platform
     "system_settings",
     "compute_lineage_records",
@@ -285,7 +261,6 @@ RLS_ENABLED_TABLES = [
     "user_dock_preferences",
     "shared_items",
     "publications",
-
     # Carbon & Impact
     "carbon_measurements",
     "carbon_stocks",
@@ -296,10 +271,8 @@ RLS_ENABLED_TABLES = [
     "variety_footprints",
     "sdg_indicators",
     "policy_adoptions",
-
     # Storage
     "storage_locations",
-
     # DevGuru (ADR-006: only tables with explicit organization_id ownership)
     "research_projects",
     "paper_experiment_links",
@@ -313,7 +286,8 @@ RLS_ENABLED_TABLES = [
 async def set_tenant_context(
     db: AsyncSession,
     organization_id: int | None,
-    is_superuser: bool = False
+    is_superuser: bool = False,
+    user_id: int | None = None,
 ) -> None:
     """
     Set the current tenant context for RLS policies.
@@ -325,21 +299,34 @@ async def set_tenant_context(
         db: Database session
         organization_id: The organization ID to filter by
         is_superuser: If True, bypasses RLS (sets org_id to 0)
+        user_id: Authenticated user ID for user-owned tenant policies
     """
     if is_superuser:
         # Superusers see all data (org_id = 0 means bypass)
         org_id = 0
     elif organization_id:
-        org_id = organization_id
+        org_id = _safe_rls_int(organization_id)
     else:
         # No org context - will see nothing (safe default)
         org_id = -1
 
-    # Note: org_id is always an integer, safe to format
     await db.execute(
-        text(f"SET LOCAL app.current_organization_id = '{int(org_id)}'")
+        text("SELECT set_config(:key, :value, true)"),
+        {"key": "app.current_organization_id", "value": str(org_id)},
     )
-    logger.debug(f"Set tenant context: organization_id={org_id}, is_superuser={is_superuser}")
+    await db.execute(
+        text("SELECT set_config(:key, :value, true)"),
+        {
+            "key": "app.current_user_id",
+            "value": str(_safe_rls_int(user_id)),
+        },
+    )
+    logger.debug(
+        "Set tenant context: organization_id=%s, user_id=%s, is_superuser=%s",
+        org_id,
+        user_id,
+        is_superuser,
+    )
 
 
 async def clear_tenant_context(db: AsyncSession) -> None:
@@ -349,6 +336,7 @@ async def clear_tenant_context(db: AsyncSession) -> None:
     This is typically called at the end of a request or on error.
     """
     await db.execute(text("RESET app.current_organization_id"))
+    await db.execute(text("RESET app.current_user_id"))
 
 
 async def get_current_tenant(db: AsyncSession) -> int | None:
@@ -358,11 +346,9 @@ async def get_current_tenant(db: AsyncSession) -> int | None:
     Returns:
         The current organization_id, or None if not set
     """
-    result = await db.execute(
-        text("SELECT current_setting('app.current_organization_id', true)")
-    )
+    result = await db.execute(text("SELECT current_setting('app.current_organization_id', true)"))
     value = result.scalar()
-    if value and value not in ('', '-1'):
+    if value and value not in ("", "-1"):
         return int(value)
     return None
 
@@ -423,7 +409,9 @@ def generate_user_owned_rls_policy_sql(table_name: str) -> str:
     current_user_sql = get_current_user_id_sql()
     drop_legacy_policy_sql = ""
     if table_name == "veena_memories_v2":
-        drop_legacy_policy_sql = "DROP POLICY IF EXISTS veena_memories_v2_user_scope ON veena_memories_v2;\n"
+        drop_legacy_policy_sql = (
+            "DROP POLICY IF EXISTS veena_memories_v2_user_scope ON veena_memories_v2;\n"
+        )
 
     return f"""
 -- Enable RLS on {table_name}

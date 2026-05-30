@@ -91,78 +91,99 @@
 
   /* ========== DARK THEME ========== */
   .dark {
-    /* Core colors */
-    --background: 222 47% 11%;
+    /* ============================================
+       CORE FOUNDATION
+       Forest Graphite Theme
+       ============================================ */
+    --background: 155 18% 9%;
     --foreground: 210 40% 98%;
 
-    /* Card & surfaces - slightly lighter than background */
-    --card: 222 47% 14%;
+    /* ============================================
+       SURFACES
+       ============================================ */
+    --card: 155 14% 13%;
     --card-foreground: 210 40% 98%;
-
-    /* Popover & dropdowns - SOLID dark backgrounds */
-    --popover: 222 47% 11%;
+    --popover: 155 18% 10%;
     --popover-foreground: 210 40% 98%;
 
-    /* Primary (green) - WCAG 2 AA Compliant (4.5:1 with white text)
-       Used for button backgrounds - dark green for white text contrast
-       142 76% 25% = #0f7033 → 5.0:1 contrast with white ✓ */
+    /* ============================================
+       PRIMARY BRAND (KEEP EMERALD)
+       ============================================ */
     --primary: 142 76% 25%;
-    --primary-foreground: 0 0% 100%; /* White text for contrast on green */
+    --primary-foreground: 0 0% 100%;
+    /* Better contrast for text usage */
+    --primary-text: 142 70% 62%;
 
-    /* Primary text color for dark mode - lighter green for contrast on dark backgrounds */
-    --primary-text: 142 76% 55%;
+    /* ============================================
+       SECONDARY + MUTED
+       ============================================ */
+    --secondary: 155 10% 18%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 155 8% 18%;
+    --muted-foreground: 215 16% 68%;
 
-    /* Secondary */
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    /* ============================================
+       ACCENTS
+       ============================================ */
+    --accent: 150 18% 20%;
+    --accent-foreground: 150 30% 78%;
 
-    /* Muted */
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    /* Accent */
-    --accent: 142 50% 20%;
-    --accent-foreground: 142 76% 70%;
-
-    /* Destructive */
-    --destructive: 0 62.8% 50%;
+    /* ============================================
+       STATUS COLORS
+       ============================================ */
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Borders & inputs */
-    --border: 217 33% 25%;
-    --input: 217 33% 20%;
-    --ring: 142 76% 46%;
+    /* ============================================
+       INPUTS / BORDERS
+       ============================================ */
+    --border: 155 8% 24%;
+    --input: 155 8% 20%;
+    --ring: 142 70% 48%;
 
-    /* Charts - brighter for dark mode */
-    --chart-1: 142 76% 50%;
-    --chart-2: 173 70% 50%;
-    --chart-3: 197 60% 50%;
-    --chart-4: 43 90% 60%;
-    --chart-5: 27 95% 60%;
+    /* ============================================
+       CHARTS
+       Scientific / Biotech palette
+       ============================================ */
+    --chart-1: 142 70% 52%;
+    --chart-2: 172 58% 52%;
+    --chart-3: 196 52% 52%;
+    --chart-4: 84 62% 58%;
+    --chart-5: 32 82% 58%;
 
-    /* Glass effect - Dark mode */
-    --glass-bg: rgba(30, 41, 59, 0.85);
-    --glass-border: rgba(71, 85, 105, 0.4);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    /* ============================================
+       GLASS EFFECTS
+       ============================================ */
+    --glass-bg: rgba(22, 30, 27, 0.82);
+    --glass-border: rgba(92, 115, 102, 0.22);
+    --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.42);
 
-    /* Dropdown specific - SOLID dark for readability */
-    --dropdown-bg: 30, 41, 59;
-    --dropdown-hover: 51, 65, 85;
-    --dropdown-border: 71, 85, 105;
+    /* ============================================
+       DROPDOWNS
+       ============================================ */
+    --dropdown-bg: 24, 33, 30;
+    --dropdown-hover: 38, 50, 46;
+    --dropdown-border: 60, 76, 70;
 
-    /* App shell visual language */
-    --app-shell-base: 220 8% 15%;
-    --app-shell-panel: 220 9% 18%;
-    --app-shell-chrome: 220 8% 20%;
-    --app-shell-muted: 220 8% 24%;
-    --app-shell-border: 220 8% 31%;
-    --app-shell-glow: 44 52% 58%;
+    /* ============================================
+       APP SHELL
+       Main visual identity
+       ============================================ */
+    --app-shell-base: 155 10% 12%;
+    --app-shell-panel: 155 11% 15%;
+    --app-shell-chrome: 155 10% 18%;
+    --app-shell-muted: 155 8% 22%;
+    --app-shell-border: 155 8% 28%;
+    /* subtle golden glow for premium depth */
+    --app-shell-glow: 48 42% 58%;
+    --app-shell-radiance: 45 72% 62%;
     --app-shell-shadow: 0 0 0;
-    --app-shell-radiance: 46 68% 56%;
+    /* text */
     --app-shell-stage-ink: 210 18% 92%;
-    --app-shell-aurora-1: 50 54% 36%;
-    --app-shell-aurora-2: 195 42% 24%;
-    --app-shell-aurora-3: 225 30% 22%;
+    /* background atmospheric gradients */
+    --app-shell-aurora-1: 145 22% 24%;
+    --app-shell-aurora-2: 165 18% 18%;
+    --app-shell-aurora-3: 185 20% 16%;
   }
 }
 
@@ -200,15 +221,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800;
+  background-color: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  background-color: hsl(var(--border));
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400 dark:bg-gray-500;
+  background-color: hsl(var(--muted-foreground) / 0.4);
 }
 
 /* ============================================
@@ -220,7 +242,16 @@ input[type="password"],
 input[type="number"],
 textarea,
 select {
-  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-gray-700;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
+  color: hsl(var(--muted-foreground) / 0.6);
 }
 
 input[type="text"]:focus,
@@ -229,7 +260,11 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 select:focus {
-  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ring-green-500 dark:ring-green-400 border-green-500 dark:border-green-400;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.25);
 }
 
 /* Animations */
@@ -641,10 +676,6 @@ kbd {
   background-color: hsl(var(--card)) !important;
 }
 
-/* NOTE: .bg-white override removed to allow explicit white backgrounds
-   in dark mode (e.g., buttons with white bg and dark text).
-   Use .bg-surface for auto-switching backgrounds instead. */
-
 /* Hover states */
 .dark .hover\:bg-gray-50:hover {
   background-color: hsl(var(--accent)) !important;
@@ -792,11 +823,11 @@ kbd {
 }
 
 .btn-secondary {
-  @apply bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-gray-200;
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[hsl(155_10%_18%)] dark:hover:bg-[hsl(155_10%_22%)] dark:text-gray-200;
 }
 
 .btn-ghost {
-  @apply hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300;
+  @apply hover:bg-gray-100 dark:hover:bg-[hsl(150_18%_20%)] text-gray-700 dark:text-gray-300;
 }
 
 /* ============================================
@@ -804,11 +835,11 @@ kbd {
    ============================================ */
 
 .sidebar-bg {
-  @apply bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800;
+  @apply bg-white dark:bg-[hsl(155_10%_12%)] border-r border-gray-200 dark:border-[hsl(155_8%_24%)];
 }
 
 .nav-item {
-  @apply text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800;
+  @apply text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[hsl(150_18%_20%)];
 }
 
 .nav-item-active {
@@ -820,11 +851,11 @@ kbd {
    ============================================ */
 
 .header-bg {
-  @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800;
+  @apply bg-white/90 dark:bg-[hsl(155_18%_9%/0.9)] backdrop-blur-md border-b border-gray-200 dark:border-[hsl(155_8%_24%)];
 }
 
 .footer-bg {
-  @apply bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800;
+  @apply bg-white dark:bg-[hsl(155_10%_12%)] border-t border-gray-200 dark:border-[hsl(155_8%_24%)];
 }
 
 /* ============================================
@@ -854,11 +885,11 @@ kbd {
 .slashed-nav-theme {
   /* Force dark theme colors regardless of system theme */
   --nav-bg: transparent;
-  --nav-text: #94a3b8; /* slate-400 */
-  --nav-text-hover: #e2e8f0; /* slate-200 */
+  --nav-text: hsl(155 8% 62%);
+  --nav-text-hover: hsl(155 8% 88%);
   --nav-text-active: #6ee7b7; /* emerald-300 */
-  --nav-border: rgba(255, 255, 255, 0.1);
-  --nav-hover-bg: rgba(255, 255, 255, 0.05);
+  --nav-border: rgba(92, 115, 102, 0.18);
+  --nav-hover-bg: rgba(92, 115, 102, 0.08);
   --nav-active-bg: rgba(16, 185, 129, 0.15); /* emerald-500/15 */
 }
 
@@ -923,18 +954,18 @@ kbd {
 .slashed-nav-theme .text-gray-400,
 .slashed-nav-theme .dark\:text-gray-400,
 .slashed-nav-theme .dark\:text-gray-500 {
-  color: #64748b !important; /* slate-500 */
+  color: hsl(155 8% 48%) !important;
 }
 
 /* Input fields in slashed nav */
 .slashed-nav-theme input {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  background-color: hsl(155 10% 16% / 0.6) !important;
   border-color: var(--nav-border) !important;
-  color: #e2e8f0 !important; /* slate-200 */
+  color: hsl(155 8% 88%) !important;
 }
 
 .slashed-nav-theme input::placeholder {
-  color: #64748b !important; /* slate-500 */
+  color: hsl(155 8% 48%) !important;
 }
 
 .slashed-nav-theme input:focus {

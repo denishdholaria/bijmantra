@@ -1,350 +1,483 @@
-# BUSINESS SOURCE LICENSE
+# BijMantra Commercial Source License 1.0
 
-## Parameters
+Copyright © 2026 Denish Dholaria / BijMantra Project. All rights reserved.
 
-Licensor:             Denish Dholaria
-Licensed Work:        Bijmantra and later versions
-                      The Licensed Work is © 2025 Denish Dholaria
+This is a commercial source-available license. It is not an open-source license, free software license, public-domain dedication, or permissive software license.
 
-Additional Use Grant: You may use the Licensed Work for any purpose,
-                      including production use, provided that you do not
-                      use the Licensed Work for an Excluded Purpose.
-
-                      An "Excluded Purpose" means:
-                    
-                      (a) Offering the Licensed Work to third parties as a
-                          managed service, software-as-a-service (SaaS),
-                          platform-as-a-service (PaaS), or similar offering
-                          where the Licensed Work is a substantial component
-                          of the service, UNLESS you are:
-                          - A For-Profit Agricultural Enterprise with Annual Revenue < $1,000,000 USD
-                          - A government agency or publicly-funded program
-                          - A CGIAR center or affiliated program
-                          - A registered non-profit organization or NGO
-                          - An educational institution (subject to Section 3.2.1)
-                          - A farmer cooperative or producer organization; OR
-                    
-                      (b) Using the Licensed Work in connection with any
-                          Prohibited Technology as defined in the Ethical
-                          Use Restrictions section below.
----
-
-## TERMS AND CONDITIONS
-
-### 1. DEFINITIONS
-
-"Annual Revenue" means the total gross revenue of a Legal Entity and all
-its Affiliates during the most recently completed fiscal year, calculated in
-accordance with generally accepted accounting principles (GAAP).
-
-"For-Profit Agricultural Enterprise" means any Legal Entity engaged in
-commercial seed production, seed sales, crop breeding for profit, agricultural
-biotechnology, agrochemicals, or related agribusiness activities, excluding
-farmer cooperatives and producer organizations.
-
-"Legal Entity" means the union of the acting entity and all other entities
-that control, are controlled by, or are under common control with that entity.
-"Control" means (i) the power to direct the affairs of such entity, or (ii)
-ownership of fifty percent (50%) or more of the outstanding shares or beneficial
-ownership of such entity.
-
-"Licensed Work" means Bijmantra, including all source code, object code,
-documentation, configuration files, assets, and associated materials contained
-in the official repository and distributions.
-
-"Licensor" means Denish Dholaria and his successors and assigns.
-
-"Managed Service" means making the functionality of the Licensed Work
-available to third parties over a computer network as a primary offering,
-including but not limited to software-as-a-service (SaaS), platform-as-a-service
-(PaaS), infrastructure-as-a-service (IaaS), or any hosted or cloud-based offering
-where the Licensed Work is a substantial component.
-
-"Prohibited Technology" means any technology, method, or practice designed to:
-- Restrict the use of genetic material (GURTs)
-- Produce sterile seeds or prevent seed saving (Terminator Technology)
-- Create farmer dependency on proprietary chemicals (Seed Dependency Technology)
-- Prevent farmers from saving, replanting, or sharing seeds
-See Section 4.1 for detailed definitions and exemptions.
-
-"You" (or "Your") means the individual or Legal Entity exercising
-permissions granted by this License.
+Access to the source code does not grant permission to use, deploy, host, commercialize, redistribute, sublicense, modify for operational use, or create derivative products from BijMantra except as expressly permitted in this License or under a separate written agreement signed by Denish Dholaria.
 
 ---
 
-### 2. LICENSE GRANT
+## 1. Project
 
-Subject to the terms and conditions of this License, Licensor hereby grants You
-a worldwide, royalty-free, non-exclusive, non-transferable license to:
+This License applies to the software project known as **BijMantra**, including but not limited to its source code, backend systems, frontend systems, documentation, scripts, schemas, workflows, AI-assisted components, architecture, designs, configuration files, branding assets, and related materials contained in this repository or distributed by the BijMantra Project.
 
-(a) Use the Licensed Work for any purpose not constituting an Excluded Purpose;
-(b) Prepare modifications and derivative works of the Licensed Work;
-(c) Distribute copies of the Licensed Work and derivative works thereof in
-    source code or object code form;
-(d) Publicly display and publicly perform the Licensed Work and derivative
-    works thereof.
-
-This license grant is subject to the Additional Use Grant and Ethical Use
-Restrictions defined in this License.
+For purposes of this License, the terms **“BijMantra,” “Software,” “Project,” “Licensed Materials,”** and **“Work”** refer collectively to the software, documentation, assets, and related materials distributed with this License.
 
 ---
 
-### 3. ADDITIONAL USE GRANT
+## 2. Licensor
 
-You may use the Licensed Work for any purpose, including production use and
-commercial use, EXCEPT for Excluded Purposes.
-Use of the Software is subject to the BijMantra Ethical Use Policy.
-Violation terminates all rights.
+The licensor is:
 
-#### 3.1 EXCLUDED PURPOSES
-
-The following are Excluded Purposes and require a separate Commercial License:
-
-(a) MANAGED SERVICE RESTRICTION
-You may NOT offer the Licensed Work to third parties as a Managed Service without
-a Commercial License, UNLESS you are:
-- A For-Profit Agricultural Enterprise with Annual Revenue < $1,000,000 USD
-- A government agency or publicly-funded breeding program
-- A CGIAR center or affiliated program
-- A registered non-profit organization or NGO
-- An educational institution (subject to institutional licensing in Section 3.2.1)
-- A farmer cooperative or producer organization
-
-(b) PROHIBITED TECHNOLOGY RESTRICTION
-ALL users (regardless of revenue) are prohibited from using the Licensed Work
-in connection with any Prohibited Technology. See Section 4 for details.
-
-#### 3.2 EXEMPTIONS AND GEOGRAPHIC TIERS
-
-The following organizations are EXEMPT from the $1,000,000 USD revenue
-threshold and may use the Licensed Work freely, even for Managed Services:
-
-(a) Government Agencies: Government agencies and publicly-funded breeding
-    programs at all levels (federal, state, local).
-(b) CGIAR and International Programs: CGIAR centers and their affiliated
-    programs, international agricultural research organizations.
-(c) Non-Profit Organizations: Registered non-profit organizations and NGOs
-    engaged in agricultural research, development, or humanitarian work.
-(d) Farmer Cooperatives: Farmer cooperatives and farmer producer organizations,
-    regardless of size or revenue.
-(e) Individual Researchers: Individual researchers, faculty, and students at
-    any educational institution for personal research projects, teaching, coursework,
-    and thesis work. Individual use is always free.
-(f) Educational Institutions: Educational institutions are subject to
-    geographic tiers based on the World Bank income classification of the country
-    where the institution is headquartered. See Section 3.2.1 for details.
-(g) Developing Country Enterprises: For-Profit Agricultural Enterprises
-    headquartered in countries classified as "Low Income" or "Lower-Middle Income"
-    by the World Bank, provided Annual Revenue does not exceed $10,000,000 USD.
-
-#### 3.2.1 GEOGRAPHIC TIERS FOR EDUCATIONAL INSTITUTIONS
-
-Institutional licensing fees for educational institutions are determined by the
-World Bank income classification of the country where the institution is
-headquartered. Individual researcher use remains free in all tiers.
-
-TIER 1: LOW INCOME COUNTRIES
-Status: Free
-All educational and research institutions headquartered in countries classified
-as "Low Income" by the World Bank may use the Licensed Work without any fees.
-Anti-Abuse Provision: This exemption applies ONLY to institutions that are 
-genuinely headquartered and primarily operate in the low-income country.
-
-TIER 2: LOWER-MIDDLE INCOME COUNTRIES
-Status: Free for first 3 years, then minimal fees
-Institutions headquartered in "Lower-Middle Income" countries receive a 3-year
-grace period. After Grace Period (Year 4+):
-- Small institutions (annual agricultural research budget < $5,000,000 USD): Free
-- Medium institutions (research budget $5M - $50M USD): $2,500 USD/year
-- Large institutions (research budget > $50,000,000 USD): $5,000 USD/year
-
-TIER 3: UPPER-MIDDLE INCOME COUNTRIES
-Status: Free for first year, then moderate fees
-Institutions headquartered in "Upper-Middle Income" countries receive a 1-year
-grace period. After Grace Period (Year 2+):
-- Small institutions (annual agricultural research budget < $10,000,000 USD): Free
-- Medium institutions (research budget $10M - $50M USD): $5,000 USD/year
-- Large institutions (research budget > $50,000,000 USD): $10,000 USD/year
-
-TIER 4: HIGH INCOME COUNTRIES
-Status: Standard fees (immediate for institutional use)
-Institutions headquartered in "High Income" countries are subject to immediate
-fees for institutional deployment. 
-Institutional Use Fees:
-- Small institutions (annual agricultural research budget < $10,000,000 USD): Free
-- Medium institutions (research budget $10M - $100M USD): $10,000 - $25,000 USD/year
-- Large institutions (research budget > $100,000,000 USD): $25,000 - $50,000 USD/year
-- Elite institutions (endowment > $1,000,000,000 USD): $50,000 - $100,000 USD/year
-
-#### 3.2.2 GRACE PERIOD MECHANICS
-
-(a) Start Date: Grace period begins on the date of first institutional
-    deployment. Individual researcher use does not trigger the grace period.
-(b) Notification: Institutions must notify Licensor of first institutional
-    deployment within 30 days to establish grace period start date.
-(c) Transition Notice: At end of grace period, institutions receive 90-day
-    advance notice before fees apply.
-(d) Hardship Extension: Institutions may request grace period extension due to
-    financial hardship, natural disasters, or other extraordinary circumstances.
-(e) Verification: Institutions self-report their tier and research budget.
-    Licensor may request verification for large institutions.
-
-#### 3.2.3 ADDITIONAL PROVISIONS
-
-(a) Hardship Waiver: Institutions facing extraordinary financial hardship may
-    apply for fee waivers or reductions.
-(b) Consortium Licensing: Multiple institutions may form consortia to share a
-    single institutional license for a discount.
-(c) Multi-Year Commitment Discount: 3-year commitment (20% discount), 5-year 
-    commitment (30% discount).
-(d) World Bank Classification Updates: If a country's World Bank income
-    classification changes, institutions have 2 years to transition to the new tier.
-
-#### 3.2.4 ANTI-ABUSE AND VERIFICATION
-
-To prevent exploitation of geographic tiers:
-- Institutions must have genuine physical presence and operations in the claimed country.
-- Licensor may verify headquarters location, operations, and primary markets served.
-- Institutions found to be misrepresenting their tier will be reclassified.
-
----
-
-### 4. ETHICAL USE RESTRICTIONS
-
-#### 4.1 PROHIBITED USES
-
-ALL use of the Licensed Work, whether free or under a Commercial License,
-is PROHIBITED in connection with:
-
-(a) Genetic Use Restriction Technologies (GURTs): Any technology that
-    restricts the use of genetic material, including but not limited to technologies
-    that render seeds or plant genetic material sterile, non-viable, or dependent
-    on proprietary chemical inducers.
-(b) Terminator Technology: Any technology designed to produce sterile seeds
-    or prevent farmers from saving, replanting, or sharing seeds.
-(c) Seed Dependency Technology: Any technology that creates farmer
-    dependency on proprietary chemicals.
-(d) Seed Termination: Any method, technology, or practice designed to prevent
-    seeds from being saved, replanted, shared, or used for subsequent generations.
-
-Exemptions: This prohibition does not apply to:
-(a) Chemically-inducible gene expression systems used solely for research
-    purposes in controlled environments;
-(b) Technologies where the activating chemical is publicly available and
-    non-proprietary;
-(c) Biocontainment systems designed primarily for environmental protection;
-(d) Optional trait enhancement systems where base plant functionality
-    remains intact and commercially viable without chemical application.
-
-#### 4.2 AUTOMATIC TERMINATION FOR ETHICAL VIOLATIONS
-
-Any use of the Licensed Work in violation of Section 4.1 results in IMMEDIATE
-and AUTOMATIC termination of all license rights, including any Commercial
-License, without notice and without opportunity to cure.
-
-#### 4.3 CERTIFICATION
-
-By using the Licensed Work, You certify that You will not use the Licensed Work 
-in connection with any Prohibited Technology and will not transfer the Licensed 
-Work to any party engaged in Prohibited Technology activities.
-
----
-
-### 5. ATTRIBUTION REQUIREMENTS
-
-You must retain and display the following attribution in all copies and
-substantial portions of the Licensed Work:
-
-    Powered by Bijmantra
-    Created by Denish Dholaria
-    https://bijmantra.org
-    Licensed under Bijmantra Sustainable License (BSL)
-
-Attribution must be displayed in source code files, user-facing interfaces, 
-and documentation.
-
----
-
-### 6. COMMERCIAL LICENSE
-
-A Commercial License is required if You are a For-Profit Agricultural Enterprise 
-with Annual Revenue ≥ $1,000,000 USD and wish to offer the Licensed Work as a 
-Managed Service. A Commercial License is also required for any user who wishes 
-to remove attribution requirements, create proprietary derivatives without source 
-disclosure, or white-label the Licensed Work.
-
-Commercial License terms are subject to negotiation based on use case, organization 
-size, and deployment scale. Please contact hello@bijmantra.org for inquiries.
-
----
-
-### 7. CHANGE DATE AND CHANGE LICENSE
-
-On the Change Date (January 1, 2029), the Licensed Work will automatically
-convert to the Change License (Apache License 2.0). After the Change Date, You 
-may use the Licensed Work under the terms of the Change License, and the 
-restrictions in this License will no longer apply. This automatic conversion applies 
-to all versions of the Licensed Work released before the Change Date.
-
----
-
-### 8. TRADEMARK AND BRANDING
-
-"Bijmantra" is a trademark of Denish Dholaria. You may use the Bijmantra name 
-and logo solely to accurately identify the Licensed Work as the source of Your 
-derivative work or provide attribution. Without prior written permission, You 
-may NOT use "Bijmantra" in the name of Your product, service, or organization, 
-or use the logo in a manner suggesting endorsement or affiliation.
-
----
-
-### 9. DISCLAIMER OF WARRANTY
-
-THE LICENSED WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
-
----
-
-### 10. LIMITATION OF LIABILITY
-
-TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
-LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL,
-PUNITIVE, OR EXEMPLARY DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS LICENSE 
-OR THE USE OR INABILITY TO USE THE LICENSED WORK. IN NO EVENT SHALL THE LICENSOR'S 
-TOTAL LIABILITY TO YOU FOR ALL DAMAGES EXCEED THE AMOUNT OF FIFTY UNITED STATES 
-DOLLARS (USD $50.00).
-
----
-
-### 11. TERMINATION
-
-This License and all rights granted hereunder will terminate automatically if
-You fail to comply with any term hereof. For breaches other than violations of 
-Section 4, You shall have thirty (30) days from receipt of written notice to cure 
-the breach. Upon termination, You must cease all use and distribution of the 
-Licensed Work.
-
----
-
-### 12. GENERAL PROVISIONS
-
-12.1 ENTIRE AGREEMENT: This License constitutes the entire agreement between You 
-and the Licensor concerning the Licensed Work.
-12.2 SEVERABILITY: If any provision is held invalid, the remaining provisions 
-shall continue in full force and effect.
-12.3 WAIVER: No waiver of any term shall be deemed a further or continuing waiver.
-12.4 ASSIGNMENT: You may not assign this License without prior written consent.
-12.5 GOVERNING LAW: This License shall be governed by the laws of India, with 
-exclusive jurisdiction in the courts located in Gujarat, India.
-12.6 AMENDMENTS: The Licensor may publish revised versions. You may choose to use
-the Licensed Work under any version that was in effect at the time You obtained it.
-
----
-
-### 13. CONTACT INFORMATION
-
-For questions regarding this License or Commercial Licensing:
-Denish Dholaria
-Email: hello@bijmantra.org
+**Denish Dholaria**
+BijMantra Project
 Website: https://bijmantra.org
+Email: [hello@bijmantra.org](mailto:hello@bijmantra.org)
+
+Any commercial, institutional, research, governmental, non-profit, educational, hosted, deployment, redistribution, partnership, pilot, integration, or special-use arrangement must be discussed directly with and approved in writing by Denish Dholaria.
+
+---
+
+## 3. Purpose of This License
+
+BijMantra has required significant personal time, personal funding, infrastructure cost, AI tooling cost, research effort, experimentation, and long-term development work.
+
+The purpose of this License is to preserve public visibility of the project while ensuring that meaningful use of BijMantra contributes to its financial sustainability.
+
+BijMantra’s long-term mission includes public-interest agricultural impact. However, the Project must first become financially sustainable in order to survive, improve, validate, and serve that mission responsibly. For this reason, licensing is structured around paid and negotiated use rather than automatic free access.
+
+---
+
+## 4. Source-Available Status
+
+The source code may be made publicly visible for transparency, review, evaluation, due diligence, and licensing discussions.
+
+Public visibility of the source code does not mean that the Software is free to use.
+
+Unless you have a separate written license agreement with Denish Dholaria, you are not granted any rights beyond the limited review rights expressly described in this License.
+
+---
+
+## 5. Limited Permitted Review Rights
+
+Subject to full compliance with this License, you may, without a separate written agreement:
+
+1. View the source code and documentation.
+2. Download or clone the repository solely for internal review.
+3. Inspect the Software for evaluation, due diligence, security review, academic understanding, or licensing consideration.
+4. Discuss a possible commercial, institutional, research, pilot, or collaboration agreement with Denish Dholaria.
+
+These limited review rights do not include any right to use BijMantra for real operations, production activity, institutional workflows, commercial purposes, public services, internal organizational deployment, hosted access, field deployment, research operations, decision-making, data processing, customer delivery, redistribution, sublicensing, or derivative product development.
+
+---
+
+## 6. No Free Production, Institutional, or Commercial Use
+
+There are no automatic free years, free institutional tiers, free non-profit tiers, free government tiers, free educational tiers, hardship exemptions, public-interest exemptions, or automatic grace periods under this License.
+
+Any such arrangement must be negotiated separately and confirmed in writing by Denish Dholaria.
+
+Without a separate written agreement, you may not use BijMantra for:
+
+1. Commercial use.
+2. Production use.
+3. Institutional use.
+4. Research operations.
+5. Government or public-sector use.
+6. Non-profit or NGO operations.
+7. Educational institution deployment.
+8. Internal organizational workflows.
+9. Field deployment.
+10. Agricultural advisory services.
+11. Seed, breeding, genomics, agronomy, or trial-management operations.
+12. Data processing for real projects, customers, farmers, institutions, or organizations.
+13. AI-assisted decision-making in any operational environment.
+14. Any service, product, platform, pilot, demonstration, proof-of-concept, or deployment involving third parties.
+
+All such uses require a separate written license agreement.
+
+---
+
+## 7. Commercial License Requirement
+
+A separate written commercial license agreement is required for any use of BijMantra involving:
+
+1. Revenue generation.
+2. Business operations.
+3. Consulting services.
+4. Software-as-a-Service or hosted services.
+5. Managed services.
+6. White-labeling.
+7. Resale.
+8. Redistribution.
+9. Customer delivery.
+10. Internal enterprise use.
+11. Institutional deployment.
+12. Government deployment.
+13. NGO deployment.
+14. Research program operations.
+15. Agricultural extension services.
+16. Breeding program operations.
+17. Seed system operations.
+18. Genomics workflows.
+19. Trial-management workflows.
+20. Integration into another product, platform, system, workflow, or service.
+
+Commercial terms, pricing, deployment permissions, support obligations, modification rights, data responsibilities, and permitted scope must be negotiated directly with Denish Dholaria and documented in a separate written agreement.
+
+---
+
+## 8. Negotiated Terms and Conditions
+
+Denish Dholaria may, at his sole discretion, negotiate special terms for selected users or organizations.
+
+Negotiated arrangements may include, but are not limited to:
+
+1. Commercial deployment licenses.
+2. Institutional pilot licenses.
+3. Research collaboration licenses.
+4. Government or public-sector licenses.
+5. Non-profit or humanitarian-use licenses.
+6. Educational-use licenses.
+7. Limited evaluation licenses.
+8. Development partnerships.
+9. Sponsored feature development.
+10. Source-code access agreements.
+11. Support and maintenance agreements.
+12. Revenue-sharing agreements.
+13. Equity, sponsorship, grant, or donor-supported arrangements.
+
+No negotiated term is valid unless agreed in writing by Denish Dholaria.
+
+Informal conversations, emails discussing possibilities, GitHub issues, pull requests, repository access, public statements, or project visibility do not create a license, waiver, partnership, agency relationship, or permission to use the Software.
+
+---
+
+## 9. Prohibited Uses Without Written Permission
+
+Without a separate written agreement, you may not:
+
+1. Run BijMantra in production.
+2. Deploy BijMantra for an organization, institution, company, public body, NGO, research group, university, farmer group, cooperative, or customer.
+3. Host BijMantra for third-party access.
+4. Offer BijMantra as a service.
+5. Use BijMantra to process operational agricultural, breeding, seed, genomic, institutional, or research data.
+6. Use BijMantra in paid consulting, advisory, development, or implementation work.
+7. Modify BijMantra for use in a commercial or institutional environment.
+8. Create a competing product, platform, service, or derivative system based on BijMantra.
+9. Sell, lease, rent, sublicense, white-label, rebrand, or redistribute BijMantra.
+10. Use BijMantra’s source code, architecture, workflows, schemas, models, or documentation to build a substantially similar product or service.
+11. Remove or alter copyright, license, trademark, attribution, or branding notices.
+12. Represent yourself or your organization as the official BijMantra Project.
+13. Use the BijMantra name, logo, domain identity, or branding without written permission.
+14. Claim affiliation, endorsement, authorization, or partnership without written permission.
+15. Use BijMantra in a way that violates this License, applicable law, or the ethical-use restrictions stated below.
+
+---
+
+## 10. Derivative Works and Modifications
+
+You may not create, use, publish, distribute, sell, sublicense, deploy, or operate modified versions, derivative works, forks, adaptations, ports, rewrites, or substantially similar implementations of BijMantra without a separate written agreement.
+
+This restriction includes, but is not limited to:
+
+1. Modified source-code versions.
+2. Private forks used for operational purposes.
+3. Rebranded deployments.
+4. Hosted variants.
+5. Internal enterprise variants.
+6. AI-assisted rewrites of the codebase.
+7. Ports to other languages or frameworks.
+8. Extracted modules or subsystems.
+9. Reuse of architecture, workflow design, database schemas, API structures, scientific models, UI flows, or documentation in another product.
+
+Viewing or studying the repository does not grant permission to reproduce the system, clone its design, or create a competing implementation.
+
+---
+
+## 11. AI-Assisted Use and Model Training
+
+Without a separate written agreement, you may not use BijMantra source code, documentation, architecture, workflows, schemas, data structures, prompts, tests, or related materials for:
+
+1. Training AI models.
+2. Fine-tuning AI models.
+3. Building code-generation systems.
+4. Creating embeddings for commercial or institutional retrieval systems.
+5. Generating substantially similar software.
+6. Automated translation or rewriting into another software stack.
+7. Large-scale code analysis for commercial product development.
+8. Dataset creation for model development.
+9. Any use that would enable reproduction, commercialization, or competitive development of BijMantra or its components.
+
+Limited use of general-purpose developer tools for private review is permitted only to the extent necessary to understand the code during evaluation and only if it does not result in redistribution, operational use, model training, or derivative product development.
+
+---
+
+## 12. No Redistribution or Sublicensing
+
+You may not redistribute, publish, mirror, package, sell, sublicense, transfer, or make available copies of BijMantra or any substantial portion of it without written permission.
+
+This includes redistribution through:
+
+1. Public or private repositories.
+2. Package registries.
+3. Container registries.
+4. Hosted environments.
+5. SaaS platforms.
+6. Internal enterprise portals.
+7. Academic distribution systems.
+8. Training datasets.
+9. AI model datasets.
+10. Commercial software bundles.
+
+Forking on a platform such as GitHub does not create any additional rights beyond those expressly granted in this License.
+
+---
+
+## 13. Branding, Name, Logo, and Domain
+
+The name **“BijMantra,”** the BijMantra logo, project identity, visual assets, official website references, and associated branding are reserved by the BijMantra Project.
+
+You may not use the BijMantra name, logo, branding, domain identity, or project identity in any way that suggests official status, endorsement, affiliation, sponsorship, authorization, or continuity with the official BijMantra Project without written permission.
+
+Third-party deployments, forks, references, articles, demonstrations, or derivative projects must not present themselves as the official BijMantra platform.
+
+The official BijMantra Project is associated only with:
+
+1. https://bijmantra.org
+2. The official GitHub repository designated by Denish Dholaria
+3. Communications authorized by Denish Dholaria
+
+Any other website, domain, deployment, repository, or service using the BijMantra name without authorization is not part of the official BijMantra Project.
+
+---
+
+## 14. Ethical Use Restrictions
+
+BijMantra is intended to support responsible agricultural intelligence, research, breeding, seed-system coordination, institutional workflows, and scientific decision support.
+
+You may not use BijMantra for activities that:
+
+1. Violate applicable law or regulation.
+2. Facilitate fraud, deception, or misrepresentation.
+3. Mislead farmers, institutions, regulators, researchers, or communities.
+4. Misrepresent scientific evidence, agricultural performance, seed quality, genomic results, field-trial results, or institutional reports.
+5. Undermine seed sovereignty, farmer autonomy, lawful local seed systems, or community rights.
+6. Enable exploitative dependency, coercive market capture, or deceptive agricultural advisory practices.
+7. Falsify provenance, evidence, assumptions, uncertainty, trial data, or research outputs.
+8. Support unauthorized surveillance, profiling, or discriminatory targeting of farmers, researchers, institutions, or communities.
+9. Cause or materially increase foreseeable harm to agricultural communities, food systems, ecosystems, or public-interest agricultural infrastructure.
+10. Circumvent biosafety, seed, germplasm, phytosanitary, environmental, research, data-protection, or institutional governance requirements.
+
+These restrictions apply in addition to all commercial-use restrictions in this License.
+
+---
+
+## 15. Data, Privacy, and Regulatory Responsibility
+
+BijMantra may involve agricultural, institutional, scientific, genomic, environmental, operational, or other sensitive data.
+
+You are solely responsible for ensuring that any permitted use of BijMantra complies with all applicable laws, regulations, institutional policies, data-protection rules, privacy obligations, biosafety requirements, research-governance requirements, seed regulations, agricultural regulations, and contractual obligations.
+
+The Licensor does not authorize any use of BijMantra that violates applicable legal, regulatory, ethical, or institutional requirements.
+
+---
+
+## 16. Contributions
+
+The BijMantra Project may accept contributions only under contribution terms approved by Denish Dholaria.
+
+By submitting a contribution, pull request, issue content, code, documentation, design, idea, bug fix, workflow, test, model, prompt, schema, or other material to the BijMantra Project, you agree that:
+
+1. You have the right to submit the contribution.
+2. Your contribution does not knowingly infringe third-party rights.
+3. Your contribution may be reviewed, modified, rejected, or incorporated at the sole discretion of Denish Dholaria.
+4. Unless a separate written contributor agreement states otherwise, submission of a contribution does not grant you ownership, control, commercial rights, governance rights, partnership status, or any right to compensation.
+5. Denish Dholaria may require a separate Contributor License Agreement before accepting or merging contributions.
+
+Major code, documentation, scientific, architectural, or design contributions may not be accepted without a separate written agreement.
+
+---
+
+## 17. Third-Party Components
+
+BijMantra may include, depend on, or interoperate with third-party software, libraries, tools, services, models, datasets, or APIs.
+
+Third-party components are governed by their own license terms, not by this License.
+
+This License applies only to the rights owned or controlled by Denish Dholaria / BijMantra Project.
+
+You are responsible for complying with all applicable third-party license terms, usage restrictions, service terms, model terms, API terms, and data terms.
+
+Nothing in this License grants rights to third-party software, services, models, APIs, datasets, trademarks, or content.
+
+---
+
+## 18. No Implied Rights
+
+No rights are granted except those expressly stated in this License or in a separate written agreement signed by Denish Dholaria.
+
+No rights are granted by implication, estoppel, public availability, repository visibility, issue participation, discussion, email communication, contribution, dependency usage, technical access, or previous informal communication.
+
+All rights not expressly granted are reserved.
+
+---
+
+## 19. License Transition and Supersession
+
+This License supersedes and replaces all prior license notices, public license statements, README license summaries, funding-page statements, sponsorship-page statements, pricing statements, free-use policies, grace-period statements, institutional-access statements, non-profit-use statements, educational-use statements, government-use statements, research-use statements, hardship-waiver statements, collaboration statements, and other prior public or informal licensing language relating to BijMantra, but only with respect to versions, commits, releases, branches, files, documentation, and materials that include or reference this License.
+
+From the effective date of this License, all versions of BijMantra distributed with, referencing, or incorporating this License are governed exclusively by this License unless a separate written agreement signed by Denish Dholaria expressly states otherwise.
+
+No prior README statement, repository notice, documentation page, issue comment, discussion, email, oral conversation, funding document, sponsorship document, public statement, or informal communication grants any right to use, deploy, host, commercialize, redistribute, sublicense, modify for operational use, create derivative works from, or commercially exploit any version of BijMantra governed by this License.
+
+This License does not retroactively revoke rights that were already validly granted under a prior license for an earlier version of BijMantra before that version became subject to this License. Earlier copies that were lawfully obtained under a prior license remain governed by the license terms that validly applied to those specific copies at the time they were obtained.
+
+However, any update, modification, merge, pull, download, clone, fork update, redistribution, deployment, derivative work, or use involving a version of BijMantra that includes or references this License is governed by this License unless a separate written agreement signed by Denish Dholaria states otherwise.
+
+If there is any conflict between this License and any prior public statement, README summary, funding statement, sponsorship statement, collaboration statement, pricing statement, or informal communication, this License controls for all versions and materials governed by this License.
+
+If there is uncertainty about which license applies to a particular version, copy, fork, branch, deployment, or derivative work, you must contact Denish Dholaria and obtain written clarification before using, deploying, modifying, redistributing, sublicensing, or commercially relying on that version.
+
+---
+
+## 20. Termination
+
+Any violation of this License automatically terminates all rights granted to you under this License.
+
+Upon termination, you must immediately:
+
+1. Stop using BijMantra.
+2. Stop accessing or operating any deployment of BijMantra.
+3. Remove BijMantra from any systems under your control.
+4. Stop distributing or sharing any copies.
+5. Destroy or delete unauthorized copies, forks, builds, containers, packages, derivative works, and related materials.
+6. Cease use of the BijMantra name, logo, branding, or identity.
+
+Termination does not limit any rights or remedies available to Denish Dholaria under law, equity, contract, intellectual-property law, or other applicable legal theories.
+
+Sections concerning ownership, prohibited use, ethical restrictions, branding, confidentiality where applicable, warranty disclaimer, liability limitation, enforcement, termination consequences, and governing law survive termination.
+
+---
+
+## 21. Audit and Compliance
+
+For any use under a separate written agreement, Denish Dholaria may require reasonable records, usage information, deployment scope, user counts, infrastructure details, hosted-service details, revenue information, or other compliance information as specified in that written agreement.
+
+Unauthorized use may result in suspension of access, termination of rights, legal action, or commercial licensing claims.
+
+---
+
+## 22. No Support or Maintenance Obligation
+
+Unless agreed in a separate written agreement, Denish Dholaria has no obligation to provide:
+
+1. Support.
+2. Maintenance.
+3. Updates.
+4. Security patches.
+5. Bug fixes.
+6. Documentation updates.
+7. Deployment assistance.
+8. Data migration.
+9. Training.
+10. Warranty.
+11. Availability.
+12. Compatibility.
+13. Continued public access to the repository.
+
+BijMantra may be changed, relicensed, made private, discontinued, reorganized, refactored, or withdrawn at any time, subject to applicable law and any separate written agreements then in effect.
+
+---
+
+## 23. Disclaimer of Warranty
+
+BIJMANTRA AND ALL LICENSED MATERIALS ARE PROVIDED “AS IS,” “AS AVAILABLE,” AND WITHOUT WARRANTY OF ANY KIND.
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, DENISH DHOLARIA AND THE BIJMANTRA PROJECT DISCLAIM ALL WARRANTIES, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, ACCURACY, RELIABILITY, SECURITY, AVAILABILITY, PERFORMANCE, COMPATIBILITY, AND ERROR-FREE OPERATION.
+
+DENISH DHOLARIA DOES NOT WARRANT THAT BIJMANTRA WILL MEET YOUR REQUIREMENTS, OPERATE WITHOUT INTERRUPTION, PRODUCE ACCURATE RESULTS, BE FREE FROM DEFECTS, BE SECURE, BE SUITABLE FOR AGRICULTURAL DECISION-MAKING, OR COMPLY WITH ANY PARTICULAR LEGAL, REGULATORY, SCIENTIFIC, INSTITUTIONAL, OR OPERATIONAL REQUIREMENT.
+
+You are solely responsible for evaluating the suitability, accuracy, safety, compliance, and reliability of BijMantra for any intended use.
+
+---
+
+## 24. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL DENISH DHOLARIA, THE BIJMANTRA PROJECT, CONTRIBUTORS, AFFILIATES, OR LICENSORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, PUNITIVE, OR OTHER DAMAGES ARISING OUT OF OR RELATED TO BIJMANTRA, THIS LICENSE, OR ANY USE OR INABILITY TO USE THE SOFTWARE.
+
+THIS LIMITATION INCLUDES BUT IS NOT LIMITED TO DAMAGES FOR LOST PROFITS, LOST REVENUE, LOST DATA, BUSINESS INTERRUPTION, LOSS OF GOODWILL, AGRICULTURAL LOSS, CROP LOSS, SEED LOSS, RESEARCH LOSS, INSTITUTIONAL LOSS, REGULATORY CONSEQUENCES, SECURITY INCIDENTS, DATA BREACHES, PROCUREMENT LOSSES, DEPLOYMENT FAILURES, OR DECISION-MAKING ERRORS.
+
+THIS LIMITATION APPLIES WHETHER THE CLAIM IS BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY, WARRANTY, STATUTE, OR ANY OTHER LEGAL THEORY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+---
+
+## 25. Indemnity
+
+If you use BijMantra in violation of this License or a separate written agreement, you agree to indemnify, defend, and hold harmless Denish Dholaria, the BijMantra Project, contributors, affiliates, and licensors from and against any claims, losses, damages, liabilities, costs, expenses, penalties, and legal fees arising from or related to:
+
+1. Your unauthorized use of BijMantra.
+2. Your deployment, modification, redistribution, hosting, or commercialization of BijMantra.
+3. Your violation of this License.
+4. Your violation of applicable law or regulation.
+5. Your use of BijMantra with third-party data, systems, models, APIs, or services.
+6. Your agricultural, institutional, scientific, commercial, or operational decisions.
+7. Your infringement or alleged infringement of third-party rights.
+
+---
+
+## 26. Governing Law and Jurisdiction
+
+Unless a separate written agreement states otherwise, this License shall be governed by and interpreted in accordance with the laws of India.
+
+Subject to applicable law, the courts located in Gujarat, India shall have jurisdiction over disputes arising out of or relating to this License, BijMantra, or unauthorized use of the Licensed Materials.
+
+Denish Dholaria may seek injunctive, equitable, or emergency relief in any court of competent jurisdiction to protect intellectual property, confidential information, branding, source code, or other rights.
+
+---
+
+## 27. Severability
+
+If any provision of this License is found to be invalid, unlawful, or unenforceable, the remaining provisions will remain in full force and effect.
+
+The invalid or unenforceable provision shall be interpreted or modified to the minimum extent necessary to make it enforceable while preserving the original intent as closely as possible.
+
+---
+
+## 28. No Waiver
+
+Failure by Denish Dholaria to enforce any provision of this License does not constitute a waiver of any right.
+
+Any waiver must be in writing and signed by Denish Dholaria.
+
+A waiver in one instance does not constitute a waiver in any other instance.
+
+---
+
+## 29. Entire License
+
+This License constitutes the entire license for the Licensed Materials unless replaced or supplemented by a separate written agreement signed by Denish Dholaria.
+
+If you have a separate written agreement with Denish Dholaria, that written agreement controls to the extent it expressly conflicts with this License.
+
+---
+
+## 30. Contact for Licensing
+
+For licensing, deployment, collaboration, institutional use, commercial use, research use, partnership, investment, sponsorship, donation, or negotiated terms, contact:
+
+**Denish Dholaria**
+**BijMantra Project**
+**Email:** [hello@bijmantra.org](mailto:hello@bijmantra.org)
+**Website:** https://bijmantra.org
+
+---
+
+## 31. Plain-Language Summary
+
+This summary is provided for convenience only. The legal terms above control.
+
+BijMantra is visible for review, but it is not free to use.
+
+You may look at the source code for evaluation and licensing discussions.
+
+You may not use, deploy, host, commercialize, redistribute, modify for operational use, white-label, rebrand, or build a product from BijMantra without a separate written agreement.
+
+There are no automatic free years, free tiers, public-interest exceptions, educational exceptions, non-profit exceptions, government exceptions, or hardship exceptions under this License.
+
+Terms can be discussed and negotiated directly with Denish Dholaria.
+
+BijMantra’s mission includes public-interest agricultural impact, but the Project must first become financially sustainable in order to continue.
+
+All rights not expressly granted are reserved.

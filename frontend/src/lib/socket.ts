@@ -95,14 +95,18 @@ class SocketService {
   /**
    * Connect to the socket server
    */
-  connect(userId: string, userName: string): void {
+  connect(userId: string, userName: string, token: string): void {
     if (this.socket?.connected) return
+    if (!token) {
+      console.warn('[Socket] Missing auth token, refusing to connect')
+      return
+    }
 
     this.socket = io(SOCKET_CONFIG.url, {
       path: SOCKET_CONFIG.path,
       transports: ['websocket', 'polling'],
       auth: {
-        userId,
+        token,
         userName,
         color: this.userColor,
       },
@@ -298,15 +302,15 @@ import { useEffect } from 'react'
 import { useAuthStore } from '@/store/auth'
 
 export function useSocket() {
-  const { user } = useAuthStore()
+  const { user, token } = useAuthStore()
   const { isConnected, setConnected, setOnlineUsers, addUser, removeUser, updateUserCursor } =
     useSocketStore()
 
   useEffect(() => {
-    if (!user) return
+    if (!user || !token) return
 
     // Connect with user info
-    socketService.connect(String(user.id), user.full_name)
+    socketService.connect(String(user.id), user.full_name, token)
 
     // Set up event listeners
     const unsubConnect = socketService.on('internal:connected', () => {
@@ -343,7 +347,7 @@ export function useSocket() {
       unsubCursorMove()
       socketService.disconnect()
     }
-  }, [user, setConnected, setOnlineUsers, addUser, removeUser, updateUserCursor])
+  }, [user, token, setConnected, setOnlineUsers, addUser, removeUser, updateUserCursor])
 
   return {
     isConnected,

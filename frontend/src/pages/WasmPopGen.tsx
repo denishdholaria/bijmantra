@@ -11,9 +11,10 @@ import {
   Layers, GitBranch, Sparkles, Download
 } from 'lucide-react';
 import { useWasm, useDiversity, useFst, usePCA } from '@/wasm/hooks';
+import { Spinner } from '@/components/ui/spinner';
 
 function WasmPopGen() {
-  const { isReady, version } = useWasm();
+  const { isLoading, isReady, error, version } = useWasm();
   const { calculate: calcDiv, result: divResult, isCalculating: divCalc } = useDiversity();
   const { calculate: calcFst, result: fstResult, isCalculating: fstCalc } = useFst();
   const { calculate: calcPCA, result: pcaResult, isCalculating: pcaCalc } = usePCA();
@@ -22,6 +23,15 @@ function WasmPopGen() {
   const [samplesPerPop, setSamplesPerPop] = useState(30);
   const [nMarkers, setNMarkers] = useState(500);
   const [fstLevel, setFstLevel] = useState<'low' | 'medium' | 'high'>('medium');
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6 flex items-center justify-center min-h-[200px]">
+        <Spinner aria-label="Loading genomics engine..." className="mr-2" />
+        <p className="text-muted-foreground">Loading WASM engine…</p>
+      </div>
+    );
+  }
 
   // Generate population-structured genotype data
   const generatePopulationData = () => {
@@ -94,9 +104,21 @@ function WasmPopGen() {
             Diversity analysis, Fst, and population structure (PCA)
           </p>
         </div>
-        <Badge variant={isReady ? "default" : "secondary"} className={isReady ? "bg-green-500" : ""}>
-          {isReady ? `⚡ WebAssembly v${version}` : 'Loading...'}
-        </Badge>
+        <div>
+          <Badge variant={isReady ? "success" : "destructive"}>
+            {isReady ? `⚡ WASM v${version}` : 'Engine Not Available'}
+          </Badge>
+          {error && (
+            <div role="alert" className="wasm-error-detail mt-2 rounded border border-destructive/50 bg-destructive/10 p-3 text-sm">
+              <p className="wasm-error-message font-medium text-destructive">
+                {error.message || 'An unknown error occurred during WASM initialisation'}
+              </p>
+              <p className="wasm-error-rebuild mt-1 text-muted-foreground">
+                Run <code className="font-mono">make wasm</code> in the project root to rebuild the engine.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

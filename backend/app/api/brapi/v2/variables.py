@@ -8,12 +8,14 @@ GOVERNANCE.md §4.3.1 Compliant: Fully async implementation.
 """
 
 import uuid
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.brapi.shared.ontology import build_ontology_reference, extract_ontology_fields
 from app.api.deps import get_current_user, get_optional_user
 from app.middleware.tenant_context import get_tenant_db
 from app.models.phenotyping import ObservationVariable
@@ -52,6 +54,10 @@ class VariableBase(BaseModel):
     # Ontology
     ontologyDbId: str | None = None
     ontologyName: str | None = None
+    ontologyTermId: str | None = None
+    ontologyVersion: str | None = None
+    ontologyDocumentationLinks: list[dict[str, Any]] | None = None
+    ontologyReference: dict[str, Any] | None = None
 
 
 class VariableCreate(VariableBase):
@@ -109,12 +115,13 @@ def _model_to_brapi(var: ObservationVariable) -> dict:
         }
         if var.scale_name
         else None,
-        "ontologyReference": {
-            "ontologyDbId": var.ontology_db_id,
-            "ontologyName": var.ontology_name,
-        }
-        if var.ontology_name
-        else None,
+        "ontologyReference": build_ontology_reference(
+            ontology_db_id=var.ontology_db_id,
+            ontology_name=var.ontology_name,
+            ontology_term_id=var.ontology_term_id,
+            ontology_version=var.ontology_version,
+            ontology_documentation_links=var.ontology_documentation_links,
+        ),
         "additionalInfo": var.additional_info,
         "externalReferences": var.external_references,
     }
@@ -223,6 +230,14 @@ async def create_variable(
     """
     org_id = current_user.organization_id if current_user else None
     var_db_id = f"var_{uuid.uuid4().hex[:12]}"
+    ontology_fields = extract_ontology_fields(
+        variable.ontologyReference,
+        ontology_db_id=variable.ontologyDbId,
+        ontology_name=variable.ontologyName,
+        ontology_term_id=variable.ontologyTermId,
+        ontology_version=variable.ontologyVersion,
+        ontology_documentation_links=variable.ontologyDocumentationLinks,
+    )
 
     new_var = ObservationVariable(
         organization_id=org_id,
@@ -250,8 +265,11 @@ async def create_variable(
         data_type=variable.dataType,
         decimal_places=variable.decimalPlaces,
         valid_values=variable.validValues,
-        ontology_db_id=variable.ontologyDbId,
-        ontology_name=variable.ontologyName,
+        ontology_db_id=ontology_fields["ontology_db_id"],
+        ontology_name=ontology_fields["ontology_name"],
+        ontology_term_id=ontology_fields["ontology_term_id"],
+        ontology_version=ontology_fields["ontology_version"],
+        ontology_documentation_links=ontology_fields["ontology_documentation_links"],
     )
 
     db.add(new_var)
@@ -290,6 +308,8 @@ async def get_variable(
     stmt = select(ObservationVariable).where(
         ObservationVariable.observation_variable_db_id == observationVariableDbId
     )
+    if current_user and current_user.organization_id:
+        stmt = stmt.where(ObservationVariable.organization_id == current_user.organization_id)
     result = await db.execute(stmt)
     var = result.scalar_one_or_none()
 
@@ -330,6 +350,8 @@ async def update_variable(
     stmt = select(ObservationVariable).where(
         ObservationVariable.observation_variable_db_id == observationVariableDbId
     )
+    if current_user and current_user.organization_id:
+        stmt = stmt.where(ObservationVariable.organization_id == current_user.organization_id)
     result = await db.execute(stmt)
     var = result.scalar_one_or_none()
 
@@ -357,6 +379,26 @@ async def update_variable(
         var.data_type = variable.dataType
     if variable.status:
         var.status = variable.status
+
+    if (
+        variable.ontologyReference is not None
+        or variable.ontologyDbId is not None
+        or variable.ontologyName is not None
+        or variable.ontologyTermId is not None
+        or variable.ontologyVersion is not None
+        or variable.ontologyDocumentationLinks is not None
+    ):
+        ontology_fields = extract_ontology_fields(
+            variable.ontologyReference,
+            ontology_db_id=variable.ontologyDbId,
+            ontology_name=variable.ontologyName,
+            ontology_term_id=variable.ontologyTermId,
+            ontology_version=variable.ontologyVersion,
+            ontology_documentation_links=variable.ontologyDocumentationLinks,
+        )
+        for attr, value in ontology_fields.items():
+            if value is not None:
+                setattr(var, attr, value)
 
     await db.commit()
     await db.refresh(var)
@@ -393,6 +435,8 @@ async def delete_variable(
     stmt = select(ObservationVariable).where(
         ObservationVariable.observation_variable_db_id == observationVariableDbId
     )
+    if current_user and current_user.organization_id:
+        stmt = stmt.where(ObservationVariable.organization_id == current_user.organization_id)
     result = await db.execute(stmt)
     var = result.scalar_one_or_none()
 

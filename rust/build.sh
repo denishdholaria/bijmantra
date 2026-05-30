@@ -18,11 +18,13 @@ echo "✅ WASM module built successfully!"
 echo "📦 Output: frontend/src/wasm/pkg/"
 
 # Copy to public folder for direct loading
+# The frontend loader references bijmantra_genomics.js / bijmantra_genomics_bg.wasm
+# so we copy the pkg output under those canonical names.
 mkdir -p ../frontend/public/wasm
-cp ../frontend/src/wasm/pkg/*.wasm ../frontend/public/wasm/
-cp ../frontend/src/wasm/pkg/*.js ../frontend/public/wasm/
+cp ../frontend/src/wasm/pkg/bijmantra_compute_bg.wasm ../frontend/public/wasm/bijmantra_genomics_bg.wasm
+cp ../frontend/src/wasm/pkg/bijmantra_compute.js      ../frontend/public/wasm/bijmantra_genomics.js
 
-echo "📁 Copied to frontend/public/wasm/"
+echo "📁 Copied to frontend/public/wasm/ (as bijmantra_genomics_bg.wasm / bijmantra_genomics.js)"
 echo ""
 echo "🚀 Usage in React:"
 echo "   import init, { calculate_grm } from '@/wasm/pkg';"

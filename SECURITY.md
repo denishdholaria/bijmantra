@@ -2,7 +2,7 @@
 
 ## Overview
 
-Bijmantra implements the Ashtastambha security framework — Pillars of Protection designed for agricultural research environments.
+Bijmantra implements the AshtaStambha security framework — Pillars of Protection designed for agricultural research environments.
 
 🌐 **Website:** [bijmantra.org](https://bijmantra.org)
 
@@ -14,6 +14,7 @@ Bijmantra implements the Ashtastambha security framework — Pillars of Protecti
 - Comprehensive audit logging
 - OWASP-compliant security headers
 - JWT-based authentication with RBAC
+- Keycloak integration
 
 ## Supported Versions
 

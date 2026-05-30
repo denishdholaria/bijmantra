@@ -653,7 +653,7 @@ class DemoIoTSeeder(BaseSeeder):
         return count
 
     def clear(self) -> int:
-        """Clear demo IoT data"""
+        """Clear demo IoT data — scoped to Demo Organization records only."""
         from app.models.core import Organization
 
         count = 0
@@ -663,16 +663,85 @@ class DemoIoTSeeder(BaseSeeder):
         if not demo_org:
             return 0
 
-        # Delete in reverse order of dependencies
-        count += self.db.query(IoTAggregate).delete()
-        count += self.db.query(IoTEnvironmentLink).delete()
-        count += self.db.query(IoTAlertEvent).delete()
+        org_id = demo_org.id
+
+        # Derive the exact seeded IDs so we never touch other tenants' records.
+        seeded_device_db_ids = [
+            "DEV-WS-001",
+            "DEV-SP-001",
+            "DEV-SP-002",
+            "DEV-PS-001",
+            "DEV-WL-001",
+        ]
+        seeded_sensor_db_ids = [
+            "SEN-001-TEMP", "SEN-001-HUM", "SEN-001-PRES", "SEN-001-WIND", "SEN-001-RAIN",
+            "SEN-002-SM", "SEN-002-ST", "SEN-002-EC", "SEN-002-PH",
+            "SEN-003-SM", "SEN-003-ST",
+            "SEN-004-LW", "SEN-004-CT", "SEN-004-PAR",
+            "SEN-005-WL", "SEN-005-WT", "SEN-005-FR",
+        ]
+        seeded_event_db_ids = [
+            stable_demo_code("ALERT", "Low battery warning on Soil Probe Block B (15%)"),
+            stable_demo_code("ALERT", "High temperature alert: 38.5°C exceeds threshold of 35°C"),
+            stable_demo_code("ALERT", "Low soil moisture: 28% below threshold of 30%"),
+        ]
+        seeded_environment_db_ids = [
+            "env-kharif-2025-field-a",
+            "env-kharif-2025-field-b",
+        ]
+
+        # Resolve device PKs for sensor/telemetry/environment-link scoping
+        device_ids = [
+            row[0]
+            for row in self.db.query(IoTDevice.id)
+            .filter(IoTDevice.device_db_id.in_(seeded_device_db_ids))
+            .all()
+        ]
+        sensor_ids = [
+            row[0]
+            for row in self.db.query(IoTSensor.id)
+            .filter(IoTSensor.sensor_db_id.in_(seeded_sensor_db_ids))
+            .all()
+        ]
+
+        # Delete in reverse dependency order
         count += (
-            self.db.query(IoTAlertRule).filter(IoTAlertRule.organization_id == demo_org.id).delete()
+            self.db.query(IoTAggregate)
+            .filter(IoTAggregate.environment_db_id.in_(seeded_environment_db_ids))
+            .delete(synchronize_session=False)
         )
-        count += self.db.query(IoTTelemetry).delete()
-        count += self.db.query(IoTSensor).delete()
-        count += self.db.query(IoTDevice).filter(IoTDevice.organization_id == demo_org.id).delete()
+        if device_ids:
+            count += (
+                self.db.query(IoTEnvironmentLink)
+                .filter(IoTEnvironmentLink.device_id.in_(device_ids))
+                .delete(synchronize_session=False)
+            )
+        count += (
+            self.db.query(IoTAlertEvent)
+            .filter(IoTAlertEvent.event_db_id.in_(seeded_event_db_ids))
+            .delete(synchronize_session=False)
+        )
+        count += (
+            self.db.query(IoTAlertRule)
+            .filter(IoTAlertRule.organization_id == org_id)
+            .delete(synchronize_session=False)
+        )
+        if sensor_ids:
+            count += (
+                self.db.query(IoTTelemetry)
+                .filter(IoTTelemetry.sensor_id.in_(sensor_ids))
+                .delete(synchronize_session=False)
+            )
+        count += (
+            self.db.query(IoTSensor)
+            .filter(IoTSensor.sensor_db_id.in_(seeded_sensor_db_ids))
+            .delete(synchronize_session=False)
+        )
+        count += (
+            self.db.query(IoTDevice)
+            .filter(IoTDevice.organization_id == org_id)
+            .delete(synchronize_session=False)
+        )
 
         self.db.commit()
         logger.info(f"Cleared {count} IoT records")

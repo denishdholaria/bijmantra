@@ -111,9 +111,9 @@ const wrap = (Component: React.LazyExoticComponent<any> | React.ComponentType) =
 
 export const coreRoutes: RouteObject[] = [
   // Public
-  { path: '/', element: <Navigate to="/dashboard" replace /> },
+  { path: '/', element: <ProtectedRoute><Navigate to="/dashboard" replace /></ProtectedRoute> },
   { path: '/login', element: <Login /> },
-  { path: '/gateway', element: <Navigate to="/dashboard" replace /> },
+  { path: '/gateway', element: <ProtectedRoute><Navigate to="/dashboard" replace /></ProtectedRoute> },
   
   // Dashboard & Profile
   { path: '/dashboard', element: wrap(Dashboard) },

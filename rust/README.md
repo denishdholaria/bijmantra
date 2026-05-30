@@ -47,19 +47,33 @@ rustup target add wasm32-unknown-unknown
 cargo install wasm-pack
 ```
 
-### Build
+## Build
+
+### Rebuild the WASM engine
 
 ```bash
-cd rust
-chmod +x build.sh
-./build.sh
+make wasm
 ```
 
-This will:
-1. Compile Rust to WebAssembly
-2. Generate JavaScript bindings
-3. Copy files to `frontend/src/wasm/pkg/`
-4. Copy WASM files to `frontend/public/wasm/`
+This runs `wasm-pack build --target web --release` and copies the output to
+`frontend/public/wasm/`. Restart the Vite dev server after rebuilding.
+
+### Check if the binary is stale
+
+```bash
+make check-wasm-sync
+```
+
+Exits with code 1 and prints a warning if `rust/Cargo.lock` is newer than
+`frontend/public/wasm/bijmantra_genomics_bg.wasm`. Run `make wasm` to fix.
+
+### Frontend pages that depend on this engine
+
+- `/wasm-genomics` — Dataset-driven Genomics
+- `/wasm-gblup` — GBLUP estimation
+- `/wasm-popgen` — Population genetics
+- `/wasm-ld` — Linkage disequilibrium
+- `/wasm-selection` — Selection index
 
 ## 🔧 Usage
 

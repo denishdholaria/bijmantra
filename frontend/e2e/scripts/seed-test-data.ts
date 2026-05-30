@@ -17,7 +17,7 @@ async function seedTestData() {
   const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' })
   const page = await context.newPage()
   
-  const baseURL = process.env.E2E_BASE_URL || 'http://localhost:5173'
+  const baseURL = process.env.E2E_BASE_URL || 'http://localhost:5656'
   const ids: Record<string, string> = {}
 
   try {

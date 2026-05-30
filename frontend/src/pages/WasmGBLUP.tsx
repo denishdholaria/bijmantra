@@ -12,6 +12,7 @@ import {
   ArrowUpDown, Download, Sparkles, Server, Cpu, Layers
 } from 'lucide-react';
 import { useWasm, useGBLUP, useGRM } from '@/wasm/hooks';
+import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -76,7 +77,7 @@ const apiCall = async (endpoint: string, method: string, body?: unknown) => {
 };
 
 function WasmGBLUP() {
-  const { isReady, version } = useWasm();
+  const { isLoading, isReady, error, version } = useWasm();
   const { calculate: calcGRM, result: grmResult } = useGRM();
   const { calculate: calcGBLUP, result: gblupResult } = useGBLUP();
 
@@ -123,6 +124,10 @@ function WasmGBLUP() {
   useEffect(() => {
     generateNewPopulation();
   }, [generateNewPopulation]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center p-8 text-muted-foreground"><Spinner aria-label="Loading genomics engine..." className="mr-2" />Loading genomics engine...</div>;
+  }
 
   const runGMatrix = async () => {
     if (engine === 'wasm') {
@@ -274,9 +279,21 @@ function WasmGBLUP() {
              </Button>
            </div>
            {engine === 'wasm' && (
-             <Badge variant={isReady ? "outline" : "secondary"} className={isReady ? "text-green-600 border-green-600" : ""}>
-               {isReady ? `v${version}` : 'Loading...'}
-             </Badge>
+             <>
+               <Badge variant={isReady ? "success" : "destructive"}>
+                 {isReady ? `WASM v${version}` : 'Engine Not Available'}
+               </Badge>
+               {error && (
+                 <div role="alert" className="wasm-error-detail mt-2 rounded border border-destructive/50 bg-destructive/10 p-3 text-sm">
+                   <p className="wasm-error-message font-medium text-destructive">
+                     {error.message || 'An unknown error occurred during WASM initialisation'}
+                   </p>
+                   <p className="wasm-error-rebuild mt-1 text-muted-foreground">
+                     Run <code className="font-mono">make wasm</code> in the project root to rebuild the engine.
+                   </p>
+                 </div>
+               )}
+             </>
            )}
         </div>
       </div>
@@ -399,7 +416,7 @@ function WasmGBLUP() {
 
               <Button 
                 onClick={runAnalysis}
-                disabled={loading || !gMatrixReady}
+                disabled={loading || !gMatrixReady || (engine === 'wasm' && !isReady)}
                 variant={gMatrixReady ? "default" : "secondary"}
                 className="w-full"
               >

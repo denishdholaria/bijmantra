@@ -1,6 +1,6 @@
 # InitializeApp.ps1 - First-time setup for Bijmantra on Windows.
 # Prepares the local development environment; it is not the daily startup script.
-#
+# THIS SCRIPT MAY NEED UPDATE (DATE: 2026-MAY-28) AS IT FOR WINDOWS, I HAVE NOT TESTED IT.
 # After running this, use Git Bash or WSL to run: ./dev.sh
 
 $ErrorActionPreference = "Stop"

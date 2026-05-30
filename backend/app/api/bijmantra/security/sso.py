@@ -9,11 +9,16 @@ import os
 import secrets
 import time
 
-from fastapi import APIRouter, Form, HTTPException, Request
+from fastapi import APIRouter, Form, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 
+from app.core.config import settings
 from app.core.security import create_access_token
-from app.modules.core.services.infra.saml_oidc_auth_provider import AuthError, SSOConfig, get_auth_provider
+from app.modules.core.services.infra.saml_oidc_auth_provider import (
+    AuthError,
+    SSOConfig,
+    get_auth_provider,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -21,6 +26,15 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/sso", tags=["Single Sign-On"])
 STATE_TTL_SECONDS = 600
 _state_store: dict[str, dict[str, str | float]] = {}
+_PRODUCTION_ENVIRONMENTS = {"prod", "production"}
+
+
+def _require_legacy_sso_enabled() -> None:
+    if settings.ENVIRONMENT.lower() in _PRODUCTION_ENVIRONMENTS or not settings.LEGACY_SSO_ENABLED:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Legacy SSO is disabled. Use the Keycloak OIDC migration path.",
+        )
 
 
 def _cleanup_expired_states() -> None:
@@ -102,6 +116,7 @@ async def sso_login(
     redirect_to: str | None = None
 ):
     """Initiate SSO login flow."""
+    _require_legacy_sso_enabled()
     config = get_sso_config(provider_id)
     provider = get_auth_provider(config)
 
@@ -136,6 +151,7 @@ async def sso_oidc_callback(
     state: str
 ):
     """Handle OIDC Callback."""
+    _require_legacy_sso_enabled()
     config = get_sso_config(provider_id)
     if config.type != "oidc":
          raise HTTPException(status_code=400, detail="Invalid provider type for this endpoint")
@@ -158,7 +174,7 @@ async def sso_oidc_callback(
         # Security Note: Passing token in URL fragment is standard for implicit flow,
         # but for code flow we usually set a cookie or return HTML with postMessage.
         # Here we redirect to a frontend handler route.
-        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5656")
         target_url = f"{frontend_url}/auth/callback?token={access_token}&redirect_to={redirect_to}"
 
         return RedirectResponse(target_url)
@@ -179,6 +195,7 @@ async def sso_saml_callback(
     RelayState: str = Form(None)
 ):
     """Handle SAML Callback (POST)."""
+    _require_legacy_sso_enabled()
     config = get_sso_config(provider_id)
     if config.type != "saml":
          raise HTTPException(status_code=400, detail="Invalid provider type for this endpoint")
@@ -200,7 +217,7 @@ async def sso_saml_callback(
             data={"sub": auth_user.email, "provider": provider_id, "name": auth_user.name}
         )
 
-        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5656")
         target_url = f"{frontend_url}/auth/callback?token={access_token}&redirect_to={redirect_to}"
 
         return RedirectResponse(target_url, status_code=303) # 303 See Other for POST -> GET redirect

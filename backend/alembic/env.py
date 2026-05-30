@@ -18,8 +18,9 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import all models here to ensure they are registered with Base
-from app.models import Location, Organization, Person, Program, Study, Trial, User
+from app.models import AuthIdentity, Location, Organization, Person, Program, Study, Trial, User
 from app.models.compute_job import ComputeJob  # noqa: F401 — registers table in Base.metadata
+from app.models.platform import OrganizationCapabilityInstallation  # noqa: F401
 
 
 # Alembic Config object

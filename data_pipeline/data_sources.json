@@ -1,0 +1,350 @@
+{
+  "germplasm": [
+    {
+      "name": "GENESYS PGR",
+      "url": "https://www.genesys-pgr.org/documentation/apis",
+      "endpoint": "https://api.genesys-pgr.org",
+      "format": "JSON API",
+      "update_frequency": "continuous contributor updates",
+      "coverage": "plant genetic resources accessions from CGIAR and national genebanks",
+      "provenance_notes": "Use accessionNumber, instituteCode, taxonomy, geography, and DOI/passport fields where available."
+    },
+    {
+      "name": "USDA GRIN-Global / NPGS",
+      "url": "https://www.ars-grin.gov/",
+      "endpoint": "https://npgsweb.ars-grin.gov/gringlobal/search",
+      "format": "web export / GRIN-Global records",
+      "update_frequency": "curated genebank updates",
+      "coverage": "USDA National Plant Germplasm System accessions and taxonomy",
+      "provenance_notes": "Use for accession provenance, taxonomy, institute, biological status, and collection metadata."
+    },
+    {
+      "name": "GBIF Species API",
+      "url": "https://techdocs.gbif.org/en/openapi/",
+      "endpoint": "https://api.gbif.org/v1/species/match",
+      "format": "JSON REST API",
+      "update_frequency": "stable API with backbone updates",
+      "coverage": "taxonomy matching, species names, higher taxonomy, occurrence support",
+      "provenance_notes": "Use species matching and occurrence search to normalize botanical names and distribution evidence."
+    }
+  ],
+  "phenotyping": [
+    {
+      "name": "Crop Ontology",
+      "url": "https://cropontology.org/api_help",
+      "endpoint": "https://cropontology.org/brapi/v1/traits/{ontologyID}",
+      "format": "BrAPI-style JSON and RDF",
+      "update_frequency": "curated ontology releases",
+      "coverage": "crop trait dictionaries, methods, scales, and ontology identifiers",
+      "provenance_notes": "Use as source authority for observation variable names, methods, and scale metadata."
+    },
+    {
+      "name": "BrAPI V2 Test Server",
+      "url": "https://test-server.brapi.org/brapi/v2/",
+      "endpoint": "https://test-server.brapi.org/brapi/v2/variables",
+      "format": "JSON BrAPI v2",
+      "update_frequency": "test server refreshes as BrAPI examples evolve",
+      "coverage": "example variables, observations, studies, trials, germplasm",
+      "provenance_notes": "Use for contract-shaped sample responses and BrAPI schema alignment, not as production truth."
+    },
+    {
+      "name": "CGIAR Dataverse",
+      "url": "https://dataverse.harvard.edu/dataverse/cgiar",
+      "endpoint": "https://dataverse.harvard.edu/api/search?q=phenotyping",
+      "format": "CSV, XLSX, JSON metadata, tabular datasets",
+      "update_frequency": "dataset deposit driven",
+      "coverage": "crop research datasets from CGIAR centers",
+      "provenance_notes": "Use dataset citations and license metadata when importing observed phenotypes."
+    }
+  ],
+  "genotyping": [
+    {
+      "name": "Ensembl Plants",
+      "url": "https://plants.ensembl.org/info/data/ftp/index.html",
+      "endpoint": "https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/",
+      "format": "FASTA, GFF3, VCF, TSV",
+      "update_frequency": "Ensembl Genomes release cycle",
+      "coverage": "plant reference genomes, gene models, variation resources",
+      "provenance_notes": "Use for reference sets, genes, coordinates, and genome map metadata."
+    },
+    {
+      "name": "NCBI Datasets / Assembly",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/docs/v2/",
+      "endpoint": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome",
+      "format": "JSON API, FASTA, GFF3",
+      "update_frequency": "continuous archive updates",
+      "coverage": "reference assemblies and genome annotation packages",
+      "provenance_notes": "Use assembly accession and BioProject metadata for reference provenance."
+    },
+    {
+      "name": "Gramene",
+      "url": "https://www.gramene.org/",
+      "endpoint": "https://data.gramene.org/",
+      "format": "genomic database exports and web APIs",
+      "update_frequency": "curated release cycle",
+      "coverage": "comparative plant genomics, pathways, QTL and gene resources",
+      "provenance_notes": "Use for crop genome context and gene/QTL links where available."
+    }
+  ],
+  "trials": [
+    {
+      "name": "BrAPI V2 Test Server Studies",
+      "url": "https://test-server.brapi.org/brapi/v2/",
+      "endpoint": "https://test-server.brapi.org/brapi/v2/studies",
+      "format": "JSON BrAPI v2",
+      "update_frequency": "test server refreshes as BrAPI examples evolve",
+      "coverage": "example studies and trials",
+      "provenance_notes": "Use for schema-shaped trial/study examples."
+    },
+    {
+      "name": "CGIAR Dataverse Trial Data",
+      "url": "https://dataverse.harvard.edu/dataverse/cgiar",
+      "endpoint": "https://dataverse.harvard.edu/api/search?q=trial",
+      "format": "CSV, XLSX, tabular metadata",
+      "update_frequency": "dataset deposit driven",
+      "coverage": "international crop trial datasets and metadata",
+      "provenance_notes": "Use with citation and license metadata for trial observations."
+    },
+    {
+      "name": "FAOSTAT Crops and Livestock Products",
+      "url": "https://www.fao.org/faostat/en/#data/QCL",
+      "endpoint": "https://fenixservices.fao.org/faostat/api/v1",
+      "format": "JSON, CSV bulk downloads",
+      "update_frequency": "annual country updates",
+      "coverage": "area harvested, production quantity, yield, country/year/crop series",
+      "provenance_notes": "Use for crop-level yield baselines, not plot-level trial truth."
+    }
+  ],
+  "observations": [
+    {
+      "name": "BrAPI V2 Test Server Observations",
+      "url": "https://test-server.brapi.org/brapi/v2/",
+      "endpoint": "https://test-server.brapi.org/brapi/v2/observations",
+      "format": "JSON BrAPI v2",
+      "update_frequency": "test server refreshes as BrAPI examples evolve",
+      "coverage": "example observations and observation units",
+      "provenance_notes": "Use for shape validation and sample response tests."
+    },
+    {
+      "name": "Crop Ontology Trait Scales",
+      "url": "https://cropontology.org/api_help",
+      "endpoint": "https://cropontology.org/brapi/v1/traits/{ontologyID}",
+      "format": "JSON, RDF",
+      "update_frequency": "curated ontology releases",
+      "coverage": "trait methods, scales, and valid values",
+      "provenance_notes": "Use to validate trait-value ranges and observation variable metadata."
+    },
+    {
+      "name": "FAOSTAT Yield Series",
+      "url": "https://www.fao.org/faostat/en/#data/QCL",
+      "endpoint": "https://fenixservices.fao.org/faostat/api/v1",
+      "format": "JSON, CSV bulk downloads",
+      "update_frequency": "annual",
+      "coverage": "national crop yield baselines",
+      "provenance_notes": "Use to anchor synthetic plot-scale yield distributions."
+    }
+  ],
+  "seed_bank": [
+    {
+      "name": "GENESYS PGR",
+      "url": "https://www.genesys-pgr.org/documentation/apis",
+      "endpoint": "https://api.genesys-pgr.org",
+      "format": "JSON API",
+      "update_frequency": "continuous contributor updates",
+      "coverage": "genebank accessions and passport data",
+      "provenance_notes": "Use for accession and donor metadata."
+    },
+    {
+      "name": "Svalbard Global Seed Vault Data Portal",
+      "url": "https://seedvault.nordgen.org/",
+      "endpoint": "https://seedvault.nordgen.org/",
+      "format": "web portal / downloadable records",
+      "update_frequency": "deposit updates",
+      "coverage": "safety duplicate seed deposits by institute and crop",
+      "provenance_notes": "Use for conservation context, not tenant inventory quantities."
+    },
+    {
+      "name": "USDA GRIN-Global",
+      "url": "https://www.ars-grin.gov/",
+      "endpoint": "https://npgsweb.ars-grin.gov/gringlobal/search",
+      "format": "web export / GRIN-Global records",
+      "update_frequency": "curated genebank updates",
+      "coverage": "plant germplasm collections, requests, taxonomy, inventories",
+      "provenance_notes": "Use for accession source and inventory-like conservation signals."
+    }
+  ],
+  "environmental": [
+    {
+      "name": "NASA POWER Daily API",
+      "url": "https://power.larc.nasa.gov/docs/services/api/temporal/daily/",
+      "endpoint": "https://power.larc.nasa.gov/api/temporal/daily/point",
+      "format": "JSON, CSV, NetCDF, ICASA",
+      "update_frequency": "daily, near real time",
+      "coverage": "solar and meteorological data for agroclimatology",
+      "provenance_notes": "Use for GDD, rainfall, photothermal and stress-index enrichment."
+    },
+    {
+      "name": "Open-Meteo Historical Weather API",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api",
+      "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+      "format": "JSON, CSV",
+      "update_frequency": "weather archive updates",
+      "coverage": "weather time series by lat/lon",
+      "provenance_notes": "Use for fallback public weather enrichment where license permits."
+    },
+    {
+      "name": "ISRIC SoilGrids",
+      "url": "https://soilgrids.org/",
+      "endpoint": "https://rest.isric.org/soilgrids/v2.0/properties/query",
+      "format": "JSON REST API, GeoTIFF",
+      "update_frequency": "model release updates",
+      "coverage": "global gridded soil properties",
+      "provenance_notes": "Use for soil profile defaults and uncertainty-aware soil context."
+    }
+  ],
+  "field_operations": [
+    {
+      "name": "BrAPI Field Layout Surfaces",
+      "url": "https://brapi.org/specification",
+      "endpoint": "https://test-server.brapi.org/brapi/v2/observationunits",
+      "format": "JSON BrAPI v2",
+      "update_frequency": "specification/test-server updates",
+      "coverage": "observation units, locations, studies, and events",
+      "provenance_notes": "Use for field-book compatible schema shapes."
+    },
+    {
+      "name": "Field Book App Exports",
+      "url": "https://www.phenoapps.org/apps/field-book/",
+      "endpoint": "local CSV imports",
+      "format": "CSV",
+      "update_frequency": "operator import driven",
+      "coverage": "plot-level field book trait observations",
+      "provenance_notes": "Use as local/manual data source when operators upload exports."
+    },
+    {
+      "name": "NASA POWER Agroclimatology",
+      "url": "https://power.larc.nasa.gov/docs/services/api/temporal/daily/",
+      "endpoint": "https://power.larc.nasa.gov/api/temporal/daily/point",
+      "format": "JSON, CSV, ICASA",
+      "update_frequency": "daily",
+      "coverage": "field weather context",
+      "provenance_notes": "Use to enrich planting, irrigation, and stress context."
+    }
+  ],
+  "gwas": [
+    {
+      "name": "GWAS Catalog",
+      "url": "https://www.ebi.ac.uk/gwas/docs/api",
+      "endpoint": "https://www.ebi.ac.uk/gwas/rest/api",
+      "format": "JSON REST API",
+      "update_frequency": "regular catalog releases",
+      "coverage": "published GWAS associations, mostly human but useful API pattern and selected plant studies",
+      "provenance_notes": "Use plant records where available and always cite source study."
+    },
+    {
+      "name": "Rice 3K / SNP-Seek",
+      "url": "https://snp-seek.irri.org/",
+      "endpoint": "https://snp-seek.irri.org/",
+      "format": "VCF, tabular exports, web services",
+      "update_frequency": "curated release updates",
+      "coverage": "3K rice genomes and marker resources",
+      "provenance_notes": "Use for rice marker positions and association context."
+    },
+    {
+      "name": "CIMMYT Research Data",
+      "url": "https://data.cimmyt.org/",
+      "endpoint": "https://data.cimmyt.org/",
+      "format": "Dataverse metadata, CSV, VCF, phenotype/genotype packages",
+      "update_frequency": "dataset deposit driven",
+      "coverage": "maize and wheat breeding, genomics, and phenotyping datasets",
+      "provenance_notes": "Use dataset DOI and license metadata when importing GWAS-ready data."
+    }
+  ],
+  "qtls": [
+    {
+      "name": "Gramene QTL and Gene Resources",
+      "url": "https://www.gramene.org/",
+      "endpoint": "https://data.gramene.org/",
+      "format": "database exports and web APIs",
+      "update_frequency": "curated release cycle",
+      "coverage": "plant comparative genomics, gene annotations, QTL links",
+      "provenance_notes": "Use for candidate gene and interval context."
+    },
+    {
+      "name": "QTARO",
+      "url": "https://qtaro.abr.affrc.go.jp/",
+      "endpoint": "https://qtaro.abr.affrc.go.jp/",
+      "format": "web database",
+      "update_frequency": "curated rice QTL updates",
+      "coverage": "rice QTLs and trait associations",
+      "provenance_notes": "Use for rice trait/QTL names, intervals, and publications."
+    },
+    {
+      "name": "SoyBase QTL",
+      "url": "https://www.soybase.org/",
+      "endpoint": "https://www.soybase.org/",
+      "format": "web database and downloads",
+      "update_frequency": "curated release updates",
+      "coverage": "soybean genome, traits, markers, QTLs",
+      "provenance_notes": "Use for soybean marker/QTL enrichment."
+    }
+  ],
+  "economics": [
+    {
+      "name": "FAOSTAT Crops and Livestock Products",
+      "url": "https://www.fao.org/faostat/en/#data/QCL",
+      "endpoint": "https://fenixservices.fao.org/faostat/api/v1",
+      "format": "JSON, CSV bulk downloads",
+      "update_frequency": "annual",
+      "coverage": "production, yield, harvested area, country/year/crop series",
+      "provenance_notes": "Use for crop production and yield economics baselines."
+    },
+    {
+      "name": "World Bank Pink Sheet",
+      "url": "https://thedocs.worldbank.org/en/doc/18675f1d1639c7a34d463f59263ba0a2-0050012025/world-bank-commodities-price-data-the-pink-sheet",
+      "endpoint": "https://www.worldbank.org/en/research/commodity-markets",
+      "format": "XLSX/PDF/CSV published price series",
+      "update_frequency": "monthly",
+      "coverage": "international commodity prices including agriculture",
+      "provenance_notes": "Use for market price trend anchoring."
+    },
+    {
+      "name": "Agmarknet",
+      "url": "https://agmarknet.gov.in/",
+      "endpoint": "https://agmarknet.gov.in/",
+      "format": "portal exports",
+      "update_frequency": "daily market arrivals and prices",
+      "coverage": "Indian agricultural market arrivals and prices",
+      "provenance_notes": "Use for India market region price context where accessible."
+    }
+  ],
+  "social": [
+    {
+      "name": "FAO e-Agriculture Knowledge Platform",
+      "url": "https://www.fao.org/e-agriculture/",
+      "endpoint": "https://www.fao.org/e-agriculture/",
+      "format": "web knowledge articles",
+      "update_frequency": "publication driven",
+      "coverage": "extension and digital agriculture knowledge themes",
+      "provenance_notes": "Use only for cited public knowledge snippets, not synthetic user identity."
+    },
+    {
+      "name": "CGIAR Knowledge Resources",
+      "url": "https://www.cgiar.org/research/publication/",
+      "endpoint": "https://www.cgiar.org/research/publication/",
+      "format": "publication metadata and web documents",
+      "update_frequency": "publication driven",
+      "coverage": "crop research publications and extension-like material",
+      "provenance_notes": "Use for source-attributed knowledge post templates."
+    },
+    {
+      "name": "Tenant-Safe Synthetic Social Fixtures",
+      "url": "https://bijmantra.org/",
+      "endpoint": "local deterministic generator",
+      "format": "JSON",
+      "update_frequency": "pipeline run",
+      "coverage": "posts, comments, groups, reputation edge cases",
+      "provenance_notes": "Use for demo-only social data; never label generated community content as real."
+    }
+  ]
+}

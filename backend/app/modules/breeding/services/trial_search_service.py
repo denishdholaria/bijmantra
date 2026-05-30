@@ -41,6 +41,17 @@ def _location_matches(trial: Any, location_query: str | None) -> bool:
     return any(normalized_query in value.lower() for value in candidate_values)
 
 
+def _active_status_filter(status: str | None) -> bool | None:
+    if not status:
+        return None
+    normalized = status.strip().lower()
+    if normalized in {"active", "true", "1"}:
+        return True
+    if normalized in {"inactive", "false", "0", "completed", "archived"}:
+        return False
+    return None
+
+
 class TrialSearchService:
     """Service for advanced trial search.
 
@@ -58,7 +69,8 @@ class TrialSearchService:
         location: str | None = None,
         program: str | None = None,
         status: str | None = None,
-        limit: int = 20
+        limit: int = 20,
+        offset: int = 0,
     ) -> list[dict[str, Any]]:
         """Search trials with filters.
 
@@ -76,7 +88,7 @@ class TrialSearchService:
         Returns:
             List of trial dictionaries, empty if no data
         """
-        from app.models.core import Trial
+        from app.models.core import Location, Program, Trial
 
         stmt = (
             select(Trial)
@@ -86,7 +98,6 @@ class TrialSearchService:
                 selectinload(Trial.studies)
             )
             .where(Trial.organization_id == organization_id)
-            .limit(limit)
         )
 
         if query:
@@ -103,24 +114,33 @@ class TrialSearchService:
         if crop:
             stmt = stmt.where(func.lower(Trial.common_crop_name) == crop.lower())
 
-        if status:
-            is_active = status.lower() in ['active', 'true', '1']
+        is_active = _active_status_filter(status)
+        if is_active is not None:
             stmt = stmt.where(Trial.active == is_active)
+
+        if program:
+            program_query = f"%{program.lower()}%"
+            stmt = stmt.join(Program, Trial.program_id == Program.id).where(
+                func.lower(Program.program_name).like(program_query)
+            )
+
+        if location:
+            location_query = f"%{location.lower()}%"
+            stmt = stmt.outerjoin(Location, Trial.location_id == Location.id).where(
+                or_(
+                    func.lower(Location.location_name).like(location_query),
+                    func.lower(Location.abbreviation).like(location_query),
+                    func.lower(Location.country_name).like(location_query),
+                )
+            )
+
+        stmt = stmt.order_by(Trial.trial_name.asc(), Trial.id.asc()).offset(max(0, offset)).limit(limit)
 
         result = await db.execute(stmt)
         trials = result.scalars().all()
 
         results = []
         for t in trials:
-            # Filter by location if specified
-            if not _location_matches(t, location):
-                continue
-
-            # Filter by program if specified
-            if program and t.program:
-                if program.lower() not in t.program.program_name.lower():
-                    continue
-
             results.append({
                 "id": str(t.id),
                 "trial_db_id": t.trial_db_id,
@@ -137,6 +157,61 @@ class TrialSearchService:
             })
 
         return results
+
+    async def count(
+        self,
+        db: AsyncSession,
+        organization_id: int,
+        query: str | None = None,
+        crop: str | None = None,
+        season: str | None = None,
+        location: str | None = None,
+        program: str | None = None,
+        status: str | None = None,
+    ) -> int:
+        """Count trials matching the same search filters before page limiting."""
+        from app.models.core import Location, Program, Trial
+
+        stmt = select(func.count(func.distinct(Trial.id))).where(
+            Trial.organization_id == organization_id
+        )
+
+        if query:
+            q = f"%{query.lower()}%"
+            stmt = stmt.where(
+                or_(
+                    func.lower(Trial.trial_name).like(q),
+                    func.lower(Trial.trial_description).like(q),
+                    func.lower(Trial.trial_db_id).like(q),
+                    func.lower(Trial.common_crop_name).like(q),
+                )
+            )
+
+        if crop:
+            stmt = stmt.where(func.lower(Trial.common_crop_name) == crop.lower())
+
+        is_active = _active_status_filter(status)
+        if is_active is not None:
+            stmt = stmt.where(Trial.active == is_active)
+
+        if program:
+            program_query = f"%{program.lower()}%"
+            stmt = stmt.join(Program, Trial.program_id == Program.id).where(
+                func.lower(Program.program_name).like(program_query)
+            )
+
+        if location:
+            location_query = f"%{location.lower()}%"
+            stmt = stmt.outerjoin(Location, Trial.location_id == Location.id).where(
+                or_(
+                    func.lower(Location.location_name).like(location_query),
+                    func.lower(Location.abbreviation).like(location_query),
+                    func.lower(Location.country_name).like(location_query),
+                )
+            )
+
+        result = await db.execute(stmt)
+        return int(result.scalar() or 0)
 
     async def get_by_id(
         self,

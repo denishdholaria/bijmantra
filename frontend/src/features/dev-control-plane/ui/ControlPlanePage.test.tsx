@@ -170,7 +170,7 @@ beforeEach(() => {
 })
 
 describe('ControlPlanePage', () => {
-  it('renders the hidden control-plane shell with planner, autonomy, diagram, JSON, and orchestration tabs', () => {
+  it('renders the hidden control-plane shell with only developer-control-plane tabs', () => {
     render(<ControlPlanePage />)
 
     expect(screen.getByRole('heading', { name: 'BijMantra Developer Control Plane' })).toBeInTheDocument()
@@ -183,6 +183,7 @@ describe('ControlPlanePage', () => {
     expect(screen.getByRole('tab', { name: 'Diagram' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'JSON' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Orchestration' })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Knowledge Graph' })).not.toBeInTheDocument()
   })
 
   it('shows Diagram in the current view card when the diagram tab is active', () => {

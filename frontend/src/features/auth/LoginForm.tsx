@@ -8,7 +8,8 @@
  * "One Seed. Infinite Worlds."
  */
 
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Orbit, Play, ShieldCheck, Sprout, Volume2, VolumeX } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, KeyRound, LockKeyhole, Mail, Orbit, Play, ShieldCheck, Sprout, Volume2, VolumeX } from 'lucide-react'
+import { LOCAL_PASSWORD_LOGIN_ENABLED } from '@/config'
 import { useAuth } from './useAuth'
 import { quotes, regionColors } from './quotes'
 import type { PlatformSignal, TrustMarker } from './types'
@@ -344,61 +345,12 @@ export function LoginForm() {
                   </div>
                 )}
 
-                <form onSubmit={auth.handleSubmit} className="mt-8 space-y-5" autoComplete="on">
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="ml-1 block text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400">
-                      Email Address
-                    </label>
-                    <div className="group relative">
-                      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-300">
-                        <Mail className="h-4 w-4" />
-                      </span>
-                      <input
-                        id="email"
-                        type="email"
-                        value={auth.email}
-                        onChange={(e) => auth.setEmail(e.target.value)}
-                        required
-                        autoComplete="email"
-                        className="w-full rounded-[22px] border border-slate-200/80 bg-white/90 py-4 pl-12 pr-4 text-slate-950 shadow-sm transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-white/10 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
-                        placeholder="breeder@example.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="password" className="ml-1 block text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400">
-                      Password
-                    </label>
-                    <div className="group relative">
-                      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-300">
-                        <LockKeyhole className="h-4 w-4" />
-                      </span>
-                      <input
-                        id="password"
-                        type={auth.showPassword ? 'text' : 'password'}
-                        value={auth.password}
-                        onChange={(e) => auth.setPassword(e.target.value)}
-                        required
-                        autoComplete="current-password"
-                        className="w-full rounded-[22px] border border-slate-200/80 bg-white/90 py-4 pl-12 pr-12 text-slate-950 shadow-sm transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-white/10 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
-                        placeholder="••••••••"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => auth.setShowPassword(!auth.showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200"
-                        aria-label={auth.showPassword ? 'Hide password' : 'Show password'}
-                      >
-                        {auth.showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
+                {auth.isExternalAuthEnabled && (
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={auth.handleIdentityProviderLogin}
                     disabled={auth.isLoading}
-                    className="group w-full rounded-[22px] bg-[linear-gradient(135deg,#124c38_0%,#1f6f52_52%,#d4a012_140%)] px-6 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(18,76,56,0.28)] transition-all hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(18,76,56,0.32)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="group mt-8 w-full rounded-[22px] bg-[linear-gradient(135deg,#124c38_0%,#1f6f52_52%,#d4a012_140%)] px-6 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(18,76,56,0.28)] transition-all hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(18,76,56,0.32)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {auth.isLoading ? (
                       <span className="flex items-center justify-center gap-3">
@@ -410,15 +362,90 @@ export function LoginForm() {
                       </span>
                     ) : (
                       <span className="flex items-center justify-center gap-2">
-                        Enter BijMantra
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        Continue with Keycloak
+                        <KeyRound className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                       </span>
                     )}
                   </button>
-                </form>
+                )}
+
+                {LOCAL_PASSWORD_LOGIN_ENABLED && (
+                  <form onSubmit={auth.handleSubmit} className="mt-8 space-y-5" autoComplete="on">
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="ml-1 block text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400">
+                        Email Address
+                      </label>
+                      <div className="group relative">
+                        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-300">
+                          <Mail className="h-4 w-4" />
+                        </span>
+                        <input
+                          id="email"
+                          type="email"
+                          value={auth.email}
+                          onChange={(e) => auth.setEmail(e.target.value)}
+                          required
+                          autoComplete="email"
+                          className="w-full rounded-[22px] border border-slate-200/80 bg-white/90 py-4 pl-12 pr-4 text-slate-950 shadow-sm transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-white/10 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
+                          placeholder="breeder@example.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="password" className="ml-1 block text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400">
+                        Password
+                      </label>
+                      <div className="group relative">
+                        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-300">
+                          <LockKeyhole className="h-4 w-4" />
+                        </span>
+                        <input
+                          id="password"
+                          type={auth.showPassword ? 'text' : 'password'}
+                          value={auth.password}
+                          onChange={(e) => auth.setPassword(e.target.value)}
+                          required
+                          autoComplete="current-password"
+                          className="w-full rounded-[22px] border border-slate-200/80 bg-white/90 py-4 pl-12 pr-12 text-slate-950 shadow-sm transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-white/10 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
+                          placeholder="••••••••"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => auth.setShowPassword(!auth.showPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200"
+                          aria-label={auth.showPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {auth.showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={auth.isLoading}
+                      className="group w-full rounded-[22px] bg-[linear-gradient(135deg,#124c38_0%,#1f6f52_52%,#d4a012_140%)] px-6 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(18,76,56,0.28)] transition-all hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(18,76,56,0.32)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {auth.isLoading ? (
+                        <span className="flex items-center justify-center gap-3">
+                          <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Signing in...
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-2">
+                          Enter BijMantra
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        </span>
+                      )}
+                    </button>
+                  </form>
+                )}
 
                 {/* Demo Credentials */}
-                <div className="mt-6 rounded-[26px] border border-amber-200/60 bg-[linear-gradient(135deg,rgba(255,251,235,0.88)_0%,rgba(255,255,255,0.96)_100%)] p-4 shadow-sm dark:border-amber-500/20 dark:bg-[linear-gradient(135deg,rgba(120,53,15,0.16)_0%,rgba(113,63,18,0.06)_100%)]">
+                {LOCAL_PASSWORD_LOGIN_ENABLED && <div className="mt-6 rounded-[26px] border border-amber-200/60 bg-[linear-gradient(135deg,rgba(255,251,235,0.88)_0%,rgba(255,255,255,0.96)_100%)] p-4 shadow-sm dark:border-amber-500/20 dark:bg-[linear-gradient(135deg,rgba(120,53,15,0.16)_0%,rgba(113,63,18,0.06)_100%)]">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-amber-800 dark:text-amber-200">Demo Organization</p>
@@ -433,7 +460,7 @@ export function LoginForm() {
                       Use Demo
                     </button>
                   </div>
-                </div>
+                </div>}
 
                 {/* Trust Markers */}
                 <div className="mt-6 space-y-3">

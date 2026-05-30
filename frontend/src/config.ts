@@ -18,23 +18,10 @@
 export const API_URL: string =
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? '' : 'http://localhost:8000');
+  (import.meta.env.DEV ? "" : "http://localhost:8000");
 
 /** WebSocket / Socket.IO endpoint. */
-export const SOCKET_URL: string =
-  import.meta.env.VITE_SOCKET_URL || API_URL;
-
-// ────────────────────────────────────────────────────────────
-// Search
-// ────────────────────────────────────────────────────────────
-
-/** Meilisearch host URL. */
-export const MEILISEARCH_HOST: string =
-  import.meta.env.VITE_MEILISEARCH_HOST || 'http://localhost:7700';
-
-/** Meilisearch API key (public, search-only). */
-export const MEILISEARCH_API_KEY: string =
-  import.meta.env.VITE_MEILISEARCH_API_KEY || '';
+export const SOCKET_URL: string = import.meta.env.VITE_SOCKET_URL || API_URL;
 
 // ────────────────────────────────────────────────────────────
 // Push Notifications
@@ -42,7 +29,7 @@ export const MEILISEARCH_API_KEY: string =
 
 /** VAPID public key for Web Push subscriptions. */
 export const VAPID_PUBLIC_KEY: string =
-  import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
+  import.meta.env.VITE_VAPID_PUBLIC_KEY || "";
 
 // ────────────────────────────────────────────────────────────
 // Observability
@@ -50,23 +37,20 @@ export const VAPID_PUBLIC_KEY: string =
 
 /** PostHog analytics API key. */
 export const POSTHOG_API_KEY: string =
-  import.meta.env.VITE_POSTHOG_API_KEY || '';
+  import.meta.env.VITE_POSTHOG_API_KEY || "";
 
 /** PostHog analytics host. */
 export const POSTHOG_HOST: string =
-  import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com';
+  import.meta.env.VITE_POSTHOG_HOST || "https://app.posthog.com";
 
 /** Sentry DSN for error reporting. */
-export const SENTRY_DSN: string =
-  import.meta.env.VITE_SENTRY_DSN || '';
+export const SENTRY_DSN: string = import.meta.env.VITE_SENTRY_DSN || "";
 
 /** Application version string. */
-export const APP_VERSION: string =
-  import.meta.env.VITE_APP_VERSION || '0.1.0';
+export const APP_VERSION: string = import.meta.env.VITE_APP_VERSION || "0.1.0";
 
 /** Minimum log level (DEBUG, INFO, WARN, ERROR). */
-export const LOG_LEVEL: string =
-  import.meta.env.VITE_LOG_LEVEL || 'INFO';
+export const LOG_LEVEL: string = import.meta.env.VITE_LOG_LEVEL || "INFO";
 
 // ────────────────────────────────────────────────────────────
 // Build Mode
@@ -83,6 +67,34 @@ export const MODE: string = import.meta.env.MODE;
 
 /** Public application base URL used for static asset resolution. */
 export const APP_BASE_URL: string = import.meta.env.BASE_URL;
+
+// ────────────────────────────────────────────────────────────
+// Authentication
+// ────────────────────────────────────────────────────────────
+
+export type AuthProvider = "local" | "keycloak";
+
+const requestedAuthProvider = (import.meta.env.VITE_AUTH_PROVIDER || "").toLowerCase();
+
+/** Active browser authentication provider. */
+export const AUTH_PROVIDER: AuthProvider =
+  requestedAuthProvider === "keycloak" || import.meta.env.VITE_KEYCLOAK_ENABLED === "true"
+    ? "keycloak"
+    : "local";
+
+/** Whether the legacy local password form should be visible in the browser. */
+export const LOCAL_PASSWORD_LOGIN_ENABLED: boolean =
+  AUTH_PROVIDER !== "keycloak" || import.meta.env.VITE_LOCAL_PASSWORD_LOGIN_ENABLED === "true";
+
+/** Keycloak base URL, without realm path. */
+export const KEYCLOAK_URL: string = import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8084";
+
+/** Keycloak realm used by BijMantra. */
+export const KEYCLOAK_REALM: string = import.meta.env.VITE_KEYCLOAK_REALM || "bijmantra";
+
+/** Public SPA client configured for authorization code + PKCE. */
+export const KEYCLOAK_CLIENT_ID: string =
+  import.meta.env.VITE_KEYCLOAK_CLIENT_ID || "bijmantra-web";
 
 // ────────────────────────────────────────────────────────────
 // Feature Flags

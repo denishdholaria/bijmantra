@@ -1,0 +1,956 @@
+{
+  "results": [
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "MAIZE_CORN_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 1,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org1:maize_corn:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "MAIZE_CORN_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 1,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org1:maize_corn:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "MAIZE_CORN_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 1,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org1:maize_corn:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "MAIZE_FODDER_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 1,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org1:maize_fodder:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "MAIZE_FODDER_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 1,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org1:maize_fodder:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "MAIZE_FODDER_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 1,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org1:maize_fodder:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "SUGARCANE_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 1,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org1:sugarcane:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "SUGARCANE_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 1,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org1:sugarcane:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "SUGARCANE_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 1,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org1:sugarcane:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "RICE_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 1,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org1:rice:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "RICE_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 1,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org1:rice:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "RICE_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 1,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org1:rice:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "WHEAT_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 1,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org1:wheat:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "WHEAT_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 1,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org1:wheat:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "WHEAT_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 1,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org1:wheat:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "MAIZE_CORN_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 2,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org2:maize_corn:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "MAIZE_CORN_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 2,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org2:maize_corn:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "MAIZE_CORN_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 2,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org2:maize_corn:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "MAIZE_FODDER_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 2,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org2:maize_fodder:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "MAIZE_FODDER_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 2,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org2:maize_fodder:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "MAIZE_FODDER_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 2,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org2:maize_fodder:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "SUGARCANE_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 2,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org2:sugarcane:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "SUGARCANE_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 2,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org2:sugarcane:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "SUGARCANE_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 2,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org2:sugarcane:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "RICE_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 2,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org2:rice:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "RICE_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 2,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org2:rice:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "RICE_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 2,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org2:rice:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "effect_size": 0.33,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.22,
+      "marker_name": "WHEAT_SNP_1",
+      "neg_log10_p": 6.25,
+      "organization_id": 2,
+      "p_value": 5.62341325190349e-07,
+      "pipeline_version": "1.0.0",
+      "position": 1000000,
+      "run_key": "org2:wheat:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "effect_size": 0.41,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.26,
+      "marker_name": "WHEAT_SNP_2",
+      "neg_log10_p": 6.5,
+      "organization_id": 2,
+      "p_value": 3.162277660168379e-07,
+      "pipeline_version": "1.0.0",
+      "position": 2000000,
+      "run_key": "org2:wheat:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    },
+    {
+      "chromosome": "3",
+      "data_source": "synthetic",
+      "effect_size": 0.49,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "is_significant": true,
+      "maf": 0.3,
+      "marker_name": "WHEAT_SNP_3",
+      "neg_log10_p": 6.75,
+      "organization_id": 2,
+      "p_value": 1.7782794100389227e-07,
+      "pipeline_version": "1.0.0",
+      "position": 3000000,
+      "run_key": "org2:wheat:gwas:grain_yield",
+      "standard_error": 0.08,
+      "synthetic_method": "qtl_informed_marker_association"
+    }
+  ],
+  "runs": [
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org1:maize_corn:gwas:grain_yield",
+      "run_name": "Maize (Corn) Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org1:maize_fodder:gwas:grain_yield",
+      "run_name": "Maize (Fodder) Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org1:sugarcane:gwas:grain_yield",
+      "run_name": "Sugarcane Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org1:rice:gwas:grain_yield",
+      "run_name": "Rice Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org1:wheat:gwas:grain_yield",
+      "run_name": "Wheat Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org2:maize_corn:gwas:grain_yield",
+      "run_name": "Maize (Corn) Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org2:maize_fodder:gwas:grain_yield",
+      "run_name": "Maize (Fodder) Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org2:sugarcane:gwas:grain_yield",
+      "run_name": "Sugarcane Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org2:rice:gwas:grain_yield",
+      "run_name": "Rice Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "data_source": "synthetic",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "manhattan_plot_data": [
+        {
+          "chromosome": "1",
+          "log_p": 6.533333333333333,
+          "position": 1000000
+        },
+        {
+          "chromosome": "2",
+          "log_p": 6.866666666666667,
+          "position": 2000000
+        },
+        {
+          "chromosome": "3",
+          "log_p": 7.2,
+          "position": 3000000
+        }
+      ],
+      "marker_count": 4800,
+      "method": "MLM",
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qq_plot_data": {
+        "expected": [
+          0.3,
+          0.6,
+          0.9
+        ],
+        "observed": [
+          0.35,
+          0.7,
+          1.05
+        ]
+      },
+      "record_key": "org2:wheat:gwas:grain_yield",
+      "run_name": "Wheat Pipeline Grain Yield GWAS 2025",
+      "sample_size": 96,
+      "significance_threshold": 5e-06,
+      "significant_marker_count": 3,
+      "synthetic_method": "qtl_informed_gwas_template",
+      "trait_name": "Grain Yield"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "realm": "bijmantra",
+  "enabled": true,
+  "displayName": "BijMantra",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "bijmantra-admin",
+        "description": "BijMantra administrator"
+      },
+      {
+        "name": "bijmantra-user",
+        "description": "BijMantra authenticated user"
+      }
+    ]
+  },
+  "clientScopes": [
+    {
+      "name": "bijmantra-api-audience",
+      "description": "Adds the BijMantra API audience to web access tokens.",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "bijmantra-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "bijmantra-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "bijmantra-web",
+      "name": "BijMantra Web",
+      "description": "Local development SPA client for BijMantra.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:5656/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5656"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email",
+        "bijmantra-api-audience"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5656/*"
+      }
+    },
+    {
+      "clientId": "bijmantra-api",
+      "name": "BijMantra API",
+      "description": "Audience client for BijMantra FastAPI resource server.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false
+    }
+  ],
+  "groups": [
+    {
+      "name": "BijMantra Admins",
+      "realmRoles": [
+        "bijmantra-admin",
+        "bijmantra-user"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "username": "admin@bijmantra.org",
+      "email": "admin@bijmantra.org",
+      "firstName": "BijMantra",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Admin123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "bijmantra-admin",
+        "bijmantra-user"
+      ],
+      "groups": [
+        "BijMantra Admins"
+      ],
+      "attributes": {
+        "bijmantra_organization": [
+          "BijMantra HQ"
+        ]
+      }
+    }
+  ]
+}

@@ -407,13 +407,17 @@ pub fn calculate_pca_impl(genotypes: &[i32], n_samples: usize, n_markers: usize)
 
     // Calculate variance explained
     let total_var: f64 = variances.iter().sum();
+    let n_pcs = variances.len() as f64;
     let var_explained: Vec<f64> = variances
         .iter()
         .map(|v| {
             if total_var > 0.0 {
                 v / total_var * 100.0
             } else {
-                0.0
+                // Degenerate case: all eigenvalues are zero (e.g., constant or
+                // near-constant data after centering). Distribute variance equally
+                // so the output still sums to 100.0 as required.
+                100.0 / n_pcs
             }
         })
         .collect();

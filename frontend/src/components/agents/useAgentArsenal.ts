@@ -260,10 +260,12 @@ export function useAgentArsenal(): UseAgentArsenalReturn {
 
         const effectiveBackend = getEffectiveReevuBackend(reevuStatus);
         if (!effectiveBackend.ready) {
-          throw new Error('Managed REEVU backend is not AI-ready. Configure a server-side provider in AI Settings.');
+          throw new Error('REEVU backend is not ready for this credential. Confirm organization access, REEVU tools, or provider configuration.');
         }
 
-        const providerName = getReevuProviderDisplayName(reevuStatus.provider, 'Managed backend');
+        const providerName = effectiveBackend.mode === 'deterministic'
+          ? 'Deterministic REEVU tools'
+          : getReevuProviderDisplayName(reevuStatus.provider, 'Managed backend');
 
         const currentSession = sessions[activeAgentId];
         const conversationHistory = (currentSession?.messages || []).map(m => ({

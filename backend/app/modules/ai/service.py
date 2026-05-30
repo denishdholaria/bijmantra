@@ -45,11 +45,14 @@ class AIProviderService:
 		if not providers:
 			return registry
 
+		db_provider_keys = {self._parse_provider_key(p.provider_key) for p in providers}
+		
 		for provider_type, config in list(registry.providers.items()):
 			if provider_type == LLMProvider.TEMPLATE:
 				continue
-			config.available = False
-			registry.register(provider_type, config)
+			if provider_type in db_provider_keys:
+				config.available = False
+				registry.register(provider_type, config)
 
 		for provider in providers:
 			provider_type = self._parse_provider_key(provider.provider_key)

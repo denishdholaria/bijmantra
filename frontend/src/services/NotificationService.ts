@@ -1,4 +1,5 @@
 import { VAPID_PUBLIC_KEY } from '@/config'
+import { apiClient } from '@/lib/api-client'
 
 export type PushSubscriptionPayload = {
   endpoint: string
@@ -20,6 +21,9 @@ class NotificationService {
     const permission = await this.requestPermission()
     if (permission !== 'granted') return
 
+    const token = apiClient.getToken()
+    if (!token) return
+
     const registration = await navigator.serviceWorker.ready
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -29,11 +33,16 @@ class NotificationService {
     })
 
     const json = subscription.toJSON() as PushSubscriptionPayload
-    await fetch('/api/v2/pwa/notifications/subscribe', {
+
+    const response = await fetch('/api/v2/pwa/notifications/subscribe', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(json),
     })
+
+    if (!response.ok) {
+      throw new Error(`Push subscription failed: ${response.status}`)
+    }
   }
 
   private urlBase64ToUint8Array(base64String: string): Uint8Array {

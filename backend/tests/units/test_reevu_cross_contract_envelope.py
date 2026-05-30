@@ -270,6 +270,62 @@ class TestCrossContractEnvelopeIntegration:
             "missing_calculation_provenance",
         ]
 
+    def test_chat_envelope_downgrades_unsupported_function_output(self):
+        validation, evidence_pack = _validate_response_content(
+            content="Found 20 trials.",
+            context_docs=None,
+            function_call_name="search_trials",
+            function_result={
+                "success": True,
+                "function": "search_trials",
+                "data": {"message": "Found 20 trials."},
+            },
+        )
+
+        envelope = _build_reevu_envelope(
+            content="Found 20 trials.",
+            evidence_pack=evidence_pack,
+            validation=validation,
+            context_docs=None,
+            function_call_name="search_trials",
+        )
+
+        assert envelope["uncertainty"]["confidence"] == 0.2
+        assert envelope["missing_evidence_signals"] == ["missing_evidence"]
+        assert "missing_evidence" in envelope["policy_flags"]
+        assert envelope["uncertainty"]["missing_data"] == ["no_rag_context"]
+
+    def test_chat_envelope_marks_database_refs_from_function_results(self):
+        validation, evidence_pack = _validate_response_content(
+            content="Found 142 active trials. Showing first 20.",
+            context_docs=None,
+            function_call_name="search_trials",
+            function_result={
+                "success": True,
+                "function": "search_trials",
+                "evidence_refs": ["db:trial:TRIAL-1"],
+                "calculation_method_refs": ["fn:search_trials.count"],
+                "data": {"message": "Found 142 active trials. Showing first 20."},
+            },
+        )
+
+        envelope = _build_reevu_envelope(
+            content="Found 142 active trials. Showing first 20.",
+            evidence_pack=evidence_pack,
+            validation=validation,
+            context_docs=None,
+            function_call_name="search_trials",
+        )
+
+        assert envelope["uncertainty"]["confidence"] == 1.0
+        assert envelope["missing_evidence_signals"] == []
+        assert envelope["evidence_refs"][0]["source_type"] == "database"
+        assert envelope["evidence_refs"][0]["entity_id"] == "db:trial:TRIAL-1"
+        assert any(
+            step["step_id"] == "fn:search_trials.count"
+            for step in envelope["calculation_steps"]
+        )
+
     def test_chat_envelope_classifies_retrieval_and_synthesis_claim_traces(self):
         content = (
             "Database evidence supports this recommendation [[ref:db:trial:TRIAL-22]]. "

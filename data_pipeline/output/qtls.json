@@ -1,0 +1,946 @@
+{
+  "candidate_genes": [
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Maize (Corn).",
+      "end_position": 9475000,
+      "gene_id": "MAIZE_CORN_GENE_1",
+      "gene_name": "Maize (Corn) candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:maize_corn:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Maize (Corn).",
+      "end_position": 18475000,
+      "gene_id": "MAIZE_CORN_GENE_2",
+      "gene_name": "Maize (Corn) candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:maize_corn:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Maize (Fodder).",
+      "end_position": 9475000,
+      "gene_id": "MAIZE_FODDER_GENE_1",
+      "gene_name": "Maize (Fodder) candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:maize_fodder:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Maize (Fodder).",
+      "end_position": 18475000,
+      "gene_id": "MAIZE_FODDER_GENE_2",
+      "gene_name": "Maize (Fodder) candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:maize_fodder:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Sugarcane.",
+      "end_position": 9475000,
+      "gene_id": "SUGARCANE_GENE_1",
+      "gene_name": "Sugarcane candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:sugarcane:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Sugarcane.",
+      "end_position": 18475000,
+      "gene_id": "SUGARCANE_GENE_2",
+      "gene_name": "Sugarcane candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:sugarcane:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Rice.",
+      "end_position": 9475000,
+      "gene_id": "RICE_GENE_1",
+      "gene_name": "Rice candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:rice:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Rice.",
+      "end_position": 18475000,
+      "gene_id": "RICE_GENE_2",
+      "gene_name": "Rice candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:rice:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Wheat.",
+      "end_position": 9475000,
+      "gene_id": "WHEAT_GENE_1",
+      "gene_name": "Wheat candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:wheat:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Wheat.",
+      "end_position": 18475000,
+      "gene_id": "WHEAT_GENE_2",
+      "gene_name": "Wheat candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org1:wheat:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Maize (Corn).",
+      "end_position": 9475000,
+      "gene_id": "MAIZE_CORN_GENE_1",
+      "gene_name": "Maize (Corn) candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:maize_corn:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Maize (Corn).",
+      "end_position": 18475000,
+      "gene_id": "MAIZE_CORN_GENE_2",
+      "gene_name": "Maize (Corn) candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:maize_corn:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Maize (Fodder).",
+      "end_position": 9475000,
+      "gene_id": "MAIZE_FODDER_GENE_1",
+      "gene_name": "Maize (Fodder) candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:maize_fodder:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Maize (Fodder).",
+      "end_position": 18475000,
+      "gene_id": "MAIZE_FODDER_GENE_2",
+      "gene_name": "Maize (Fodder) candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:maize_fodder:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Sugarcane.",
+      "end_position": 9475000,
+      "gene_id": "SUGARCANE_GENE_1",
+      "gene_name": "Sugarcane candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:sugarcane:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Sugarcane.",
+      "end_position": 18475000,
+      "gene_id": "SUGARCANE_GENE_2",
+      "gene_name": "Sugarcane candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:sugarcane:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Rice.",
+      "end_position": 9475000,
+      "gene_id": "RICE_GENE_1",
+      "gene_name": "Rice candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:rice:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Rice.",
+      "end_position": 18475000,
+      "gene_id": "RICE_GENE_2",
+      "gene_name": "Rice candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:rice:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "1",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Grain Yield QTL peak for Wheat.",
+      "end_position": 9475000,
+      "gene_id": "WHEAT_GENE_1",
+      "gene_name": "Wheat candidate gene 1",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0008152"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:wheat:qtl:grain_yield",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 9425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    },
+    {
+      "chromosome": "2",
+      "data_source": "synthetic",
+      "description": "Candidate gene near Blast Resistance QTL peak for Wheat.",
+      "end_position": 18475000,
+      "gene_id": "WHEAT_GENE_2",
+      "gene_name": "Wheat candidate gene 2",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "go_terms": [
+        "GO:0006952"
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "qtl_key": "org2:wheat:qtl:blast_resistance",
+      "source": "pipeline_candidate_gene_template",
+      "start_position": 18425000,
+      "synthetic_method": "qtl_interval_candidate_template"
+    }
+  ],
+  "qtls": [
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_CORN_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "MAIZE_CORN_SNP_1",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Corn) Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org1_maize_corn_qtl_grain_yield",
+      "qtl_name": "qMAIZE_(CORN)1.1",
+      "record_key": "org1:maize_corn:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_CORN_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "MAIZE_CORN_SNP_2",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Corn) Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org1_maize_corn_qtl_blast_resistance",
+      "qtl_name": "qMAIZE_(CORN)2.1",
+      "record_key": "org1:maize_corn:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_FODDER_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "MAIZE_FODDER_SNP_1",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Fodder) Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org1_maize_fodder_qtl_grain_yield",
+      "qtl_name": "qMAIZE_(FODDER)1.1",
+      "record_key": "org1:maize_fodder:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_FODDER_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "MAIZE_FODDER_SNP_2",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Fodder) Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org1_maize_fodder_qtl_blast_resistance",
+      "qtl_name": "qMAIZE_(FODDER)2.1",
+      "record_key": "org1:maize_fodder:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "SUGARCANE_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "SUGARCANE_SNP_1",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Sugarcane Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org1_sugarcane_qtl_grain_yield",
+      "qtl_name": "qSUGARCANE1.1",
+      "record_key": "org1:sugarcane:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "SUGARCANE_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "SUGARCANE_SNP_2",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Sugarcane Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org1_sugarcane_qtl_blast_resistance",
+      "qtl_name": "qSUGARCANE2.1",
+      "record_key": "org1:sugarcane:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "RICE_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "RICE_SNP_1",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Rice Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org1_rice_qtl_grain_yield",
+      "qtl_name": "qRICE1.1",
+      "record_key": "org1:rice:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "RICE_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "RICE_SNP_2",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Rice Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org1_rice_qtl_blast_resistance",
+      "qtl_name": "qRICE2.1",
+      "record_key": "org1:rice:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "WHEAT_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "WHEAT_SNP_1",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Wheat Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org1_wheat_qtl_grain_yield",
+      "qtl_name": "qWHEAT1.1",
+      "record_key": "org1:wheat:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "WHEAT_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "WHEAT_SNP_2",
+      "method": "CIM",
+      "organization_id": 1,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Wheat Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org1_wheat_qtl_blast_resistance",
+      "qtl_name": "qWHEAT2.1",
+      "record_key": "org1:wheat:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_CORN_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "MAIZE_CORN_SNP_1",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Corn) Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org2_maize_corn_qtl_grain_yield",
+      "qtl_name": "qMAIZE_(CORN)1.1",
+      "record_key": "org2:maize_corn:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_CORN_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "MAIZE_CORN_SNP_2",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Corn) Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org2_maize_corn_qtl_blast_resistance",
+      "qtl_name": "qMAIZE_(CORN)2.1",
+      "record_key": "org2:maize_corn:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_FODDER_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "MAIZE_FODDER_SNP_1",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Fodder) Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org2_maize_fodder_qtl_grain_yield",
+      "qtl_name": "qMAIZE_(FODDER)1.1",
+      "record_key": "org2:maize_fodder:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "MAIZE_FODDER_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "MAIZE_FODDER_SNP_2",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Maize (Fodder) Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org2_maize_fodder_qtl_blast_resistance",
+      "qtl_name": "qMAIZE_(FODDER)2.1",
+      "record_key": "org2:maize_fodder:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "SUGARCANE_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "SUGARCANE_SNP_1",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Sugarcane Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org2_sugarcane_qtl_grain_yield",
+      "qtl_name": "qSUGARCANE1.1",
+      "record_key": "org2:sugarcane:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "SUGARCANE_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "SUGARCANE_SNP_2",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Sugarcane Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org2_sugarcane_qtl_blast_resistance",
+      "qtl_name": "qSUGARCANE2.1",
+      "record_key": "org2:sugarcane:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "RICE_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "RICE_SNP_1",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Rice Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org2_rice_qtl_grain_yield",
+      "qtl_name": "qRICE1.1",
+      "record_key": "org2:rice:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "RICE_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "RICE_SNP_2",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Rice Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org2_rice_qtl_blast_resistance",
+      "qtl_name": "qRICE2.1",
+      "record_key": "org2:rice:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    },
+    {
+      "add_effect": 0.25,
+      "candidate_genes": [
+        {
+          "gene_id": "WHEAT_GENE_1"
+        }
+      ],
+      "chromosome": "1",
+      "confidence_interval_high": 9800000.0,
+      "confidence_interval_low": 9100000.0,
+      "data_source": "synthetic",
+      "end_position": 9900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 6.8,
+      "lod_score": 6.8,
+      "marker_name": "WHEAT_SNP_1",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 9450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Wheat Pipeline Mapping Population",
+      "pve": 14.5,
+      "qtl_db_id": "pipeline_org2_wheat_qtl_grain_yield",
+      "qtl_name": "qWHEAT1.1",
+      "record_key": "org2:wheat:qtl:grain_yield",
+      "start_position": 9000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Grain Yield"
+    },
+    {
+      "add_effect": -0.9,
+      "candidate_genes": [
+        {
+          "gene_id": "WHEAT_GENE_2"
+        }
+      ],
+      "chromosome": "2",
+      "confidence_interval_high": 18800000.0,
+      "confidence_interval_low": 18100000.0,
+      "data_source": "synthetic",
+      "end_position": 18900000.0,
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "lod": 7.8,
+      "lod_score": 7.8,
+      "marker_name": "WHEAT_SNP_2",
+      "method": "CIM",
+      "organization_id": 2,
+      "peak_position": 18450000.0,
+      "pipeline_version": "1.0.0",
+      "population": "Wheat Pipeline Mapping Population",
+      "pve": 18.0,
+      "qtl_db_id": "pipeline_org2_wheat_qtl_blast_resistance",
+      "qtl_name": "qWHEAT2.1",
+      "record_key": "org2:wheat:qtl:blast_resistance",
+      "start_position": 18000000.0,
+      "synthetic_method": "literature_shape_qtl_template",
+      "trait": "Blast Resistance"
+    }
+  ]
+}

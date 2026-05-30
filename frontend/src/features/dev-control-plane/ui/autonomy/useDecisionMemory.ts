@@ -153,7 +153,7 @@ export function useDecisionMemory({
           queueJobId,
           linkedMissionId,
         })
-        const primaryMatchMode = queries[0]?.matchMode ?? 'none'
+        const primaryMatchMode: DecisionMemoryMatchMode = queries[0]?.matchMode ?? 'none'
         let response: DeveloperControlPlaneLearningLedgerResponse = {
           total_count: 0,
           entries: [],
@@ -179,7 +179,7 @@ export function useDecisionMemory({
           matchMode: resolvedMatchMode,
           fallbackUsed:
             response.entries.length > 0 &&
-            primaryMatchMode !== 'none' &&
+            (primaryMatchMode as string) !== 'none' &&
             resolvedMatchMode !== primaryMatchMode,
         })
       } catch (loadError) {

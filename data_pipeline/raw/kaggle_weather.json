@@ -1,0 +1,923 @@
+{
+  "data": [
+    {
+      "date": "",
+      "humidity": 85.8695652173913,
+      "mean_pressure": 59.0,
+      "mean_temp": 15.91304347826087,
+      "source": "kaggle_weather",
+      "wind_speed": 2.743478260869565
+    },
+    {
+      "date": "",
+      "humidity": 77.22222222222223,
+      "mean_pressure": 1018.2777777777778,
+      "mean_temp": 18.5,
+      "source": "kaggle_weather",
+      "wind_speed": 2.8944444444444444
+    },
+    {
+      "date": "",
+      "humidity": 81.88888888888889,
+      "mean_pressure": 1018.3333333333334,
+      "mean_temp": 17.11111111111111,
+      "source": "kaggle_weather",
+      "wind_speed": 4.016666666666667
+    },
+    {
+      "date": "",
+      "humidity": 70.05,
+      "mean_pressure": 1015.7,
+      "mean_temp": 18.7,
+      "source": "kaggle_weather",
+      "wind_speed": 4.545
+    },
+    {
+      "date": "",
+      "humidity": 74.94444444444444,
+      "mean_pressure": 1014.3333333333334,
+      "mean_temp": 18.38888888888889,
+      "source": "kaggle_weather",
+      "wind_speed": 3.3000000000000003
+    },
+    {
+      "date": "",
+      "humidity": 79.31818181818181,
+      "mean_pressure": 1011.7727272727273,
+      "mean_temp": 19.318181818181817,
+      "source": "kaggle_weather",
+      "wind_speed": 8.681818181818182
+    },
+    {
+      "date": "",
+      "humidity": 95.83333333333333,
+      "mean_pressure": 1011.375,
+      "mean_temp": 14.708333333333334,
+      "source": "kaggle_weather",
+      "wind_speed": 10.041666666666664
+    },
+    {
+      "date": "",
+      "humidity": 83.52631578947368,
+      "mean_pressure": 1015.55,
+      "mean_temp": 15.68421052631579,
+      "source": "kaggle_weather",
+      "wind_speed": 1.95
+    },
+    {
+      "date": "",
+      "humidity": 80.80952380952381,
+      "mean_pressure": 1015.952380952381,
+      "mean_temp": 14.571428571428571,
+      "source": "kaggle_weather",
+      "wind_speed": 6.542857142857142
+    },
+    {
+      "date": "",
+      "humidity": 71.94444444444444,
+      "mean_pressure": 1016.8888888888889,
+      "mean_temp": 12.11111111111111,
+      "source": "kaggle_weather",
+      "wind_speed": 9.361111111111109
+    },
+    {
+      "date": "",
+      "humidity": 72.11111111111111,
+      "mean_pressure": 1016.7777777777778,
+      "mean_temp": 11.0,
+      "source": "kaggle_weather",
+      "wind_speed": 9.77222222222222
+    },
+    {
+      "date": "",
+      "humidity": 74.57894736842105,
+      "mean_pressure": 1016.3684210526316,
+      "mean_temp": 11.789473684210526,
+      "source": "kaggle_weather",
+      "wind_speed": 6.626315789473684
+    },
+    {
+      "date": "",
+      "humidity": 67.05882352941177,
+      "mean_pressure": 1017.5294117647059,
+      "mean_temp": 13.235294117647058,
+      "source": "kaggle_weather",
+      "wind_speed": 6.435294117647059
+    },
+    {
+      "date": "",
+      "humidity": 74.28,
+      "mean_pressure": 1018.84,
+      "mean_temp": 13.2,
+      "source": "kaggle_weather",
+      "wind_speed": 5.276
+    },
+    {
+      "date": "",
+      "humidity": 72.56521739130434,
+      "mean_pressure": 1018.1304347826087,
+      "mean_temp": 16.434782608695652,
+      "source": "kaggle_weather",
+      "wind_speed": 3.630434782608696
+    },
+    {
+      "date": "",
+      "humidity": 78.45,
+      "mean_pressure": 1017.15,
+      "mean_temp": 14.65,
+      "source": "kaggle_weather",
+      "wind_speed": 10.38
+    },
+    {
+      "date": "",
+      "humidity": 84.44444444444444,
+      "mean_pressure": 1018.3888888888889,
+      "mean_temp": 11.722222222222221,
+      "source": "kaggle_weather",
+      "wind_speed": 8.038888888888888
+    },
+    {
+      "date": "",
+      "humidity": 78.33333333333333,
+      "mean_pressure": 1021.9583333333334,
+      "mean_temp": 13.041666666666666,
+      "source": "kaggle_weather",
+      "wind_speed": 6.029166666666664
+    },
+    {
+      "date": "",
+      "humidity": 75.14285714285714,
+      "mean_pressure": 1022.8095238095239,
+      "mean_temp": 14.619047619047619,
+      "source": "kaggle_weather",
+      "wind_speed": 10.338095238095239
+    },
+    {
+      "date": "",
+      "humidity": 66.47368421052632,
+      "mean_pressure": 1021.7894736842105,
+      "mean_temp": 15.263157894736842,
+      "source": "kaggle_weather",
+      "wind_speed": 11.226315789473684
+    },
+    {
+      "date": "",
+      "humidity": 70.8695652173913,
+      "mean_pressure": 1020.4782608695652,
+      "mean_temp": 15.391304347826088,
+      "source": "kaggle_weather",
+      "wind_speed": 13.695652173913043
+    },
+    {
+      "date": "",
+      "humidity": 76.24,
+      "mean_pressure": 1021.04,
+      "mean_temp": 18.44,
+      "source": "kaggle_weather",
+      "wind_speed": 5.8679999999999986
+    },
+    {
+      "date": "",
+      "humidity": 76.0,
+      "mean_pressure": 1019.8235294117648,
+      "mean_temp": 18.11764705882353,
+      "source": "kaggle_weather",
+      "wind_speed": 6.752941176470588
+    },
+    {
+      "date": "",
+      "humidity": 68.1304347826087,
+      "mean_pressure": 1018.8695652173913,
+      "mean_temp": 18.347826086956523,
+      "source": "kaggle_weather",
+      "wind_speed": 3.3913043478260865
+    },
+    {
+      "date": "",
+      "humidity": 69.96,
+      "mean_pressure": 1018.4,
+      "mean_temp": 21.0,
+      "source": "kaggle_weather",
+      "wind_speed": 8.755999999999998
+    },
+    {
+      "date": "",
+      "humidity": 91.64285714285714,
+      "mean_pressure": 1017.7857142857143,
+      "mean_temp": 16.178571428571427,
+      "source": "kaggle_weather",
+      "wind_speed": 8.467857142857143
+    },
+    {
+      "date": "",
+      "humidity": 77.04166666666667,
+      "mean_pressure": 1018.125,
+      "mean_temp": 16.5,
+      "source": "kaggle_weather",
+      "wind_speed": 14.358333333333333
+    },
+    {
+      "date": "",
+      "humidity": 82.77272727272727,
+      "mean_pressure": 1019.6363636363636,
+      "mean_temp": 14.863636363636363,
+      "source": "kaggle_weather",
+      "wind_speed": 9.690909090909093
+    },
+    {
+      "date": "",
+      "humidity": 81.77777777777777,
+      "mean_pressure": 1017.3888888888889,
+      "mean_temp": 15.666666666666666,
+      "source": "kaggle_weather",
+      "wind_speed": 10.294444444444444
+    },
+    {
+      "date": "",
+      "humidity": 77.55555555555556,
+      "mean_pressure": 1015.8333333333334,
+      "mean_temp": 16.444444444444443,
+      "source": "kaggle_weather",
+      "wind_speed": 4.322222222222222
+    },
+    {
+      "date": "",
+      "humidity": 76.0,
+      "mean_pressure": 1015.5,
+      "mean_temp": 16.125,
+      "source": "kaggle_weather",
+      "wind_speed": 4.625
+    },
+    {
+      "date": "",
+      "humidity": 78.625,
+      "mean_pressure": 1017.5,
+      "mean_temp": 15.25,
+      "source": "kaggle_weather",
+      "wind_speed": 5.1000000000000005
+    },
+    {
+      "date": "",
+      "humidity": 66.54545454545455,
+      "mean_pressure": 1018.9090909090909,
+      "mean_temp": 17.09090909090909,
+      "source": "kaggle_weather",
+      "wind_speed": 3.027272727272727
+    },
+    {
+      "date": "",
+      "humidity": 78.18181818181819,
+      "mean_pressure": 1017.7272727272727,
+      "mean_temp": 15.636363636363637,
+      "source": "kaggle_weather",
+      "wind_speed": 1.8545454545454545
+    },
+    {
+      "date": "",
+      "humidity": 77.6,
+      "mean_pressure": 1014.4,
+      "mean_temp": 18.7,
+      "source": "kaggle_weather",
+      "wind_speed": 9.819999999999999
+    },
+    {
+      "date": "",
+      "humidity": 77.63157894736842,
+      "mean_pressure": 1014.2105263157895,
+      "mean_temp": 18.63157894736842,
+      "source": "kaggle_weather",
+      "wind_speed": 8.099999999999998
+    },
+    {
+      "date": "",
+      "humidity": 69.66666666666667,
+      "mean_pressure": 1016.0,
+      "mean_temp": 16.88888888888889,
+      "source": "kaggle_weather",
+      "wind_speed": 9.044444444444444
+    },
+    {
+      "date": "",
+      "humidity": 63.75,
+      "mean_pressure": 1016.125,
+      "mean_temp": 15.125,
+      "source": "kaggle_weather",
+      "wind_speed": 7.637500000000001
+    },
+    {
+      "date": "",
+      "humidity": 68.4,
+      "mean_pressure": 1015.6,
+      "mean_temp": 15.7,
+      "source": "kaggle_weather",
+      "wind_speed": 4.08
+    },
+    {
+      "date": "",
+      "humidity": 68.375,
+      "mean_pressure": 1016.375,
+      "mean_temp": 15.375,
+      "source": "kaggle_weather",
+      "wind_speed": 7.875000000000002
+    },
+    {
+      "date": "",
+      "humidity": 71.77777777777777,
+      "mean_pressure": 1015.6666666666666,
+      "mean_temp": 14.666666666666666,
+      "source": "kaggle_weather",
+      "wind_speed": 9.066666666666666
+    },
+    {
+      "date": "",
+      "humidity": 64.0,
+      "mean_pressure": 1016.625,
+      "mean_temp": 15.625,
+      "source": "kaggle_weather",
+      "wind_speed": 3.95
+    },
+    {
+      "date": "",
+      "humidity": 70.375,
+      "mean_pressure": 1019.625,
+      "mean_temp": 16.25,
+      "source": "kaggle_weather",
+      "wind_speed": 1.625
+    },
+    {
+      "date": "",
+      "humidity": 67.0,
+      "mean_pressure": 1021.5555555555555,
+      "mean_temp": 16.333333333333332,
+      "source": "kaggle_weather",
+      "wind_speed": 6.377777777777778
+    },
+    {
+      "date": "",
+      "humidity": 65.5,
+      "mean_pressure": 1021.375,
+      "mean_temp": 16.875,
+      "source": "kaggle_weather",
+      "wind_speed": 6.9625
+    },
+    {
+      "date": "",
+      "humidity": 67.71428571428571,
+      "mean_pressure": 1020.5714285714286,
+      "mean_temp": 17.571428571428573,
+      "source": "kaggle_weather",
+      "wind_speed": 5.557142857142857
+    },
+    {
+      "date": "",
+      "humidity": 56.75,
+      "mean_pressure": 1017.625,
+      "mean_temp": 20.25,
+      "source": "kaggle_weather",
+      "wind_speed": 10.4375
+    },
+    {
+      "date": "",
+      "humidity": 64.4,
+      "mean_pressure": 1016.5,
+      "mean_temp": 21.3,
+      "source": "kaggle_weather",
+      "wind_speed": 9.279999999999998
+    },
+    {
+      "date": "",
+      "humidity": 70.75,
+      "mean_pressure": 1016.25,
+      "mean_temp": 21.125,
+      "source": "kaggle_weather",
+      "wind_speed": 6.25
+    },
+    {
+      "date": "",
+      "humidity": 66.0909090909091,
+      "mean_pressure": 1013.0,
+      "mean_temp": 22.363636363636363,
+      "source": "kaggle_weather",
+      "wind_speed": 6.054545454545456
+    },
+    {
+      "date": "",
+      "humidity": 60.125,
+      "mean_pressure": 1005.375,
+      "mean_temp": 23.375,
+      "source": "kaggle_weather",
+      "wind_speed": 6.937499999999999
+    },
+    {
+      "date": "",
+      "humidity": 69.41666666666667,
+      "mean_pressure": 1007.4166666666666,
+      "mean_temp": 21.833333333333332,
+      "source": "kaggle_weather",
+      "wind_speed": 12.341666666666667
+    },
+    {
+      "date": "",
+      "humidity": 57.125,
+      "mean_pressure": 1012.25,
+      "mean_temp": 19.125,
+      "source": "kaggle_weather",
+      "wind_speed": 7.4125000000000005
+    },
+    {
+      "date": "",
+      "humidity": 42.875,
+      "mean_pressure": 1015.25,
+      "mean_temp": 18.625,
+      "source": "kaggle_weather",
+      "wind_speed": 14.35
+    },
+    {
+      "date": "",
+      "humidity": 40.375,
+      "mean_pressure": 1016.125,
+      "mean_temp": 19.125,
+      "source": "kaggle_weather",
+      "wind_speed": 16.6625
+    },
+    {
+      "date": "",
+      "humidity": 50.42857142857143,
+      "mean_pressure": 1014.2857142857143,
+      "mean_temp": 19.0,
+      "source": "kaggle_weather",
+      "wind_speed": 11.928571428571427
+    },
+    {
+      "date": "",
+      "humidity": 59.0,
+      "mean_pressure": 1012.375,
+      "mean_temp": 18.75,
+      "source": "kaggle_weather",
+      "wind_speed": 11.1125
+    },
+    {
+      "date": "",
+      "humidity": 58.375,
+      "mean_pressure": 1014.25,
+      "mean_temp": 19.875,
+      "source": "kaggle_weather",
+      "wind_speed": 5.1000000000000005
+    },
+    {
+      "date": "",
+      "humidity": 51.666666666666664,
+      "mean_pressure": 1013.1111111111111,
+      "mean_temp": 23.333333333333332,
+      "source": "kaggle_weather",
+      "wind_speed": 3.9111111111111114
+    },
+    {
+      "date": "",
+      "humidity": 47.92307692307692,
+      "mean_pressure": 1012.9230769230769,
+      "mean_temp": 24.46153846153846,
+      "source": "kaggle_weather",
+      "wind_speed": 6.415384615384617
+    },
+    {
+      "date": "",
+      "humidity": 54.25,
+      "mean_pressure": 1012.15,
+      "mean_temp": 23.75,
+      "source": "kaggle_weather",
+      "wind_speed": 5.930000000000001
+    },
+    {
+      "date": "",
+      "humidity": 42.5,
+      "mean_pressure": 1010.625,
+      "mean_temp": 20.5,
+      "source": "kaggle_weather",
+      "wind_speed": 7.4125000000000005
+    },
+    {
+      "date": "",
+      "humidity": 43.125,
+      "mean_pressure": 1010.0,
+      "mean_temp": 19.125,
+      "source": "kaggle_weather",
+      "wind_speed": 8.350000000000001
+    },
+    {
+      "date": "",
+      "humidity": 41.25,
+      "mean_pressure": 1010.5,
+      "mean_temp": 19.75,
+      "source": "kaggle_weather",
+      "wind_speed": 9.962499999999999
+    },
+    {
+      "date": "",
+      "humidity": 42.44444444444444,
+      "mean_pressure": 1010.3333333333334,
+      "mean_temp": 20.0,
+      "source": "kaggle_weather",
+      "wind_speed": 9.666666666666664
+    },
+    {
+      "date": "",
+      "humidity": 41.5,
+      "mean_pressure": 1007.375,
+      "mean_temp": 22.625,
+      "source": "kaggle_weather",
+      "wind_speed": 6.025
+    },
+    {
+      "date": "",
+      "humidity": 52.72727272727273,
+      "mean_pressure": 1008.9090909090909,
+      "mean_temp": 21.545454545454547,
+      "source": "kaggle_weather",
+      "wind_speed": 10.263636363636364
+    },
+    {
+      "date": "",
+      "humidity": 69.07142857142857,
+      "mean_pressure": 1007.3571428571429,
+      "mean_temp": 20.785714285714285,
+      "source": "kaggle_weather",
+      "wind_speed": 8.342857142857143
+    },
+    {
+      "date": "",
+      "humidity": 67.75,
+      "mean_pressure": 1006.875,
+      "mean_temp": 19.9375,
+      "source": "kaggle_weather",
+      "wind_speed": 11.4625
+    },
+    {
+      "date": "",
+      "humidity": 60.4,
+      "mean_pressure": 1009.8,
+      "mean_temp": 18.533333333333335,
+      "source": "kaggle_weather",
+      "wind_speed": 5.566666666666666
+    },
+    {
+      "date": "",
+      "humidity": 56.625,
+      "mean_pressure": 1014.75,
+      "mean_temp": 17.375,
+      "source": "kaggle_weather",
+      "wind_speed": 7.637499999999999
+    },
+    {
+      "date": "",
+      "humidity": 49.333333333333336,
+      "mean_pressure": 1014.8888888888889,
+      "mean_temp": 17.444444444444443,
+      "source": "kaggle_weather",
+      "wind_speed": 9.055555555555554
+    },
+    {
+      "date": "",
+      "humidity": 56.333333333333336,
+      "mean_pressure": 1016.5555555555555,
+      "mean_temp": 18.0,
+      "source": "kaggle_weather",
+      "wind_speed": 4.522222222222222
+    },
+    {
+      "date": "",
+      "humidity": 54.75,
+      "mean_pressure": 1014.125,
+      "mean_temp": 19.875,
+      "source": "kaggle_weather",
+      "wind_speed": 7.175000000000001
+    },
+    {
+      "date": "",
+      "humidity": 49.2,
+      "mean_pressure": 1011.1,
+      "mean_temp": 24.0,
+      "source": "kaggle_weather",
+      "wind_speed": 5.5600000000000005
+    },
+    {
+      "date": "",
+      "humidity": 59.7,
+      "mean_pressure": 1010.7,
+      "mean_temp": 20.9,
+      "source": "kaggle_weather",
+      "wind_speed": 11.489999999999998
+    },
+    {
+      "date": "",
+      "humidity": 46.30769230769231,
+      "mean_pressure": 1009.8461538461538,
+      "mean_temp": 24.692307692307693,
+      "source": "kaggle_weather",
+      "wind_speed": 7.1230769230769235
+    },
+    {
+      "date": "",
+      "humidity": 52.27777777777778,
+      "mean_pressure": 1011.8888888888889,
+      "mean_temp": 24.666666666666668,
+      "source": "kaggle_weather",
+      "wind_speed": 9.161111111111111
+    },
+    {
+      "date": "",
+      "humidity": 54.666666666666664,
+      "mean_pressure": 1012.5555555555555,
+      "mean_temp": 23.333333333333332,
+      "source": "kaggle_weather",
+      "wind_speed": 10.077777777777778
+    },
+    {
+      "date": "",
+      "humidity": 49.0,
+      "mean_pressure": 1011.75,
+      "mean_temp": 25.0,
+      "source": "kaggle_weather",
+      "wind_speed": 9.2625
+    },
+    {
+      "date": "",
+      "humidity": 45.0,
+      "mean_pressure": 1009.75,
+      "mean_temp": 27.25,
+      "source": "kaggle_weather",
+      "wind_speed": 10.187500000000002
+    },
+    {
+      "date": "",
+      "humidity": 49.75,
+      "mean_pressure": 1008.875,
+      "mean_temp": 28.0,
+      "source": "kaggle_weather",
+      "wind_speed": 3.4875000000000003
+    },
+    {
+      "date": "",
+      "humidity": 37.666666666666664,
+      "mean_pressure": 1010.5833333333334,
+      "mean_temp": 28.916666666666668,
+      "source": "kaggle_weather",
+      "wind_speed": 10.033333333333335
+    },
+    {
+      "date": "",
+      "humidity": 39.375,
+      "mean_pressure": 1009.875,
+      "mean_temp": 26.5,
+      "source": "kaggle_weather",
+      "wind_speed": 10.425
+    },
+    {
+      "date": "",
+      "humidity": 37.1,
+      "mean_pressure": 1010.2,
+      "mean_temp": 29.1,
+      "source": "kaggle_weather",
+      "wind_speed": 17.59
+    },
+    {
+      "date": "",
+      "humidity": 38.625,
+      "mean_pressure": 1009.5,
+      "mean_temp": 29.5,
+      "source": "kaggle_weather",
+      "wind_speed": 13.65
+    },
+    {
+      "date": "",
+      "humidity": 40.666666666666664,
+      "mean_pressure": 1009.0,
+      "mean_temp": 29.88888888888889,
+      "source": "kaggle_weather",
+      "wind_speed": 8.844444444444445
+    },
+    {
+      "date": "",
+      "humidity": 34.5,
+      "mean_pressure": 1007.125,
+      "mean_temp": 31.0,
+      "source": "kaggle_weather",
+      "wind_speed": 13.2
+    },
+    {
+      "date": "",
+      "humidity": 36.857142857142854,
+      "mean_pressure": 1007.1428571428571,
+      "mean_temp": 29.285714285714285,
+      "source": "kaggle_weather",
+      "wind_speed": 10.585714285714285
+    },
+    {
+      "date": "",
+      "humidity": 37.625,
+      "mean_pressure": 1007.5,
+      "mean_temp": 30.625,
+      "source": "kaggle_weather",
+      "wind_speed": 6.949999999999999
+    },
+    {
+      "date": "",
+      "humidity": 35.125,
+      "mean_pressure": 1005.0,
+      "mean_temp": 31.375,
+      "source": "kaggle_weather",
+      "wind_speed": 9.0375
+    },
+    {
+      "date": "",
+      "humidity": 33.75,
+      "mean_pressure": 1004.25,
+      "mean_temp": 29.75,
+      "source": "kaggle_weather",
+      "wind_speed": 9.2625
+    },
+    {
+      "date": "",
+      "humidity": 29.75,
+      "mean_pressure": 1004.25,
+      "mean_temp": 30.5,
+      "source": "kaggle_weather",
+      "wind_speed": 6.9375
+    },
+    {
+      "date": "",
+      "humidity": 31.866666666666667,
+      "mean_pressure": 1007.2,
+      "mean_temp": 30.933333333333334,
+      "source": "kaggle_weather",
+      "wind_speed": 14.319999999999999
+    },
+    {
+      "date": "",
+      "humidity": 46.0,
+      "mean_pressure": 1005.0,
+      "mean_temp": 29.23076923076923,
+      "source": "kaggle_weather",
+      "wind_speed": 14.384615384615387
+    },
+    {
+      "date": "",
+      "humidity": 26.0,
+      "mean_pressure": 1002.8888888888889,
+      "mean_temp": 31.22222222222222,
+      "source": "kaggle_weather",
+      "wind_speed": 13.577777777777776
+    },
+    {
+      "date": "",
+      "humidity": 29.875,
+      "mean_pressure": 1007.375,
+      "mean_temp": 27.0,
+      "source": "kaggle_weather",
+      "wind_speed": 4.65
+    },
+    {
+      "date": "",
+      "humidity": 29.375,
+      "mean_pressure": 1010.375,
+      "mean_temp": 25.625,
+      "source": "kaggle_weather",
+      "wind_speed": 8.337499999999999
+    },
+    {
+      "date": "",
+      "humidity": 21.125,
+      "mean_pressure": 1010.625,
+      "mean_temp": 27.125,
+      "source": "kaggle_weather",
+      "wind_speed": 14.125
+    },
+    {
+      "date": "",
+      "humidity": 19.428571428571427,
+      "mean_pressure": 1008.5714285714286,
+      "mean_temp": 27.857142857142858,
+      "source": "kaggle_weather",
+      "wind_speed": 19.314285714285713
+    },
+    {
+      "date": "",
+      "humidity": 17.75,
+      "mean_pressure": 1006.25,
+      "mean_temp": 29.25,
+      "source": "kaggle_weather",
+      "wind_speed": 15.512500000000001
+    },
+    {
+      "date": "",
+      "humidity": 26.0,
+      "mean_pressure": 1005.875,
+      "mean_temp": 29.25,
+      "source": "kaggle_weather",
+      "wind_speed": 9.4875
+    },
+    {
+      "date": "",
+      "humidity": 29.11111111111111,
+      "mean_pressure": 1006.7777777777778,
+      "mean_temp": 29.666666666666668,
+      "source": "kaggle_weather",
+      "wind_speed": 4.944444444444445
+    },
+    {
+      "date": "",
+      "humidity": 37.625,
+      "mean_pressure": 1004.625,
+      "mean_temp": 30.5,
+      "source": "kaggle_weather",
+      "wind_speed": 1.3875000000000002
+    },
+    {
+      "date": "",
+      "humidity": 30.444444444444443,
+      "mean_pressure": 1002.4444444444445,
+      "mean_temp": 31.22222222222222,
+      "source": "kaggle_weather",
+      "wind_speed": 5.966666666666667
+    },
+    {
+      "date": "",
+      "humidity": 34.25,
+      "mean_pressure": 1003.25,
+      "mean_temp": 31.0,
+      "source": "kaggle_weather",
+      "wind_speed": 2.0999999999999996
+    },
+    {
+      "date": "",
+      "humidity": 38.44444444444444,
+      "mean_pressure": 1004.4444444444445,
+      "mean_temp": 32.55555555555556,
+      "source": "kaggle_weather",
+      "wind_speed": 5.366666666666666
+    },
+    {
+      "date": "",
+      "humidity": 27.333333333333332,
+      "mean_pressure": 1003.1111111111111,
+      "mean_temp": 34.0,
+      "source": "kaggle_weather",
+      "wind_speed": 7.811111111111111
+    },
+    {
+      "date": "",
+      "humidity": 24.125,
+      "mean_pressure": 1000.875,
+      "mean_temp": 33.5,
+      "source": "kaggle_weather",
+      "wind_speed": 9.025
+    },
+    {
+      "date": "",
+      "humidity": 27.5,
+      "mean_pressure": 998.625,
+      "mean_temp": 34.5,
+      "source": "kaggle_weather",
+      "wind_speed": 5.5625
+    },
+    {
+      "date": "",
+      "humidity": 39.375,
+      "mean_pressure": 999.875,
+      "mean_temp": 34.25,
+      "source": "kaggle_weather",
+      "wind_speed": 6.9625
+    },
+    {
+      "date": "",
+      "humidity": 40.9,
+      "mean_pressure": 1001.6,
+      "mean_temp": 32.9,
+      "source": "kaggle_weather",
+      "wind_speed": 8.89
+    },
+    {
+      "date": "",
+      "humidity": 27.5,
+      "mean_pressure": 1002.125,
+      "mean_temp": 32.875,
+      "source": "kaggle_weather",
+      "wind_speed": 9.962499999999999
+    },
+    {
+      "date": "",
+      "humidity": 27.142857142857142,
+      "mean_pressure": 1004.1428571428571,
+      "mean_temp": 32.0,
+      "source": "kaggle_weather",
+      "wind_speed": 12.157142857142858
+    }
+  ],
+  "metadata": {
+    "csv_file": "DailyDelhiClimateTest.csv",
+    "dataset_path": "/Volumes/hfs/kaggle-data/daily-climate-time-series-data",
+    "fetched_at": "2026-05-15T08:17:17.737015+00:00",
+    "record_count": 114,
+    "source": "kaggle_weather"
+  }
+}

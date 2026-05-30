@@ -1,5 +1,5 @@
 # BijMantra Backend Configuration
-# LOKAS Architecture - Import Boundary Enforcement
+# Domain-Bounded Modular Monolith - Import Boundary Enforcement
 
 [project]
 name = "bijmantra-backend"
@@ -28,7 +28,7 @@ dependencies = [
     "aiosqlite>=0.22.1",
     "psycopg2-binary>=2.9.11",
     "passlib[bcrypt]>=1.7.4",
-    "python-multipart>=0.0.26",
+    "python-multipart>=0.0.27",
     "cryptography>=46.0.7",
     "certifi>=2026.2.25",
     # --- HTTP & networking ---
@@ -36,6 +36,7 @@ dependencies = [
     "aiohttp>=3.13.5",
     "websockets>=16.0",
     "redis>=7.4.0",
+    "idna>=3.15",
     # --- File & image ---
     "pillow>=12.2.0",
     "aiofiles>=25.1.0",
@@ -57,21 +58,25 @@ dependencies = [
     "scipy>=1.17.1",
     "scikit-learn>=1.8.0",
     "pandas>=3.0.2",
+    "patsy>=0.5.6",
     # --- Voice ---
     "edge-tts>=7.2.8",
     # --- MCP ---
     "mcp>=1.27.0",
     # --- LangChain & AI ---
     "langchain>=1.2.15",
-    "langchain-core>=1.2.28",
+    "langchain-core>=1.3.3",
     "langchain-google-genai>=4.2.1",
     "langgraph>=1.1.6",
     "langgraph-checkpoint>=4.0.1",
     "langgraph-prebuilt>=1.0.9",
-    "langsmith>=0.7.30",
+    "langsmith>=0.8.0",
     "google-genai>=1.72.0",
     "huggingface_hub>=1.10.1",
     "pyjwt>=2.12.1",
+    "polars>=1.40.0",
+    "kaggle>=2.1.2",
+    "kagglehub>=1.0.1",
 ]
 
 # Optional dependency groups (install with: uv sync --extra vision, etc.)
@@ -87,13 +92,15 @@ vision = [
     "opencv-python-headless>=4.13.0.92",
 ]
 ml = [
-    # Heavy ML/AI stack — requires native compilation
+    # Embedding stack — Python 3.13 compatible
     "sentence-transformers>=5.4.0",
     "transformers>=5.2.0",
     "tokenizers>=0.22.2",
     "xgboost>=3.2.0",
-    "shap>=0.51.0",
-    "scikit-allel>=1.3.13",
+    "umap-learn>=0.5.7",
+    # NOTE: shap>=0.51.0 and scikit-allel>=1.3.13 are excluded from this group
+    # because they pull llvmlite==0.36.0 which only supports Python <3.10.
+    # Install them separately if you need SHAP explainability on Python <=3.9.
 ]
 analytics = [
     # Analytical export — pyarrow fails to build on Python 3.15 alpha
@@ -196,12 +203,15 @@ line-ending = "lf"
 # From: Ānayana-maryādā-niyama (आनयन-मर्यादा-नियम)
 # =============================================================================
 # 
-# These rules enforce domain boundaries between LOKAs (bounded contexts).
-# Each LOKA should communicate via events, not direct imports.
+# These rules enforce domain boundaries between canonical bounded contexts.
+# BijMantra product language may call these LOKAs, but code uses the
+# industry-standard `domains` folder and domain terminology.
+# Domains should communicate via ports, service registry, events, or API
+# adapters rather than direct imports of another domain's internals.
 #
-# LOKAS:
+# DOMAINS:
 #   - sristi (Creation/Breeding)
-#   - bija_kosha (Seed Treasury/Germplasm)
+#   - bijkosha (Seed Treasury/Germplasm)
 #   - rupa (Form/Phenomics)
 #   - kshetra (Field/Operations)
 #   - medha (Intelligence/Analytics)
@@ -210,13 +220,13 @@ line-ending = "lf"
 #
 # ALLOWED:
 #   - Import from app.core.* (shared infrastructure)
-#   - Import from app.models.* (shared data layer)
-#   - Import from app.services.event_bus (cross-domain communication)
-#   - Import within same LOKA
+#   - Import from app.models.* only through transitional adapters
+#   - Import from event bus/service registry ports for cross-domain communication
+#   - Import within the same domain
 #
 # FORBIDDEN:
-#   - Direct import from one LOKA to another
-#   - Example: sristi importing from bija_kosha
+#   - Direct import from one domain's internals into another domain
+#   - Example: sristi importing from bijkosha adapters or domain internals
 #
 # =============================================================================
 
@@ -234,20 +244,21 @@ line-ending = "lf"
 "app/main.py" = ["E402"]
 
 # =============================================================================
-# FUTURE: When LOKAS folders are created, add these rules:
+# CANONICAL DOMAINS: import rules are enforced by architecture tests first.
+# A future ruff plugin can turn the same map into lint-time restrictions.
 # =============================================================================
 #
-# "app/lokas/sristi/**/*.py" = []
-# "app/lokas/bija_kosha/**/*.py" = []
-# "app/lokas/rupa/**/*.py" = []
-# "app/lokas/kshetra/**/*.py" = []
-# "app/lokas/medha/**/*.py" = []
-# "app/lokas/vani/**/*.py" = []
-# "app/lokas/vidya/**/*.py" = []
+# "app/domains/sristi/**/*.py" = []
+# "app/domains/bijkosha/**/*.py" = []
+# "app/domains/rupa/**/*.py" = []
+# "app/domains/kshetra/**/*.py" = []
+# "app/domains/medha/**/*.py" = []
+# "app/domains/vani/**/*.py" = []
+# "app/domains/vidya/**/*.py" = []
 #
 # Then use flake8-import-restrictions or custom ruff plugin to enforce:
-# - No cross-LOKA imports
-# - Only event_bus for cross-domain communication
+# - No cross-domain internal imports
+# - Cross-domain calls go through ports, service registry, events, or API adapters
 # =============================================================================
 
 [tool.pytest.ini_options]
@@ -300,4 +311,5 @@ DEP002 = ["pytest", "pytest-asyncio", "pytest-cov", "httpx"]
 [dependency-groups]
 dev = [
     "hypothesis>=6.152.1",
+    "pip-audit>=2.10.0",
 ]

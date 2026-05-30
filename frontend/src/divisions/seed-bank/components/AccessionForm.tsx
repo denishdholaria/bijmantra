@@ -71,8 +71,8 @@ export function AccessionForm({ initialData, onSuccess, onCancel }: AccessionFor
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<AccessionFormData>({
-    resolver: zodResolver(accessionSchema),
+  } = useForm<AccessionFormData, unknown, AccessionFormData>({
+    resolver: zodResolver(accessionSchema) as any,
     defaultValues: {
       seed_count: 0,
       mls: false,

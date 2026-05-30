@@ -2,15 +2,19 @@
 # Single file for all development infrastructure.
 #
 # Usage:
-#   ./dev.sh              — start everything for development
-#   ./dev.sh --minimal    — PostgreSQL only
+#   ./dev.sh              - start PostgreSQL + backend + frontend
+#   ./dev.sh --all        - start product infra too (Redis, MinIO, Meilisearch)
+#   ./dev.sh --minimal    - PostgreSQL only
+#   ./dev.sh --chloe      - explicit experimental autonomy sidecars
 #   ./dev.sh --stop       — stop all services
 #
 # Manual profile control:
 #   podman compose up -d postgres                          # just DB
 #   podman compose --profile infra up -d                   # + Redis, MinIO, Meilisearch
+#   podman compose --profile auth up -d                    # + Keycloak and auth DB
 #   podman compose --profile tools up -d                   # + Adminer, Redis Commander
-#   podman compose --profile beingbijmantra up -d          # + project-brain sidecar
+#   podman compose --profile beingbijmantra up -d          # + experimental autonomy sidecar
+#   podman compose --profile chloe up -d                   # + experimental OpenClaw/Chloe sidecars
 
 services:
   # ── PostgreSQL (PostGIS + pgvector) ────────────────────────────────
@@ -104,7 +108,56 @@ services:
     networks:
       - bijmantra-network
 
-  # ── Being Bijmantra project-brain sidecar (SurrealDB) ──────────────
+  # ── Keycloak identity provider (development auth) ─────────────────
+  keycloak-postgres:
+    profiles: [auth]
+    image: postgres:16-alpine
+    container_name: bijmantra-keycloak-postgres
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_POSTGRES_DB:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_POSTGRES_USER:-keycloak}
+      POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD:-keycloak_dev_password}
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${KEYCLOAK_POSTGRES_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_POSTGRES_USER:-keycloak} -d ${KEYCLOAK_POSTGRES_DB:-keycloak}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
+  keycloak:
+    profiles: [auth]
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: bijmantra-keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/${KEYCLOAK_POSTGRES_DB:-keycloak}
+      KC_DB_USERNAME: ${KEYCLOAK_POSTGRES_USER:-keycloak}
+      KC_DB_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD:-keycloak_dev_password}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_PROXY_HEADERS: xforwarded
+    command: ["start-dev", "--import-realm"]
+    volumes:
+      - ./infra/keycloak/realms:/opt/keycloak/data/import:ro
+    ports:
+      - "${KEYCLOAK_PORT:-8084}:8080"
+      - "${KEYCLOAK_MANAGEMENT_PORT:-9002}:9000"
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    networks:
+      - bijmantra-network
+
+  # ── BeingBijmantra experimental autonomy sidecar (SurrealDB) ──────
   beingbijmantra-surrealdb:
     profiles: [beingbijmantra]
     image: surrealdb/surrealdb:v3.0.4
@@ -138,14 +191,14 @@ services:
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-bijmantra-dev-token}
       OPENCLAW_GATEWAY_BIND: "custom"
       OPENCLAW_GATEWAY_CUSTOM_BIND: "0.0.0.0"
-      OPENCLAW_GATEWAY_PORT: "18789"
+      OPENCLAW_GATEWAY_PORT: "${OPENCLAW_GATEWAY_PORT:-18789}"
       OPENCLAW_GATEWAY_CONTROLUI_ENABLED: "false"
       TZ: ${OPENCLAW_TZ:-Asia/Kolkata}
     volumes:
       - ./.openclaw:/home/node/.openclaw
       - .:/home/node/.openclaw/workspace
     ports:
-      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:${OPENCLAW_GATEWAY_PORT:-18789}"
       - "127.0.0.1:${OPENCLAW_BRIDGE_PORT:-18790}:18790"
     init: true
     security_opt:
@@ -153,7 +206,7 @@ services:
     restart: unless-stopped
     command: ["node", "openclaw.mjs", "gateway"]
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -248,6 +301,7 @@ services:
 
 volumes:
   postgres_data:
+  keycloak_postgres_data:
   redis_data:
   minio_data:
   meilisearch_data:

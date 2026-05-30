@@ -618,6 +618,11 @@ Response:"""
                 confidence=0.7,
             )
 
+        if "trial" in message_lower and re.search(r"\b(how many|count|number of|total)\b", message_lower):
+            params = self._extract_search_params(user_message, "trial")
+            params["summary_only"] = True
+            return self._finalize_detected_call("search_trials", params, confidence=0.72)
+
         # Search patterns
         if any(word in message_lower for word in ["search", "find", "show me", "show", "list"]):
             if any(term in message_lower for term in SEEDLOT_TERMS):
@@ -766,6 +771,18 @@ Response:"""
             if re.search(rf"(?<!\w){re.escape(term)}(?!\w)", message_lower):
                 return lookup[term]
         return None
+
+    _GET_INSIGHTS_PHRASES: tuple[str, ...] = (
+        "any alerts", "any insights", "what should i know",
+        "any issues", "anything unusual", "notifications",
+        "any warnings", "any problems", "what's new",
+        "any updates", "proactive", "alert me",
+    )
+
+    def _detect_get_insights(self, message: str) -> bool:
+        """Return True when the message is asking for proactive insights/alerts."""
+        msg = message.lower()
+        return any(phrase in msg for phrase in self._GET_INSIGHTS_PHRASES)
 
     def _detect_temporal(self, message: str) -> str | None:
         for pattern, normalized_value in TEMPORAL_PATTERNS:
@@ -1004,6 +1021,23 @@ Response:"""
             if trait in message_lower:
                 params["trait"] = trait.replace(" ", "_")
                 break
+
+        if entity_type == "trial":
+            if re.search(r"\binactive\b|\bnot\s+active\b", message_lower):
+                params["status"] = "inactive"
+            elif re.search(r"\bactive\b", message_lower):
+                params["status"] = "active"
+
+            page_match = re.search(r"\bpage\s+(\d{1,3})\b", message_lower)
+            if page_match:
+                params["page"] = int(page_match.group(1))
+
+            limit_match = re.search(r"\b(?:first|top|limit|show)\s+(\d{1,3})\b", message_lower)
+            if limit_match:
+                params["limit"] = int(limit_match.group(1))
+
+            if re.search(r"\b(how many|count|number of|total)\b", message_lower):
+                params["summary_only"] = True
 
         return params
 

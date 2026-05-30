@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_active_user, get_organization_id
 from app.core.config import settings
-from app.middleware.tenant_context import get_tenant_db
 from app.core.rls import set_tenant_context
 from app.crud.core import location as location_crud
+from app.middleware.tenant_context import get_tenant_db
 from app.models.core import User
 from app.schemas.brapi import BrAPIResponse, Metadata, Pagination, Status
 from app.schemas.core import Location, LocationCreate, LocationUpdate
@@ -131,7 +131,9 @@ async def create_location(
         BrAPIResponse[dict]: A BrAPI response containing the newly created
         location's data.
     """
-    await set_tenant_context(db, current_user.organization_id, current_user.is_superuser)
+    await set_tenant_context(
+        db, current_user.organization_id, current_user.is_superuser, user_id=current_user.id
+    )
 
     location = await location_crud.create(
         db, obj_in=location_in, org_id=current_user.organization_id

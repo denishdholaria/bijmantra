@@ -3,7 +3,7 @@
 Validate Layer Contracts
 
 This script validates that layer contracts are enforced:
-- UI → API → Service → Compute/DB
+- API adapters → application use cases → domain logic/ports → adapters
 - No forbidden cross-layer imports
 
 Usage:
@@ -51,9 +51,21 @@ def categorize_file_layer(file_path: Path, app_dir: Path) -> str:
         rel_path = file_path.relative_to(app_dir)
         parts = rel_path.parts
         
-        # Router/API layer
+        # Router/API adapter layer
         if "router.py" in str(file_path) or "api" in parts:
             return "api"
+
+        if "domains" in parts:
+            if "domain" in parts:
+                return "domain"
+            if "application" in parts:
+                return "application"
+            if "ports" in parts:
+                return "port"
+            if "schemas" in parts:
+                return "schema"
+            if "adapters" in parts:
+                return "adapter"
         
         # Service layer
         if "service.py" in str(file_path) or "services" in parts:
@@ -95,6 +107,21 @@ def check_layer_violations(
             ("app.modules.*.models", "API layer cannot import domain models directly"),
             ("app.modules.*.compute", "API layer cannot import compute layer"),
             ("app.db", "API layer cannot import database directly"),
+        ],
+        "domain": [
+            ("app.models", "Domain layer cannot import persistence models"),
+            ("app.schemas", "Domain layer cannot import API schemas"),
+            ("sqlalchemy", "Domain layer cannot import SQLAlchemy"),
+            ("fastapi", "Domain layer cannot import FastAPI"),
+        ],
+        "application": [
+            ("app.models", "Application layer should use ports/adapters instead of models directly"),
+            ("sqlalchemy", "Application layer should not import SQLAlchemy"),
+            ("fastapi", "Application layer should not import FastAPI"),
+        ],
+        "port": [
+            ("sqlalchemy", "Ports should not import SQLAlchemy"),
+            ("fastapi", "Ports should not import FastAPI"),
         ],
         "service": [
             # Services can import models and compute, so fewer restrictions
@@ -155,41 +182,37 @@ def scan_directory_for_violations(app_dir: Path) -> Dict[str, List[Tuple]]:
 
 
 def check_cross_domain_imports(app_dir: Path) -> Dict[str, List[str]]:
-    """Check for cross-domain imports that bypass contracts."""
+    """Check for cross-domain imports that bypass ports or public adapters."""
     violations_by_file = {}
-    modules_dir = app_dir / "modules"
-    
-    if not modules_dir.exists():
+
+    domains_dir = app_dir / "domains"
+    domains = ["sristi", "bijkosha", "rupa", "kshetra", "medha", "vani", "vidya"]
+    internal_layers = ("domain", "application", "adapters")
+
+    if not domains_dir.exists():
         return violations_by_file
-    
-    domains = [
-        "breeding", "genomics", "phenotyping", "germplasm",
-        "environment", "spatial", "ai", "interop"
-    ]
-    
-    for domain_dir in modules_dir.iterdir():
+
+    for domain_dir in domains_dir.iterdir():
         if not domain_dir.is_dir() or domain_dir.name not in domains:
             continue
-        
+
         for py_file in domain_dir.rglob("*.py"):
             if "__pycache__" in str(py_file):
                 continue
-            
+
             imports = get_imports_from_file(py_file)
             violations = []
-            
+
             for import_name in imports:
-                # Check if importing from another domain
                 for other_domain in domains:
                     if other_domain == domain_dir.name:
                         continue
-                    
-                    if f"app.modules.{other_domain}" in import_name:
-                        # Cross-domain import detected
-                        violations.append(
-                            f"Cross-domain import: {domain_dir.name} → {other_domain}"
-                        )
-            
+                    for internal_layer in internal_layers:
+                        if f"app.domains.{other_domain}.{internal_layer}" in import_name:
+                            violations.append(
+                                f"Cross-domain internal import: {domain_dir.name} -> {other_domain}.{internal_layer}"
+                            )
+
             if violations:
                 rel_path = py_file.relative_to(app_dir.parent)
                 violations_by_file[str(rel_path)] = violations
@@ -243,7 +266,7 @@ def main():
             remaining = len(cross_domain_violations) - 10
             print(f"   ... and {remaining} more files")
         print()
-        print("   Note: Cross-domain communication should use event_bus or explicit interfaces")
+        print("   Note: Cross-domain communication should use ports, service registry, events, or APIs")
         print()
     else:
         print("✅ No cross-domain import violations detected")

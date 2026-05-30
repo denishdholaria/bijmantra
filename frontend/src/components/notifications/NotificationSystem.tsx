@@ -12,7 +12,7 @@
  * Do NOT add local `useState` for notification lists here — use the store.
  */
 
-import { useEffect, createContext, useContext, useCallback } from 'react'
+import { useEffect, useState, createContext, useContext, useCallback } from 'react'
 import { LEGACY_REEVU_NOTIFICATION_TYPE } from '@/lib/legacyReevu'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/auth'
@@ -255,7 +255,7 @@ interface NotificationDropdownProps {
 function NotificationDropdown({ onClose }: NotificationDropdownProps) {
   const { notifications, markAsRead, markAllAsRead, clearNotification } = useNotifications()
 
-  const typeConfig: Record<NotificationType, { icon: string; color: string }> = {
+  const typeConfig: Record<string, { icon: string; color: string }> = {
     info: { icon: 'ℹ️', color: 'blue' },
     success: { icon: '✅', color: 'green' },
     warning: { icon: '⚠️', color: 'amber' },
@@ -327,14 +327,13 @@ function NotificationDropdown({ onClose }: NotificationDropdownProps) {
                         {formatTimeAgo(notification.timestamp)}
                         {notification.source && ` • ${notification.source}`}
                       </span>
-                      {notification.actionUrl && (
-                        <a
-                          href={notification.actionUrl}
-                          onClick={onClose}
+                      {notification.action && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); notification.action!.onClick() }}
                           className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
                         >
-                          {notification.actionLabel || 'View'}
-                        </a>
+                          {notification.action.label}
+                        </button>
                       )}
                     </div>
                   </div>
@@ -369,7 +368,7 @@ interface ToastProps {
 }
 
 export function Toast({ notification, onClose }: ToastProps) {
-  const typeConfig: Record<NotificationType, { icon: string; bgColor: string }> = {
+  const typeConfig: Record<string, { icon: string; bgColor: string }> = {
     info: { icon: 'ℹ️', bgColor: 'bg-blue-500' },
     success: { icon: '✅', bgColor: 'bg-green-500' },
     warning: { icon: '⚠️', bgColor: 'bg-amber-500' },
@@ -406,8 +405,8 @@ export function Toast({ notification, onClose }: ToastProps) {
 // HELPERS
 // ============================================
 
-function formatTimeAgo(date: Date): string {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+function formatTimeAgo(timestamp: number): string {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000)
   
   if (seconds < 60) return 'Just now'
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
@@ -415,4 +414,4 @@ function formatTimeAgo(date: Date): string {
   return `${Math.floor(seconds / 86400)}d ago`
 }
 
-export type { Notification, NotificationType, NotificationPreferences }
+export type { NotificationPreferences }

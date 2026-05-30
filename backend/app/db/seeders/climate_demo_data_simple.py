@@ -195,8 +195,8 @@ async def create_demo_data():
             print("- 5 variety releases")
             print(f"\nTotal: {carbon_count + emission_count + metric_count + 10} records created")
             print("\nYou can now view the data at:")
-            print("- http://localhost:5173/earth-systems/carbon")
-            print("- http://localhost:5173/earth-systems/sustainability")
+            print("- http://localhost:5656/earth-systems/carbon")
+            print("- http://localhost:5656/earth-systems/sustainability")
             print()
 
         except Exception as e:

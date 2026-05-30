@@ -1,0 +1,565 @@
+{
+  "cost_benefit_analyses": [],
+  "market_trends": [
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Maize (Corn)",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Maize (Fodder)",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Sugarcane",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Rice",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Wheat",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Potato",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Soybean",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Cassava (Tapioca)",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Barley",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Sorghum",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 1,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Maize (Corn)",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Maize (Fodder)",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Sugarcane",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Rice",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Wheat",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Potato",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Soybean",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Cassava (Tapioca)",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Barley",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    },
+    {
+      "accuracy_metric": 0.12,
+      "crop_name": "Sorghum",
+      "data_source": "hybrid",
+      "forecast_data": [
+        {
+          "confidence_interval": [
+            0.9,
+            1.12
+          ],
+          "date": "2026-01-01",
+          "value": 364.0
+        }
+      ],
+      "forecast_method": "source_registry_plus_synthetic_smoothing",
+      "generated_at": "2026-05-15T06:24:53.911245+00:00",
+      "historical_data": [
+        {
+          "date": "2024-01-01",
+          "value": 350
+        }
+      ],
+      "organization_id": 2,
+      "pipeline_version": "1.0.0",
+      "region": "India",
+      "synthetic_method": "market_trend_projection",
+      "trait_name": "Grain Yield"
+    }
+  ]
+}

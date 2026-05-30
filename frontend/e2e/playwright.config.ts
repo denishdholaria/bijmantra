@@ -14,7 +14,7 @@ const require = createRequire(import.meta.url)
 /**
  * Environment configuration
  */
-const BASE_URL = process.env.E2E_BASE_URL || 'http://localhost:5173'
+const BASE_URL = process.env.E2E_BASE_URL || 'http://localhost:5656'
 const API_URL = process.env.E2E_API_URL || 'http://localhost:8000'
 const CI = !!process.env.CI
 const FRONTEND_DEV_COMMAND = process.env.BIJMANTRA_FRONTEND_DEV_COMMAND || 'bun run dev'

@@ -27,7 +27,7 @@ test.describe('§1 Authentication Lifecycle', () => {
     // Fresh context with NO stored auth
     const context = await browser.newContext({ storageState: undefined })
     const page = await context.newPage()
-    await page.goto('http://localhost:5173/dashboard')
+    await page.goto('http://localhost:5656/dashboard')
     await page.waitForTimeout(3000)
 
     const url = page.url()

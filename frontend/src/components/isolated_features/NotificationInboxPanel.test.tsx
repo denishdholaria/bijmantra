@@ -19,19 +19,19 @@ describe('NotificationInboxPanel', () => {
   const mockNotifications = [
     {
       id: '1',
-      type: 'info',
+      type: 'info' as const,
       title: 'Test Notification',
       message: 'This is a test message',
-      timestamp: new Date(),
+      timestamp: Date.now(),
       read: false,
       source: 'System'
     },
     {
       id: '2',
-      type: LEGACY_REEVU_NOTIFICATION_TYPE,
+      type: 'info' as const,
       title: 'AI Insight',
       message: 'REEVU has found something',
-      timestamp: new Date(),
+      timestamp: Date.now(),
       read: false,
       source: 'REEVU'
     }

@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-04-22",
-  "updatedBy": "Plan 3 - Next Bounded Workflows final closure",
+  "lastUpdated": "2026-05-28",
+  "updatedBy": "Intelligence Knowledge Graph capability pack slice",
   "session": 30,
   "pages": {
     "total": 253,
@@ -10,18 +10,18 @@
     "removed": 12
   },
   "api": {
-    "totalEndpoints": 1965,
-    "brapiEndpoints": 248,
+    "totalEndpoints": 1906,
+    "brapiEndpoints": 249,
     "brapiPublishedEndpoints": 201,
-    "brapiExposedEndpoints": 248,
+    "brapiExposedEndpoints": 249,
     "brapiCoverage": 100,
-    "customEndpoints": 1717
+    "customEndpoints": 1657
   },
   "database": {
-    "models": 110,
-    "migrations": 21,
-    "seeders": 15,
-    "tables": 119,
+    "models": 232,
+    "migrations": 91,
+    "seeders": 26,
+    "tables": 235,
     "seededRecords": 413,
     "rlsEnabledTables": 0
   },
@@ -107,6 +107,265 @@
     "sizeMB": "16.5MB",
     "previousSizeKB": 19893,
     "sizeReductionPercent": 15.0
+  },
+  "architectureRecovery": {
+    "status": "first_capability_pack_materialized",
+    "targetArchitecture": "domain_bounded_modular_monolith_with_hexagonal_architecture",
+    "featureFreeze": {
+      "started": "2026-05-21",
+      "recommendedWindow": "2-4 weeks",
+      "scope": "Bug fixes and architecture recovery slices only; no new broad feature areas during boundary recovery."
+    },
+    "pendingEstimatePercent": {
+      "low": 65,
+      "high": 75
+    },
+    "currentSlice": ".ai/tasks/2026-05-28-intelligence-knowledge-graph-capability-pack-slice.md",
+    "acceptedDecision": ".ai/decisions/ADR-035-domain-bounded-modular-monolith-with-hexagonal-architecture.md",
+    "supersededDecision": ".ai/decisions/ADR-034-knowledge-graph-explorer-control-plane-tab.md",
+    "phase0": {
+      "architectureDecision": "started",
+      "boundaryDriftCorrection": "started",
+      "documentationAuthority": "started",
+      "documentationResetArchive": "completed",
+      "transitionalSurfacesMarked": "completed",
+      "transitionalBoundaryRules": "completed",
+      "routeStability": "preserved",
+      "domainHexagonalPackageShape": "completed"
+    },
+    "transitionalArchitecture": {
+      "status": "rules_defined",
+      "rules": ".github/docs/architecture/2026-05-24-transitional-architecture-rules.md",
+      "legacyLayeredSurfaces": [
+        "backend/app/models",
+        "backend/app/schemas",
+        "backend/app/crud",
+        "backend/app/services"
+      ],
+      "moduleSurface": "backend/app/modules",
+      "canonicalDomainSurface": "backend/app/domains",
+      "frontendTransitionalSurface": "frontend/src/pages"
+    },
+    "documentationReset": {
+      "archiveRoot": ".github/docs/archive/documentation-reset-2026-05-21",
+      "archivedMarkdownFiles": 80,
+      "activePointerFiles": [
+        ".github/docs/important-plans/README.md",
+        ".github/docs/architecture/core/ARCHITECTURE.md",
+        ".github/docs/architecture/core/README.md",
+        ".github/docs/architecture/mcps/README.md",
+        ".github/docs/architecture/plant-vision/README.md",
+        ".github/docs/architecture/ui/pretext-update/README.md",
+        ".github/docs/denish-ideas/README.md",
+        ".github/docs/steppingStones/README.md",
+        ".github/docs/vision/README.md"
+      ],
+      "currentTruthMap": ".github/docs/architecture/CURRENT.md"
+    },
+    "phase1": {
+      "backendServiceInventory": "completed_initial",
+      "frontendDivisionInventory": "completed_initial",
+      "godObjectInventory": "completed_initial",
+      "domainBoundaryMap": "capability_layer_refined",
+      "capabilityInventory": "completed_initial",
+      "capabilityScalingMap": ".github/docs/architecture/2026-05-26-capability-inventory-and-domain-scaling-map.md",
+      "operatingArchitectureCartography": ".github/docs/architecture/2026-05-27-bijmantra-operating-architecture-cartography.html",
+      "platformAppAccessModel": ".github/docs/architecture/2026-05-27-platform-app-access-model.md",
+      "dominionCapabilityRegistry": "backend/app/platform/dominions.py",
+      "dominionCapabilityRegistryDoc": ".github/docs/architecture/2026-05-27-dominion-and-capability-registry.md",
+      "firstMaterializedCapabilityPack": "backend/app/domains/intelligence/capabilities/knowledge_graph",
+      "capabilityAccessEvaluator": "backend/app/platform/capability_access.py",
+      "frontendCapabilityRegistrySeed": "frontend/src/framework/registry/capabilities.ts",
+      "semanticSpineAdrs": "ADR-019 through ADR-024 integrated into operating architecture cartography"
+    },
+    "phase2": {
+      "status": "first_capability_pack_materialized",
+      "firstCapabilityPack": {
+        "status": "completed",
+        "id": "intelligence_fabric.knowledge_graph",
+        "backendRoot": "backend/app/domains/intelligence/capabilities/knowledge_graph",
+        "manifest": "backend/app/domains/intelligence/capabilities/knowledge_graph/capability.yaml",
+        "frontendRegistrySeed": "frontend/src/framework/registry/capabilities.ts",
+        "accessEvaluator": "backend/app/platform/capability_access.py",
+        "publicApi": "stable"
+      },
+      "firstIntelligenceVerticalSlice": {
+        "status": "completed",
+        "route": "/api/v2/knowledge-graph/explorer-snapshot",
+        "useCase": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "adapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph.py",
+        "legacyBridge": "backend/app/services/knowledge_graph_service.py",
+        "publicApi": "stable",
+        "domain": "intelligence",
+        "schema": "backend/app/domains/intelligence/capabilities/knowledge_graph/schemas/knowledge_graph.py",
+        "ports": "backend/app/domains/intelligence/capabilities/knowledge_graph/ports/knowledge_graph.py"
+      },
+      "intelligenceKnowledgeGraphRetrievalCluster": {
+        "status": "completed",
+        "routes": [
+          "POST /api/v2/knowledge-graph/edges",
+          "/api/v2/knowledge-graph/explorer-snapshot",
+          "/api/v2/knowledge-graph/ranked-candidates",
+          "/api/v2/knowledge-graph/retrieval-diagnostics",
+          "/api/v2/knowledge-graph/retrieval-candidates",
+          "/api/v2/knowledge-graph/reevu-dry-run-preview",
+          "/api/v2/knowledge-graph/evidence-search",
+          "/api/v2/knowledge-graph/evidence-pack",
+          "/api/v2/knowledge-graph/facets",
+          "/api/v2/knowledge-graph/edges",
+          "/api/v2/knowledge-graph/neighborhood"
+        ],
+        "useCase": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "adapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph.py",
+        "legacyBridge": "backend/app/services/knowledge_graph_service.py",
+        "publicApi": "stable",
+        "schema": "backend/app/domains/intelligence/capabilities/knowledge_graph/schemas/knowledge_graph.py",
+        "ports": "backend/app/domains/intelligence/capabilities/knowledge_graph/ports/knowledge_graph.py"
+      },
+      "intelligenceKnowledgeGraphRetrievalDomainPolicy": {
+        "status": "completed",
+        "domainPolicy": "backend/app/domains/intelligence/capabilities/knowledge_graph/domain/knowledge_graph_retrieval.py",
+        "legacyDelegator": "backend/app/services/knowledge_graph_service.py",
+        "policies": [
+          "retrieval_readiness",
+          "candidate_diagnostic_warnings",
+          "candidate_score_factors",
+          "candidate_retrieval_score"
+        ]
+      },
+      "intelligenceKnowledgeGraphRetrievalApplicationBuilder": {
+        "status": "completed",
+        "builder": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "legacyDataSourceAdapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph_legacy.py",
+        "legacyDelegator": "backend/app/services/knowledge_graph_service.py",
+        "owns": [
+          "candidate_grouping",
+          "candidate_evidence_pack_orchestration",
+          "retrieval_candidate_response_assembly"
+        ]
+      },
+      "intelligenceKnowledgeGraphEvidenceReadBoundary": {
+        "status": "completed",
+        "routes": [
+          "/api/v2/knowledge-graph/evidence-search",
+          "/api/v2/knowledge-graph/evidence-pack"
+        ],
+        "useCase": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "adapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph.py",
+        "legacyBridge": "backend/app/services/knowledge_graph_service.py",
+        "publicApi": "stable",
+        "schema": "backend/app/domains/intelligence/capabilities/knowledge_graph/schemas/knowledge_graph.py",
+        "ports": "backend/app/domains/intelligence/capabilities/knowledge_graph/ports/knowledge_graph.py"
+      },
+      "intelligenceKnowledgeGraphReadBoundary": {
+        "status": "completed",
+        "routes": [
+          "/api/v2/knowledge-graph/facets",
+          "/api/v2/knowledge-graph/edges",
+          "/api/v2/knowledge-graph/neighborhood"
+        ],
+        "useCase": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "adapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph.py",
+        "legacyBridge": "backend/app/services/knowledge_graph_service.py",
+        "publicApi": "stable",
+        "schema": "backend/app/domains/intelligence/capabilities/knowledge_graph/schemas/knowledge_graph.py",
+        "ports": "backend/app/domains/intelligence/capabilities/knowledge_graph/ports/knowledge_graph.py"
+      },
+      "intelligenceKnowledgeGraphWriteBoundary": {
+        "status": "completed",
+        "route": "POST /api/v2/knowledge-graph/edges",
+        "command": "KnowledgeGraphUpsertEdgeCommand",
+        "useCase": "KnowledgeGraphUpsertEdgeUseCase",
+        "adapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph.py",
+        "legacyBridge": "backend/app/services/knowledge_graph_service.py",
+        "publicApi": "stable"
+      },
+      "intelligenceKnowledgeGraphPersistenceAdapter": {
+        "status": "completed",
+        "adapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph_persistence.py",
+        "legacyDelegator": "backend/app/services/knowledge_graph_service.py",
+        "owns": [
+          "tenant_scoped_fair_asset_lookup",
+          "edge_upsert",
+          "edge_list",
+          "neighborhood_edge_queries",
+          "facet_count_queries"
+        ],
+        "guard": "KnowledgeGraphService must not own raw SQLAlchemy KG edge query construction."
+      },
+      "intelligenceKnowledgeGraphEvidenceSearchBuilder": {
+        "status": "completed",
+        "builder": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "legacyDataSourceAdapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph_legacy.py",
+        "legacyDelegator": "backend/app/services/knowledge_graph_service.py",
+        "owns": [
+          "result_side_projection",
+          "evidence_result_metadata_assembly",
+          "evidence_search_response_policy",
+          "evidence_search_response_count"
+        ]
+      },
+      "intelligenceKnowledgeGraphEvidencePackBuilder": {
+        "status": "completed",
+        "builder": "backend/app/domains/intelligence/capabilities/knowledge_graph/application/knowledge_graph.py",
+        "legacyDataSourceAdapter": "backend/app/domains/intelligence/capabilities/knowledge_graph/adapters/knowledge_graph_legacy.py",
+        "legacyDelegator": "backend/app/services/knowledge_graph_service.py",
+        "owns": [
+          "evidence_pack_response_assembly",
+          "relationship_type_extraction",
+          "evidence_ref_deduplication",
+          "evidence_pack_retrieval_policy"
+        ]
+      }
+    },
+    "domainPackageShape": {
+      "status": "completed",
+      "canonicalLayers": [
+        "domain",
+        "application",
+        "ports",
+        "schemas",
+        "adapters"
+      ],
+      "cartography": ".github/docs/architecture/2026-05-22-bijmantra-system-cartography.md",
+      "transitionalLayers": [
+        "contracts"
+      ],
+      "canonicalDomains": [
+        "breeding",
+        "germplasm",
+        "phenotyping",
+        "field_operations",
+        "intelligence",
+        "commercial",
+        "knowledge"
+      ]
+    },
+    "domainNaming": {
+      "seedTreasuryCanonicalKey": "germplasm",
+      "canonicalDomainNames": [
+        "breeding",
+        "germplasm",
+        "phenotyping",
+        "field_operations",
+        "intelligence",
+        "commercial",
+        "knowledge"
+      ],
+      "legacyAliases": [
+        "sristi",
+        "bijkosha",
+        "bija_kosha",
+        "bij_kosha",
+        "bija-kosha",
+        "bij-kosha",
+        "rupa",
+        "kshetra",
+        "medha",
+        "vani",
+        "vidya"
+      ]
+    }
   },
   "titaniumPath": {
     "boundedWorkflows": {
@@ -370,9 +629,9 @@
     "schema": "1.0.0"
   },
   "tests": {
-    "total": 2218,
-    "frontend": 123,
-    "backend": 2095,
+    "total": 5816,
+    "frontend": 665,
+    "backend": 5151,
     "reevu_real_system_status": {
       "implementation_plan": {
         "status": "completed",

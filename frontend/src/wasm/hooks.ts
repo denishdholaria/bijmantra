@@ -1,7 +1,7 @@
 // React hooks for Bijmantra Genomics WASM module
 
 import { useState, useEffect, useCallback } from 'react';
-import { initWasm, getWasm } from './index';
+import { initWasm, getWasm, getWasmLoadError } from './index';
 import type {
   GRMResult,
   BLUPResult,
@@ -30,10 +30,13 @@ export function useWasm() {
       .then((wasm) => {
         setIsReady(wasm.is_wasm_ready());
         setVersion(wasm.get_version());
+        // Pick up any load error even though initWasm() resolved
+        setError(getWasmLoadError());
         setIsLoading(false);
       })
       .catch((err) => {
-        setError(err);
+        // Defensive: initWasm() should not reject, but handle it anyway
+        setError(err instanceof Error ? err : new Error(String(err)));
         setIsLoading(false);
       });
   }, []);

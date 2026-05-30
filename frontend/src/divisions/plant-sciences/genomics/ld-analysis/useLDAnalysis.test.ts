@@ -16,14 +16,16 @@ vi.mock('@/wasm/hooks');
 describe('useLDAnalysis', () => {
   const mockWasm = {
     calculate_ld_pair: vi.fn(),
-  };
+  } as any;
 
   beforeEach(() => {
     vi.clearAllMocks();
     
     // Default WASM mock
     vi.mocked(wasmHooks.useWasm).mockReturnValue({
+      isLoading: false,
       isReady: true,
+      error: null,
       version: '1.0.0',
       wasm: mockWasm,
     });

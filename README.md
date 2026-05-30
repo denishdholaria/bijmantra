@@ -12,15 +12,26 @@
 
 ---
 
-## **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-28<!-- /METRIC -->:**
+## **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-30<!-- /METRIC -->:**
 
-* BijMantra is currently undergoing significant backend refactoring and architectural improvements. These changes are foundational to the platform's long-term stability, scalability, and feature roadmap. 
+* BijMantra is currently undergoing major backend refactoring and architectural restructuring. These changes are foundational for the platform’s long-term scalability, maintainability, and future feature roadmap.
 
-* Development speed is constrained by personal funding — GitHub, Copilot, and AI tooling subscriptions are self-financed for a project of this scale. This limits the exploratory iteration that has historically shaped the product: trialing different approaches across UI, workflows, menu systems, and AI integrations — much like climbing a mountain, there is more than one path to the peak, and finding the right one takes deliberate experimentation.
+* Development has historically been self-funded, including infrastructure, GitHub Copilot and tooling, AI model access, experimentation costs, and ongoing development resources required for a project of this scope.
 
-* The repository is currently mid-refactor and in a fractured state — the app cannot be started from the latest commits. If you wish to run BijMantra locally, please use the last snapshot tag. We will update this notice once the refactor reaches a runnable state. We appreciate your patience and understanding during this phase.
+* At this stage, I can no longer sustainably continue development at the pace the project demands. The operational costs associated with modern high-end AI tooling and development infrastructure have become increasingly difficult to support independently.
 
-* Every decision now has to count. We are building carefully, not quickly. We appreciate your patience and understanding during this phase.
+* A considerable amount of personal time, effort, and funding has been invested over the years into simultaneously learning new technologies while building BijMantra itself. Coming from a biotechnology background rather than computer science, the project involved an extremely steep learning curve across software engineering, system architecture, AI integration, DevOps, and scientific infrastructure design.
+
+* Despite the challenges, the journey has been immensely rewarding, and reaching this stage is something I once never imagined would be possible.
+
+* The original vision was that contributors, collaborators, institutional partnerships, sponsorships, donations, or investors would eventually help sustain continued development, feature implementation, testing, and validation efforts. Unfortunately, those efforts have not yet materialized in a sustainable form.
+
+* As a result, development progress will remain constrained by available personal resources and funding capacity.
+
+* BijMantra is currently undergoing significant architectural refactoring and stabilization. The application is able to start and run locally, though several modules, workflows, and integrations remain under development, validation, and testing for the platform to become mature.
+
+* Although the platform remains incomplete, the long-term vision for BijMantra is still very much alive. If funding, contributors, or institutional support become available in the future, development will continue.
+
 
 🌐 **[bijmantra.org](https://bijmantra.org)**
 
@@ -32,13 +43,15 @@ A third-party website is operating under **bijmantra.com**, which is not affilia
 
 **The official project is only available at:** https://bijmantra.org and the [official GitHub repository](https://github.com/denishdholaria/bijmantra.git).
 
+---
+
 ## Licensing and Collaboration Policy
 
 * Organizations are welcome to enter into legal licensing agreements with BijMantra. We remain open to collaboration and negotiation where appropriate.
 
-* BijMantra do not grant rights to represent deployments as the official BijMantra project, nor to use the BijMantra name, logo, or branding in ways that may cause confusion regarding origin or affiliation.
+* BijMantra does not grant rights to represent deployments as the official BijMantra project, nor to use the BijMantra name, logo, or branding in ways that may cause confusion regarding origin or affiliation.
 
-## For security and clarity:
+### For security and clarity:
 
 * Do not share data, credentials, or make payments on third-party deployments claiming association with BijMantra.
 
@@ -52,16 +65,17 @@ A third-party website is operating under **bijmantra.com**, which is not affilia
 
 ---
 
-## A Note on Documentation Accuracy
+# A Note on Documentation Accuracy
 
-BijMantra is under active development across genomics, agronomy, AI, interoperability, and full-stack engineering. Exact totals move quickly.
+BijMantra is under active development across genomics, agronomy, AI systems, interoperability, and full-stack engineering. Exact implementation totals evolve rapidly.
 
-For implementation counts and the latest repository snapshot, prefer [metrics.json](metrics.json).
-If you find discrepancies, please open an issue.
+For implementation counts and the latest repository snapshot, prefer `metrics.json`.
+
+If you discover inconsistencies or outdated documentation, please open an issue.
 
 ---
 
-## What BijMantra Is
+# What BijMantra Is
 
 BijMantra is a server-backed agricultural intelligence platform designed for:
 
@@ -70,91 +84,115 @@ BijMantra is a server-backed agricultural intelligence platform designed for:
 * research institutions
 * agricultural administrators
 
-It connects workflows typically split across separate systems: plant breeding, germplasm, seed operations, environmental context, research knowledge, and institutional administration.
+It connects workflows traditionally fragmented across separate systems:
 
-This is not a generic dashboard layer. The goal is to reduce fragmentation by keeping genetic, operational, environmental, and institutional context closer together.
+* plant breeding
+* germplasm management
+* seed operations
+* environmental context
+* research knowledge
+* institutional administration
 
-At a broader level, BijMantra is being shaped as an advanced agricultural extension system—bridging scientific discovery, institutional validation, and field adoption.
+The goal is not to create another generic dashboard layer, but to reduce fragmentation by keeping genetic, operational, environmental, and institutional context interconnected.
+
+At a broader level, BijMantra is being shaped as an advanced agricultural extension and intelligence system — bridging scientific discovery, institutional validation, operational coordination, and field adoption.
 
 ---
 
-## Why Institutions Care
+# Why Institutions Care
 
 Agricultural decisions rarely exist in isolation.
 
-Breeding strategy, trials, seed operations, environment, and reporting often exist in separate systems, increasing coordination cost and slowing impact.
+Breeding strategy, field trials, seed operations, environmental variability, reporting systems, and institutional coordination often operate across disconnected infrastructure stacks.
 
-BijMantra is built for organizations that need:
+BijMantra is being built for organizations that require:
 
 * integrated breeding and genomics workflows
 * seed system coordination
-* cross-department research data linkage
+* cross-department research linkage
 * interoperable institutional infrastructure
+* long-term scientific traceability
 
 The core thesis:
-**Decisions improve when context is unified instead of manually reconciled.**
+
+> **Decisions improve when context is unified instead of manually reconciled.**
 
 ---
 
-## Why This Is Hard
+# Why This Is Hard
 
-BijMantra sits at the intersection of:
+BijMantra exists at the intersection of:
 
-* breeding, seed systems, field operations, and environment
+* breeding systems
+* seed systems
+* field operations
+* environmental intelligence
+* AI-assisted workflows
+* scientific infrastructure
+
+The platform must also operate under constraints unique to agriculture:
+
 * long validation cycles (5–15 years)
-* inconsistent data quality and institutional variation
-* need for provenance, assumptions, and uncertainty modeling
-* hybrid compute and infrastructure complexity
+* inconsistent institutional infrastructure
+* fragmented data quality
+* provenance and evidence requirements
+* hybrid compute complexity
+* uncertainty modeling
 
-The challenge is not just software—it is building systems that carry **trusted agricultural insight across domains**.
-
----
-
-## Current Scope
-
-BijMantra remains in preview.
-
-The repository spans multiple domains but does not yet reflect uniform maturity across modules. Some areas are functional, others are being hardened, and some remain as structural placeholders.
+The challenge is not simply building software — it is building systems capable of carrying trusted agricultural insight across domains, organizations, and time horizons.
 
 ---
 
-## What Is Still In Progress
+# Current Scope
+
+BijMantra remains in preview and active architectural evolution.
+
+The repository spans multiple scientific and engineering domains but does not yet reflect uniform maturity across all modules. Some areas are functional, others are being hardened, and some remain structural placeholders pending future implementation.
+
+---
+
+# What Is Still In Progress
 
 * Cross-module validation and consistency
 * Provenance and evidence integrity
-* Low-connectivity workflow support
+* Low-connectivity workflows
+* AI workflow stabilization
+* Documentation synchronization
+* Institutional interoperability
+* Scientific validation pipelines
 * Clearer module boundaries
-* Documentation alignment with evolving implementation
 
 ---
 
-## Architectural Evolution
+# Architectural Evolution
 
 BijMantra combines:
 
 * biological data systems
 * AI-assisted workflows
-* hybrid compute (Python, Rust/WASM, Fortran)
+* hybrid compute infrastructure
+* Python, Rust/WASM, and Fortran execution paths
 
-The architecture has evolved through multiple refactoring cycles driven by:
+The architecture has evolved through multiple large-scale refactoring cycles driven by:
 
 * scaling scientific complexity
-* boundary definition requirements
+* domain boundary refinement
 * AI contract rigor
 * hybrid execution constraints
+* long-term maintainability concerns
 
-Refactoring is treated as necessary system maturation.
+Refactoring is treated as necessary system maturation rather than instability.
 
 ---
 
-## Quick Start
+# Quick Start
 
-> Uses Podman (rootless, daemonless). Docker-compatible commands.
+> Uses Podman (rootless, daemonless). Docker-compatible commands are supported.
 
-### Simple Setup
+## Simple Setup
 
-1. Install an AI-enabled IDE (VS Code, Kiro, Antigravity)
-2. Open the repo and allow agent access
+1. Install an AI-enabled IDE (VS Code, Kiro, Antigravity, etc.)
+2. Open the repository and allow agent access
 3. Use:
 
 ```text
@@ -163,44 +201,51 @@ Clone https://github.com/denishdholaria/bijmantra.git and start locally using Po
 
 4. Access:
 
-* Frontend: http://localhost:5173
+* Frontend: http://localhost:5656
 * API Docs: http://localhost:8000/docs
 
 ---
 
-## Contributing
+# Contributing
 
-BijMantra welcomes contributors across engineering and agricultural science.
+BijMantra welcomes contributors across both engineering and agricultural science disciplines.
 
-### Quick Wins
+## Quick Wins
 
-* Star the repo
+* Star the repository
 * Report issues
-* Fix documentation
+* Improve documentation
+* Submit bug fixes
 
-### Developer Areas
+## Engineering Areas
 
-* Frontend (React, TS)
-* Backend (FastAPI, DB)
+* Frontend (React, TypeScript)
+* Backend (FastAPI, databases)
 * Rust/WASM compute
-* DevOps
+* DevOps and infrastructure
+* AI workflow systems
+* Testing and validation
 
-### Scientists
+## Scientific and Domain Areas
 
-Domain validation is critical—your input has high impact.
+Domain validation is critically important.
+
+Contributions from breeders, agronomists, seed specialists, crop scientists, geneticists, and agricultural researchers can have extremely high impact on the long-term scientific quality of the platform.
 
 ---
 
-## Support and Collaboration
+# Support and Collaboration
 
-BijMantra is positioned as **research-grade agricultural infrastructure**.
+BijMantra is positioned as research-grade agricultural intelligence infrastructure.
 
-Relevant collaborations include:
+Relevant collaboration areas include:
 
 * institutional pilots
-* interoperability work
+* interoperability partnerships
 * research validation
-* licensing and deployment
+* deployment collaborations
+* infrastructure sponsorship
+* scientific partnerships
 
 See:
 
@@ -209,13 +254,13 @@ See:
 
 ---
 
-## Working Principle
+# Working Principle
 
 > **"Agricultural truth emerges at the intersection of disciplines. BijMantra makes that intersection computable."**
 
 ---
 
-## Key Documents
+# Key Documents
 
 * metrics.json
 * CONTRIBUTING.md
@@ -224,31 +269,33 @@ See:
 
 ---
 
-## © Copyright and Branding
+# © Copyright and Branding
 
 © 2026 BijMantra Project. All rights reserved.
 
 BijMantra is released under the terms specified in the [LICENSE](LICENSE).
+
 All code usage, modification, and redistribution must comply with that license.
 
-**Name and Branding:**
+## Name and Branding
+
 "BijMantra" is the official project name and brand of the BijMantra Project.
 
-* Use of the codebase is permitted under the license
-* **Use of the name, branding, or identity in a way that implies official status, endorsement, or affiliation is not permitted without explicit authorization**
+* Use of the codebase is permitted under the project license.
+* Use of the name, branding, or identity in ways implying official status, endorsement, or affiliation is prohibited without explicit authorization.
 
 Third-party deployments or forks must clearly indicate their independent status and must not present themselves as the official BijMantra platform.
 
-For official releases and project ownership, refer only to:
+Official project references:
 
 * https://bijmantra.org
-* The official GitHub repository
+* https://github.com/denishdholaria/bijmantra
 
 ---
 
 <div align="center">
 
-### Contact
+## Contact
 
 📧 [hello@bijmantra.org](mailto:hello@bijmantra.org)
 🌐 https://bijmantra.org

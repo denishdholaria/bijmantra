@@ -111,7 +111,7 @@ DEMO_GERMPLASM = [
         "country_of_origin_code": "IND",
         "accession_number": "DEMO-MP-001",
         "institute_code": "JNKVV",
-        "institute_name": "Jawaharlal Nehru Krishi Vishwa Vidyalaya",
+        "institute_name": "Jawaharlal Nehru Krishi Vishwa Knowledgelaya",
         "biological_status_of_accession_code": "500",
     },
     {

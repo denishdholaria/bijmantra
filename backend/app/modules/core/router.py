@@ -5,21 +5,17 @@ Handles authentication, authorization, audit, and system management endpoints.
 Consolidates core infrastructure endpoints under /api/v2/core namespace.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
+from app.core.security import get_client_ip
 from app.middleware.tenant_context import get_tenant_db
-from app.core.security import create_access_token, get_client_ip
-from app.crud.core import user as user_crud
 from app.models.core import User as UserModel
-from app.schemas.core import User, UserCreate
-from app.modules.core.services.rate_limiter_service import RATE_LIMITS, RateLimitType, rate_limiter
 from app.modules.core.services.authorization_service import has_permission
-
-from datetime import UTC, datetime, timedelta
-from pydantic import BaseModel
+from app.modules.core.services.rate_limiter_service import RATE_LIMITS, RateLimitType, rate_limiter
+from app.schemas.core import User
 
 
 router = APIRouter(prefix="/core", tags=["Core Domain"])
@@ -73,17 +69,17 @@ async def health_check():
 @router.post("/permissions/check", response_model=PermissionResponse)
 async def check_permission(
     permission_check: PermissionCheck,
+    current_user: UserModel = Depends(get_current_user),
     db: AsyncSession = Depends(get_tenant_db),
-    current_user: UserModel = Depends(get_current_user)
 ):
     """
     Check if the current user has a specific permission
-    
+
     Args:
         permission_check: Permission code to check
         db: Database session
         current_user: Current authenticated user
-        
+
     Returns:
         PermissionResponse with has_permission boolean
     """
@@ -93,16 +89,16 @@ async def check_permission(
 
 @router.get("/permissions/me")
 async def get_my_permissions(
+    current_user: UserModel = Depends(get_current_user),
     db: AsyncSession = Depends(get_tenant_db),
-    current_user: UserModel = Depends(get_current_user)
 ):
     """
     Get all permissions for the current user
-    
+
     Args:
         db: Database session
         current_user: Current authenticated user
-        
+
     Returns:
         List of permission codes the user has
     """
@@ -124,10 +120,10 @@ async def get_current_user_info(
 ):
     """
     Get current user information
-    
+
     Args:
         current_user: Current authenticated user
-        
+
     Returns:
         User information
     """
@@ -145,27 +141,27 @@ async def get_rate_limit_status(
 ):
     """
     Check rate limit status for the current client
-    
+
     Args:
         request: HTTP request
         limit_type: Type of rate limit to check (api, login, export)
-        
+
     Returns:
         Rate limit status information
     """
     client_ip = get_client_ip(request)
-    
+
     # Map string to enum
     rate_type_map = {
         "api": RateLimitType.API_GENERAL,
         "login": RateLimitType.LOGIN,
         "export": RateLimitType.API_WRITE,
     }
-    
+
     rate_type = rate_type_map.get(limit_type, RateLimitType.API_GENERAL)
     rate_check = await rate_limiter.check(rate_type, client_ip)
     rate_config = RATE_LIMITS[rate_type]
-    
+
     return {
         "allowed": rate_check.allowed,
         "remaining": rate_check.remaining,

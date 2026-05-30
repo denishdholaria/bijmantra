@@ -25,7 +25,15 @@ import { AuthService } from './services/authService'
 
 export function useAuth() {
   const navigate = useNavigate()
-  const { login, isLoading, error, clearError } = useAuthStore()
+  const {
+    authProvider,
+    isExternalAuthEnabled,
+    login,
+    loginWithIdentityProvider,
+    isLoading,
+    error,
+    clearError,
+  } = useAuthStore()
   const { preferences, setActiveWorkspace, dismissGateway } = useWorkspaceStore()
 
   // Form state
@@ -484,6 +492,15 @@ export function useAuth() {
     }
   }
 
+  const handleIdentityProviderLogin = async () => {
+    clearError()
+    try {
+      await loginWithIdentityProvider()
+    } catch {
+      stopStartupAudioPlayback()
+    }
+  }
+
   const handlePreviousQuote = () => {
     const previousQuote = pastQuotes[pastQuotes.length - 1]
     if (previousQuote !== undefined) {
@@ -516,6 +533,8 @@ export function useAuth() {
     setPassword,
     showPassword,
     setShowPassword,
+    authProvider,
+    isExternalAuthEnabled: isExternalAuthEnabled(),
     isLoading,
     error,
 
@@ -535,6 +554,7 @@ export function useAuth() {
 
     // Event handlers
     handleSubmit,
+    handleIdentityProviderLogin,
     handleStartupAudioToggle,
     handlePreviousQuote,
     handleNextQuote,

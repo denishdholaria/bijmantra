@@ -616,7 +616,7 @@ def _local_query_poster(
     app.dependency_overrides[get_current_user] = override_current_user
     try:
         with patch(
-            "app.api.bijmantra.chat.AIQuotaService.check_and_increment_usage",
+            "app.modules.ai.services.quota.AIQuotaService.check_and_increment_usage",
             new=AsyncMock(return_value=None),
         ):
             with TestClient(app) as client:

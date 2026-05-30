@@ -7,10 +7,10 @@ time, random number generators, or uuid4 values.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from hashlib import sha256
-from typing import Sequence, TypeVar
 from uuid import UUID, uuid5
 
 
@@ -20,9 +20,7 @@ DEMO_DATASET_ORG_NAME = "Demo Organization"
 DEMO_DATASET_USER_EMAIL = "demo@bijmantra.org"
 DEMO_DATASET_FIXED_TIMESTAMP = datetime(2025, 8, 15, 10, 0, tzinfo=UTC)
 DEMO_DATASET_NAMESPACE = UUID("2b4a4183-2dcf-483b-8f2d-79e7740f8b8a")
-
-_StableValue = TypeVar("_StableValue")
-
+PRODUCTION_ENVIRONMENT_NAMES = frozenset({"prod", "production"})
 
 @dataclass(frozen=True)
 class DemoDatasetContract:
@@ -51,8 +49,36 @@ DEMO_DATASET = DemoDatasetContract(
 )
 
 
+class DemoDatasetSafetyError(RuntimeError):
+    """Raised when a demo dataset mutation would run in an unsafe environment."""
+
+
 def _stable_key(*parts: object) -> str:
     return "::".join(str(part) for part in parts)
+
+
+def normalize_environment_name(value: object) -> str:
+    return str(value or "").strip().lower()
+
+
+def is_production_environment(value: object) -> bool:
+    return normalize_environment_name(value) in PRODUCTION_ENVIRONMENT_NAMES
+
+
+def assert_demo_dataset_mutation_allowed(
+    *,
+    requested_env: object,
+    runtime_environment: object,
+    operation: str,
+) -> None:
+    """Refuse demo dataset mutation in requested or configured production envs."""
+    if is_production_environment(requested_env) or is_production_environment(
+        runtime_environment
+    ):
+        raise DemoDatasetSafetyError(
+            f"Refusing to {operation} {DEMO_DATASET.name} in production "
+            f"(requested_env={requested_env!r}, runtime_environment={runtime_environment!r})."
+        )
 
 
 def stable_demo_token(*parts: object, length: int = 8) -> str:
@@ -85,15 +111,17 @@ def stable_demo_float(
         raise ValueError("minimum must be <= maximum")
 
     if minimum == maximum:
-        return round(minimum, digits)
+        return minimum
 
     digest = sha256(_stable_key(parts).encode("utf-8")).digest()
     ratio = int.from_bytes(digest[:8], "big") / float((1 << 64) - 1)
     value = minimum + (maximum - minimum) * ratio
-    return round(value, digits)
+    return max(minimum, min(maximum, round(value, digits)))
 
 
-def stable_demo_choice(options: Sequence[_StableValue], *parts: object) -> _StableValue:
+def stable_demo_choice[StableValue](
+    options: Sequence[StableValue], *parts: object
+) -> StableValue:
     if not options:
         raise ValueError("options must not be empty")
 

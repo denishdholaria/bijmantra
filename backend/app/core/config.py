@@ -8,12 +8,19 @@ import os
 import secrets
 from pathlib import Path
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.demo_dataset import (
     DEMO_DATASET_NAME as DEFAULT_DEMO_DATASET_NAME,
+)
+from app.core.demo_dataset import (
     DEMO_DATASET_ORG_NAME as DEFAULT_DEMO_ORG_NAME,
+)
+from app.core.demo_dataset import (
     DEMO_DATASET_USER_EMAIL as DEFAULT_DEMO_USER_EMAIL,
+)
+from app.core.demo_dataset import (
     DEMO_DATASET_VERSION as DEFAULT_DEMO_DATASET_VERSION,
 )
 from app.modules.ai.services.model_catalog import get_default_provider_model
@@ -94,6 +101,16 @@ class Settings(BaseSettings):
     SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    LEGACY_SSO_ENABLED: bool = False
+    KEYCLOAK_ENABLED: bool = False
+    KEYCLOAK_ISSUER: str = "http://localhost:8084/realms/bijmantra"
+    KEYCLOAK_AUDIENCE: str = "bijmantra-api"
+    KEYCLOAK_JWKS_URL: str = (
+        "http://localhost:8084/realms/bijmantra/protocol/openid-connect/certs"
+    )
+    KEYCLOAK_JWKS_CACHE_SECONDS: int = 300
+    KEYCLOAK_BOOTSTRAP_ADMIN_SUBJECT: str | None = "00000000-0000-4000-8000-000000000001"
+    ALLOW_LOCAL_PASSWORD_LOGIN_IN_PRODUCTION: bool = False
 
     # Rate Limiting Security
     # Token required to reset rate limits (only available in DEBUG mode)
@@ -141,7 +158,7 @@ class Settings(BaseSettings):
             object.__setattr__(self, 'RATE_LIMIT_RESET_TOKEN', "dev-reset-token")
 
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5656", "http://localhost:3000"]
 
     # File Upload
     MAX_UPLOAD_SIZE: int = 10485760  # 10MB
@@ -168,7 +185,7 @@ class Settings(BaseSettings):
     # Server Configuration (used by docker/deployment)
     BACKEND_HOST: str = "0.0.0.0"
     BACKEND_PORT: int = 8000
-    FRONTEND_PORT: int = 5173
+    FRONTEND_PORT: int = 5656
     VITE_API_BASE_URL: str = "http://localhost:8000"
     DEVELOPER_CONTROL_PLANE_RUNTIME_ARTIFACTS_DIR: str | None = None
 
@@ -207,6 +224,7 @@ class Settings(BaseSettings):
     MEM0_PROJECT_ID: str | None = None
 
     REEVU_LLM_PROVIDER: str | None = None
+    REEVU_EMBEDDING_DETECTION_ENABLED: bool = False
     VEENA_LLM_PROVIDER: str | None = None
 
     JULES_API_KEY: str | None = None
@@ -219,6 +237,14 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore",
     )
+
+    @model_validator(mode="after")
+    def _reject_demo_seed_in_production(self) -> "Settings":
+        if self.ENVIRONMENT in {"prod", "production"} and self.SEED_DEMO_DATA:
+            raise ValueError(
+                "SEED_DEMO_DATA must not be True when ENVIRONMENT is production."
+            )
+        return self
 
 
 # Create settings instance

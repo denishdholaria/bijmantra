@@ -14,7 +14,7 @@ from time import perf_counter
 from typing import Any
 
 import numpy as np
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.ai.services.reevu.genomic_prediction_service import (
@@ -232,9 +232,14 @@ async def _resolve_database_backed_gblup_inputs(
     if crop_lower:
         phenotype_stmt = phenotype_stmt.where(
             or_(
-                func.lower(Study.common_crop_name) == crop_lower,
-                func.lower(Trial.common_crop_name) == crop_lower,
                 func.lower(Germplasm.common_crop_name) == crop_lower,
+                and_(
+                    Germplasm.common_crop_name.is_(None),
+                    or_(
+                        func.lower(Study.common_crop_name) == crop_lower,
+                        func.lower(Trial.common_crop_name) == crop_lower,
+                    ),
+                ),
             )
         )
 

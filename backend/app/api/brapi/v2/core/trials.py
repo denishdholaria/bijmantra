@@ -14,13 +14,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_active_user, get_organization_id
 from app.core.config import settings
-from app.middleware.tenant_context import get_tenant_db
 from app.core.rls import set_tenant_context
 from app.crud.core import trial as trial_crud
+from app.middleware.tenant_context import get_tenant_db
 from app.models.core import User
+from app.modules.breeding.services.trial_service import TrialService
 from app.schemas.brapi import BrAPIResponse, Metadata, Pagination, Status
 from app.schemas.core import Trial, TrialCreate, TrialUpdate
-from app.modules.breeding.services.trial_service import TrialService
 
 
 router = APIRouter()
@@ -88,7 +88,9 @@ async def list_trials(
 
 @router.get("/trials/{trialDbId}", response_model=BrAPIResponse[dict])
 async def get_trial(
-    trialDbId: str, db: AsyncSession = Depends(get_tenant_db), org_id: int = Depends(get_organization_id)
+    trialDbId: str,
+    db: AsyncSession = Depends(get_tenant_db),
+    org_id: int = Depends(get_organization_id),
 ):
     """Retrieves a single trial by its database ID.
 
@@ -138,7 +140,9 @@ async def create_trial(
         A BrAPI-formatted response containing the newly created trial data.
         The HTTP status code will be 201 Created.
     """
-    await set_tenant_context(db, current_user.organization_id, current_user.is_superuser)
+    await set_tenant_context(
+        db, current_user.organization_id, current_user.is_superuser, user_id=current_user.id
+    )
 
     trial = await trial_crud.create(db, obj_in=trial_in, org_id=current_user.organization_id)
     await db.commit()
@@ -202,7 +206,9 @@ async def update_trial(
 
 @router.delete("/trials/{trialDbId}", status_code=204)
 async def delete_trial(
-    trialDbId: str, db: AsyncSession = Depends(get_tenant_db), org_id: int = Depends(get_organization_id)
+    trialDbId: str,
+    db: AsyncSession = Depends(get_tenant_db),
+    org_id: int = Depends(get_organization_id),
 ):
     """Deletes a trial.
 

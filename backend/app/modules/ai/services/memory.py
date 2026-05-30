@@ -54,7 +54,7 @@ class VectorDocument(Base):
     """
     __tablename__ = "vector_documents"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)  # TODO: Migrate to BigInteger in 20260506_0100
 
     # Document identification
     doc_id = Column(String, unique=True, index=True, nullable=False)
@@ -318,11 +318,11 @@ class VectorStoreService:
         result = await self.db.execute(text(f"""
             SELECT
                 doc_id, doc_type, title, content, doc_metadata, source_id, source_type,
-                1 - (embedding <=> :embedding::vector) as similarity
+                1 - (embedding <=> CAST(:embedding AS vector)) as similarity
             FROM vector_documents
-            WHERE 1 - (embedding <=> :embedding::vector) >= :min_similarity
+            WHERE 1 - (embedding <=> CAST(:embedding AS vector)) >= :min_similarity
             {type_filter}
-            ORDER BY embedding <=> :embedding::vector
+            ORDER BY embedding <=> CAST(:embedding AS vector)
             LIMIT :limit
         """), params)
 

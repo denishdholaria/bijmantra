@@ -58,7 +58,7 @@ class HuggingFaceAdapter(IProviderAdapter):
                     return LLMCallResult(content=content)
         except Exception as e:
             logger.error("[REEVU] HuggingFace error: %s", e)
-        return None
+            raise e
 
     async def stream(
         self,

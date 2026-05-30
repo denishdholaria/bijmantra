@@ -11,7 +11,7 @@ FROM base AS development
 
 COPY . .
 
-EXPOSE 5173
+EXPOSE 5656
 
 CMD ["bun", "run", "dev", "--", "--host", "0.0.0.0"]
 

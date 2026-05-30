@@ -20,7 +20,7 @@ const config: CapacitorConfig = {
   // Server configuration for development
   server: {
     // Use this for local development with live reload
-    // url: 'http://localhost:5173',
+    // url: 'http://localhost:5656',
     // cleartext: true,
     
     // Production settings

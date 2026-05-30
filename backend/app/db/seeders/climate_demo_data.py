@@ -532,8 +532,8 @@ async def main():
             print("- 3 policy adoptions")
             print("\nTotal: 188 records created")
             print("\nYou can now view the data at:")
-            print("- http://localhost:5173/earth-systems/carbon")
-            print("- http://localhost:5173/earth-systems/sustainability")
+            print("- http://localhost:5656/earth-systems/carbon")
+            print("- http://localhost:5656/earth-systems/sustainability")
             print()
 
         except Exception as e:

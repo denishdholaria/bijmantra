@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Cpu, CheckCircle2, XCircle, Dna } from 'lucide-react'
 import { useWasm } from '@/wasm/hooks'
+import { Spinner } from '@/components/ui/spinner'
 import { apiClient } from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth'
 import { updateBreedingWorkflowState } from '@/lib/breeding-workflow'
@@ -87,6 +87,17 @@ function WasmGenomics() {
     setOps((prev) => (prev.includes(op) ? prev.filter((x) => x !== op) : [...prev, op]))
   }
 
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Spinner aria-label="Loading genomics engine..." className="text-orange-500" />
+          Loading genomics engine...
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -94,11 +105,24 @@ function WasmGenomics() {
           <h1 className="text-3xl font-bold flex items-center gap-2"><Cpu className="h-8 w-8 text-orange-500" />Dataset-driven Genomics (WASM)</h1>
           <p className="text-muted-foreground mt-1">QC-first GRM/PCA/LD computations with persisted artifacts</p>
         </div>
-        {isLoading ? <Badge variant="secondary">Loading...</Badge> : isReady ? <Badge className="bg-green-500"><CheckCircle2 className="h-3 w-3 mr-1" />WASM v{version}</Badge> : <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Engine Not Available</Badge>}
+        {isReady ? <Badge variant="success"><CheckCircle2 className="h-3 w-3 mr-1" />WASM v{version}</Badge> : <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Engine Not Available</Badge>}
       </div>
 
-      {wasmError && <Alert variant="destructive"><AlertDescription>{wasmError.message}</AlertDescription></Alert>}
-      {runError && <Alert variant="destructive"><AlertDescription>{runError}</AlertDescription></Alert>}
+      {wasmError && (
+        <div role="alert" className="wasm-error-detail mt-2 rounded border border-destructive/50 bg-destructive/10 p-3 text-sm">
+          <p className="wasm-error-message font-medium text-destructive">
+            {wasmError.message || 'An unknown error occurred during WASM initialisation'}
+          </p>
+          <p className="wasm-error-rebuild mt-1 text-muted-foreground">
+            Run <code className="font-mono">make wasm</code> in the project root to rebuild the engine.
+          </p>
+        </div>
+      )}
+      {runError && (
+        <div role="alert" className="rounded border border-destructive/50 bg-destructive/10 p-3 text-sm">
+          <p className="font-medium text-destructive">{runError}</p>
+        </div>
+      )}
 
       <Card>
         <CardHeader><CardTitle>Run Configuration</CardTitle><CardDescription>Select real dataset and analysis operations</CardDescription></CardHeader>

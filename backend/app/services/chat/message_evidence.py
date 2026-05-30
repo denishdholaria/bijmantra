@@ -28,6 +28,7 @@ from app.schemas.reevu_envelope import (
     UncertaintyInfo,
 )
 
+
 # Compiled regex patterns
 _CLAIM_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+|\n+")
 _REF_TAG_CAPTURE_RE = re.compile(r"\[\[ref:([^\]]+)\]\]")
@@ -100,6 +101,16 @@ def build_evidence_pack(
         calculation_ids.add(f"fn:{function_call_name}")
 
     return EvidencePack(evidence_refs=evidence_refs, calculation_ids=calculation_ids)
+
+
+def _infer_evidence_source_type(ref: str) -> str:
+    """Infer a display source type from a stable evidence identifier."""
+    normalized = ref.strip().lower()
+    if normalized.startswith("db:"):
+        return "database"
+    if normalized.startswith(("fn:", "calc:")):
+        return "function"
+    return "rag"
 
 
 def extract_claims_for_validation(content: str, evidence_pack: EvidencePack) -> list[ClaimItem]:
@@ -313,9 +324,13 @@ def build_reevu_envelope(
     """Construct the Stage-B evidence envelope from validation artefacts."""
     evidence_refs = [
         EvidenceRef(
-            source_type="rag",
+            source_type=_infer_evidence_source_type(str(ref)),
             entity_id=str(ref),
-            query_or_method="vector_search",
+            query_or_method=(
+                "function_result"
+                if _infer_evidence_source_type(str(ref)) in {"database", "function"}
+                else "vector_search"
+            ),
         )
         for ref in evidence_pack.evidence_refs
     ]
@@ -337,20 +352,24 @@ def build_reevu_envelope(
 
     policy_flags = list(validation.errors)
     missing_evidence_signals: list[str] = []
+    has_evidence_refs = bool(evidence_pack.evidence_refs)
+    has_calculation_ids = bool(evidence_pack.calculation_ids)
+    is_function_backed_response = bool(function_call_name)
 
-    if not evidence_pack.evidence_refs and (
+    if not has_evidence_refs and (
         claim_strings
         or any(
             marker in error
             for error in normalized_errors
             for marker in evidence_related_error_markers
         )
+        or is_function_backed_response
     ):
         missing_evidence_signals.append("missing_evidence")
 
     if (
         any(claim.claim_type == "quantitative" for claim in claims)
-        and not evidence_pack.calculation_ids
+        and not has_calculation_ids
     ):
         missing_evidence_signals.append("missing_calculation_provenance")
 
@@ -358,11 +377,18 @@ def build_reevu_envelope(
         if signal not in policy_flags:
             policy_flags.append(signal)
 
-    confidence = 1.0 if validation.valid else max(0.0, 1.0 - 0.2 * len(validation.errors))
+    if not validation.valid:
+        confidence = max(0.0, 1.0 - 0.2 * len(validation.errors))
+    elif not has_evidence_refs and not has_calculation_ids:
+        confidence = 0.2
+    elif not has_evidence_refs or not has_calculation_ids:
+        confidence = 0.7
+    else:
+        confidence = 1.0
     missing_data: list[str] = []
-    if not evidence_pack.evidence_refs:
+    if not has_evidence_refs:
         missing_data.append("no_rag_context")
-    if not evidence_pack.calculation_ids and function_call_name:
+    if not has_calculation_ids and any(claim.claim_type == "quantitative" for claim in claims):
         missing_data.append("no_calculation_ids")
 
     envelope = ReevuEnvelope(

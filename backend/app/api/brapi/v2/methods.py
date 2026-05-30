@@ -11,10 +11,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
 from app.core.rls import set_tenant_context
-from app.models.brapi_phenotyping import Method
 from app.middleware.tenant_context import get_tenant_db
+from app.models.brapi_phenotyping import Method
 
 
 router = APIRouter()
@@ -44,19 +43,19 @@ def brapi_response(result, page: int = 0, page_size: int = 1000):
                     "currentPage": page,
                     "pageSize": page_size,
                     "totalCount": total,
-                    "totalPages": (total + page_size - 1) // page_size if total > 0 else 1
+                    "totalPages": (total + page_size - 1) // page_size if total > 0 else 1,
                 },
-                "status": [{"message": "Success", "messageType": "INFO"}]
+                "status": [{"message": "Success", "messageType": "INFO"}],
             },
-            "result": {"data": data}
+            "result": {"data": data},
         }
     return {
         "metadata": {
             "datafiles": [],
             "pagination": {"currentPage": 0, "pageSize": 1, "totalCount": 1, "totalPages": 1},
-            "status": [{"message": "Success", "messageType": "INFO"}]
+            "status": [{"message": "Success", "messageType": "INFO"}],
         },
-        "result": result
+        "result": result,
     }
 
 
@@ -74,7 +73,7 @@ def method_to_brapi(method: Method) -> dict:
         ontology_ref = {
             "ontologyDbId": method.ontology_db_id,
             "ontologyName": method.ontology_name,
-            "version": method.ontology_version
+            "version": method.ontology_version,
         }
 
     return {
@@ -88,7 +87,7 @@ def method_to_brapi(method: Method) -> dict:
         "bibliographicalReference": method.bibliographical_reference,
         "ontologyReference": ontology_ref,
         "externalReferences": method.external_references or [],
-        "additionalInfo": method.additional_info or {}
+        "additionalInfo": method.additional_info or {},
     }
 
 
@@ -103,7 +102,7 @@ async def get_methods(
     externalReferenceSource: str | None = None,
     page: int = Query(0, ge=0),
     pageSize: int = Query(1000, ge=1, le=10000),
-    db: AsyncSession = Depends(get_tenant_db)
+    db: AsyncSession = Depends(get_tenant_db),
 ):
     """Retrieves a list of methods based on filter criteria.
 
@@ -131,7 +130,9 @@ async def get_methods(
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     query = select(Method)
 
@@ -152,11 +153,7 @@ async def get_methods(
 
 
 @router.get("/methods/{methodDbId}")
-async def get_method(
-    methodDbId: str,
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
-):
+async def get_method(methodDbId: str, request: Request, db: AsyncSession = Depends(get_tenant_db)):
     """Retrieves a single method by its database ID.
 
     Args:
@@ -171,7 +168,9 @@ async def get_method(
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     query = select(Method).where(Method.method_db_id == methodDbId)
     result = await db.execute(query)
@@ -191,7 +190,7 @@ async def get_method(
             "metadata": {
                 "status": [{"message": f"Method {methodDbId} not found", "messageType": "ERROR"}]
             },
-            "result": None
+            "result": None,
         }
 
     return brapi_response(method_to_brapi(method))
@@ -199,9 +198,7 @@ async def get_method(
 
 @router.post("/methods")
 async def create_methods(
-    methods: list[dict],
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    methods: list[dict], request: Request, db: AsyncSession = Depends(get_tenant_db)
 ):
     """Creates one or more new methods.
 
@@ -220,7 +217,9 @@ async def create_methods(
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     if not org_id and not is_superuser:
         raise HTTPException(status_code=401, detail="Authentication required")
@@ -242,7 +241,7 @@ async def create_methods(
             ontology_name=ont_ref.get("ontologyName"),
             ontology_version=ont_ref.get("version"),
             external_references=method_data.get("externalReferences", []),
-            additional_info=method_data.get("additionalInfo", {})
+            additional_info=method_data.get("additionalInfo", {}),
         )
         db.add(new_method)
         await db.flush()
@@ -254,10 +253,7 @@ async def create_methods(
 
 @router.put("/methods/{methodDbId}")
 async def update_method(
-    methodDbId: str,
-    method_data: dict,
-    request: Request,
-    db: AsyncSession = Depends(get_tenant_db)
+    methodDbId: str, method_data: dict, request: Request, db: AsyncSession = Depends(get_tenant_db)
 ):
     """Updates an existing method.
 
@@ -274,7 +270,9 @@ async def update_method(
     """
     org_id = getattr(request.state, "organization_id", None)
     is_superuser = getattr(request.state, "is_superuser", False)
-    await set_tenant_context(db, org_id, is_superuser)
+    await set_tenant_context(
+        db, org_id, is_superuser, user_id=getattr(request.state, "user_id", None)
+    )
 
     query = select(Method).where(Method.method_db_id == methodDbId)
     result = await db.execute(query)
@@ -285,7 +283,7 @@ async def update_method(
             "metadata": {
                 "status": [{"message": f"Method {methodDbId} not found", "messageType": "ERROR"}]
             },
-            "result": None
+            "result": None,
         }
 
     if "methodName" in method_data:

@@ -30,8 +30,8 @@ type Mem0MemoryWorkbenchProps = {
   onSearchMemory: () => Promise<void> | void
 }
 
-function formatJson(value: unknown) {
-  return JSON.stringify(value, null, 2)
+function formatJson(value: unknown): string {
+  return JSON.stringify(value, null, 2) ?? ''
 }
 
 export function Mem0MemoryWorkbench({
@@ -102,7 +102,7 @@ export function Mem0MemoryWorkbench({
             </span>
           </div>
           {addError && <div className="text-sm text-rose-600 dark:text-rose-300">{addError}</div>}
-          {lastAddResult && (
+          {lastAddResult != null && (
             <pre className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-slate-50/90 p-3 text-xs text-slate-800 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-100">
               {formatJson(lastAddResult)}
             </pre>
@@ -152,7 +152,7 @@ export function Mem0MemoryWorkbench({
             </span>
           </div>
           {searchError && <div className="text-sm text-rose-600 dark:text-rose-300">{searchError}</div>}
-          {lastSearchResult && (
+          {lastSearchResult != null && (
             <pre className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-slate-50/90 p-3 text-xs text-slate-800 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-100">
               {formatJson(lastSearchResult)}
             </pre>

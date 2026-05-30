@@ -1,5 +1,5 @@
 import { ApiClientCore } from "./client";
-import { LoginResponseSchema, type LoginResponse } from "./schemas";
+import { LoginResponseSchema, type LoginResponse, type User } from "./schemas";
 
 export class AuthService {
   constructor(private client: ApiClientCore) {}
@@ -80,5 +80,22 @@ export class AuthService {
       full_name: fullName,
       organization_id: organizationId,
     });
+  }
+
+  async me(): Promise<User> {
+    const raw = await this.client.get<Partial<User>>("/api/auth/me");
+
+    return {
+      id: raw.id ?? 0,
+      email: raw.email ?? "",
+      full_name: raw.full_name ?? "",
+      organization_id: raw.organization_id ?? 0,
+      organization_name: raw.organization_name,
+      is_demo: raw.is_demo ?? false,
+      is_active: raw.is_active ?? false,
+      is_superuser: raw.is_superuser ?? false,
+      roles: raw.roles ?? [],
+      permissions: raw.permissions ?? [],
+    };
   }
 }

@@ -71,6 +71,46 @@ def test_pattern_detection_routes_trial_ranking_requests_to_get_trial_results():
     assert function_call.parameters == {"trial_id": "TRIAL-22"}
 
 
+def test_pattern_detection_extracts_active_status_for_trial_search():
+    service = FunctionCallingService()
+
+    function_call = service._detect_with_patterns("Show me active trials")
+
+    assert function_call is not None
+    assert function_call.name == "search_trials"
+    assert function_call.parameters == {"status": "active"}
+
+
+def test_pattern_detection_routes_trial_count_requests_to_summary_search():
+    service = FunctionCallingService()
+
+    function_call = service._detect_with_patterns("How many active trials are in the database?")
+
+    assert function_call is not None
+    assert function_call.name == "search_trials"
+    assert function_call.parameters == {"status": "active", "summary_only": True}
+
+
+def test_pattern_detection_extracts_trial_search_page_and_limit():
+    service = FunctionCallingService()
+
+    function_call = service._detect_with_patterns("Show 15 active trials page 2")
+
+    assert function_call is not None
+    assert function_call.name == "search_trials"
+    assert function_call.parameters == {"status": "active", "page": 2, "limit": 15}
+
+
+def test_pattern_detection_extracts_inactive_status_for_trial_search():
+    service = FunctionCallingService()
+
+    function_call = service._detect_with_patterns("List inactive trials")
+
+    assert function_call is not None
+    assert function_call.name == "search_trials"
+    assert function_call.parameters == {"status": "inactive"}
+
+
 def test_pattern_detection_routes_germplasm_detail_requests_to_get_germplasm_details():
     service = FunctionCallingService()
 

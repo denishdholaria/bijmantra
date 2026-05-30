@@ -66,7 +66,7 @@ async def simulate_generation(
     population_dosages: list[list[int]] = Body(..., description="List of genotypes"),
     n_offspring: int = Body(..., description="Target population size"),
     recombination_rate: float = Body(0.5),
-    crossing_scheme: str = Body("random", regex="^(random|selfing)$"),
+    crossing_scheme: str = Body("random", pattern="^(random|selfing)$"),
     curr_user: Any = Depends(deps.get_current_active_user),
 ):
     """

@@ -366,6 +366,7 @@ describe('AutonomyTab', () => {
                 detail: null,
               },
             ],
+            first_actionable_completion_write: null,
           }}
           runtimeAutonomyCycleError={null}
           runtimeAutonomyCycleLastCheckedAt="2026-04-05T11:12:00.000Z"
@@ -854,6 +855,7 @@ describe('AutonomyTab', () => {
                 },
               },
             ],
+            first_actionable_completion_write: null,
           }}
           runtimeAutonomyCycleError={null}
           runtimeAutonomyCycleLastCheckedAt="2026-04-05T11:12:00.000Z"

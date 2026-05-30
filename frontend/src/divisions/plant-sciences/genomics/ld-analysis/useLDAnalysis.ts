@@ -34,7 +34,7 @@ function generateLDData(nSamples: number, nMarkers: number) {
 }
 
 export function useLDAnalysis() {
-  const { isReady, version, wasm } = useWasm();
+  const { isLoading, isReady, error: wasmError, version, wasm } = useWasm();
   const syntheticPreviewAvailable = import.meta.env.DEV;
 
   const [state, setState] = useState<LDAnalysisState>({
@@ -207,6 +207,8 @@ export function useLDAnalysis() {
     hweViolations,
     wasmReady: isReady,
     wasmVersion: version,
+    wasmLoading: isLoading,
+    wasmError,
     syntheticPreviewAvailable,
   };
 }

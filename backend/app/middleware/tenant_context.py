@@ -18,11 +18,53 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from app.core.config import settings
 from app.core.database import AsyncSessionLocal
+from app.core.keycloak_auth import (
+    KeycloakTokenError,
+    is_configured_keycloak_issuer_token,
+    resolve_keycloak_user,
+    verify_keycloak_token,
+)
 from app.core.security import decode_access_token
+from app.models.core import User
 
 
 logger = logging.getLogger(__name__)
+
+RLS_ORGANIZATION_SETTING = "app.current_organization_id"
+RLS_USER_SETTING = "app.current_user_id"
+
+
+def _safe_int_context(value: object, default: int = -1) -> int:
+    if value is None or value == "":
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        logger.warning("Invalid RLS integer context value; using restricted default")
+        return default
+
+
+async def _set_local_config(session: AsyncSession, key: str, value: int) -> None:
+    await session.execute(
+        text("SELECT set_config(:key, :value, true)"),
+        {"key": key, "value": str(value)},
+    )
+
+
+async def apply_tenant_context(
+    session: AsyncSession,
+    organization_id: object | None,
+    is_superuser: bool = False,
+    user_id: object | None = None,
+) -> None:
+    """Apply transaction-local RLS context for tenant and user-owned policies."""
+    org_context = 0 if is_superuser else _safe_int_context(organization_id)
+    user_context = _safe_int_context(user_id)
+
+    await _set_local_config(session, RLS_ORGANIZATION_SETTING, org_context)
+    await _set_local_config(session, RLS_USER_SETTING, user_context)
 
 
 class TenantContextMiddleware(BaseHTTPMiddleware):
@@ -54,11 +96,7 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         "/api/v2/gdd/calculate",
     }
 
-    async def dispatch(
-        self,
-        request: Request,
-        call_next: Callable
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Skip tenant context for exempt paths
         path = request.url.path
         if path in self.EXEMPT_PATHS or path.startswith("/static"):
@@ -89,16 +127,68 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             return {}
 
         token = auth_header.split(" ")[1]
+
+        if settings.KEYCLOAK_ENABLED and is_configured_keycloak_issuer_token(token):
+            return await self._extract_keycloak_tenant_info(token)
+
         payload = decode_access_token(token)
 
-        if not payload:
+        if payload:
+            token_context = {
+                "organization_id": payload.get("organization_id"),
+                "is_superuser": payload.get("is_superuser", False),
+                "user_id": payload.get("sub"),
+            }
+            if payload.get("organization_id") is not None and payload.get("sub") is not None:
+                return token_context
+
+            resolved_context = await self._resolve_local_token_context(payload)
+            return resolved_context or token_context
+
+        if settings.KEYCLOAK_ENABLED:
+            return await self._extract_keycloak_tenant_info(token)
+
+        return {}
+
+    async def _resolve_local_token_context(self, payload: dict) -> dict:
+        """Resolve tenant context for legacy local JWTs missing organization claims."""
+        user_id = payload.get("sub")
+        if user_id is None:
             return {}
 
-        return {
-            "organization_id": payload.get("organization_id"),
-            "is_superuser": payload.get("is_superuser", False),
-            "user_id": payload.get("sub"),
-        }
+        try:
+            user_pk = int(user_id)
+        except (TypeError, ValueError):
+            return {}
+
+        async with AsyncSessionLocal() as session:
+            user = await session.get(User, user_pk)
+            if user is None or not user.is_active:
+                return {}
+
+            return {
+                "organization_id": user.organization_id,
+                "is_superuser": user.is_superuser,
+                "user_id": user.id,
+            }
+
+    async def _extract_keycloak_tenant_info(self, token: str) -> dict:
+        """Resolve tenant context from a verified Keycloak token."""
+        try:
+            claims = await verify_keycloak_token(token)
+        except KeycloakTokenError:
+            return {}
+
+        async with AsyncSessionLocal() as session:
+            user = await resolve_keycloak_user(session, claims)
+            if user is None:
+                return {}
+
+            return {
+                "organization_id": user.organization_id,
+                "is_superuser": user.is_superuser,
+                "user_id": user.id,
+            }
 
 
 async def get_db_with_tenant() -> AsyncSession:
@@ -131,54 +221,6 @@ async def get_db_with_tenant() -> AsyncSession:
             await session.close()
 
 
-def get_tenant_db(request: Request):
-    """
-    FastAPI dependency that provides a database session with tenant context.
-
-    Usage:
-        @router.get("/programs")
-        async def list_programs(
-            db: AsyncSession = Depends(get_tenant_db)
-        ):
-            # All queries automatically filtered by organization_id
-            result = await db.execute(select(Program))
-            return result.scalars().all()
-    """
-    async def _get_db():
-        async with AsyncSessionLocal() as session:
-            try:
-                # Set tenant context from request state
-                org_id = getattr(request.state, "organization_id", None)
-                is_superuser = getattr(request.state, "is_superuser", False)
-
-                if is_superuser:
-                    # Superusers see all data
-                    await session.execute(
-                        text("SET LOCAL app.current_organization_id = '0'")
-                    )
-                elif org_id:
-                    # Regular users see only their org's data
-                    # Note: org_id is always an integer from JWT, safe to format
-                    await session.execute(
-                        text(f"SET LOCAL app.current_organization_id = '{int(org_id)}'")
-                    )
-                else:
-                    # No context - see nothing (safe default)
-                    await session.execute(
-                        text("SET LOCAL app.current_organization_id = '-1'")
-                    )
-
-                yield session
-                await session.commit()
-            except Exception:
-                await session.rollback()
-                raise
-            finally:
-                await session.close()
-
-    return _get_db
-
-
 class TenantDatabaseDependency:
     """
     Callable dependency class for tenant-aware database sessions.
@@ -200,22 +242,20 @@ class TenantDatabaseDependency:
                 # Set tenant context from request state
                 org_id = getattr(request.state, "organization_id", None)
                 is_superuser = getattr(request.state, "is_superuser", False)
+                user_id = getattr(request.state, "user_id", None)
+
+                await apply_tenant_context(
+                    session,
+                    organization_id=org_id,
+                    is_superuser=is_superuser,
+                    user_id=user_id,
+                )
 
                 if is_superuser:
-                    await session.execute(
-                        text("SET LOCAL app.current_organization_id = '0'")
-                    )
                     logger.debug("RLS: Superuser mode (bypass)")
                 elif org_id:
-                    # Note: org_id is always an integer from JWT, safe to format
-                    await session.execute(
-                        text(f"SET LOCAL app.current_organization_id = '{int(org_id)}'")
-                    )
                     logger.debug(f"RLS: Tenant mode (org_id={org_id})")
                 else:
-                    await session.execute(
-                        text("SET LOCAL app.current_organization_id = '-1'")
-                    )
                     logger.debug("RLS: No tenant context (restricted)")
 
                 yield session

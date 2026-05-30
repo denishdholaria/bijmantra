@@ -1,0 +1,10 @@
+{
+  "error": "RetryError[<Future at 0x109553110 state=finished raised HTTPStatusError>]",
+  "metadata": {
+    "fetched_at": "2026-05-07T11:04:36.514754+00:00",
+    "ok": false,
+    "source": "faostat"
+  },
+  "ok": false,
+  "source": "faostat"
+}

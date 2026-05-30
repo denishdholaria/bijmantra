@@ -3,7 +3,11 @@ import os
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 from app.models.vision import VisionModel, VisionDeployment
-from app.modules.phenotyping.services.vision.deployment_service import vision_deployment_service, ExportFormat, DeploymentTarget
+from app.modules.phenotyping.services.vision.deployment_service import (
+    vision_deployment_service,
+    ExportFormat,
+    DeploymentTarget,
+)
 from app.models.base import Base
 
 
@@ -52,11 +56,11 @@ async def test_export_model(my_db_session):
 
     # Call export
     result = await vision_deployment_service.export_model(
-        my_db_session, organization_id=1, model_id=str(model.id), format=ExportFormat.TFLITE
+        my_db_session, organization_id=1, model_id=str(model.id), format=ExportFormat.SAVEDMODEL
     )
 
     assert "error" not in result
-    assert result["format"] == ExportFormat.TFLITE
+    assert result["format"] == ExportFormat.SAVEDMODEL
     assert result["model_id"] == str(model.id)
     assert result["download_url"] is not None
     assert "size_mb" in result

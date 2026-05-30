@@ -13,6 +13,8 @@ from typing import Any
 
 from app.modules.ai.services.reevu.planner import ReevuPlanner
 from app.modules.ai.services.reevu.step_executor import ExecutionOutcome, StepExecutor
+from app.modules.ai.services.reevu.evidence_synthesis_engine import EvidenceSynthesisEngine
+from app.modules.ai.services.reevu.recommendation_engine import RecommendationEngine
 from app.schemas.cross_domain_query_contract import CrossDomainQueryContractMetadata
 
 
@@ -214,6 +216,15 @@ async def handle_cross_domain(
         )
         outcome = await step_executor.execute_plan(plan)
         results = _assemble_results_from_outcome(outcome)
+
+        # Synthesize evidence across all domain steps before building the LLM prompt
+        synthesis = EvidenceSynthesisEngine().synthesize(outcome, original_query, params)
+
+        # Run recommendation engine when query expresses advancement/selection intent
+        rec_engine = RecommendationEngine()
+        recommendation: Any = None
+        if rec_engine._is_recommendation_query(original_query):
+            recommendation = rec_engine.recommend(outcome, synthesis, original_query)
 
         # Extract inferred location and study IDs from step results
         inferred_location_query: str | None = None
@@ -824,6 +835,73 @@ async def handle_cross_domain(
                 "step_execution_trace": outcome.step_execution_trace,
             },
             "plan_execution_summary": plan_execution_summary,
+            "synthesis": {
+                "primary_conclusion": synthesis.primary_conclusion,
+                "confidence": synthesis.confidence,
+                "supporting_evidence": [
+                    {
+                        "domains": a.domains,
+                        "entity_id": a.entity_id,
+                        "entity_name": a.entity_name,
+                        "claim": a.claim,
+                        "confidence": a.confidence,
+                    }
+                    for a in synthesis.supporting_evidence
+                ],
+                "contradictions": [
+                    {
+                        "domain_a": c.domain_a,
+                        "domain_b": c.domain_b,
+                        "entity_id": c.entity_id,
+                        "entity_name": c.entity_name,
+                        "claim_a": c.claim_a,
+                        "claim_b": c.claim_b,
+                        "severity": c.severity,
+                    }
+                    for c in synthesis.contradictions
+                ],
+                "gaps": [
+                    {
+                        "domain": g.domain,
+                        "description": g.description,
+                        "impact": g.impact,
+                        "suggestion": g.suggestion,
+                    }
+                    for g in synthesis.gaps
+                ],
+                "caveats": synthesis.caveats,
+            },
+            "recommendation": (
+                {
+                    "ranked_entries": [
+                        {
+                            "rank": e.rank,
+                            "germplasm_id": e.germplasm_id,
+                            "germplasm_name": e.germplasm_name,
+                            "composite_score": e.composite_score,
+                            "classification": e.classification,
+                            "evidence_chain": [
+                                {
+                                    "factor_name": f.factor_name,
+                                    "value": f.value,
+                                    "raw_value": f.raw_value,
+                                    "source_domain": f.source_domain,
+                                    "weight": f.weight,
+                                }
+                                for f in e.evidence_chain
+                            ],
+                            "caveats": e.caveats,
+                        }
+                        for e in recommendation.ranked_entries
+                    ],
+                    "classification": recommendation.classification,
+                    "weights_used": recommendation.weights_used,
+                    "factors_available": recommendation.factors_available,
+                    "factors_missing": recommendation.factors_missing,
+                }
+                if recommendation is not None
+                else None
+            ),
             "demo": False,
         }
     except Exception as exc:

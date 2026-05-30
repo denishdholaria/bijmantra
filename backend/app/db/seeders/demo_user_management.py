@@ -126,6 +126,7 @@ class DemoUserManagementSeeder(BaseSeeder):
             ),
         ]
 
+        count = 0
         for role in roles:
             existing = self.db.query(Role).filter(
                 Role.organization_id == org_id,
@@ -133,9 +134,10 @@ class DemoUserManagementSeeder(BaseSeeder):
             ).first()
             if not existing:
                 self.db.add(role)
+                count += 1
 
         self.db.flush()
-        return len(roles)
+        return count
 
     def _seed_teams(self, org_id: int, lead_id: int) -> int:
         """Seed demo teams"""
@@ -166,6 +168,7 @@ class DemoUserManagementSeeder(BaseSeeder):
             ),
         ]
 
+        count = 0
         for team in teams:
             existing = self.db.query(Team).filter(
                 Team.organization_id == org_id,
@@ -173,6 +176,7 @@ class DemoUserManagementSeeder(BaseSeeder):
             ).first()
             if not existing:
                 self.db.add(team)
+                count += 1
 
         self.db.flush()
 
@@ -198,8 +202,9 @@ class DemoUserManagementSeeder(BaseSeeder):
                     last_active=DEMO_NOW
                 )
                 self.db.add(member)
+                count += 1
 
-        return len(teams) + 1
+        return count
 
     def _seed_user_profile(self, org_id: int, user_id: int) -> int:
         """Seed user profile"""

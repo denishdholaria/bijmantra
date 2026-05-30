@@ -1,0 +1,30 @@
+domains:
+  - germplasm
+  - phenotyping
+  - genotyping
+  - trials
+  - observations
+  - gwas
+  - qtls
+
+data_sources:
+  germplasm:
+    - genesys
+    - usda_grin
+    - gbif
+  phenotyping:
+    - crop_ontology
+    - brapi_test_server
+    - cgiar_dataverse
+
+dataset_size: large
+mode: hybrid
+organization_ids:
+  - 1
+  - 2
+seed: 1729
+output_dir: data_pipeline/output
+raw_dir: data_pipeline/raw
+transformed_dir: data_pipeline/transformed
+synthetic_dir: data_pipeline/synthetic
+pipeline_version: 1.0.0

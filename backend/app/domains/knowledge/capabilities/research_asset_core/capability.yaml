@@ -1,0 +1,59 @@
+id: scientific_publishing_fair_exchange.research_asset_core
+title: Federated Research Asset Core
+dominion: scientific_publishing_fair_exchange
+owner_domain: knowledge
+supporting_domains:
+  - intelligence
+  - breeding
+  - phenotyping
+  - field_operations
+  - germplasm
+  - commercial
+lifecycle: planned
+standards:
+  - FAIR
+  - JSON-LD
+  - Schema.org
+  - W3C PROV
+  - DataCite DOI
+  - BrAPI v2.1
+  - Crop Ontology
+frontend_routes:
+  - /data/federated-assets
+  - /knowledge/research-assets
+backend_routes:
+  - /api/v2/fair-metadata/*
+  - /api/v2/federated-assets/*
+data_scopes:
+  - organization
+  - asset
+  - provenance
+  - license
+  - identifier
+  - connector
+  - evidence
+required_permissions:
+  - research_assets.read
+  - research_assets.register
+  - research_assets.promote_fair
+suggested_roles:
+  - data_steward
+  - knowledge_curator
+  - research_lead
+  - scientist
+semantic_spine_adrs:
+  - ADR-019
+  - ADR-020
+  - ADR-021
+  - ADR-022
+  - ADR-023
+  - ADR-024
+  - ADR-036
+audit_events:
+  - federated_connector_upsert
+  - federated_connector_dry_run
+  - federated_asset_register
+  - federated_asset_promote_fair
+source_context:
+  - backend-rs/BijMantra Realignment Report from Fairgrounds Signals.md
+  - .ai/decisions/ADR-036-federated-research-asset-core-inside-modular-monolith.md
