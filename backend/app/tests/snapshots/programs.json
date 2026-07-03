@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 1,
+      "totalPages": 1
+    },
+    "status": [
+      {
+        "message": "Success",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "data": [
+      {
+        "programDbId": "P-1",
+        "programName": "Mock Program"
+      }
+    ]
+  }
+}

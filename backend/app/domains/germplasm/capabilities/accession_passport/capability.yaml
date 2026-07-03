@@ -1,0 +1,43 @@
+id: germplasm_global_seed_registry.accession_passport
+title: Accession Passport Registry
+dominion: germplasm_global_seed_registry
+owner_domain: germplasm
+supporting_domains:
+  - intelligence
+  - knowledge
+lifecycle: active
+standards:
+  - BrAPI v2.1
+  - MCPD
+  - FAIR
+  - DataCite DOI
+frontend_routes:
+  - /germplasm
+  - /seed-bank/mcpd
+backend_routes:
+  - /brapi/v2/germplasm/*
+  - /api/v2/germplasm/*
+  - /api/v2/seed-bank/*
+data_scopes:
+  - organization
+  - collection
+  - accession
+  - material_transfer
+required_permissions:
+  - germplasm.read
+  - germplasm.passport.manage
+suggested_roles:
+  - germplasm_curator
+  - seed_bank_manager
+  - research_lead
+semantic_spine_adrs:
+  - ADR-019
+  - ADR-020
+  - ADR-021
+  - ADR-022
+  - ADR-023
+audit_events:
+  - germplasm.mcpd_exported
+  - germplasm.mcpd_imported
+source_context:
+  - .github/docs/denish-ideas/2026-05-19-future-direction.md

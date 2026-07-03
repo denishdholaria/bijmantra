@@ -61,7 +61,7 @@ denish@Mac rust % cargo build
    Compiling zmij v1.0.21
    Compiling memchr v2.8.0
    Compiling itoa v1.0.18
-   Compiling bijmantra-genomics v1.0.0-beta.1 (/Users/denish/Documents/bpro/bijmantraorg/rust)
+   Compiling bijmantra-genomics v1.0.0-beta.1 (<workspace-root>/rust)
    Compiling serde_json v1.0.149
    Compiling num-traits v0.2.19
    Compiling num-integer v0.1.46

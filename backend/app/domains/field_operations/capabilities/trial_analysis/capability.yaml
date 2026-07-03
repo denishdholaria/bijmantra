@@ -1,0 +1,49 @@
+id: plant_science_rnd.trial_analysis
+title: Trial Analysis
+dominion: plant_science_rnd
+owner_domain: field_operations
+supporting_domains:
+  - breeding
+  - phenotyping
+  - intelligence
+  - germplasm
+lifecycle: active
+standards:
+  - BrAPI v2.1
+  - MIAPPE
+  - Crop Ontology
+  - FAIR
+frontend_routes:
+  - /trials
+  - /phenotyping
+  - /breeding/trials
+backend_routes:
+  - /brapi/v2/*
+  - /api/v2/trials/*
+  - /api/v2/phenotyping/*
+data_scopes:
+  - organization
+  - program
+  - trial
+  - study
+  - location
+  - season
+required_permissions:
+  - trials.read
+  - trials.analyze
+  - phenotyping.read
+suggested_roles:
+  - breeder
+  - trial_manager
+  - phenotyping_scientist
+  - research_lead
+semantic_spine_adrs:
+  - ADR-019
+  - ADR-020
+  - ADR-021
+  - ADR-022
+  - ADR-023
+  - ADR-024
+audit_events:
+  - trial.analysis_requested
+  - trial.result_promoted

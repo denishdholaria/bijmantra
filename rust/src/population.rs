@@ -516,7 +516,9 @@ pub fn calculate_ammi(
     let mut rng = rand::rng();
 
     // Initialize vectors
-    let mut u: Vec<f64> = (0..n_genotypes).map(|_| rng.random::<f64>() - 0.5).collect();
+    let mut u: Vec<f64> = (0..n_genotypes)
+        .map(|_| rng.random::<f64>() - 0.5)
+        .collect();
     let mut v: Vec<f64> = (0..n_environments)
         .map(|_| rng.random::<f64>() - 0.5)
         .collect();

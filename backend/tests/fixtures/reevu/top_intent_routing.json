@@ -1,0 +1,122 @@
+[
+  {
+    "id": "intent-01",
+    "message": "Show me rice germplasm with blast resistance",
+    "expected_function": "search_germplasm",
+    "expected_params": { "crop": "rice", "trait": "blast_resistance" }
+  },
+  {
+    "id": "intent-02",
+    "message": "List wheat varieties with drought tolerance",
+    "expected_function": "search_germplasm",
+    "expected_params": { "crop": "wheat", "trait": "drought_tolerance" }
+  },
+  {
+    "id": "intent-03",
+    "message": "Find maize germplasm with high yield",
+    "expected_function": "search_germplasm",
+    "expected_params": { "crop": "maize", "trait": "yield" }
+  },
+  {
+    "id": "intent-04",
+    "message": "Show me active trials in Ludhiana",
+    "expected_function": "search_trials",
+    "expected_params": {}
+  },
+  {
+    "id": "intent-05",
+    "message": "List trial records for wheat",
+    "expected_function": "search_trials",
+    "expected_params": { "crop": "wheat" }
+  },
+  {
+    "id": "intent-06",
+    "message": "Find crossing records for 2025",
+    "expected_function": "search_crosses",
+    "expected_params": {}
+  },
+  {
+    "id": "intent-07",
+    "message": "Show accession records from our collection",
+    "expected_function": "search_accessions",
+    "expected_params": {}
+  },
+  {
+    "id": "intent-08",
+    "message": "Compare variety IR64 and Swarna for yield",
+    "expected_function": "compare_germplasm",
+    "expected_params": {}
+  },
+  {
+    "id": "intent-09",
+    "message": "Create a wheat AYT trial in Delhi",
+    "expected_function": "propose_create_trial",
+    "expected_params": { "crop": "wheat", "location": "Delhi", "trial_type": "AYT" }
+  },
+  {
+    "id": "intent-10",
+    "message": "Create a rice PYT trial in Hyderabad",
+    "expected_function": "propose_create_trial",
+    "expected_params": { "crop": "rice", "location": "Hyderabad", "trial_type": "PYT" }
+  },
+  {
+    "id": "intent-11",
+    "message": "Make a cross between IR64 and Swarna",
+    "expected_function": "propose_create_cross",
+    "expected_params": { "parent1_id": "IR64", "parent2_id": "Swarna" }
+  },
+  {
+    "id": "intent-12",
+    "message": "Create cross between PUSA44 and MTU1010",
+    "expected_function": "propose_create_cross",
+    "expected_params": { "parent1_id": "PUSA44", "parent2_id": "MTU1010" }
+  },
+  {
+    "id": "intent-13",
+    "message": "Record observation for trial T-102 today",
+    "expected_function": "propose_record_observation",
+    "expected_params": { "date": "today" }
+  },
+  {
+    "id": "intent-14",
+    "message": "Record score for this plot",
+    "expected_function": "propose_record_observation",
+    "expected_params": { "date": "today" }
+  },
+  {
+    "id": "intent-15",
+    "message": "What is the weather forecast for Bangalore",
+    "expected_function": "get_weather_forecast",
+    "expected_params": { "location": "Bangalore", "days": 7 }
+  },
+  {
+    "id": "intent-16",
+    "message": "Weather outlook for Hyderabad",
+    "expected_function": "get_weather_forecast",
+    "expected_params": { "location": "Hyderabad", "days": 7 }
+  },
+  {
+    "id": "intent-17",
+    "message": "Open trials page",
+    "expected_function": "navigate_to",
+    "expected_params": { "page": "/trials" }
+  },
+  {
+    "id": "intent-18",
+    "message": "Go to germplasm dashboard",
+    "expected_function": "navigate_to",
+    "expected_params": { "page": "/dashboard" }
+  },
+  {
+    "id": "intent-19",
+    "message": "How many trials are we running this season?",
+    "expected_function": null,
+    "expected_params": {}
+  },
+  {
+    "id": "intent-20",
+    "message": "Explain genomic selection in simple terms",
+    "expected_function": null,
+    "expected_params": {}
+  }
+]

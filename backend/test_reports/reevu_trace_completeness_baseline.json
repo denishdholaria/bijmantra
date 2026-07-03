@@ -1,0 +1,21 @@
+{
+  "total_cases": 20,
+  "complete_cases": 20,
+  "trace_completeness_rate": 1.0,
+  "kpi_floor": 0.99,
+  "meets_floor": true,
+  "required_stage_order": [
+    "intent_scope",
+    "plan_generation",
+    "answer_synthesis",
+    "policy_validation",
+    "response_emission"
+  ],
+  "required_event_fields": [
+    "request_id",
+    "stage",
+    "status",
+    "ts"
+  ],
+  "failures": []
+}

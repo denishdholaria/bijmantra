@@ -1,0 +1,27 @@
+[package]
+name = "bijmantra-server"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Rust API server for BijMantra."
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+bijmantra-core = { path = "../bijmantra-core" }
+chrono.workspace = true
+clap.workspace = true
+jsonwebtoken.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+tower = { workspace = true, features = ["util"] }

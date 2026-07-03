@@ -1,0 +1,20 @@
+SYSTEM COMPUTE MISSING: Could not import bijmantra_compute. Falling back to NumPy (slower but correct).
+INFO:     Started server process [17476]
+INFO:     Waiting for application startup.
+Redis unavailable, using in-memory fallback: Error 111 connecting to localhost:6379. Connection refused.
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('127.0.0.1', 8000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+[Security] Security headers middleware enabled
+[PRAHARI] Security middleware enabled
+[RLS] Tenant context middleware enabled
+[Socket.IO] Not available: No module named 'socketio'
+[IntegrationHub] Generated encryption key (set INTEGRATION_ENCRYPTION_KEY in production)
+[Bijmantra] Starting up...
+[Redis] Using in-memory fallback (not recommended for production)
+[Meilisearch] Initialization skipped: No module named 'meilisearch'
+[TaskQueue] Started 5 workers
+[Redis] No REDIS_URL configured, using in-memory storage
+[Bijmantra] Shutting down...
+[TaskQueue] Stopped

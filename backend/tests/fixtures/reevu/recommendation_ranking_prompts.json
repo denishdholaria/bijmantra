@@ -1,0 +1,115 @@
+[
+    {
+        "prompt_id": "rk-01",
+        "query": "Rank wheat varieties by yield and disease resistance for the Rabi 2025 season",
+        "expected_candidate_count_min": 2,
+        "expected_methodology": "multi-trait ranking",
+        "expected_domains": [
+            "breeding",
+            "analytics"
+        ],
+        "description": "Ranking by compound traits — yield and disease resistance"
+    },
+    {
+        "prompt_id": "rk-02",
+        "query": "Compare IR64 and Swarna for yield performance across southern trial sites",
+        "expected_candidate_count_min": 2,
+        "expected_methodology": "pairwise comparison",
+        "expected_domains": [
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "description": "Pairwise comparison of named varieties with location filter"
+    },
+    {
+        "prompt_id": "rk-03",
+        "query": "Which soybean variety has the highest protein content from our germplasm collection?",
+        "expected_candidate_count_min": 1,
+        "expected_methodology": "single-trait ranking",
+        "expected_domains": [
+            "breeding"
+        ],
+        "description": "Single-trait top-1 ranking query"
+    },
+    {
+        "prompt_id": "rk-04",
+        "query": "Rank maize hybrids by GxE stability and overall yield using multi-environment trial data",
+        "expected_candidate_count_min": 3,
+        "expected_methodology": "stability analysis",
+        "expected_domains": [
+            "trials",
+            "analytics"
+        ],
+        "description": "GxE stability-based ranking from multi-environment data"
+    },
+    {
+        "prompt_id": "rk-05",
+        "query": "Compare our top 5 rice entries for both grain quality and blast resistance, weighted 60:40",
+        "expected_candidate_count_min": 5,
+        "expected_methodology": "weighted multi-trait index",
+        "expected_domains": [
+            "breeding",
+            "analytics"
+        ],
+        "description": "Weighted multi-trait comparison with explicit ratio"
+    },
+    {
+        "prompt_id": "rk-06",
+        "query": "Suggest the best parent combination for drought tolerance improvement based on genomic and phenotypic data",
+        "expected_candidate_count_min": 2,
+        "expected_methodology": "cross-prediction ranking",
+        "expected_domains": [
+            "genomics",
+            "breeding",
+            "analytics"
+        ],
+        "description": "Parent recommendation with genomic + phenotypic evidence"
+    },
+    {
+        "prompt_id": "rk-07",
+        "query": "Rank cotton varieties by fiber length and yield from trials in Gujarat and Maharashtra",
+        "expected_candidate_count_min": 2,
+        "expected_methodology": "multi-trait regional ranking",
+        "expected_domains": [
+            "trials",
+            "breeding",
+            "analytics"
+        ],
+        "description": "Regional ranking with two traits and two locations"
+    },
+    {
+        "prompt_id": "rk-08",
+        "query": "What are the top 3 pearl millet entries for fodder yield under rainfed conditions?",
+        "expected_candidate_count_min": 3,
+        "expected_methodology": "single-trait ranking",
+        "expected_domains": [
+            "trials",
+            "breeding"
+        ],
+        "description": "Top-N ranking with environment constraint (rainfed)"
+    },
+    {
+        "prompt_id": "rk-09",
+        "query": "Recommend the best sowing window for chickpea in Madhya Pradesh given recent climate data and variety performance",
+        "expected_candidate_count_min": 1,
+        "expected_methodology": "agronomic recommendation",
+        "expected_domains": [
+            "weather",
+            "breeding",
+            "analytics"
+        ],
+        "description": "Recommendation combining weather and variety performance"
+    },
+    {
+        "prompt_id": "rk-10",
+        "query": "Compare genomic selection accuracy of two prediction models for grain yield in our wheat training population",
+        "expected_candidate_count_min": 2,
+        "expected_methodology": "model comparison",
+        "expected_domains": [
+            "genomics",
+            "analytics"
+        ],
+        "description": "Model-level comparison (not variety) — edge case for recommendation formatter"
+    }
+]

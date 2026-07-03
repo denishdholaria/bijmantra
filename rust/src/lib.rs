@@ -9,6 +9,10 @@ mod utils;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod fortran_ffi;
 
+// NVIDIA NIM client (native-http feature, non-WASM only — key never in WASM)
+#[cfg(all(not(target_arch = "wasm32"), feature = "native-http"))]
+pub mod nim_client;
+
 // Python bindings (only when python feature is enabled)
 #[cfg(feature = "python")]
 mod python_bindings;

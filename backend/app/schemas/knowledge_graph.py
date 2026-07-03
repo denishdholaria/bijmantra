@@ -1,0 +1,46 @@
+"""Compatibility shim for Intelligence Knowledge Graph contracts."""
+
+from app.domains.intelligence.capabilities.knowledge_graph.schemas.knowledge_graph import (
+    SUPPORTED_GRAPH_DIRECTIONS,
+    SUPPORTED_GRAPH_RELATIONSHIP_TYPES,
+    SUPPORTED_GRAPH_RESULT_SIDES,
+    KnowledgeGraphAssetTypePairFacet,
+    KnowledgeGraphEdgeCreate,
+    KnowledgeGraphEdgeResponse,
+    KnowledgeGraphEvidencePackResponse,
+    KnowledgeGraphEvidenceSearchResponse,
+    KnowledgeGraphEvidenceSearchResult,
+    KnowledgeGraphExplorerSnapshotResponse,
+    KnowledgeGraphFacetResponse,
+    KnowledgeGraphNeighborhoodResponse,
+    KnowledgeGraphRankedCandidate,
+    KnowledgeGraphRankedCandidateResponse,
+    KnowledgeGraphReevuDryRunPreviewResponse,
+    KnowledgeGraphRetrievalCandidate,
+    KnowledgeGraphRetrievalCandidateResponse,
+    KnowledgeGraphRetrievalDiagnosticCandidate,
+    KnowledgeGraphRetrievalDiagnosticsResponse,
+)
+
+
+__all__ = [
+    "SUPPORTED_GRAPH_DIRECTIONS",
+    "SUPPORTED_GRAPH_RELATIONSHIP_TYPES",
+    "SUPPORTED_GRAPH_RESULT_SIDES",
+    "KnowledgeGraphAssetTypePairFacet",
+    "KnowledgeGraphEdgeCreate",
+    "KnowledgeGraphEdgeResponse",
+    "KnowledgeGraphEvidencePackResponse",
+    "KnowledgeGraphEvidenceSearchResponse",
+    "KnowledgeGraphEvidenceSearchResult",
+    "KnowledgeGraphExplorerSnapshotResponse",
+    "KnowledgeGraphFacetResponse",
+    "KnowledgeGraphNeighborhoodResponse",
+    "KnowledgeGraphRankedCandidate",
+    "KnowledgeGraphRankedCandidateResponse",
+    "KnowledgeGraphReevuDryRunPreviewResponse",
+    "KnowledgeGraphRetrievalCandidate",
+    "KnowledgeGraphRetrievalCandidateResponse",
+    "KnowledgeGraphRetrievalDiagnosticCandidate",
+    "KnowledgeGraphRetrievalDiagnosticsResponse",
+]

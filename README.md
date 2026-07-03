@@ -12,34 +12,27 @@
 
 ---
 
-## **Status as of <!-- METRIC:LAST_UPDATED -->2026-05-30<!-- /METRIC -->:**
+## **Status as of <!-- METRIC:LAST_UPDATED -->2026-07-03<!-- /METRIC -->:**
 
-* BijMantra is currently undergoing major backend refactoring and architectural restructuring. These changes are foundational for the platform’s long-term scalability, maintainability, and future feature roadmap.
+* In the past eight weeks, the architectural challenges remains; However, development has very slowly advancing through focused backend hardening, capability-driven platform work, and documentation/architecture cleanup.
 
-* Development has historically been self-funded, including infrastructure, GitHub Copilot and tooling, AI model access, experimentation costs, and ongoing development resources required for a project of this scope.
+* Security improvements include tenant-isolated RLS, socket and API tenant guards, Keycloak SSO/realm contract work, and dependency patches to remediate high-risk CVEs.
 
-* At this stage, I can no longer sustainably continue development at the pace the project demands. The operational costs associated with modern high-end AI tooling and development infrastructure have become increasingly difficult to support independently.
+* The WASM compute engine and Plant Vision ML pipeline were hardened, with better dataset enforcement, runtime fallback handling, and operational safeguards.
 
-* A considerable amount of personal time, effort, and funding has been invested over the years into simultaneously learning new technologies while building BijMantra itself. Coming from a biotechnology background rather than computer science, the project involved an extremely steep learning curve across software engineering, system architecture, AI integration, DevOps, and scientific infrastructure design.
+* Knowledge graph, FAIR metadata, and federated research asset capabilities received significant additions, while the capability access model and platform installation guards were refined for domain-aware access control.
 
-* Despite the challenges, the journey has been immensely rewarding, and reaching this stage is something I once never imagined would be possible.
+* Germplasm and BrAPI work progressed toward a tighter Accession Passport capability, with BrAPI extraction, adapter consolidation, modular tests, and stronger domain gate enforcement.
 
-* The original vision was that contributors, collaborators, institutional partnerships, sponsorships, donations, or investors would eventually help sustain continued development, feature implementation, testing, and validation efforts. Unfortunately, those efforts have not yet materialized in a sustainable form.
+* Rust API preview also made forward progress, with BrAPI read surface parity advances, route status alignment, milestone tracking, and seedlot inventory readiness support under active development.
 
-* As a result, development progress will remain constrained by available personal resources and funding capacity.
-
-* BijMantra is currently undergoing significant architectural refactoring and stabilization. The application is able to start and run locally, though several modules, workflows, and integrations remain under development, validation, and testing for the platform to become mature.
-
-* Although the platform remains incomplete, the long-term vision for BijMantra is still very much alive. If funding, contributors, or institutional support become available in the future, development will continue.
-
+* The project remains under active refactor and validation. The application still starts locally, but stabilization and careful capability hardening continue before broader production readiness.
 
 🌐 **[bijmantra.org](https://bijmantra.org)**
 
 ---
 
 ## ⚠️ Important Notice — Official BijMantra Domain
-
-A third-party website is operating under **bijmantra.com**, which is not affiliated with, operated by, or endorsed by the BijMantra project team.
 
 **The official project is only available at:** https://bijmantra.org and the [official GitHub repository](https://github.com/denishdholaria/bijmantra.git).
 
@@ -62,16 +55,6 @@ A third-party website is operating under **bijmantra.com**, which is not affilia
 [![Stars](https://img.shields.io/github/stars/denishdholaria/bijmantra?style=for-the-badge\&logo=github\&color=gold)](https://github.com/denishdholaria/bijmantra)
 
 [**Get Started**](#quick-start) · [**Current Reality**](#current-reality) · [**Contributing**](#contributing) · [**Docs**](#key-documents)
-
----
-
-# A Note on Documentation Accuracy
-
-BijMantra is under active development across genomics, agronomy, AI systems, interoperability, and full-stack engineering. Exact implementation totals evolve rapidly.
-
-For implementation counts and the latest repository snapshot, prefer `metrics.json`.
-
-If you discover inconsistencies or outdated documentation, please open an issue.
 
 ---
 
@@ -203,6 +186,89 @@ Clone https://github.com/denishdholaria/bijmantra.git and start locally using Po
 
 * Frontend: http://localhost:5656
 * API Docs: http://localhost:8000/docs
+
+---
+
+# NVIDIA NIM Setup
+
+BijMantra ships with NVIDIA NIM support as an additional AI provider for REEVU.
+NIM exposes an OpenAI-compatible endpoint so no extra SDK is needed.
+**The NVIDIA API key is only read server-side and is never exposed to the browser.**
+
+## 1. Get an API key
+
+Sign up at [build.nvidia.com](https://build.nvidia.com) and create an API key
+(format: `nvapi-…`). Free tier credits are available for most models.
+
+## 2. Configure environment variables
+
+Add these to your `.env` (copy from `.env.example`):
+
+```bash
+# Required
+NVIDIA_API_KEY=nvapi-<your-key-here>
+
+# Optional overrides (defaults are shown)
+NIM_MODEL=meta/llama-3.1-70b-instruct
+NIM_BASE_URL=https://integrate.api.nvidia.com/v1
+```
+
+Browse available models at [build.nvidia.com/explore/discover](https://build.nvidia.com/explore/discover).
+
+## 3. Start the dev stack
+
+```bash
+bash bijdev.sh
+```
+
+The backend reads `NVIDIA_API_KEY` on startup and registers the `nvidia_nim`
+provider in the REEVU routing table. If the key is present, REEVU will include
+NIM in its automatic fallback chain (after Groq and Google, before HuggingFace).
+
+## 4. Run smoke tests
+
+**Python (standalone, no backend needed):**
+
+```bash
+uv run python -m scripts.nim_smoke_test
+```
+
+**Rust (requires the backend running on port 8000):**
+
+```bash
+cd rust
+cargo build --features native-http --bin nim_smoke_test
+BIJMANTRA_NIM_PROXY_URL=http://localhost:8000/api/v2/nim/chat \
+  cargo run --features native-http --bin nim_smoke_test
+```
+
+## 5. Frontend usage
+
+The frontend `services/nimApi.ts` module calls the backend proxy — never NIM directly:
+
+```typescript
+import { nimChat, nimStream } from '@/services/nimApi'
+
+// Non-streaming
+const result = await nimChat({
+  messages: [{ role: 'user', content: 'What is genomic selection?' }],
+})
+console.log(result.content)
+
+// Streaming
+for await (const chunk of nimStream({
+  messages: [{ role: 'user', content: 'What is genomic selection?' }],
+})) {
+  process.stdout.write(chunk)
+}
+```
+
+## Security notes
+
+- `NVIDIA_API_KEY` is loaded via `pydantic-settings` on the backend only.
+- The pre-commit hook (`.git-hooks/pre-commit`) blocks commits that contain
+  a staged `.env` file or a hardcoded `nvapi-…` string.
+- Install the hooks with: `bash scripts/setup_git_hooks.sh`
 
 ---
 
