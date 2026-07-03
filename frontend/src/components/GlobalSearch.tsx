@@ -76,7 +76,8 @@ const typeLabels: Record<SearchResult['type'], string> = {
 
 // Static page results - these are navigation shortcuts, not data
 const staticPageResults: SearchResult[] = [
-  { id: 'page-1', type: 'page', title: 'Dashboard', subtitle: 'Main dashboard', path: '/' },
+  { id: 'page-1', type: 'page', title: 'Gateway', subtitle: 'Clean OS desktop', path: '/gateway' },
+  { id: 'page-1-dashboard', type: 'page', title: 'Dashboard', subtitle: 'Operational dashboard app', path: '/dashboard' },
   { id: 'page-2', type: 'page', title: 'Germplasm Collection', subtitle: 'Browse all germplasm', path: '/germplasm' },
   { id: 'page-3', type: 'page', title: 'Field Book', subtitle: 'Data collection', path: '/field-book' },
   { id: 'page-4', type: 'page', title: 'Crossing Planner', subtitle: 'Plan crosses', path: '/crossing-planner' },

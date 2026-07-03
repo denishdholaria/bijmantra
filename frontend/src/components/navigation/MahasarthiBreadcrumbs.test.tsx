@@ -44,6 +44,7 @@ describe('MahasarthiBreadcrumbs', () => {
     )
 
     expect(screen.getByText('Home')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/gateway')
     expect(screen.getByText('Plant Sciences')).toBeInTheDocument()
     expect(screen.getByText('Crossing')).toBeInTheDocument()
     expect(screen.getByText('Planned Crosses')).toBeInTheDocument()

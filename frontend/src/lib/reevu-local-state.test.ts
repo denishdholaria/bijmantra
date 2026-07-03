@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { DEFAULT_REEVU_BYOK_MODEL } from './ai-model-catalog'
+import { LEGACY_REEVU_STORAGE_KEY } from './legacyReevu'
 
 import {
   clearStoredReevuMessages,
@@ -145,6 +146,6 @@ describe('config and history persistence helpers', () => {
 
     expect(storage.setItem).toHaveBeenCalledWith('bijmantra_reevu_config_v1', JSON.stringify(defaultReevuConfig))
     expect(storage.removeItem).toHaveBeenCalledWith('reevu_conversation_history')
-    expect(storage.removeItem).toHaveBeenCalledWith('bijmantra_legacy_reevu_conversation')
+    expect(storage.removeItem).toHaveBeenCalledWith(LEGACY_REEVU_STORAGE_KEY)
   })
 })

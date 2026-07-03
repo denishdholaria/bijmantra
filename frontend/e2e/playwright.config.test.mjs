@@ -35,8 +35,8 @@ async function readFrontendDevCommand(frontendDevCommand) {
   return stdout.trim()
 }
 
-test('playwright config defaults to npm for the frontend dev server', async () => {
-  assert.equal(await readFrontendDevCommand(), 'npm run dev')
+test('playwright config defaults to bun for the frontend dev server', async () => {
+  assert.equal(await readFrontendDevCommand(), 'bun run dev')
 })
 
 test('playwright config allows overriding the frontend dev server command', async () => {

@@ -3,7 +3,7 @@
 # dev.sh — BijMantra Next-Gen Runtime Orchestrator
 #
 # Usage:
-#   ./dev.sh                Start PostgreSQL + backend + frontend (use this for quick minimal start)
+#   ./dev.sh                Start PostgreSQL + backend + frontend
 #   ./dev.sh --all          Start product infra (Redis, MinIO, Meilisearch)
 #   ./dev.sh --chloe        Start experimental autonomy sidecars (BeingBijmantra + Chloe)
 #   ./dev.sh --minimal      Start PostgreSQL only
@@ -680,6 +680,140 @@ port_preflight() {
     return 0
 }
 
+restart_existing_backend_for_auth() {
+    local pids attempt
+
+    pids="$(pgrep -f "uvicorn app.main:app.*--port ${BACKEND_PORT}" 2>/dev/null || true)"
+    if [ -z "$pids" ]; then
+        fatal "Backend is already responding on port ${BACKEND_PORT}, but --auth requires a backend started with KEYCLOAK_ENABLED=true. Stop the existing backend or free port ${BACKEND_PORT}, then rerun dev.sh --auth."
+    fi
+
+    warn "Auth mode requested; restarting existing FastAPI backend so Keycloak settings are applied."
+    for pid in $pids; do
+        kill "$pid" >/dev/null 2>&1 || true
+    done
+
+    for attempt in {1..20}; do
+        backend_ready >/dev/null 2>&1 || return 0
+        sleep 0.5
+    done
+
+    fatal "Existing backend on port ${BACKEND_PORT} did not stop cleanly. Stop it manually, then rerun dev.sh --auth."
+}
+
+sql_escape_literal() {
+    printf '%s' "$1" | sed "s/'/''/g"
+}
+
+keycloak_admin_login() {
+    container_running "bijmantra-keycloak" || return 1
+    "$RUNTIME" exec bijmantra-keycloak /opt/keycloak/bin/kcadm.sh config credentials \
+        --server "http://localhost:8080" \
+        --realm master \
+        --user "${KEYCLOAK_ADMIN_USERNAME:-admin}" \
+        --password "${KEYCLOAK_ADMIN_PASSWORD:-admin}" >/dev/null 2>&1
+}
+
+keycloak_web_client_contract_ready() {
+    local realm web_client api_audience clients_json client_id client_json scopes_json
+
+    has_cmd python3 || return 1
+    realm="${VITE_KEYCLOAK_REALM:-bijmantra}"
+    web_client="${VITE_KEYCLOAK_CLIENT_ID:-bijmantra-web}"
+    api_audience="${KEYCLOAK_AUDIENCE:-bijmantra-api}"
+
+    keycloak_admin_login || return 1
+
+    clients_json="$("$RUNTIME" exec bijmantra-keycloak /opt/keycloak/bin/kcadm.sh \
+        get clients -r "$realm" -q "clientId=${web_client}" 2>/dev/null || true)"
+    [ -n "$clients_json" ] || return 1
+
+    client_id="$(printf '%s' "$clients_json" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data[0].get("id", "") if data else "")' 2>/dev/null || true)"
+    [ -n "$client_id" ] || return 1
+
+    client_json="$("$RUNTIME" exec bijmantra-keycloak /opt/keycloak/bin/kcadm.sh \
+        get "clients/${client_id}" -r "$realm" 2>/dev/null || true)"
+    scopes_json="$("$RUNTIME" exec bijmantra-keycloak /opt/keycloak/bin/kcadm.sh \
+        get client-scopes -r "$realm" 2>/dev/null || true)"
+    [ -n "$client_json" ] && [ -n "$scopes_json" ] || return 1
+
+    CLIENT_JSON="$client_json" SCOPES_JSON="$scopes_json" API_AUDIENCE="$api_audience" python3 - <<'PY'
+import json
+import os
+import sys
+
+client = json.loads(os.environ["CLIENT_JSON"])
+scopes = json.loads(os.environ["SCOPES_JSON"])
+api_audience = os.environ["API_AUDIENCE"]
+
+subject_mapper_ready = any(
+    mapper.get("protocolMapper") == "oidc-sub-mapper"
+    and mapper.get("config", {}).get("access.token.claim") == "true"
+    for mapper in client.get("protocolMappers", [])
+)
+if not subject_mapper_ready:
+    sys.exit(10)
+
+if "bijmantra-api-audience" not in client.get("defaultClientScopes", []):
+    sys.exit(11)
+
+audience_scope = next(
+    (scope for scope in scopes if scope.get("name") == "bijmantra-api-audience"),
+    None,
+)
+if not audience_scope:
+    sys.exit(12)
+
+audience_mapper_ready = any(
+    mapper.get("protocolMapper") == "oidc-audience-mapper"
+    and mapper.get("config", {}).get("included.client.audience") == api_audience
+    and mapper.get("config", {}).get("access.token.claim") == "true"
+    for mapper in audience_scope.get("protocolMappers", [])
+)
+if not audience_mapper_ready:
+    sys.exit(13)
+PY
+}
+
+keycloak_admin_identity_ready() {
+    local issuer subject issuer_sql subject_sql result
+
+    issuer="${KEYCLOAK_ISSUER:-http://localhost:${KEYCLOAK_PORT}/realms/bijmantra}"
+    subject="${KEYCLOAK_BOOTSTRAP_ADMIN_SUBJECT:-}"
+    [ -n "$subject" ] || return 1
+
+    issuer_sql="$(sql_escape_literal "$issuer")"
+    subject_sql="$(sql_escape_literal "$subject")"
+    result="$("$RUNTIME" exec bijmantra-postgres psql \
+        -h 127.0.0.1 \
+        -p 5432 \
+        -U "${POSTGRES_USER:-bijmantra_user}" \
+        -d "${POSTGRES_DB:-bijmantra_db}" \
+        -tAc "SELECT 1 FROM auth_identities WHERE provider = 'keycloak' AND issuer = '${issuer_sql}' AND subject = '${subject_sql}' LIMIT 1;" \
+        2>/dev/null | tr -d '[:space:]' || true)"
+
+    [ "$result" = "1" ]
+}
+
+auth_runtime_preflight() {
+    [ "$WITH_AUTH" -ne 1 ] && return 0
+
+    section "Auth Preflight"
+    status_row "backend auth env" "ready" "KEYCLOAK_ENABLED=${KEYCLOAK_ENABLED:-false}"
+
+    keycloak_ready \
+        || fatal "Keycloak is not reachable at http://localhost:${KEYCLOAK_PORT}/realms/bijmantra. Check ${RUNTIME_NAME} containers and rerun dev.sh --auth."
+    status_row "Keycloak realm" "ready" "http://localhost:${KEYCLOAK_PORT}/realms/bijmantra"
+
+    keycloak_web_client_contract_ready \
+        || fatal "Keycloak realm contract is not ready. The bijmantra-web access token must carry a stable sub claim and the ${KEYCLOAK_AUDIENCE:-bijmantra-api} audience. See infra/keycloak/README.md for recovery."
+    status_row "token contract" "ready" "sub + ${KEYCLOAK_AUDIENCE:-bijmantra-api} audience"
+
+    keycloak_admin_identity_ready \
+        || fatal "Bootstrap admin Keycloak identity is missing in auth_identities for subject ${KEYCLOAK_BOOTSTRAP_ADMIN_SUBJECT:-unset}. Rerun the admin seeder or see infra/keycloak/README.md."
+    status_row "admin identity" "ready" "${KEYCLOAK_BOOTSTRAP_ADMIN_SUBJECT}"
+}
+
 # ─────────────────────────────────────────────────────────────────────
 # RUNTIME DETECTION
 # ─────────────────────────────────────────────────────────────────────
@@ -1118,10 +1252,14 @@ start_backend() {
     status_row "database authority" "ready" "${POSTGRES_SERVER}:${POSTGRES_PORT}/${POSTGRES_DB}"
 
     if backend_ready >/dev/null 2>&1; then
-        emit_event INFO "Backend API already responding on port ${BACKEND_PORT}"
-        mark_ready backend
-        status_row "FastAPI backend" "ready" "existing service on port ${BACKEND_PORT}"
-        return 0
+        if [ "$WITH_AUTH" -eq 1 ]; then
+            restart_existing_backend_for_auth
+        else
+            emit_event INFO "Backend API already responding on port ${BACKEND_PORT}"
+            mark_ready backend
+            status_row "FastAPI backend" "ready" "existing service on port ${BACKEND_PORT}"
+            return 0
+        fi
     fi
 
     mark_starting backend
@@ -1516,6 +1654,7 @@ main() {
 
     run_migrations
     seed_system_data
+    auth_runtime_preflight
     start_backend
     check_wasm_sync
     start_frontend

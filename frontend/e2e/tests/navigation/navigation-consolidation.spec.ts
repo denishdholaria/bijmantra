@@ -82,7 +82,7 @@ test.describe('Navigation Consolidation', () => {
       // Should show 404 or redirect to a valid page
       const url = page.url()
       const has404 = await page.locator('text=/404|not found/i').count() > 0
-      const redirectedToValid = url.includes('/dashboard') || url.includes('/login')
+      const redirectedToValid = url.includes('/gateway') || url.includes('/dashboard') || url.includes('/login')
       
       expect(has404 || redirectedToValid).toBeTruthy()
     })

@@ -324,8 +324,8 @@ export function QuickGuide() {
                 You've completed the Quick Start Guide. You're ready to start breeding!
               </p>
               <div className="flex justify-center gap-3 mt-4">
-                <Link to="/dashboard">
-                  <Button>Go to Dashboard</Button>
+                <Link to="/gateway">
+                  <Button>Open Gateway</Button>
                 </Link>
                 <Link to="/help">
                   <Button variant="outline">Explore More</Button>

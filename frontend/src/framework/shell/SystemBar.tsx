@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/auth'
 import { SystemBarBrand, SystemBarControls } from './SystemBarParts'
+import { SHELL_DESKTOP_ROUTES } from './shellNavigationResolver'
 
 type SystemBarProps = {
   onToggleConsole?: () => void
@@ -14,7 +15,7 @@ export function SystemBar({
   const navigate = useNavigate()
   const location = useLocation()
   const logout = useAuthStore((state) => state.logout)
-  const isDesktop = ['/', '/gateway', '/dashboard'].includes(location.pathname)
+  const isDesktop = SHELL_DESKTOP_ROUTES.has(location.pathname)
 
   const handleLogout = () => {
     logout()
@@ -23,8 +24,8 @@ export function SystemBar({
 
   return (
     <header className="bg-shell-chrome border-shell shadow-shell relative z-50 flex h-14 items-center justify-between border-b px-4 text-shell backdrop-blur-xl sm:px-6 flex-shrink-0">
-      <SystemBarBrand isDesktop={isDesktop} onGoHome={() => navigate('/dashboard')} />
-      <SystemBarControls isDesktop={isDesktop} onLogout={handleLogout} />
+      <SystemBarBrand isDesktop={isDesktop} onGoHome={() => navigate('/gateway')} />
+      <SystemBarControls onLogout={handleLogout} />
     </header>
   )
 }

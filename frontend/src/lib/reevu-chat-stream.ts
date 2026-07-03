@@ -68,6 +68,45 @@ export interface ReevuRetrievalAudit {
   plan?: ReevuPlanExecutionSummary
 }
 
+export interface ReevuRunEvent {
+  type: 'reevu_run'
+  request_id?: string
+  run_id?: string
+  event_id?: string
+  event: string
+  status: string
+  title?: string
+  detail?: string
+  stage?: string
+  tool_name?: string
+  tool_display_name?: string
+  connector_id?: string
+  authority_level?: string
+  trust_state?: string
+  domains_involved?: string[]
+  plan_is_compound?: boolean
+  function_call?: string | null
+  clarification_required?: boolean
+  result_type?: string | null
+  success?: boolean | null
+  duration_ms?: number
+  records_touched?: number
+  evidence_count?: number
+  calculation_count?: number
+  missing_evidence_signals?: string[]
+  approval_required?: boolean
+  approval_id?: string
+  approval_kind?: string
+  approval_status?: string
+  approval_reason?: string
+  artifact_ids?: string[]
+  case_id?: string
+  playbook_id?: string
+  error?: string
+  ts?: string
+  safe_failure?: ReevuSafeFailure
+}
+
 export interface ReevuStreamStartEvent {
   type: 'start'
   provider?: string
@@ -105,6 +144,7 @@ export interface ReevuStreamErrorEvent {
 }
 
 export type ReevuStreamEvent =
+  | ReevuRunEvent
   | ReevuStreamStartEvent
   | ReevuStreamChunkEvent
   | ReevuStreamProposalCreatedEvent
@@ -130,6 +170,34 @@ function isStringArray(value: unknown): value is string[] {
 
 function isNumberRecord(value: unknown): value is Record<string, number> {
   return isObject(value) && Object.values(value).every(item => typeof item === 'number')
+}
+
+function optionalString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
+function optionalNullableString(value: unknown): string | null | undefined {
+  if (value === null) {
+    return null
+  }
+
+  return optionalString(value)
+}
+
+function optionalNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+}
+
+function optionalBoolean(value: unknown): boolean | undefined {
+  return typeof value === 'boolean' ? value : undefined
+}
+
+function optionalNullableBoolean(value: unknown): boolean | null | undefined {
+  if (value === null) {
+    return null
+  }
+
+  return optionalBoolean(value)
 }
 
 function isPlanExecutionStep(value: unknown): value is ReevuPlanExecutionStep {
@@ -202,6 +270,49 @@ export function buildReevuChatStreamRequest({
 export function parseReevuStreamEvent(payload: unknown): ReevuStreamEvent | null {
   if (!isObject(payload) || typeof payload.type !== 'string') {
     return null
+  }
+
+  if (payload.type === 'reevu_run' && typeof payload.event === 'string' && typeof payload.status === 'string') {
+    return {
+      type: 'reevu_run',
+      request_id: optionalString(payload.request_id),
+      run_id: optionalString(payload.run_id),
+      event_id: optionalString(payload.event_id),
+      event: payload.event,
+      status: payload.status,
+      title: optionalString(payload.title),
+      detail: optionalString(payload.detail),
+      stage: optionalString(payload.stage),
+      tool_name: optionalString(payload.tool_name),
+      tool_display_name: optionalString(payload.tool_display_name),
+      connector_id: optionalString(payload.connector_id),
+      authority_level: optionalString(payload.authority_level),
+      trust_state: optionalString(payload.trust_state),
+      domains_involved: isStringArray(payload.domains_involved) ? payload.domains_involved : undefined,
+      plan_is_compound: optionalBoolean(payload.plan_is_compound),
+      function_call: optionalNullableString(payload.function_call),
+      clarification_required: optionalBoolean(payload.clarification_required),
+      result_type: optionalNullableString(payload.result_type),
+      success: optionalNullableBoolean(payload.success),
+      duration_ms: optionalNumber(payload.duration_ms),
+      records_touched: optionalNumber(payload.records_touched),
+      evidence_count: optionalNumber(payload.evidence_count),
+      calculation_count: optionalNumber(payload.calculation_count),
+      missing_evidence_signals: isStringArray(payload.missing_evidence_signals)
+        ? payload.missing_evidence_signals
+        : undefined,
+      approval_required: optionalBoolean(payload.approval_required),
+      approval_id: optionalString(payload.approval_id),
+      approval_kind: optionalString(payload.approval_kind),
+      approval_status: optionalString(payload.approval_status),
+      approval_reason: optionalString(payload.approval_reason),
+      artifact_ids: isStringArray(payload.artifact_ids) ? payload.artifact_ids : undefined,
+      case_id: optionalString(payload.case_id),
+      playbook_id: optionalString(payload.playbook_id),
+      error: optionalString(payload.error),
+      ts: optionalString(payload.ts),
+      safe_failure: isReevuSafeFailure(payload.safe_failure) ? payload.safe_failure : undefined,
+    }
   }
 
   if (payload.type === 'start') {

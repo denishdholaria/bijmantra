@@ -12,7 +12,7 @@
  * Do NOT add local `useState` for notification lists here — use the store.
  */
 
-import { useEffect, useState, createContext, useContext, useCallback } from 'react'
+import { useEffect, useState, createContext, useContext, useCallback, useId, type KeyboardEvent } from 'react'
 import { LEGACY_REEVU_NOTIFICATION_TYPE } from '@/lib/legacyReevu'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/auth'
@@ -213,19 +213,25 @@ interface NotificationBellProps {
 export function NotificationBell({ className }: NotificationBellProps) {
   const { unreadCount } = useNotifications()
   const [isOpen, setIsOpen] = useState(false)
+  const dropdownId = useId()
 
   return (
     <div className={cn('relative', className)}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+        aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'}
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        aria-controls={isOpen ? dropdownId : undefined}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
         
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center" aria-hidden="true">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -236,8 +242,9 @@ export function NotificationBell({ className }: NotificationBellProps) {
           <div 
             className="fixed inset-0 z-40" 
             onClick={() => setIsOpen(false)} 
+            aria-hidden="true"
           />
-          <NotificationDropdown onClose={() => setIsOpen(false)} />
+          <NotificationDropdown id={dropdownId} onClose={() => setIsOpen(false)} />
         </>
       )}
     </div>
@@ -249,10 +256,11 @@ export function NotificationBell({ className }: NotificationBellProps) {
 // ============================================
 
 interface NotificationDropdownProps {
+  id: string
   onClose: () => void
 }
 
-function NotificationDropdown({ onClose }: NotificationDropdownProps) {
+function NotificationDropdown({ id, onClose }: NotificationDropdownProps) {
   const { notifications, markAsRead, markAllAsRead, clearNotification } = useNotifications()
 
   const typeConfig: Record<string, { icon: string; color: string }> = {
@@ -266,14 +274,40 @@ function NotificationDropdown({ onClose }: NotificationDropdownProps) {
     weather: { icon: '🌤️', color: 'cyan' }
   }
 
+  useEffect(() => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  const handleNotificationKeyDown = (event: KeyboardEvent<HTMLDivElement>, notificationId: string) => {
+    if (event.target !== event.currentTarget) return
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      markAsRead(notificationId)
+    }
+  }
+
   return (
-    <div className="absolute right-0 top-full mt-2 w-96 bg-popover text-popover-foreground rounded-xl shadow-2xl border border-border z-50 overflow-hidden">
+    <div
+      id={id}
+      className="absolute right-0 top-full mt-2 w-96 bg-popover text-popover-foreground rounded-xl shadow-2xl border border-border z-50 overflow-hidden"
+      role="dialog"
+      aria-label="Notifications"
+    >
       {/* Header */}
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold">Notifications</h3>
         <button
+          type="button"
           onClick={markAllAsRead}
           className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
+          aria-label="Mark all notifications as read"
         >
           Mark all as read
         </button>
@@ -298,9 +332,13 @@ function NotificationDropdown({ onClose }: NotificationDropdownProps) {
                   !notification.read && 'bg-amber-50/50 dark:bg-amber-900/10'
                 )}
                 onClick={() => markAsRead(notification.id)}
+                onKeyDown={(event) => handleNotificationKeyDown(event, notification.id)}
+                role="button"
+                tabIndex={0}
+                aria-label={notification.read ? `Notification: ${notification.title}` : `Mark notification as read: ${notification.title}`}
               >
                 <div className="flex gap-3">
-                  <span className="text-xl flex-shrink-0">{config.icon}</span>
+                  <span className="text-xl flex-shrink-0" aria-hidden="true">{config.icon}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <h4 className={cn(
@@ -310,11 +348,13 @@ function NotificationDropdown({ onClose }: NotificationDropdownProps) {
                         {notification.title}
                       </h4>
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation()
                           clearNotification(notification.id)
                         }}
                         className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        aria-label={`Dismiss notification: ${notification.title}`}
                       >
                         ×
                       </button>
@@ -329,8 +369,10 @@ function NotificationDropdown({ onClose }: NotificationDropdownProps) {
                       </span>
                       {notification.action && (
                         <button
+                          type="button"
                           onClick={(e) => { e.stopPropagation(); notification.action!.onClick() }}
                           className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
+                          aria-label={`${notification.action.label}: ${notification.title}`}
                         >
                           {notification.action.label}
                         </button>
@@ -391,12 +433,12 @@ export function Toast({ notification, onClose }: ToastProps) {
       'flex items-start gap-3 p-4 rounded-xl shadow-lg text-white max-w-sm animate-slide-in',
       config.bgColor
     )}>
-      <span className="text-xl">{config.icon}</span>
+      <span className="text-xl" aria-hidden="true">{config.icon}</span>
       <div className="flex-1">
         <h4 className="font-medium">{notification.title}</h4>
         <p className="text-sm opacity-90 mt-0.5">{notification.message}</p>
       </div>
-      <button onClick={onClose} className="opacity-70 hover:opacity-100">×</button>
+      <button type="button" onClick={onClose} className="opacity-70 hover:opacity-100" aria-label={`Dismiss notification: ${notification.title}`}>×</button>
     </div>
   )
 }

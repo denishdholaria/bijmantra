@@ -5,9 +5,9 @@
     "": {
       "name": "bijmantra-e2e",
       "devDependencies": {
-        "@axe-core/playwright": "^4.8.4",
-        "@playwright/test": "^1.41.2",
-        "@types/node": "^20.19.33",
+        "@axe-core/playwright": "^4.11.1",
+        "@playwright/test": "^1.59.1",
+        "@types/node": "^20.19.39",
         "tsx": "^4.21.0",
       },
     },

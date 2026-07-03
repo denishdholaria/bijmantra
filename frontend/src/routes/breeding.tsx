@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { RouteObject } from 'react-router-dom';
+import { CapabilityProtectedRoute } from '@/components/CapabilityProtectedRoute';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 // Helper to wrap components
 // Lazily import Layout to prevent circular dependency cycles (Route -> Layout -> Nav -> Registry -> Route)
@@ -16,6 +17,37 @@ const wrap = (Component: React.LazyExoticComponent<any> | React.ComponentType) =
     </Suspense>
   </ProtectedRoute>
 );
+
+const wrapCapability = (
+  Component: React.LazyExoticComponent<any> | React.ComponentType,
+  options: {
+    capabilityId: string;
+    requiredPermission: string;
+    requiredDataScopes?: string[];
+  },
+) => (
+  <ProtectedRoute>
+    <CapabilityProtectedRoute
+      capabilityId={options.capabilityId}
+      requiredPermission={options.requiredPermission}
+      requiredDataScopes={options.requiredDataScopes}
+    >
+      <Suspense fallback={<div className="h-screen w-screen flex items-center justify-center">Loading Layout...</div>}>
+        <Layout>
+          <Suspense fallback={<div className="p-8 text-center">Loading Content...</div>}>
+            <Component />
+          </Suspense>
+        </Layout>
+      </Suspense>
+    </CapabilityProtectedRoute>
+  </ProtectedRoute>
+);
+
+const accessionPassportRouteAccess = {
+  capabilityId: 'germplasm_global_seed_registry.accession_passport',
+  requiredPermission: 'germplasm.read',
+  requiredDataScopes: ['organization', 'accession'],
+};
 
 // Lazy load Breeding pages
 const Programs = lazy(() => import('@/pages/Programs').then(m => ({ default: m.Programs })));
@@ -105,15 +137,15 @@ export const breedingRoutes: RouteObject[] = [
   { path: '/locations/:locationDbId/edit', element: wrap(LocationEdit) },
 
   // Germplasm
-  { path: '/germplasm', element: wrap(Germplasm) },
-  { path: '/germplasm/new', element: wrap(GermplasmForm) },
-  { path: '/germplasm/:germplasmDbId', element: wrap(GermplasmDetail) },
-  { path: '/germplasm/:germplasmDbId/edit', element: wrap(GermplasmEdit) },
+  { path: '/germplasm', element: wrapCapability(Germplasm, accessionPassportRouteAccess) },
+  { path: '/germplasm/new', element: wrapCapability(GermplasmForm, accessionPassportRouteAccess) },
+  { path: '/germplasm/:germplasmDbId', element: wrapCapability(GermplasmDetail, accessionPassportRouteAccess) },
+  { path: '/germplasm/:germplasmDbId/edit', element: wrapCapability(GermplasmEdit, accessionPassportRouteAccess) },
   { path: '/germplasm-comparison', element: wrap(GermplasmComparison) },
   { path: '/germplasmattributes', element: wrap(GermplasmAttributes) },
   { path: '/attributevalues', element: wrap(GermplasmAttributeValues) },
-  { path: '/germplasm-passport', element: wrap(GermplasmPassport) },
-  { path: '/germplasm-search', element: wrap(GermplasmSearch) },
+  { path: '/germplasm-passport', element: wrapCapability(GermplasmPassport, accessionPassportRouteAccess) },
+  { path: '/germplasm-search', element: wrapCapability(GermplasmSearch, accessionPassportRouteAccess) },
 
   // Crosses
   { path: '/crosses', element: wrap(Crosses) },

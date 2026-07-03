@@ -23,10 +23,13 @@ import { useState, useMemo, useCallback, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useSystemStore } from '@/store/systemStore'
+import { useCapabilityAccessStore } from '@/store/capabilityAccessStore'
+import { filterNavigationTreeByCapabilityAccess } from '@/framework/registry/capability-navigation'
+import { navigationTree } from '@/framework/registry/navigation-source'
 import {
-  derivedSidebar,
   type SidebarMenuItem,
   findNavigationNodeByPath,
+  generateSidebarFromNavigation,
 } from '@/framework/registry/navigation-derived'
 import {
   ChevronDown,
@@ -170,27 +173,31 @@ function SidebarSection({
 export function ShellSidebar() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { sidebarCollapsed, toggleSidebar, isStrataOpen } = useSystemStore()
+  const { sidebarCollapsed, toggleSidebar } = useSystemStore()
+  const capabilityAccessContext = useCapabilityAccessStore((state) => state.accessContext)
 
-  // Use derived sidebar from single source of truth
-  const sidebarItems = useMemo(() => derivedSidebar, [])
+  const capabilityNavigationTree = useMemo(
+    () => filterNavigationTreeByCapabilityAccess(navigationTree, capabilityAccessContext),
+    [capabilityAccessContext]
+  )
+
+  const sidebarItems = useMemo(
+    () => generateSidebarFromNavigation(capabilityNavigationTree),
+    [capabilityNavigationTree]
+  )
 
   // Determine which division matches the current route
   const activeDivision = useMemo<SidebarMenuItem | null>(() => {
     // Find the division that matches the current path
-    const currentNode = findNavigationNodeByPath(location.pathname)
+    const currentNode = findNavigationNodeByPath(location.pathname, capabilityNavigationTree)
     if (!currentNode) return null
     
     // Find the top-level division for this node
     const divisionId = currentNode.divisionId
     return sidebarItems.find(item => item.divisionId === divisionId) || null
-  }, [location.pathname, sidebarItems])
+  }, [capabilityNavigationTree, location.pathname, sidebarItems])
 
   const isDesktopRoute = location.pathname === '/desktop' || location.pathname === '/'
-
-  const resolvePath = useCallback((divisionRoute: string, route: string, isAbsolute?: boolean) => {
-    return isAbsolute ? route : `${divisionRoute}${route}`
-  }, [])
 
   const activeSection = useMemo<SidebarMenuItem | null>(() => {
     if (!activeDivision || !activeDivision.children) return null

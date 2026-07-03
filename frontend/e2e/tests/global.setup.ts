@@ -33,6 +33,11 @@ const RATE_LIMIT_RESET_TOKEN = process.env.RATE_LIMIT_RESET_TOKEN || 'dev-reset-
 
 async function globalSetup(config: FullConfig) {
   const { baseURL } = config.projects[0].use
+
+  if (process.env.E2E_SKIP_GLOBAL_AUTH_SETUP === 'true') {
+    console.log('⏭️ Skipping global local-password auth setup')
+    return
+  }
   
   // Ensure auth directory exists
   const authDir = path.join(__dirname, '../playwright/.auth')

@@ -70,7 +70,7 @@ export function ObservationEntryForm({ plotId, onClose }: ObservationEntryFormPr
       });
       onClose();
     } catch (err) {
-      // eslint-disable-next-line no-console
+       
       console.error(err);
       toast({
         title: 'Error Saving',

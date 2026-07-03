@@ -16,6 +16,7 @@ export interface NavigationNode {
 
   // Authorization & visibility
   requiredPermissions?: string[];
+  requiredDataScopes?: string[];
   isHidden?: boolean;
 
   // Hierarchy
@@ -39,6 +40,7 @@ export function buildNavigationTree(): NavigationNode[] {
       icon: div.icon,
       description: div.description,
       requiredPermissions: div.requiredPermissions,
+      requiredDataScopes: div.requiredDataScopes,
       divisionId: div.id,
       children: []
     };
@@ -52,6 +54,7 @@ export function buildNavigationTree(): NavigationNode[] {
           path: secPath,
           icon: sec.icon,
           description: sec.description,
+          requiredDataScopes: sec.requiredDataScopes,
           parentPath: div.route,
           divisionId: div.id,
           children: []
@@ -65,6 +68,7 @@ export function buildNavigationTree(): NavigationNode[] {
               label: item.name,
               path: itemPath,
               icon: item.icon,
+              requiredDataScopes: item.requiredDataScopes,
               parentPath: secPath,
               divisionId: div.id
             };

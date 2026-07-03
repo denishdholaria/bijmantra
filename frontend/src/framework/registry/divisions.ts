@@ -618,6 +618,9 @@ export const divisions: Division[] = [
     version: '0.6.0',
     sections: [
       { id: 'help', name: 'Help Center', route: '/help', icon: 'HelpCircle', isAbsolute: true },
+      { id: 'knowledge-graph', name: 'Knowledge Graph', route: '/knowledge-graph', icon: 'Network', isAbsolute: true },
+      { id: 'research-assets', name: 'Research Assets', route: '/knowledge/research-assets', icon: 'Database', isAbsolute: true },
+      { id: 'federated-assets', name: 'Federated Assets', route: '/data/federated-assets', icon: 'Boxes', isAbsolute: true },
       { id: 'training', name: 'Training Hub', route: '/knowledge/training', icon: 'GraduationCap', isAbsolute: true },
       { id: 'devguru', name: 'DevGuru (PhD Mentor)', route: '/devguru', icon: 'GraduationCap', isAbsolute: true },
       { id: 'forums', name: 'Community Forums', route: '/knowledge/forums', icon: 'MessageSquare', isAbsolute: true },

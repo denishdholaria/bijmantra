@@ -193,7 +193,7 @@ export function DivisionNavItem({ division, isExpanded, onToggle, onNavigate }: 
   useEffect(() => {
     const active = getActiveShellSubgroups(division, location.pathname)
     if (active.size > 0) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+       
       setExpandedSubgroups(prev => {
         const next = new Set(prev)
         let changed = false

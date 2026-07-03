@@ -100,6 +100,16 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
     model_lifecycle: 'managed_named_model',
     model_lifecycle_label: 'Local named model',
   },
+  {
+    label: 'NVIDIA NIM',
+    provider_key: 'nvidia_nim',
+    display_name: 'NVIDIA NIM',
+    base_url: '/api/nim',
+    priority: '35',
+    recommended_model: 'meta/llama-3.1-70b-instruct',
+    model_lifecycle: 'managed_named_model',
+    model_lifecycle_label: 'Named managed default',
+  },
 ]
 
 const MODEL_PRESET_MAP: Record<string, ModelPreset[]> = {
@@ -195,6 +205,28 @@ const MODEL_PRESET_MAP: Record<string, ModelPreset[]> = {
       temperature: '0.7',
       lifecycle: 'managed_named_model',
       lifecycle_label: 'Local named model',
+    },
+  ],
+  nvidia_nim: [
+    {
+      label: 'Llama 3.1 70B Instruct',
+      model_name: 'meta/llama-3.1-70b-instruct',
+      display_name: 'Llama 3.1 70B Instruct (NIM)',
+      capability_tags: 'chat, reasoning, streaming',
+      max_tokens: '8192',
+      temperature: '0.7',
+      lifecycle: 'managed_named_model',
+      lifecycle_label: 'Named managed default',
+    },
+    {
+      label: 'Mistral 7B Instruct v0.3',
+      model_name: 'mistralai/mistral-7b-instruct-v0.3',
+      display_name: 'Mistral 7B Instruct v0.3 (NIM)',
+      capability_tags: 'chat, reasoning, streaming',
+      max_tokens: '4096',
+      temperature: '0.7',
+      lifecycle: 'managed_named_model',
+      lifecycle_label: 'Named managed default',
     },
   ],
 }

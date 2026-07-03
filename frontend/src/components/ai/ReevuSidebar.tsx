@@ -9,7 +9,7 @@ import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Trash2, Maximize2, X, Mic, MicOff, ArrowUp, KeyRound, FlaskConical, Dna, BarChart3, Info } from 'lucide-react'
+import { Trash2, Maximize2, X, KeyRound, FlaskConical, Dna, BarChart3, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useReevuChat, ReevuMessage } from '@/hooks/useReevuChat'
 import { ReevuLogo } from './ReevuTrigger'
@@ -17,6 +17,8 @@ import { useReevuSidebarStore } from '@/store/reevuSidebarStore'
 import EvidenceTraceCard from './EvidenceTraceCard'
 import ReevuExecutionTraceCard from './ReevuExecutionTraceCard'
 import ReevuSafeFailureCard from './ReevuSafeFailureCard'
+import { ReevuComposer } from './ReevuComposer'
+import { ReevuMessageContextPills } from './ReevuMessageContextPills'
 
 interface ReevuSidebarProps {
 	className?: string
@@ -33,10 +35,15 @@ export function ReevuSidebar({ className }: ReevuSidebarProps) {
 		input,
 		setInput,
 		isProcessing,
+		agentMode,
+		setAgentMode,
+		pendingAttachments,
 		effectiveBackend,
 		messagesEndRef,
 		sendMessage,
 		clearHistory,
+		addAttachments,
+		removeAttachment,
 		voice
 	} = useReevuChat()
 
@@ -59,21 +66,6 @@ export function ReevuSidebar({ className }: ReevuSidebarProps) {
 		if (isOpen) setTimeout(() => inputRef.current?.focus(), 150)
 	}, [isOpen])
 
-	// Auto-resize textarea
-	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		setInput(e.target.value)
-		e.target.style.height = 'auto'
-		e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
-	}
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault()
-			sendMessage()
-			if (inputRef.current) inputRef.current.style.height = 'auto'
-		}
-	}
-
 	const suggestions = [
 		{ icon: FlaskConical, label: 'Active trials', action: 'Show me active trials' },
 		{ icon: BarChart3, label: 'Top performers', action: 'Which germplasm has best yield?' },
@@ -92,7 +84,7 @@ export function ReevuSidebar({ className }: ReevuSidebarProps) {
 			<div
 				className={cn(
 					'fixed top-0 right-0 z-50 h-full',
-					'w-full sm:w-[380px] lg:w-[400px]',
+					'w-full sm:w-[430px] lg:w-[460px]',
 					'bg-background/70 backdrop-blur-2xl backdrop-saturate-150 border-l border-white/10 dark:border-white/5',
 					'shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.3)] ring-1 ring-white/10',
 					'transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]',
@@ -104,7 +96,7 @@ export function ReevuSidebar({ className }: ReevuSidebarProps) {
 				<div className="flex items-center justify-between px-4 h-12 border-b border-border/40 flex-shrink-0 bg-transparent">
 					<div className="flex items-center gap-2.5 min-w-0">
 						<ReevuLogo className="w-5 h-5 flex-shrink-0" />
-						<span className="text-sm font-semibold text-foreground">REEVU</span>
+						<span className="text-sm font-semibold text-foreground">Agentic REEVU</span>
 						<div
 							className={cn(
 								'w-1.5 h-1.5 rounded-full flex-shrink-0',
@@ -150,8 +142,8 @@ export function ReevuSidebar({ className }: ReevuSidebarProps) {
 					{messages.length === 0 ? (
 						<div className="flex flex-col items-center justify-center h-full px-6 py-8">
 							<ReevuLogo className="w-12 h-12 opacity-30 mb-4" />
-							<p className="text-sm font-medium text-foreground mb-1">How can I help?</p>
-							<p className="text-xs text-muted-foreground mb-6 text-center">Ask about trials, germplasm, or breeding recommendations.</p>
+							<p className="text-sm font-medium text-foreground mb-1">How should REEVU help?</p>
+							<p className="text-xs text-muted-foreground mb-6 text-center">Ask, attach context, or switch modes for research, comparison, and validation.</p>
 							<div className="w-full max-w-[280px] space-y-2">
 								{suggestions.map((s) => (
 									<button
@@ -195,50 +187,21 @@ export function ReevuSidebar({ className }: ReevuSidebarProps) {
 				</div>
 
 				<div className="px-3 pb-3 pt-2 bg-transparent">
-					<div className={cn(
-						'flex items-end gap-1.5 rounded-xl border bg-background/50 backdrop-blur-md px-3 py-2 transition-colors',
-						'border-border',
-						'focus-within:border-prakruti-patta-light focus-within:ring-1 focus-within:ring-prakruti-patta/50'
-					)}>
-						<button
-							onClick={voice.isListening ? voice.stopListening : voice.startListening}
-							className={cn(
-								'flex-shrink-0 p-1.5 rounded-lg transition-all',
-								voice.isListening
-									? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
-									: 'text-muted-foreground hover:text-foreground hover:bg-muted'
-							)}
-							title={voice.isListening ? 'Stop' : 'Voice input'}
-						>
-							{voice.isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-						</button>
-
-						<textarea
-							ref={inputRef}
-							value={input}
-							onChange={handleInputChange}
-							onKeyDown={handleKeyDown}
-							placeholder={voice.isListening ? 'Listening…' : 'Ask REEVU…'}
-							rows={1}
-							className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none leading-5 py-1 max-h-[120px]"
-						/>
-
-						<button
-							onClick={() => { sendMessage(); if (inputRef.current) inputRef.current.style.height = 'auto' }}
-							disabled={!input.trim() || isProcessing}
-							className={cn(
-								'flex-shrink-0 p-1.5 rounded-lg transition-all',
-								input.trim() && !isProcessing
-									? 'text-white bg-prakruti-patta hover:bg-prakruti-patta-dark shadow-sm'
-									: 'text-muted-foreground cursor-not-allowed'
-							)}
-						>
-							<ArrowUp className="h-4 w-4" />
-						</button>
-					</div>
-					{voice.error && (
-						<p className="text-[10px] text-red-500 mt-1.5 px-1">{voice.error}</p>
-					)}
+					<ReevuComposer
+						ref={inputRef}
+						input={input}
+						setInput={setInput}
+						isProcessing={isProcessing}
+						onSend={sendMessage}
+						voice={voice}
+						agentMode={agentMode}
+						onAgentModeChange={setAgentMode}
+						attachments={pendingAttachments}
+						onAttachFiles={addAttachments}
+						onRemoveAttachment={removeAttachment}
+						placeholder="Ask REEVU..."
+						compact
+					/>
 				</div>
 			</div>
 		</>
@@ -253,6 +216,7 @@ function MessageBubble({ message }: { message: ReevuMessage }) {
 			<div className="flex justify-end">
 				<div className="max-w-[80%] rounded-2xl rounded-br-md px-3.5 py-2.5 bg-prakruti-patta text-white shadow-sm">
 					<p className="text-[13px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
+					<ReevuMessageContextPills metadata={message.metadata} compact />
 					<span className="text-[9px] opacity-60 block mt-1 text-right">
 						{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
 					</span>

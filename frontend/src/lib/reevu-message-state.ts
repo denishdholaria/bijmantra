@@ -3,8 +3,10 @@ import type {
   ReevuPlanExecutionSummary,
   ReevuProposalSummary,
   ReevuRetrievalAudit,
+  ReevuRunEvent,
 } from '@/lib/reevu-chat-stream'
 import { buildReevuSafeFailureMessage, type ReevuSafeFailure } from '@/lib/reevu-safe-failure'
+import type { ReevuAgentMode, ReevuAttachmentSummary } from '@/lib/reevu-ui-context'
 
 export interface ReevuMessageState {
   id: string
@@ -19,12 +21,17 @@ export interface ReevuMessageState {
     retrieval_audit?: ReevuRetrievalAudit
     plan_execution_summary?: ReevuPlanExecutionSummary
     safe_failure?: ReevuSafeFailure
+    attachments?: ReevuAttachmentSummary[]
+    agent_mode?: ReevuAgentMode
+    run_events?: ReevuRunEvent[]
   }
 }
 
 interface CreateUserMessageOptions {
   id: string
   content: string
+  attachments?: ReevuAttachmentSummary[]
+  agentMode?: ReevuAgentMode
   timestamp?: Date
 }
 
@@ -52,6 +59,8 @@ interface PatchAssistantMessageOptions {
 export function createReevuUserMessage({
   id,
   content,
+  attachments,
+  agentMode,
   timestamp = new Date(),
 }: CreateUserMessageOptions): ReevuMessageState {
   return {
@@ -59,6 +68,12 @@ export function createReevuUserMessage({
     role: 'user',
     content,
     timestamp,
+    metadata: attachments?.length || agentMode
+      ? {
+          attachments,
+          agent_mode: agentMode,
+        }
+      : undefined,
   }
 }
 
@@ -177,6 +192,24 @@ export function patchReevuAssistantSafeFailure(
       provider: options.provider,
       model: options.model,
       safe_failure: options.safeFailure,
+    },
+  }))
+}
+
+export function patchReevuAssistantRunEvent(
+  messages: ReevuMessageState[],
+  options: PatchAssistantMessageOptions & { runEvent: ReevuRunEvent },
+): ReevuMessageState[] {
+  return patchAssistantMessage(messages, options, message => ({
+    ...message,
+    metadata: {
+      ...message.metadata,
+      provider: options.provider,
+      model: options.model,
+      run_events: [
+        ...(message.metadata?.run_events ?? []),
+        options.runEvent,
+      ],
     },
   }))
 }

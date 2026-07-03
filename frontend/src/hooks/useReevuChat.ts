@@ -20,8 +20,10 @@ import {
   buildReevuChatStreamRequest,
   type ReevuPlanExecutionSummary,
   type ReevuRetrievalAudit,
+  type ReevuRunEvent,
   readReevuStreamEvents,
 } from '@/lib/reevu-chat-stream'
+import type { ReevuTaskContextAttachment, ReevuTaskContextOverride } from '@/lib/reevu-task-context'
 import {
   clearStoredReevuMessages,
   defaultReevuConfig,
@@ -39,13 +41,16 @@ import {
   patchReevuAssistantChunk,
   patchReevuAssistantEvidence,
   patchReevuAssistantProposal,
+  patchReevuAssistantRunEvent,
   patchReevuAssistantSafeFailure,
 } from '@/lib/reevu-message-state'
 import { useReevuTaskContextStore } from '@/store/reevuTaskContextStore'
 import { useReevuVoice } from './useReevuVoice'
 import type { EvidenceEnvelope } from '@/components/ai/EvidenceTraceCard'
 import type { ReevuSafeFailure } from '@/lib/reevu-safe-failure'
+import type { ReevuAgentMode, ReevuAttachmentSummary } from '@/lib/reevu-ui-context'
 export type { EffectiveBackend, ReevuBackendStatus } from '@/lib/reevu-backend-status'
+export type { ReevuAgentMode, ReevuAttachmentSummary } from '@/lib/reevu-ui-context'
 import type { ReevuBackendStatus } from '@/lib/reevu-backend-status'
 import type { ReevuConfig } from '@/lib/reevu-local-state'
 
@@ -72,6 +77,9 @@ export interface ReevuMessage {
     retrieval_audit?: ReevuRetrievalAudit
     plan_execution_summary?: ReevuPlanExecutionSummary
     safe_failure?: ReevuSafeFailure
+    attachments?: ReevuAttachmentSummary[]
+    agent_mode?: ReevuAgentMode
+    run_events?: ReevuRunEvent[]
   }
 }
 
@@ -84,6 +92,10 @@ export interface ReevuSource {
 
 export type AIMode = 'cloud'
 
+export interface ReevuAttachment extends ReevuAttachmentSummary {
+  status: 'ready' | 'metadata_only'
+}
+
 // ============================================
 // CONSTANTS
 // ============================================
@@ -93,6 +105,129 @@ const INITIAL_MESSAGE: ReevuMessage = {
   role: 'assistant',
   content: 'Hello! 🙏 Welcome to our conversation about plant breeding and agricultural research. I\'m REEVU.',
   timestamp: new Date()
+}
+
+const MAX_ATTACHMENTS = 6
+const MAX_ATTACHMENT_PREVIEW_CHARS = 6000
+const TEXT_ATTACHMENT_EXTENSIONS = new Set([
+  'csv',
+  'json',
+  'md',
+  'txt',
+  'tsv',
+  'yaml',
+  'yml',
+])
+
+const AGENT_MODE_LABELS: Record<ReevuAgentMode, string> = {
+  auto: 'Auto',
+  research: 'Research',
+  compare: 'Compare',
+  validate: 'Validate',
+}
+
+function createAttachmentId(file: File): string {
+  return `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+function extensionForFile(fileName: string): string {
+  return fileName.split('.').pop()?.toLowerCase() ?? ''
+}
+
+function canPreviewAttachment(file: File): boolean {
+  if (file.type.startsWith('text/')) {
+    return true
+  }
+
+  return TEXT_ATTACHMENT_EXTENSIONS.has(extensionForFile(file.name))
+}
+
+async function createReevuAttachment(file: File): Promise<ReevuAttachment> {
+  if (!canPreviewAttachment(file)) {
+    return {
+      id: createAttachmentId(file),
+      name: file.name,
+      size: file.size,
+      mime_type: file.type || 'application/octet-stream',
+      status: 'metadata_only',
+    }
+  }
+
+  const text = await file.text()
+  const preview = text.slice(0, MAX_ATTACHMENT_PREVIEW_CHARS)
+
+  return {
+    id: createAttachmentId(file),
+    name: file.name,
+    size: file.size,
+    mime_type: file.type || 'text/plain',
+    preview,
+    preview_truncated: text.length > preview.length,
+    status: 'ready',
+  }
+}
+
+function summarizeAttachments(attachments: ReevuAttachment[]): ReevuAttachmentSummary[] {
+  return attachments.map(({ status: _status, ...attachment }) => attachment)
+}
+
+function buildAttachmentContext(attachments: ReevuAttachment[]): ReevuTaskContextAttachment[] {
+  return attachments.map(attachment => ({
+    kind: 'uploaded_file',
+    entity_id: attachment.id,
+    label: attachment.name,
+    metadata: {
+      file_name: attachment.name,
+      size_bytes: attachment.size,
+      mime_type: attachment.mime_type,
+      content_preview: attachment.preview,
+      preview_truncated: attachment.preview_truncated ?? false,
+      context_authority: 'user_attached_file',
+      ingestion_status: attachment.status,
+    },
+  }))
+}
+
+function buildAgentModeContext(agentMode: ReevuAgentMode): ReevuTaskContextAttachment {
+  return {
+    kind: 'reevu_agent_mode',
+    entity_id: agentMode,
+    label: AGENT_MODE_LABELS[agentMode],
+    metadata: {
+      context_authority: 'ui_instruction',
+      instruction: agentMode === 'auto'
+        ? 'Let REEVU choose the safest route for this question.'
+        : `Use ${AGENT_MODE_LABELS[agentMode].toLowerCase()} mode as a UI-level planning hint; do not treat this hint as evidence authority.`,
+    },
+  }
+}
+
+function composeTaskContextOverride({
+  routeTaskContextOverride,
+  agentMode,
+  attachments,
+}: {
+  routeTaskContextOverride?: ReevuTaskContextOverride | null
+  agentMode: ReevuAgentMode
+  attachments: ReevuAttachment[]
+}): ReevuTaskContextOverride {
+  const uiAttachedContext = [
+    buildAgentModeContext(agentMode),
+    ...buildAttachmentContext(attachments),
+  ]
+
+  return {
+    ...routeTaskContextOverride,
+    active_filters: {
+      ...(routeTaskContextOverride?.active_filters ?? {}),
+      reevu_agent_mode: agentMode,
+      user_attached_file_count: attachments.length,
+    },
+    attached_context: [
+      ...(routeTaskContextOverride?.attached_context ?? []),
+      ...uiAttachedContext,
+    ],
+  }
 }
 
 // ============================================
@@ -118,6 +253,8 @@ export function useReevuChat() {
 
   const [input, setInput] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [agentMode, setAgentMode] = useState<ReevuAgentMode>('auto')
+  const [pendingAttachments, setPendingAttachments] = useState<ReevuAttachment[]>([])
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -191,20 +328,45 @@ export function useReevuChat() {
     persistReevuConfig(updated)
   }, [reevuConfig])
 
+  const addAttachments = useCallback(async (files: FileList | File[]) => {
+    const incomingFiles = Array.from(files).slice(0, MAX_ATTACHMENTS)
+    if (incomingFiles.length === 0) {
+      return
+    }
+
+    const nextAttachments = await Promise.all(incomingFiles.map(createReevuAttachment))
+    setPendingAttachments(prev => [...prev, ...nextAttachments].slice(-MAX_ATTACHMENTS))
+  }, [])
+
+  const removeAttachment = useCallback((attachmentId: string) => {
+    setPendingAttachments(prev => prev.filter(attachment => attachment.id !== attachmentId))
+  }, [])
+
   // Send message
   const sendMessage = useCallback(async (context?: any) => {
     // Determine the message text to send
     const textToSend = context && typeof context === 'string' ? context : input.trim()
+    const attachmentsToSend = pendingAttachments
+    const attachmentSummaries = summarizeAttachments(attachmentsToSend)
+    const selectedAgentMode = agentMode
+    const finalPrompt = textToSend || (
+      attachmentsToSend.length > 0
+        ? 'Please analyze the attached context and explain what REEVU can safely infer.'
+        : ''
+    )
 
-    if (!textToSend || isProcessing) return
+    if (!finalPrompt || isProcessing) return
 
     const userMessage: ReevuMessage = createReevuUserMessage({
       id: Date.now().toString(),
-      content: textToSend,
+      content: finalPrompt,
+      attachments: attachmentSummaries,
+      agentMode: selectedAgentMode,
     })
 
     setMessages(prev => [...prev, userMessage])
     setInput('')
+    setPendingAttachments([])
 
     const token = useAuthStore.getState().token
     if (!token) {
@@ -252,12 +414,16 @@ export function useReevuChat() {
 
     try {
       const requestBody = buildReevuChatStreamRequest({
-        message: textToSend,
+        message: finalPrompt,
         messages,
         pathname: location.pathname,
         search: location.search,
         activeWorkspaceId,
-        routeTaskContextOverride,
+        routeTaskContextOverride: composeTaskContextOverride({
+          routeTaskContextOverride,
+          agentMode: selectedAgentMode,
+          attachments: attachmentsToSend,
+        }),
       })
 
       const response = await fetch('/api/v2/chat/stream', {
@@ -280,7 +446,14 @@ export function useReevuChat() {
       let handledSafeFailure = false
 
       for await (const event of readReevuStreamEvents(response.body)) {
-        if (event.type === 'start') {
+        if (event.type === 'reevu_run') {
+          setMessages(prev => patchReevuAssistantRunEvent(prev, {
+            assistantMessageId: assistantMsgId,
+            provider: actualProvider,
+            model: actualModel,
+            runEvent: event,
+          }))
+        } else if (event.type === 'start') {
           actualProvider = event.provider || providerName
           actualModel = event.model || actualModel
         } else if (event.type === 'chunk') {
@@ -358,7 +531,7 @@ export function useReevuChat() {
     } finally {
       setIsProcessing(false)
     }
-  }, [input, isProcessing, messages, status, effectiveBackend, refreshStatus, location.pathname, location.search, activeWorkspaceId, routeTaskContextOverride])
+  }, [input, pendingAttachments, agentMode, isProcessing, messages, status, effectiveBackend, refreshStatus, location.pathname, location.search, activeWorkspaceId, routeTaskContextOverride])
 
   return {
     // State
@@ -366,6 +539,9 @@ export function useReevuChat() {
     input,
     setInput,
     isProcessing,
+    agentMode,
+    setAgentMode,
+    pendingAttachments,
     aiConfig: null,
     effectiveBackend,
     messagesEndRef,
@@ -374,6 +550,8 @@ export function useReevuChat() {
     sendMessage,
     clearHistory,
     setAIMode,
+    addAttachments,
+    removeAttachment,
 
     // Voice
     voice: {

@@ -9,3 +9,4 @@ export * from "./chat-health";
 export * from "./backup";
 export * from "./workflows";
 export * from "./languages";
+export * from "./platform-capabilities";

@@ -46,12 +46,12 @@ afterEach(() => {
 })
 
 describe('MahasarthiStrata', () => {
-  it('opens desktop tools from STRATA on desktop routes', () => {
+  it('opens workbench utilities from STRATA on desktop routes', () => {
     const onClose = vi.fn()
     const onNavigate = vi.fn()
 
     render(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/gateway']}>
         <MahasarthiStrata isOpen={true} onClose={onClose} onNavigate={onNavigate} />
       </MemoryRouter>
     )
@@ -63,5 +63,16 @@ describe('MahasarthiStrata', () => {
     expect(mockSystemState.openDesktopTool).toHaveBeenNthCalledWith(2, 'editor')
     expect(onClose).toHaveBeenCalledTimes(2)
     expect(onNavigate).toHaveBeenCalledTimes(2)
+  })
+
+  it('hides workbench utilities on normal app routes', () => {
+    render(
+      <MemoryRouter initialEntries={['/dashboard']}>
+        <MahasarthiStrata isOpen={true} onClose={vi.fn()} />
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByRole('button', { name: 'File System' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Editor' })).not.toBeInTheDocument()
   })
 })

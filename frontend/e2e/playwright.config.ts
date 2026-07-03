@@ -126,6 +126,16 @@ export default defineConfig({
       name: 'teardown',
       testMatch: /global\.teardown\.ts/,
     },
+
+    // Keycloak browser login regression - no legacy storage state or setup dependency
+    {
+      name: 'keycloak-auth',
+      testMatch: /auth\/keycloak-login\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: undefined,
+      },
+    },
     
     // Desktop Chrome - Primary browser
     {

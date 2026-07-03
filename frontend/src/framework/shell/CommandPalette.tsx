@@ -12,8 +12,11 @@ import { Command } from 'cmdk'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, RefreshCw, Moon } from 'lucide-react'
 import { useNotificationStore } from '@/store/notificationStore'
+import { useCapabilityAccessStore } from '@/store/capabilityAccessStore'
+import { filterNavigationTreeByCapabilityAccess } from '@/framework/registry/capability-navigation'
+import { navigationTree } from '@/framework/registry/navigation-source'
 import {
-  derivedCommands,
+  generateCommandsFromNavigation,
   type CommandPaletteItem,
 } from '../registry/navigation-derived'
 
@@ -21,9 +24,16 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { addNotification } = useNotificationStore()
+  const capabilityAccessContext = useCapabilityAccessStore((state) => state.accessContext)
 
-  // Use derived commands from single source of truth
-  const allCommands = useMemo(() => derivedCommands, [])
+  const capabilityNavigationTree = useMemo(
+    () => filterNavigationTreeByCapabilityAccess(navigationTree, capabilityAccessContext),
+    [capabilityAccessContext]
+  )
+  const allCommands = useMemo(
+    () => generateCommandsFromNavigation(capabilityNavigationTree),
+    [capabilityNavigationTree]
+  )
 
   // Group commands by division for organized display
   const groupedCommands = useMemo(() => {

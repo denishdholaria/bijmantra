@@ -1,6 +1,45 @@
 import { ApiClientCore } from "../core/client";
 import { SeedLot, ViabilityTest, SeedInventorySummary } from "./types";
 
+export type SeedLotAdjustmentType =
+  | 'increase'
+  | 'decrease'
+  | 'correction'
+  | 'reservation'
+  | 'release';
+
+export type SeedLotAdjustmentUnit = 'g' | 'kg' | 'seeds' | 'packets' | 'other';
+
+export interface SeedLotAdjustmentRequest {
+  publicId: string;
+  idempotencyKey: string;
+  seedLotDbId: string;
+  adjustmentType: SeedLotAdjustmentType;
+  quantityDelta: string;
+  unit: SeedLotAdjustmentUnit;
+  reason: string;
+  observedAt?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface SeedLotAdjustmentResponse {
+  success: true;
+  adjustment: {
+    publicId: string;
+    seedLotDbId: string;
+    adjustmentType: SeedLotAdjustmentType;
+    quantityDelta: string;
+    unit: SeedLotAdjustmentUnit;
+    resultingLedgerStatus: 'recorded';
+    createdAt: string;
+  };
+  audit: {
+    event: 'seed_lot.adjusted';
+    actorUserId: number;
+    organizationId: number;
+  };
+}
+
 export class InventoryService {
   constructor(private client: ApiClientCore) {}
 
@@ -109,6 +148,15 @@ export class InventoryService {
 
   async getSummary(): Promise<SeedInventorySummary> {
     return this.client.get<SeedInventorySummary>("/api/v2/seed-inventory/summary");
+  }
+
+  async createSeedLotAdjustment(
+    data: SeedLotAdjustmentRequest,
+  ): Promise<SeedLotAdjustmentResponse> {
+    return this.client.post<SeedLotAdjustmentResponse>(
+      "/api/v2/seed-inventory/adjustments",
+      data,
+    );
   }
 
   async getAlerts(): Promise<{

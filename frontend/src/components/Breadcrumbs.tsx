@@ -180,12 +180,12 @@ export function Breadcrumbs({
         {showHome && (
           <>
             <li>
-              <Link 
-                to="/dashboard" 
+              <Link
+                to="/gateway"
                 className="flex items-center text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Home className="h-4 w-4" />
-                <span className="sr-only">Home</span>
+                <span className="sr-only">Gateway Home</span>
               </Link>
             </li>
             {(breadcrumbs.length > 0 || activeWorkspace) && (

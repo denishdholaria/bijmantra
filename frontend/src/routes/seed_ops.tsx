@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { RouteObject } from 'react-router-dom';
+import { CapabilityProtectedRoute } from '@/components/CapabilityProtectedRoute';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 // Lazy Layout import to prevent circular dependency
 const Layout = lazy(() => import('@/components/Layout').then(m => ({ default: m.Layout })));
@@ -64,6 +65,37 @@ const wrap = (Component: React.LazyExoticComponent<any> | React.ComponentType) =
   </ProtectedRoute>
 );
 
+const wrapCapability = (
+  Component: React.LazyExoticComponent<any> | React.ComponentType,
+  options: {
+    capabilityId: string;
+    requiredPermission: string;
+    requiredDataScopes?: string[];
+  },
+) => (
+  <ProtectedRoute>
+    <CapabilityProtectedRoute
+      capabilityId={options.capabilityId}
+      requiredPermission={options.requiredPermission}
+      requiredDataScopes={options.requiredDataScopes}
+    >
+      <Suspense fallback={null}>
+        <Layout>
+          <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+            <Component />
+          </Suspense>
+        </Layout>
+      </Suspense>
+    </CapabilityProtectedRoute>
+  </ProtectedRoute>
+);
+
+const accessionPassportRouteAccess = {
+  capabilityId: 'germplasm_global_seed_registry.accession_passport',
+  requiredPermission: 'germplasm.read',
+  requiredDataScopes: ['organization', 'accession'],
+};
+
 const canonicalSeedOperationsRoutes: RouteObject[] = [
   { path: '/seed-operations', element: wrap(SeedOpsDashboard) },
   { path: '/seed-operations/dashboard', element: wrap(SeedOpsDashboard) },
@@ -108,14 +140,17 @@ export const seedOpsRoutes: RouteObject[] = [
   { path: '/seed-bank', element: wrap(SeedBankDashboard) },
   { path: '/seed-bank/dashboard', element: wrap(SeedBankDashboard) },
   { path: '/seed-bank/vault', element: wrap(SeedBankVault) },
-  { path: '/seed-bank/accessions', element: wrap(SeedBankAccessions) },
-  { path: '/seed-bank/accessions/new', element: wrap(SeedBankAccessionNew) },
-  { path: '/seed-bank/accessions/:id', element: wrap(SeedBankAccessionDetail) },
+  { path: '/seed-bank/accessions', element: wrapCapability(SeedBankAccessions, accessionPassportRouteAccess) },
+  { path: '/seed-bank/accessions/new', element: wrapCapability(SeedBankAccessionNew, accessionPassportRouteAccess) },
+  { path: '/seed-bank/accessions/:id', element: wrapCapability(SeedBankAccessionDetail, accessionPassportRouteAccess) },
   { path: '/seed-bank/conservation', element: wrap(SeedBankConservation) },
   { path: '/seed-bank/exchange', element: wrap(SeedBankExchange) },
   { path: '/seed-bank/viability', element: wrap(SeedBankViability) },
   { path: '/seed-bank/regeneration', element: wrap(SeedBankRegeneration) },
-  { path: '/seed-bank/mcpd', element: wrap(SeedBankMCPD) },
+  {
+    path: '/seed-bank/mcpd',
+    element: wrapCapability(SeedBankMCPD, accessionPassportRouteAccess),
+  },
   { path: '/seed-bank/grin-search', element: wrap(SeedBankGRINSearch) },
   { path: '/seed-bank/taxonomy', element: wrap(SeedBankTaxonomy) },
   { path: '/seed-bank/mta', element: wrap(SeedBankMTA) },

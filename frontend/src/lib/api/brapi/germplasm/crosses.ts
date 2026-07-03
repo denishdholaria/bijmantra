@@ -51,7 +51,7 @@ export class CrossService {
   // Cross Planning
   async getPlannedCrosses(params?: any) {
     const queryParams = new URLSearchParams(params).toString();
-    return this.client.get<BrAPIListResponse<any>>(`/brapi/v2/planned-crosses?${queryParams}`);
+    return this.client.get<BrAPIListResponse<any>>(`/brapi/v2/plannedcrosses?${queryParams}`);
   }
 
   async createPlannedCross(data: any) {

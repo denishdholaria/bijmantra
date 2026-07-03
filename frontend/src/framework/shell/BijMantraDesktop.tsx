@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useSystemStore } from '@/store/systemStore'
+import { useAuthStore } from '@/store/auth'
+import { useCapabilityAccessStore } from '@/store/capabilityAccessStore'
 import { Grid3X3, RefreshCw, Sparkles, Settings } from 'lucide-react'
 import { UNSAFE_NavigationContext, useBeforeUnload, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -16,16 +18,12 @@ import { lazy, Suspense } from 'react'
 import { LEGACY_REEVU_ROUTE } from '@/lib/legacyReevu'
 import { ShellSubsystemBoundary } from './ShellSubsystemBoundary'
 import { DesktopWorkbench } from './DesktopWorkbench'
+import { SHELL_DESKTOP_ROUTES } from './shellNavigationResolver'
+import { useShellRouteVisitRecorder } from './shellRouteVisitRecorder'
 
 const ReevuSidebar = lazy(() =>
   import('@/components/ai/ReevuSidebar').then((m) => ({ default: m.ReevuSidebar }))
 )
-
-// ============================================================================
-// Desktop Routes — routes that show the wallpaper + shortcuts instead of app content
-// ============================================================================
-
-const DESKTOP_ROUTES = new Set(['/', '/gateway', '/dashboard'])
 
 /** Routes where the Dock + STRATA auto-hide to avoid overlapping bottom-anchored content. */
 const IMMERSIVE_ROUTES = new Set(['/reevu', LEGACY_REEVU_ROUTE, '/ai-assistant'])
@@ -45,16 +43,19 @@ type BlockableNavigator = {
 export function BijMantraDesktop({ children }: BijMantraDesktopProps) {
   const setIsInShell = useSystemStore((state) => state.setIsInShell)
   const navigationContext = useContext(UNSAFE_NavigationContext)
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const organizationId = useAuthStore((state) => state.user?.organization_id ?? null)
+  const loadCapabilityAccess = useCapabilityAccessStore((state) => state.loadForOrganization)
+  const resetCapabilityAccess = useCapabilityAccessStore((state) => state.reset)
 
   const location = useLocation()
   const isStrataOpen = useSystemStore((state) => state.isStrataOpen)
   const setStrataOpen = useSystemStore((state) => state.setStrataOpen)
   const desktopToolSurface = useSystemStore((state) => state.desktopToolSurface)
-  const lastDesktopToolSurface = useSystemStore((state) => state.lastDesktopToolSurface)
   const openDesktopTool = useSystemStore((state) => state.openDesktopTool)
   const closeDesktopTool = useSystemStore((state) => state.closeDesktopTool)
   const [hasUnsavedWorkbenchChanges, setHasUnsavedWorkbenchChanges] = useState(false)
-  const [hasRestoredDesktopTool, setHasRestoredDesktopTool] = useState(false)
+  useShellRouteVisitRecorder()
 
   const setIsStrataOpen = (open: boolean) => {
     setStrataOpen(open)
@@ -68,9 +69,18 @@ export function BijMantraDesktop({ children }: BijMantraDesktopProps) {
     return () => setIsInShell(false)
   }, [setIsInShell])
 
+  useEffect(() => {
+    if (!isAuthenticated || !organizationId) {
+      resetCapabilityAccess()
+      return
+    }
+
+    void loadCapabilityAccess(organizationId)
+  }, [isAuthenticated, loadCapabilityAccess, organizationId, resetCapabilityAccess])
+
   // ─── Derived State ───
 
-  const isDesktopRoute = DESKTOP_ROUTES.has(location.pathname)
+  const isDesktopRoute = SHELL_DESKTOP_ROUTES.has(location.pathname)
   const isImmersiveRoute = IMMERSIVE_ROUTES.has(location.pathname)
 
   useEffect(() => {
@@ -107,20 +117,6 @@ export function BijMantraDesktop({ children }: BijMantraDesktopProps) {
       [hasUnsavedWorkbenchChanges]
     )
   )
-
-  useEffect(() => {
-    if (!isDesktopRoute) {
-      setHasRestoredDesktopTool(false)
-      return
-    }
-
-    if (hasRestoredDesktopTool || desktopToolSurface || !lastDesktopToolSurface) {
-      return
-    }
-
-    openDesktopTool(lastDesktopToolSurface)
-    setHasRestoredDesktopTool(true)
-  }, [desktopToolSurface, hasRestoredDesktopTool, isDesktopRoute, lastDesktopToolSurface, openDesktopTool])
 
   useEffect(() => {
     if (!isDesktopRoute && desktopToolSurface) {
@@ -225,12 +221,14 @@ export function BijMantraDesktop({ children }: BijMantraDesktopProps) {
         {isDesktopRoute ? (
           // ─── Desktop Mode: Calm default stage with on-demand tools ───
           <div className="relative z-10 flex flex-1 min-h-0">
-            <DesktopWorkbench
-              surface={desktopToolSurface}
-              onClose={closeDesktopTool}
-              onOpenSurface={openDesktopTool}
-              onDirtyStateChange={setHasUnsavedWorkbenchChanges}
-            />
+            {desktopToolSurface ? (
+              <DesktopWorkbench
+                surface={desktopToolSurface}
+                onClose={closeDesktopTool}
+                onOpenSurface={openDesktopTool}
+                onDirtyStateChange={setHasUnsavedWorkbenchChanges}
+              />
+            ) : null}
           </div>
         ) : (
           // ─── App Mode: Sidebar + Content ───

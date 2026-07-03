@@ -69,7 +69,7 @@ describe('SystemBar', () => {
     expect(screen.queryByRole('button', { name: /desktop/i })).not.toBeInTheDocument()
   })
 
-  it('keeps home/logo button navigation to dashboard', () => {
+  it('keeps home/logo button navigation to the gateway desktop', () => {
     render(
       <MemoryRouter initialEntries={['/programs']}>
         <SystemBar />
@@ -77,7 +77,7 @@ describe('SystemBar', () => {
     )
 
     fireEvent.click(screen.getByTitle('Home'))
-    expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
+    expect(mockNavigate).toHaveBeenCalledWith('/gateway')
   })
 
   it('shows a logout button and signs out to login', () => {
@@ -93,18 +93,16 @@ describe('SystemBar', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/login')
   })
 
-  it('opens desktop tools from the system bar on desktop routes', () => {
+  it('does not expose workbench utilities directly from the system bar', () => {
     render(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/gateway']}>
         <SystemBar />
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'File System' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Editor' }))
-
-    expect(mockSystemState.openDesktopTool).toHaveBeenNthCalledWith(1, 'filesystem')
-    expect(mockSystemState.openDesktopTool).toHaveBeenNthCalledWith(2, 'editor')
+    expect(screen.queryByRole('button', { name: 'File System' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Editor' })).not.toBeInTheDocument()
+    expect(mockSystemState.openDesktopTool).not.toHaveBeenCalled()
   })
 
   it('updates the local time label at the next minute boundary', () => {

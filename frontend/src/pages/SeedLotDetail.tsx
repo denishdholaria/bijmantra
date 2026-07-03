@@ -12,9 +12,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import { SeedLotAdjustmentPanel } from '@/components/seedlots/SeedLotAdjustmentPanel'
 
 // Transaction interface
 interface Transaction {
@@ -156,8 +155,6 @@ export function SeedLotDetail() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [showDelete, setShowDelete] = useState(false)
-  const [transactionAmount, setTransactionAmount] = useState('')
-  const [transactionType, setTransactionType] = useState<'add' | 'remove' | null>(null)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['seedlot', id],
@@ -179,30 +176,6 @@ export function SeedLotDetail() {
       navigate('/seedlots')
     },
     onError: (err) => toast.error(err instanceof Error ? err.message : 'Delete failed'),
-  })
-
-  const transactionMutation = useMutation({
-    mutationFn: async (data: { amount: number; type: 'add' | 'remove' }) => {
-      const finalAmount = data.type === 'add' ? data.amount : -data.amount;
-      return apiClient.seedLotService.createSeedlotTransaction({
-        seedLotDbId: seedLot?.seedLotDbId,
-        amount: finalAmount,
-        transactionDescription: data.type === 'add' ? 'Manual stock addition' : 'Manual stock removal',
-        transactionTimestamp: new Date().toISOString(),
-        units: seedLot?.units || 'units'
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['seedlot', id] })
-      queryClient.invalidateQueries({ queryKey: ['seedlot-transactions', seedLot?.seedLotDbId] })
-      toast.success('Transaction record added')
-      setTransactionType(null)
-      setTransactionAmount('')
-    },
-    onError: (error) => {
-      console.error(error);
-      toast.error('Failed to record transaction');
-    }
   })
 
   const seedLot = data?.result
@@ -258,33 +231,17 @@ export function SeedLotDetail() {
               {stockStatus === 'good' ? '✓ In Stock' : stockStatus === 'low' ? '⚠ Low Stock' : '✗ Empty'}
             </Badge>
           </div>
-          <div className="flex gap-2 mt-4">
-            <Button size="sm" variant="outline" onClick={() => setTransactionType('add')}>➕ Add Stock</Button>
-            <Button size="sm" variant="outline" onClick={() => setTransactionType('remove')}>➖ Remove Stock</Button>
-          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Stock is read-only here. Use the guarded adjustment workflow below to record inventory changes.
+          </p>
         </CardContent>
       </Card>
 
-      {/* Transaction Dialog */}
-      {transactionType && (
-        <Card className="border-primary">
-          <CardHeader>
-            <CardTitle>{transactionType === 'add' ? '➕ Add Stock' : '➖ Remove Stock'}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Amount ({seedLot.units || 'units'})</Label>
-              <Input type="number" value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} placeholder="Enter amount..." />
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={() => transactionMutation.mutate({ amount: parseFloat(transactionAmount), type: transactionType })} disabled={!transactionAmount}>
-                Confirm {transactionType === 'add' ? 'Addition' : 'Removal'}
-              </Button>
-              <Button variant="outline" onClick={() => setTransactionType(null)}>Cancel</Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <SeedLotAdjustmentPanel
+        seedLotDbId={seedLot.seedLotDbId}
+        seedLotName={seedLot.seedLotName}
+        unit={seedLot.units}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Details */}

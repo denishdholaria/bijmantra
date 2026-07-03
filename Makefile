@@ -1,4 +1,4 @@
-.PHONY: help dev dev-redis dev-minio dev-meilisearch dev-all dev-auth dev-auth-down dev-auth-logs dev-beingbijmantra dev-beingbijmantra-down dev-beingbijmantra-logs start start-all stop restart logs clean build bij test test-backend test-backend-all test-backend-integration test-backend-integration-ci test-backend-integration-postgres test-backend-performance test-frontend test-frontend-watch lint format install dx-check reevu-gate overnight-plan update-state public-exclude-check control-surfaces-check devil-flags-check control-surfaces-ci ai-history-audit startup-doctor migration-doctor rls-drift-check pr-review-pack mem0-help mem0-status control-plane-completion-assist control-plane-auth-token update-graphify wasm check-wasm-sync test-wasm-props
+.PHONY: help dev dev-redis dev-minio dev-meilisearch dev-all dev-auth dev-auth-down dev-auth-logs dev-beingbijmantra dev-beingbijmantra-down dev-beingbijmantra-logs start start-all stop restart logs clean build bij rust-fmt rust-check rust-clippy rust-test rust-live-test rust-live-test-run rust-live-db-create rust-live-db-reset rust-live-db-head rust-live-db-migrate rust-live-db-scratch-upgrade rust-serve rust-inspect rust-doctor rust-services rust-probe rust-logs rust-plan-dev rust-plan-status rust-plan-stop rust-plan-logs rust-dev rust-stop rust-run-start rust-run-stop rust-run-restart rust-run-processes rust-build test test-backend test-backend-all test-backend-integration test-backend-integration-ci test-backend-integration-postgres test-backend-performance test-frontend test-frontend-watch lint format install dx-check reevu-gate overnight-plan update-state public-exclude-check control-surfaces-check devil-flags-check control-surfaces-ci ai-history-audit startup-doctor migration-doctor rls-drift-check pr-review-pack mem0-help mem0-status control-plane-completion-assist control-plane-auth-token update-graphify wasm check-wasm-sync test-wasm-props
 
 # ============================================
 # Container Runtime Configuration
@@ -13,6 +13,7 @@ BEINGBIJMANTRA_SURREAL_PORT ?= 8083
 export BEINGBIJMANTRA_SURREAL_PORT
 BACKEND_DEFAULT_TEST_MARKERS := not integration and not performance
 BACKEND_CI_INTEGRATION_TEST_MARKERS := integration and not postgres_integration
+RUST_PRODUCT_PACKAGES := -p bijmantra-core -p bijmantra-runtime -p bijmantra-server -p bijmantra-cli
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -185,6 +186,90 @@ build: ## Build production containers
 
 bij: ## Build the Bij developer CLI
 	$(MAKE) -C tools/bij bij
+
+rust-fmt: ## Check formatting for the Rust product runtime
+	cargo fmt --check
+
+rust-check: ## Type-check the Rust product runtime
+	cargo check $(RUST_PRODUCT_PACKAGES) --all-targets --locked
+
+rust-clippy: ## Run clippy for the Rust product runtime
+	cargo clippy $(RUST_PRODUCT_PACKAGES) --all-targets --locked -- -D warnings
+
+rust-test: ## Run Rust product runtime tests
+	cargo test $(RUST_PRODUCT_PACKAGES) --locked
+
+rust-live-test: ## Print the opt-in live Postgres BrAPI read test helper
+	cargo run -p bijmantra-cli -- live-test --workspace .
+
+rust-live-test-run: ## Run the opt-in live Postgres BrAPI read fixture
+	./scripts/rust_live_db.sh live-test
+
+rust-live-db-create: ## Create the guarded disposable Rust live test database
+	./scripts/rust_live_db.sh create
+
+rust-live-db-reset: ## Reset only the guarded disposable Rust live test database
+	./scripts/rust_live_db.sh reset
+
+rust-live-db-head: ## Print Alembic heads for live Rust DB troubleshooting
+	./scripts/rust_live_db.sh head
+
+rust-live-db-migrate: ## Upgrade the guarded disposable Rust live test database to Alembic head
+	./scripts/rust_live_db.sh migrate
+
+rust-live-db-scratch-upgrade: ## Reset and upgrade a guarded scratch Rust database to Alembic head
+	./scripts/rust_live_db.sh scratch-upgrade
+
+rust-build: ## Build the release BijMantra Rust CLI/API binary
+	cargo build --release --locked -p bijmantra-cli
+
+rust-serve: ## Run the Rust API server on localhost:8000
+	cargo run -p bijmantra-cli -- serve --workspace .
+
+rust-inspect: ## Print Rust product manifest and metrics
+	cargo run -p bijmantra-cli -- inspect --workspace .
+
+rust-doctor: ## Diagnose Rust product runtime prerequisites
+	cargo run -p bijmantra-cli -- doctor --workspace .
+
+rust-services: ## List Rust product runtime services
+	cargo run -p bijmantra-cli -- services --workspace .
+
+rust-probe: ## Probe core Rust product runtime services
+	cargo run -p bijmantra-cli -- probe --workspace .
+
+rust-logs: ## Print Rust product runtime log tail commands
+	cargo run -p bijmantra-cli -- logs --workspace . --group autonomy
+
+rust-plan-dev: ## Plan Rust product runtime startup actions
+	cargo run -p bijmantra-cli -- plan dev --workspace . --group infra
+
+rust-plan-status: ## Plan/probe Rust product runtime status
+	cargo run -p bijmantra-cli -- plan status --workspace . --group autonomy
+
+rust-plan-stop: ## Plan Rust product runtime shutdown actions
+	cargo run -p bijmantra-cli -- plan stop --workspace . --group infra
+
+rust-plan-logs: ## Plan Rust product runtime log commands
+	cargo run -p bijmantra-cli -- plan logs --workspace . --group autonomy
+
+rust-dev: ## Start the ordered Rust product runtime stack
+	cargo run -p bijmantra-cli -- dev --workspace . --group infra
+
+rust-stop: ## Stop the ordered Rust product runtime stack
+	cargo run -p bijmantra-cli -- stop --workspace . --group infra
+
+rust-run-start: ## Start one Rust product runtime service, e.g. make rust-run-start SERVICE=backend
+	cargo run -p bijmantra-cli -- run start $(SERVICE) --workspace .
+
+rust-run-stop: ## Stop one Rust product runtime service, e.g. make rust-run-stop SERVICE=backend
+	cargo run -p bijmantra-cli -- run stop $(SERVICE) --workspace .
+
+rust-run-restart: ## Restart one Rust product runtime service, e.g. make rust-run-restart SERVICE=backend
+	cargo run -p bijmantra-cli -- run restart $(SERVICE) --workspace .
+
+rust-run-processes: ## List Rust product runtime tracked processes
+	cargo run -p bijmantra-cli -- run processes --workspace .
 
 # ============================================
 # Testing Commands

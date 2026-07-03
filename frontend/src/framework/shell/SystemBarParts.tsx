@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Clock3, Bell, Wifi, WifiOff, LogOut, HardDrive, FileCode2 } from 'lucide-react'
+import { Clock3, Bell, Wifi, WifiOff, LogOut } from 'lucide-react'
 import { useNotificationStore } from '@/store/notificationStore'
 import { useReevuSidebarStore } from '@/store/reevuSidebarStore'
 import { ReevuLogo } from '@/components/ai/ReevuTrigger'
 import { UserMenu } from '@/components/UserMenu'
 import { cn } from '@/lib/utils'
-import { useSystemStore } from '@/store/systemStore'
 
 const timeFormatOptions: Intl.DateTimeFormatOptions = {
   hour: '2-digit',
@@ -46,15 +45,12 @@ export function SystemBarBrand({
 }
 
 export function SystemBarControls({
-  isDesktop,
   onLogout,
 }: {
-  isDesktop: boolean
   onLogout: () => void
 }) {
   return (
     <div className="text-shell-muted flex items-center gap-3 text-xs sm:gap-5">
-      {isDesktop && <DesktopToolButtons />}
       <OfflineIndicator />
       <NotificationBell />
       <LogoutButton onLogout={onLogout} />
@@ -65,58 +61,6 @@ export function SystemBarControls({
       <ReevuButton />
       <LocalTimeDisplay />
     </div>
-  )
-}
-
-function DesktopToolButtons() {
-  const activeSurface = useSystemStore((state) => state.desktopToolSurface)
-  const openDesktopTool = useSystemStore((state) => state.openDesktopTool)
-
-  return (
-    <div className="hidden items-center gap-2 lg:flex">
-      <DesktopToolButton
-        icon={HardDrive}
-        label="File System"
-        active={activeSurface === 'filesystem'}
-        onClick={() => openDesktopTool('filesystem')}
-      />
-      <DesktopToolButton
-        icon={FileCode2}
-        label="Editor"
-        active={activeSurface === 'editor'}
-        onClick={() => openDesktopTool('editor')}
-      />
-    </div>
-  )
-}
-
-function DesktopToolButton({
-  active,
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  active: boolean
-  icon: typeof HardDrive
-  label: string
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'border-shell inline-flex items-center gap-2 rounded-2xl border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-200',
-        active
-          ? 'bg-[linear-gradient(135deg,hsl(var(--primary)/0.14),hsl(var(--app-shell-radiance)/0.2))] text-shell shadow-[0_18px_32px_-22px_rgba(18,84,49,0.75)]'
-          : 'bg-[hsl(var(--app-shell-panel)/0.7)] text-shell-muted hover:bg-[hsl(var(--accent))] hover:text-shell'
-      )}
-      title={label}
-      aria-label={label}
-    >
-      <Icon className="h-3.5 w-3.5" />
-      <span>{label}</span>
-    </button>
   )
 }
 

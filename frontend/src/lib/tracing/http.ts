@@ -54,11 +54,59 @@ export function withTraceHeaders(headers?: HeadersInit, traceId?: string): Heade
   return mergedHeaders
 }
 
+function requestUrl(input: RequestInfo | URL): URL | null {
+  const base =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : typeof location !== 'undefined'
+        ? location.origin
+        : undefined
+
+  try {
+    if (typeof Request !== 'undefined' && input instanceof Request) {
+      return new URL(input.url, base)
+    }
+
+    return new URL(input.toString(), base)
+  } catch {
+    return null
+  }
+}
+
+export function shouldTraceFetchRequest(input: RequestInfo | URL): boolean {
+  if (typeof input === 'string' && (input.startsWith('/api/') || input.startsWith('/brapi/'))) {
+    return true
+  }
+
+  const url = requestUrl(input)
+
+  if (!url) {
+    return false
+  }
+
+  const currentOrigin =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : typeof location !== 'undefined'
+        ? location.origin
+        : undefined
+
+  if (currentOrigin && url.origin !== currentOrigin) {
+    return false
+  }
+
+  return url.pathname.startsWith('/api/') || url.pathname.startsWith('/brapi/')
+}
+
 function buildTracedFetchArgs(
   input: RequestInfo | URL,
   init?: RequestInit,
 ): [RequestInfo | URL, RequestInit | undefined] {
-  if (input instanceof Request) {
+  if (!shouldTraceFetchRequest(input)) {
+    return [input, init]
+  }
+
+  if (typeof Request !== 'undefined' && input instanceof Request) {
     const headers = withTraceHeaders(mergeHeaders(input.headers, init?.headers))
     return [new Request(input, { ...init, headers }), undefined]
   }
@@ -81,4 +129,8 @@ export function installFetchTracing(): void {
   }) as typeof globalThis.fetch
 
   fetchTracingInstalled = true
+}
+
+export function resetFetchTracingForTests(): void {
+  fetchTracingInstalled = false
 }

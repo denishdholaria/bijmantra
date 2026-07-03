@@ -417,7 +417,7 @@ export function Breadcrumbs({ className, showHome = true, maxItems = 4 }: Breadc
     const pathname = location.pathname;
     
     // Skip breadcrumbs for root paths
-    if (pathname === '/' || pathname === '/dashboard') {
+    if (pathname === '/' || pathname === '/gateway') {
       return [];
     }
     
@@ -430,7 +430,7 @@ export function Breadcrumbs({ className, showHome = true, maxItems = 4 }: Breadc
     } else if (showHome) {
       items.push({
         label: 'Home',
-        path: '/dashboard',
+        path: '/gateway',
       });
     }
     

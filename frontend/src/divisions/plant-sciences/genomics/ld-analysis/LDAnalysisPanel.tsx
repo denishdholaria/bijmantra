@@ -132,19 +132,21 @@ export function LDAnalysisPanel() {
         <CardContent>
           <div className={`grid grid-cols-1 gap-4 ${useServer ? 'md:grid-cols-5' : 'md:grid-cols-4'}`}>
             <div className="space-y-2">
-              <Label>Number of Samples</Label>
+              <Label htmlFor="ld-number-of-samples">Number of Samples</Label>
               <Input
+                id="ld-number-of-samples"
                 type="number" value={nSamples}
                 onChange={(e) => update({ nSamples: parseInt(e.target.value) || 100 })}
-                min={50} max={500} disabled={useServer}
+                min={50} max={500} disabled={useServer || isProcessing}
               />
             </div>
             <div className="space-y-2">
-              <Label>Number of Markers</Label>
+              <Label htmlFor="ld-number-of-markers">Number of Markers</Label>
               <Input
+                id="ld-number-of-markers"
                 type="number" value={nMarkers}
                 onChange={(e) => update({ nMarkers: parseInt(e.target.value) || 50 })}
-                min={10} max={100} disabled={useServer}
+                min={10} max={100} disabled={useServer || isProcessing}
               />
             </div>
             {useServer && (
@@ -155,16 +157,19 @@ export function LDAnalysisPanel() {
                   value={serverVariantSetId}
                   onChange={(e) => update({ serverVariantSetId: e.target.value })}
                   placeholder="Enter a VariantSetDbId"
+                  disabled={isProcessing}
                 />
               </div>
             )}
             <div className="space-y-2">
-              <Label>LD Threshold (r²)</Label>
+              <Label id="ld-threshold-label">LD Threshold (r²)</Label>
               <div className="pt-2">
                 <Slider
+                  aria-labelledby="ld-threshold-label"
                   value={[ldThreshold]}
                   onValueChange={([v]) => update({ ldThreshold: v })}
                   min={0.1} max={0.8} step={0.05}
+                  disabled={isProcessing}
                 />
                 <div className="text-center text-sm mt-1">{ldThreshold}</div>
               </div>
@@ -172,7 +177,7 @@ export function LDAnalysisPanel() {
             <div className="space-y-2 flex flex-col justify-end">
               {syntheticPreviewAvailable ? (
                 <div className="flex items-center space-x-2 mb-2">
-                  <Switch id="server-mode" checked={useServer} onCheckedChange={(v) => update({ useServer: v })} />
+                  <Switch id="server-mode" checked={useServer} onCheckedChange={(v) => update({ useServer: v })} disabled={isProcessing} />
                   <Label htmlFor="server-mode" className="text-xs flex items-center gap-1 cursor-pointer">
                     <Server className="h-3 w-3" /> Server-Side
                   </Label>
@@ -189,7 +194,7 @@ export function LDAnalysisPanel() {
             </div>
           </div>
           {analysisMessage && (
-            <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
+            <div role="alert" className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
               {analysisMessage}
             </div>
           )}

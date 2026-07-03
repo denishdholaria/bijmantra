@@ -112,18 +112,18 @@ export function MahasarthiDock({ onBrowserOpen, onSearchOpen, onNavigate, isMobi
         aria-label="Mobile navigation"
       >
         <div className="flex items-center justify-around h-16 px-2">
-          {/* Home/Dashboard - always first */}
+          {/* Gateway Home - always first */}
           <Link
-            to="/dashboard"
+            to="/gateway"
             onClick={onNavigate}
             className={cn(
               'flex flex-col items-center justify-center flex-1 py-2 rounded-lg transition-colors',
-              location.pathname === '/dashboard'
+              location.pathname === '/gateway' || location.pathname === '/'
                 ? 'text-emerald-400'
                 : 'text-slate-400 active:bg-white/5'
             )}
-            aria-label="Dashboard"
-            aria-current={location.pathname === '/dashboard' ? 'page' : undefined}
+            aria-label="Gateway Home"
+            aria-current={location.pathname === '/gateway' || location.pathname === '/' ? 'page' : undefined}
           >
             <Home className="w-5 h-5" strokeWidth={1.75} />
             <span className="text-[10px] mt-1 font-medium">Home</span>

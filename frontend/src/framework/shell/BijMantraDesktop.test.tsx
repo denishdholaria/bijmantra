@@ -14,11 +14,67 @@ const mockSystemState = {
   closeDesktopTool: vi.fn(),
 }
 
+const mockAuthState = {
+  isAuthenticated: false,
+  user: null as { organization_id: number } | null,
+}
+
+const mockCapabilityAccessState = {
+  loadForOrganization: vi.fn(),
+  reset: vi.fn(),
+}
+
+const mockDockState = {
+  recordVisit: vi.fn(),
+}
+
 let mockWorkbenchDirty = false
 let capturedBlocker: ((transition: { retry: () => void }) => void) | null = null
 
 vi.mock('@/store/systemStore', () => ({
   useSystemStore: (selector: (state: typeof mockSystemState) => unknown) => selector(mockSystemState),
+}))
+
+vi.mock('@/store/auth', () => ({
+  useAuthStore: (selector: (state: typeof mockAuthState) => unknown) => selector(mockAuthState),
+}))
+
+vi.mock('@/store/capabilityAccessStore', () => ({
+  useCapabilityAccessStore: (selector: (state: typeof mockCapabilityAccessState) => unknown) =>
+    selector(mockCapabilityAccessState),
+}))
+
+vi.mock('@/store/dockStore', () => ({
+  useDockStore: (selector: (state: typeof mockDockState) => unknown) => selector(mockDockState),
+}))
+
+vi.mock('@/framework/registry', () => ({
+  useDivisionRegistry: () => ({
+    activeDivisions: [
+      {
+        id: 'plant-sciences',
+        name: 'Plant Sciences',
+        description: 'Breeding, genomics, phenotyping, and field operations',
+        icon: 'Seedling',
+        route: '/programs',
+        requiredPermissions: [],
+        status: 'active',
+        version: '1.0.0',
+        sections: [
+          {
+            id: 'breeding',
+            name: 'Breeding',
+            route: '/programs',
+            icon: 'Wheat',
+            isAbsolute: true,
+            items: [
+              { id: 'programs', name: 'Programs', route: '/programs', isAbsolute: true },
+            ],
+          },
+        ],
+      },
+    ],
+  }),
 }))
 
 vi.mock('./SystemBar', async () => {
@@ -52,24 +108,26 @@ vi.mock('./ShellSubsystemBoundary', () => ({
   ShellSubsystemBoundary: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-vi.mock('./DesktopWorkbench', () => ({
-  DesktopWorkbench: ({
-    surface,
-    onDirtyStateChange,
-  }: {
-    surface: string | null
-    onDirtyStateChange?: (isDirty: boolean) => void
-  }) => {
-    const React = require('react') as typeof import('react')
+vi.mock('./DesktopWorkbench', async () => {
+  const React = await vi.importActual<typeof import('react')>('react')
 
-    React.useEffect(() => {
-      onDirtyStateChange?.(mockWorkbenchDirty)
-      return () => onDirtyStateChange?.(false)
-    }, [onDirtyStateChange])
+  return {
+    DesktopWorkbench: ({
+      surface,
+      onDirtyStateChange,
+    }: {
+      surface: string | null
+      onDirtyStateChange?: (isDirty: boolean) => void
+    }) => {
+      React.useEffect(() => {
+        onDirtyStateChange?.(mockWorkbenchDirty)
+        return () => onDirtyStateChange?.(false)
+      }, [onDirtyStateChange])
 
-    return <div data-testid="desktop-workbench">{surface}</div>
-  },
-}))
+      return <div data-testid="desktop-workbench">{surface}</div>
+    },
+  }
+})
 
 vi.mock('@/components/navigation/MahasarthiStrata', () => ({
   MahasarthiStrata: () => null,
@@ -90,6 +148,11 @@ afterEach(() => {
   mockSystemState.setStrataOpen.mockReset()
   mockSystemState.openDesktopTool.mockReset()
   mockSystemState.closeDesktopTool.mockReset()
+  mockAuthState.isAuthenticated = false
+  mockAuthState.user = null
+  mockCapabilityAccessState.loadForOrganization.mockReset()
+  mockCapabilityAccessState.reset.mockReset()
+  mockDockState.recordVisit.mockReset()
 })
 
 describe('BijMantraDesktop', () => {
@@ -101,7 +164,7 @@ describe('BijMantraDesktop', () => {
 
   it('closes the desktop tool surface when leaving desktop routes', async () => {
     render(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/gateway']}>
         <BijMantraDesktop />
         <LeaveDesktopButton />
       </MemoryRouter>
@@ -116,9 +179,58 @@ describe('BijMantraDesktop', () => {
     })
   })
 
-  it('restores the remembered desktop tool when the desktop opens without an active surface', async () => {
+  it('shows a clean desktop wallpaper when no desktop tool is active', async () => {
     mockSystemState.desktopToolSurface = null
     mockSystemState.lastDesktopToolSurface = 'filesystem'
+
+    render(
+      <MemoryRouter initialEntries={['/gateway']}>
+        <BijMantraDesktop />
+      </MemoryRouter>
+    )
+
+    expect(mockSystemState.openDesktopTool).not.toHaveBeenCalled()
+    expect(screen.getByText('BijMantra')).toBeInTheDocument()
+    expect(screen.getByText('Agricultural Intelligence System')).toBeInTheDocument()
+    expect(screen.queryByTestId('desktop-workbench')).not.toBeInTheDocument()
+  })
+
+  it('renders dashboard content as an app route instead of the desktop workbench', () => {
+    render(
+      <MemoryRouter initialEntries={['/dashboard']}>
+        <BijMantraDesktop>
+          <div data-testid="dashboard-app">Dashboard app</div>
+        </BijMantraDesktop>
+      </MemoryRouter>
+    )
+
+    expect(screen.getByTestId('dashboard-app')).toBeInTheDocument()
+    expect(screen.getByTestId('shell-sidebar')).toBeInTheDocument()
+    expect(screen.queryByTestId('desktop-workbench')).not.toBeInTheDocument()
+  })
+
+  it('records app route visits from the active shell for recent context', async () => {
+    render(
+      <MemoryRouter initialEntries={['/programs']}>
+        <BijMantraDesktop>
+          <div>Programs app</div>
+        </BijMantraDesktop>
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(mockDockState.recordVisit).toHaveBeenCalledWith({
+        id: 'plant-sciences-breeding-programs',
+        path: '/programs',
+        label: 'Programs',
+        icon: 'Wheat',
+      })
+    })
+  })
+
+  it('loads capability access for the authenticated organization', async () => {
+    mockAuthState.isAuthenticated = true
+    mockAuthState.user = { organization_id: 7 }
 
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
@@ -127,7 +239,20 @@ describe('BijMantraDesktop', () => {
     )
 
     await waitFor(() => {
-      expect(mockSystemState.openDesktopTool).toHaveBeenCalledWith('filesystem')
+      expect(mockCapabilityAccessState.loadForOrganization).toHaveBeenCalledWith(7)
+    })
+    expect(mockCapabilityAccessState.reset).not.toHaveBeenCalled()
+  })
+
+  it('resets capability access when the shell has no authenticated organization', async () => {
+    render(
+      <MemoryRouter initialEntries={['/dashboard']}>
+        <BijMantraDesktop />
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(mockCapabilityAccessState.reset).toHaveBeenCalled()
     })
   })
 
@@ -137,7 +262,7 @@ describe('BijMantraDesktop', () => {
     const retrySpy = vi.fn()
 
     render(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/gateway']}>
         <UNSAFE_NavigationContext.Provider
           value={{
             basename: '/',

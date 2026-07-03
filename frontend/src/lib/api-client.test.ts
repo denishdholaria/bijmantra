@@ -82,6 +82,16 @@ describe('APIClient', () => {
     })
   })
 
+  describe('service getters', () => {
+    it('should lazily expose knowledge capability services', async () => {
+      vi.resetModules()
+      const { apiClient } = await import('./api-client')
+
+      expect(apiClient.knowledgeGraphService).toBe(apiClient.knowledgeGraphService)
+      expect(apiClient.researchAssetService).toBe(apiClient.researchAssetService)
+    })
+  })
+
   describe('BrAPI response types', () => {
     it('should have correct BrAPIResponse structure', async () => {
       const mockResponse = {

@@ -9,10 +9,17 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useDivisionRegistry } from '@/framework/registry';
-import { useActiveWorkspace, useWorkspaceStore } from '@/store/workspaceStore';
+import {
+  evaluateCapabilityNavigationNode,
+  useDivisionRegistry,
+  type CapabilityAccessContext,
+  type Division,
+  type DivisionSection,
+} from '@/framework/registry';
 import { useDockStore } from '@/store/dockStore';
+import { useCapabilityAccessStore } from '@/store/capabilityAccessStore';
 import { futureDivisions } from '@/framework/registry/futureDivisions';
+import { SHELL_DESKTOP_ROUTES } from '@/framework/shell/shellNavigationResolver';
 import { StrataFolder, type StrataItem } from './StrataFolder';
 import {
   X, Search, ExternalLink,
@@ -20,7 +27,7 @@ import {
   Building2, Globe, Sun, Radio, Rocket, Wrench, Settings,
   BookOpen, Home, Shield, Package, Truck, FileText,
   Mountain, Droplets, TrendingUp, Leaf, ClipboardList, Bot, Fish, Beef,
-  LayoutGrid, HardDrive, FileCode2
+  LayoutGrid, HardDrive, FileCode2, Network, Database, Boxes
 } from 'lucide-react';
 import { useSystemStore } from '@/store/systemStore';
 
@@ -62,6 +69,9 @@ const divisionIcons: Record<string, typeof Sprout> = {
   'Bot': Bot,
   'Fish': Fish,
   'Beef': Beef,
+  'Network': Network,
+  'Database': Database,
+  'Boxes': Boxes,
 };
 
 function getIcon(iconName: string): typeof Sprout {
@@ -86,6 +96,72 @@ type NavigationLevel = {
   icon?: typeof Sprout;
 };
 
+function resolveDivisionRoute(divisionRoute: string, route: string, isAbsolute?: boolean): string {
+  return isAbsolute ? route : `${divisionRoute}${route}`;
+}
+
+function isCapabilityPathAllowed(
+  context: CapabilityAccessContext,
+  node: {
+    id: string;
+    label: string;
+    path: string;
+    requiredPermissions?: string[];
+  },
+): boolean {
+  return evaluateCapabilityNavigationNode(node, context).allowed;
+}
+
+function filterDivisionByCapabilityAccess(
+  division: Division,
+  context: CapabilityAccessContext,
+): Division | null {
+  if (!isCapabilityPathAllowed(context, {
+    id: division.id,
+    label: division.name,
+    path: division.route,
+    requiredPermissions: division.requiredPermissions,
+  })) {
+    return null;
+  }
+
+  const sections = division.sections?.flatMap((section): DivisionSection[] => {
+    const sectionPath = resolveDivisionRoute(division.route, section.route, section.isAbsolute);
+
+    if (section.items) {
+      const items = section.items.filter(item => {
+        const itemPath = resolveDivisionRoute(division.route, item.route, item.isAbsolute);
+        return isCapabilityPathAllowed(context, {
+          id: item.id,
+          label: item.name,
+          path: itemPath,
+        });
+      });
+
+      if (items.length === 0) {
+        return [];
+      }
+
+      return [{ ...section, items }];
+    }
+
+    if (!isCapabilityPathAllowed(context, {
+      id: section.id,
+      label: section.name,
+      path: sectionPath,
+    })) {
+      return [];
+    }
+
+    return [section];
+  });
+
+  return {
+    ...division,
+    sections,
+  };
+}
+
 // ============================================================================
 // Component
 // ============================================================================
@@ -94,13 +170,22 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
   const navigate = useNavigate();
   const location = useLocation();
   const { navigableDivisions } = useDivisionRegistry();
+  const capabilityAccessContext = useCapabilityAccessStore((state) => state.accessContext);
   const { pinnedItems, recentItems } = useDockStore();
   const openDesktopTool = useSystemStore((state) => state.openDesktopTool);
-  const isDesktopRoute = ['/', '/gateway', '/dashboard'].includes(location.pathname);
+  const isDesktopRoute = SHELL_DESKTOP_ROUTES.has(location.pathname);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [navigationStack, setNavigationStack] = useState<NavigationLevel[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const accessibleNavigableDivisions = useMemo(
+    () => navigableDivisions.flatMap(division => {
+      const filtered = filterDivisionByCapabilityAccess(division, capabilityAccessContext);
+      return filtered ? [filtered] : [];
+    }),
+    [capabilityAccessContext, navigableDivisions],
+  );
 
   // Focus search input when opened
   useEffect(() => {
@@ -139,7 +224,7 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
   // 1. Build Root Items (Divisions)
   const rootItems = useMemo<StrataItem[]>(() => {
     // Basic Active Divisions
-    const items: StrataItem[] = navigableDivisions.map(div => ({
+    const items: StrataItem[] = accessibleNavigableDivisions.map(div => ({
       id: div.id,
       label: div.name,
       icon: getIcon(div.icon),
@@ -162,7 +247,7 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
     }));
 
     return [...items, ...planned];
-  }, [navigableDivisions]);
+  }, [accessibleNavigableDivisions]);
 
   // 2. Prepare Current View Data
   const currentView = useMemo(() => {
@@ -186,7 +271,7 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
     // Flatten everything for search
     const allSearchable: StrataItem[] = [];
 
-    navigableDivisions.forEach(div => {
+    accessibleNavigableDivisions.forEach(div => {
       // Add division itself
       allSearchable.push({
         id: div.id,
@@ -242,7 +327,7 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
       item.label.toLowerCase().includes(q) ||
       item.description?.toLowerCase().includes(q)
     ).slice(0, 20); // Limit results
-  }, [searchQuery, navigableDivisions]);
+  }, [searchQuery, accessibleNavigableDivisions]);
 
   // Action Handlers
   const handleItemClick = (item: StrataItem) => {
@@ -257,7 +342,7 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
 
     if (item.type === 'folder') {
       // Find the division or section data to push to stack
-      const division = navigableDivisions.find(d => d.id === item.id);
+      const division = accessibleNavigableDivisions.find(d => d.id === item.id);
       if (division) {
         // Entered a Division -> Show Sections
         const sectionItems: StrataItem[] = division.sections?.map(sec => ({
@@ -282,7 +367,7 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
       // Entered a Section (Sub-folder)
       // Current level = division?
       const currentLevelId = navigationStack[navigationStack.length - 1]?.id;
-      const currentDivision = navigableDivisions.find(d => d.id === currentLevelId);
+      const currentDivision = accessibleNavigableDivisions.find(d => d.id === currentLevelId);
 
       if (currentDivision) {
         const section = currentDivision.sections?.find(s => s.id === item.id);
@@ -375,10 +460,10 @@ export function MahasarthiStrata({ isOpen, onClose, onNavigate, isMobile = false
               <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400">
-                    Desktop Tools
+                    Workbench Utilities
                   </div>
                   <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                    Launch File System or Editor.
+                    Open local file and document tools when the task needs them.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">

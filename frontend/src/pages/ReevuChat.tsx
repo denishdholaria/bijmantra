@@ -2,13 +2,13 @@
  * ReevuChat — Full-page REEVU Chat
  */
 
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ReevuLogo } from '@/components/ai/ReevuTrigger'
-import { ArrowLeft, Trash2, Settings, ArrowUp, Mic, MicOff, KeyRound, FlaskConical, Dna, BarChart3, TrendingUp, Wheat, Microscope, Info } from 'lucide-react'
+import { ArrowLeft, Trash2, Settings, KeyRound, FlaskConical, Dna, BarChart3, TrendingUp, Wheat, Microscope, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useReevuChat, ReevuMessage } from '@/hooks/useReevuChat'
 import { ProposalCard } from '@/components/ai/ProposalCard'
@@ -17,6 +17,11 @@ import { UsageFuelGauge } from '@/components/ai/UsageFuelGauge'
 import EvidenceTraceCard from '@/components/ai/EvidenceTraceCard'
 import ReevuExecutionTraceCard from '@/components/ai/ReevuExecutionTraceCard'
 import ReevuSafeFailureCard from '@/components/ai/ReevuSafeFailureCard'
+import { ReevuComposer } from '@/components/ai/ReevuComposer'
+import { ReevuMessageContextPills } from '@/components/ai/ReevuMessageContextPills'
+import ReevuRunTimelineCard from '@/components/ai/ReevuRunTimelineCard'
+import ReevuWorkbenchPanel from '@/components/ai/ReevuWorkbenchPanel'
+import { buildReevuWorkbenchState, persistReevuAdvisoryCaseFile } from '@/lib/reevu-workbench'
 
 export function ReevuChat() {
 	const navigate = useNavigate()
@@ -26,30 +31,29 @@ export function ReevuChat() {
 		input,
 		setInput,
 		isProcessing,
+		agentMode,
+		setAgentMode,
+		pendingAttachments,
 		effectiveBackend,
 		messagesEndRef,
 		sendMessage,
 		clearHistory,
+		addAttachments,
+		removeAttachment,
 		voice
 	} = useReevuChat()
 
 	const [reviewProposalId, setReviewProposalId] = React.useState<number | null>(null)
 	const inputRef = useRef<HTMLTextAreaElement>(null)
+	const workbenchState = React.useMemo(() => buildReevuWorkbenchState(messages), [messages])
 
-	useEffect(() => {
-		if (inputRef.current) {
-			inputRef.current.style.height = 'auto'
-			inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 160) + 'px'
+	React.useEffect(() => {
+		try {
+			persistReevuAdvisoryCaseFile(workbenchState.caseFile)
+		} catch {
+			// Local persistence is a convenience layer; REEVU should keep running if storage is unavailable.
 		}
-	}, [input])
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault()
-			sendMessage()
-			if (inputRef.current) inputRef.current.style.height = 'auto'
-		}
-	}
+	}, [workbenchState.caseFile])
 
 	const quickActions = [
 		{ icon: FlaskConical, label: 'Active Trials', action: 'Show me active trials' },
@@ -121,53 +125,61 @@ export function ReevuChat() {
 				</button>
 			)}
 
-			<div className="flex-1 overflow-y-auto overscroll-contain">
-				{messages.length === 0 ? (
-					<div className="flex flex-col items-center justify-center h-full px-6 py-12">
-						<div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center mb-6">
-							<ReevuLogo className="w-10 h-10 opacity-60" />
-						</div>
-						<h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-1">Namaste! I'm REEVU</h2>
-						<p className="text-[10px] tracking-[0.15em] uppercase text-slate-400 dark:text-slate-500 mb-3">Reason · Evidence · Evaluation · Validation · Unit</p>
-						<p className="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center max-w-md">Your scientific breeding analysis system. Ask about trials, germplasm, genetic data, or breeding recommendations.</p>
-						<div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-lg w-full">
-							{quickActions.map((a) => (
-								<button
-									key={a.label}
-									onClick={() => { setInput(a.action); inputRef.current?.focus() }}
-									className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-left text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
-								>
-									<a.icon className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
-									<span className="truncate">{a.label}</span>
-								</button>
-							))}
-						</div>
-					</div>
-				) : (
-					<div className="max-w-3xl mx-auto px-4 py-4 space-y-4">
-						{messages.map((message) => (
-							<MessageBubble
-								key={message.id}
-								message={message}
-								onReview={(id) => setReviewProposalId(id)}
-							/>
-						))}
-						{isProcessing && (
-							<div className="flex items-start gap-2.5">
-								<div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/40 flex-shrink-0 mt-0.5">
-									<ReevuLogo className="h-4 w-4" />
+			<div className="min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.08),_transparent_30%),linear-gradient(180deg,_rgba(248,250,252,0.86),_rgba(255,255,255,0.96))] dark:bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.14),_transparent_30%),linear-gradient(180deg,_rgba(2,6,23,0.98),_rgba(15,23,42,0.98))]">
+				<div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
+					<section className="min-h-0 overflow-y-auto overscroll-contain">
+						{messages.length === 0 ? (
+							<div className="flex min-h-full flex-col items-center justify-center px-6 py-12">
+								<div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center mb-6">
+									<ReevuLogo className="w-10 h-10 opacity-60" />
 								</div>
-								<div className="flex items-center gap-1.5 pt-2">
-									<span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-[pulse_1.4s_ease-in-out_infinite]" />
-									<span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-[pulse_1.4s_ease-in-out_0.2s_infinite]" />
-									<span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-[pulse_1.4s_ease-in-out_0.4s_infinite]" />
-									<span className="text-xs text-slate-400 ml-1">Thinking…</span>
+								<h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-1">REEVU Agentic Workspace</h2>
+								<p className="text-[10px] tracking-[0.15em] uppercase text-slate-400 dark:text-slate-500 mb-3">Reason · Evidence · Evaluation · Validation · Unit</p>
+								<p className="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center max-w-md">Ask a question, attach local context, or switch modes when you want REEVU to research, compare, or validate a decision path.</p>
+								<div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-lg w-full">
+									{quickActions.map((a) => (
+										<button
+											key={a.label}
+											onClick={() => { setInput(a.action); inputRef.current?.focus() }}
+											className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-left text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+										>
+											<a.icon className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
+											<span className="truncate">{a.label}</span>
+										</button>
+									))}
 								</div>
 							</div>
+						) : (
+							<div className="max-w-3xl mx-auto px-4 py-4 space-y-4">
+								{messages.map((message) => (
+									<MessageBubble
+										key={message.id}
+										message={message}
+										onReview={(id) => setReviewProposalId(id)}
+									/>
+								))}
+								{isProcessing && (
+									<div className="flex items-start gap-2.5">
+										<div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/40 flex-shrink-0 mt-0.5">
+											<ReevuLogo className="h-4 w-4" />
+										</div>
+										<div className="flex items-center gap-1.5 pt-2">
+											<span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-[pulse_1.4s_ease-in-out_infinite]" />
+											<span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-[pulse_1.4s_ease-in-out_0.2s_infinite]" />
+											<span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-[pulse_1.4s_ease-in-out_0.4s_infinite]" />
+											<span className="text-xs text-slate-400 ml-1">Thinking…</span>
+										</div>
+									</div>
+								)}
+								<div ref={messagesEndRef} />
+							</div>
 						)}
-						<div ref={messagesEndRef} />
-					</div>
-				)}
+					</section>
+
+					<aside className="hidden min-h-0 overflow-y-auto border-l border-slate-200/80 bg-white/40 dark:border-slate-800/80 dark:bg-slate-950/40 lg:block">
+						<ReevuWorkbenchPanel state={workbenchState} />
+					</aside>
+				</div>
 			</div>
 
 			{messages.length > 0 && (
@@ -196,56 +208,19 @@ export function ReevuChat() {
 
 			<div className="px-4 pb-4 pt-2 bg-white dark:bg-slate-950">
 				<div className="max-w-3xl mx-auto">
-					<div className={cn(
-						'flex items-end gap-2 rounded-xl border bg-slate-50 dark:bg-slate-900 px-3 py-2.5 transition-colors',
-						'border-slate-200 dark:border-slate-800',
-						'focus-within:border-emerald-300 dark:focus-within:border-emerald-800 focus-within:ring-1 focus-within:ring-emerald-200/50 dark:focus-within:ring-emerald-900/50'
-					)}>
-						<button
-							onClick={voice.isListening ? voice.stopListening : voice.startListening}
-							className={cn(
-								'flex-shrink-0 p-1.5 rounded-lg transition-all',
-								voice.isListening
-									? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
-									: 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-300 dark:hover:bg-slate-800'
-							)}
-							title={voice.isListening ? 'Stop' : 'Voice input'}
-						>
-							{voice.isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-						</button>
-
-						<textarea
-							ref={inputRef}
-							value={input}
-							onChange={(e) => setInput(e.target.value)}
-							onKeyDown={handleKeyDown}
-							placeholder={voice.isListening ? 'Listening…' : 'Ask REEVU anything about plant breeding…'}
-							rows={1}
-							className="flex-1 bg-transparent text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 resize-none focus:outline-none leading-5 py-1 max-h-[160px]"
-						/>
-
-						<button
-							onClick={() => { sendMessage(); if (inputRef.current) inputRef.current.style.height = 'auto' }}
-							disabled={!input.trim() || isProcessing}
-							title="Send message to REEVU"
-							aria-label="Send message to REEVU"
-							className={cn(
-								'flex-shrink-0 p-1.5 rounded-lg transition-all',
-								input.trim() && !isProcessing
-									? 'text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm'
-									: 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
-							)}
-						>
-							<ArrowUp className="h-4 w-4" />
-						</button>
-					</div>
-					<div className="flex justify-center mt-1.5 h-4">
-						{voice.error ? (
-							<p className="text-[10px] text-red-500">{voice.error}</p>
-						) : (
-							<p className="text-[10px] text-slate-400 dark:text-slate-600">Enter to send · Shift+Enter for new line</p>
-						)}
-					</div>
+					<ReevuComposer
+						ref={inputRef}
+						input={input}
+						setInput={setInput}
+						isProcessing={isProcessing}
+						onSend={sendMessage}
+						voice={voice}
+						agentMode={agentMode}
+						onAgentModeChange={setAgentMode}
+						attachments={pendingAttachments}
+						onAttachFiles={addAttachments}
+						onRemoveAttachment={removeAttachment}
+					/>
 				</div>
 			</div>
 
@@ -267,6 +242,7 @@ function MessageBubble({ message, onReview }: { message: ReevuMessage, onReview?
 			<div className="flex justify-end">
 				<div className="max-w-[75%] rounded-2xl rounded-br-md px-4 py-3 bg-emerald-600 text-white shadow-sm">
 					<p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+					<ReevuMessageContextPills metadata={message.metadata} />
 					<span className="text-[9px] opacity-60 block mt-1.5 text-right">
 						{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
 					</span>
@@ -282,6 +258,9 @@ function MessageBubble({ message, onReview }: { message: ReevuMessage, onReview?
 			</div>
 			<div className="min-w-0 flex-1">
 				<div className="reevu-markdown text-sm leading-relaxed text-slate-800 dark:text-slate-200">
+					<div className="lg:hidden">
+						<ReevuRunTimelineCard events={message.metadata?.run_events} />
+					</div>
 					<ReactMarkdown
 						remarkPlugins={[remarkGfm]}
 						components={{

@@ -28,6 +28,7 @@ export interface DivisionNavItem {
   route: string;
   icon?: string;
   isAbsolute?: boolean;
+  requiredDataScopes?: string[];
 }
 
 /**
@@ -42,6 +43,7 @@ export interface DivisionSection {
   description?: string;
   /** If true, route is absolute (e.g., '/programs'), otherwise relative to division route */
   isAbsolute?: boolean;
+  requiredDataScopes?: string[];
   /** Nested items within this section (for subgrouping) */
   items?: DivisionNavItem[];
   /** Domains this section belongs to */
@@ -64,6 +66,7 @@ export interface Division {
   
   // Access Control
   requiredPermissions: string[];
+  requiredDataScopes?: string[];
   featureFlag?: string;
   
   // Metadata

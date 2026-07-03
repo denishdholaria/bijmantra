@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import type { RouteObject } from 'react-router-dom'
 
 import {
   adminRoutes,
@@ -72,6 +71,9 @@ describe('Route accessibility smoke checks', () => {
       '/seed-operations/samples',
       '/seed-operations/quality-gate',
       '/seed-operations/lots',
+      '/knowledge-graph',
+      '/knowledge/research-assets',
+      '/data/federated-assets',
       '/knowledge/training',
       '/knowledge/forums',
       '/performance-ranking',

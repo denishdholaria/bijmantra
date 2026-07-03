@@ -1,5 +1,9 @@
 import os
+from pathlib import Path
+
 from playwright.sync_api import Page, expect, sync_playwright
+
+OUTPUT_DIR = Path(os.environ.get("BIJMANTRA_VERIFY_OUTPUT_DIR", "verification"))
 
 def test_gene_bank_dashboard(page: Page):
     # Capture console logs
@@ -79,7 +83,7 @@ def test_gene_bank_dashboard(page: Page):
     ))
 
     print("Navigating to test dashboard...")
-        page.goto("http://localhost:5656/genebank-dashboard-test")
+    page.goto("http://localhost:5656/genebank-dashboard-test")
 
     # Dump body text
     print(f"Page content: {page.content()}")
@@ -98,8 +102,8 @@ def test_gene_bank_dashboard(page: Page):
     # Assertions
     expect(page.get_by_text("Gene Bank Dashboard")).to_be_visible()
 
-    os.makedirs("/home/jules/verification", exist_ok=True)
-    page.screenshot(path="/home/jules/verification/gene_bank_dashboard.png")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    page.screenshot(path=str(OUTPUT_DIR / "gene_bank_dashboard.png"))
     print("Verification successful!")
 
 if __name__ == "__main__":
@@ -111,6 +115,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error: {e}")
             if 'page' in locals():
-                page.screenshot(path="/home/jules/verification/error.png")
+                OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+                page.screenshot(path=str(OUTPUT_DIR / "error.png"))
         finally:
             browser.close()

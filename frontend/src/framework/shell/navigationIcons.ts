@@ -50,6 +50,9 @@ import {
   Eye,
   Grid3X3,
   Cpu,
+  Network,
+  Database,
+  Boxes,
   Bell,
   Wifi,
   HelpCircle,
@@ -155,6 +158,9 @@ export const navigationIcons: Record<string, LucideIcon> = {
 
   // Technology
   Cpu: Cpu,
+  Network: Network,
+  Database: Database,
+  Boxes: Boxes,
   Bell: Bell,
   Wifi: Wifi,
   HardDrive: HardDrive,

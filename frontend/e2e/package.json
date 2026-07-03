@@ -11,6 +11,7 @@
     "test:debug": "playwright test --debug",
     "test:smoke": "playwright test tests/smoke/",
     "test:auth": "playwright test tests/auth/",
+    "test:auth:keycloak": "E2E_SKIP_GLOBAL_AUTH_SETUP=true VITE_AUTH_PROVIDER=${VITE_AUTH_PROVIDER:-keycloak} VITE_KEYCLOAK_URL=${VITE_KEYCLOAK_URL:-http://localhost:8084} VITE_KEYCLOAK_REALM=${VITE_KEYCLOAK_REALM:-bijmantra} VITE_KEYCLOAK_CLIENT_ID=${VITE_KEYCLOAK_CLIENT_ID:-bijmantra-web} playwright test tests/auth/keycloak-login.spec.ts --project=keycloak-auth",
     "test:crud": "playwright test tests/crud/",
     "test:pages": "playwright test tests/pages/",
     "test:accessibility": "playwright test --project=accessibility",

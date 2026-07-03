@@ -42,6 +42,8 @@ describe('LDAnalysisPanel', () => {
     hweViolations: [],
     wasmReady: true,
     wasmVersion: '1.0.0',
+    wasmLoading: false,
+    wasmError: null,
     syntheticPreviewAvailable: false,
     update: mockUpdate,
     runAnalysis: mockRunAnalysis,
@@ -50,6 +52,13 @@ describe('LDAnalysisPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
+  function selectTab(name: RegExp) {
+    const tab = screen.getByRole('tab', { name });
+    fireEvent.mouseDown(tab, { button: 0, ctrlKey: false });
+    fireEvent.mouseUp(tab);
+    fireEvent.click(tab);
+  }
 
   describe('Loading State', () => {
     it('should display loading spinner when isProcessing is true', () => {
@@ -110,14 +119,12 @@ describe('LDAnalysisPanel', () => {
       render(<LDAnalysisPanel />);
 
       // Check LD Matrix tab
-      const matrixTab = screen.getByRole('tab', { name: /ld matrix/i });
-      fireEvent.click(matrixTab);
+      selectTab(/ld matrix/i);
       
       expect(screen.getByText(/run analysis to generate ld matrix/i)).toBeInTheDocument();
 
       // Check LD Decay tab
-      const decayTab = screen.getByRole('tab', { name: /ld decay/i });
-      fireEvent.click(decayTab);
+      selectTab(/ld decay/i);
       
       expect(screen.getByText(/run analysis to see ld decay pattern/i)).toBeInTheDocument();
     });
@@ -133,7 +140,7 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      expect(screen.getByText('0')).toBeInTheDocument(); // Markers count
+      expect(screen.getAllByText('0').length).toBeGreaterThanOrEqual(3);
     });
   });
 
@@ -148,9 +155,10 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      const alert = screen.getByText(errorMessage);
+      const alert = screen.getByRole('alert');
       expect(alert).toBeInTheDocument();
-      expect(alert.parentElement).toHaveClass('border-amber-300');
+      expect(alert).toHaveTextContent(errorMessage);
+      expect(alert).toHaveClass('border-amber-300');
     });
 
     it('should display validation error when variant set ID is missing', () => {
@@ -213,8 +221,7 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      const matrixTab = screen.getByRole('tab', { name: /ld matrix/i });
-      fireEvent.click(matrixTab);
+      selectTab(/ld matrix/i);
 
       // Check that heatmap is rendered (grid of colored cells)
       const heatmapCells = document.querySelectorAll('.w-3.h-3.rounded-sm');
@@ -229,8 +236,7 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      const decayTab = screen.getByRole('tab', { name: /ld decay/i });
-      fireEvent.click(decayTab);
+      selectTab(/ld decay/i);
 
       expect(screen.getByTestId('line-chart')).toBeInTheDocument();
       expect(screen.getByText(/based on 45 pairwise comparisons/i)).toBeInTheDocument();
@@ -246,7 +252,7 @@ describe('LDAnalysisPanel', () => {
 
       // LD Pairs tab is default
       expect(screen.getByText('M1')).toBeInTheDocument();
-      expect(screen.getByText('M2')).toBeInTheDocument();
+      expect(screen.getAllByText('M2').length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText('0.850')).toBeInTheDocument();
       expect(screen.getByText('0.920')).toBeInTheDocument();
     });
@@ -260,8 +266,7 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      const hweTab = screen.getByRole('tab', { name: /hwe tests/i });
-      fireEvent.click(hweTab);
+      selectTab(/hwe tests/i);
 
       expect(screen.getByText('M1')).toBeInTheDocument();
       expect(screen.getByText('M2')).toBeInTheDocument();
@@ -281,10 +286,10 @@ describe('LDAnalysisPanel', () => {
       render(<LDAnalysisPanel />);
 
       expect(screen.getByText('50')).toBeInTheDocument(); // Markers
-      expect(screen.getByText('1')).toBeInTheDocument(); // High LD Pairs and HWE Violations
+      expect(screen.getAllByText('1').length).toBeGreaterThanOrEqual(2); // High LD Pairs and HWE Violations
       
       // Mean r² calculation: (0.85 + 0.65 + 0.45) / 3 = 0.650
-      expect(screen.getByText('0.650')).toBeInTheDocument();
+      expect(screen.getAllByText('0.650').length).toBeGreaterThanOrEqual(1);
     });
 
     it('should show high LD badge for pairs above threshold', () => {
@@ -329,8 +334,8 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      const slider = screen.getByRole('slider');
-      fireEvent.click(slider);
+      const slider = screen.getByRole('slider', { name: /ld threshold/i });
+      fireEvent.keyDown(slider, { key: 'ArrowRight', code: 'ArrowRight' });
 
       // Slider interaction will trigger update
       expect(mockUpdate).toHaveBeenCalled();
@@ -428,7 +433,7 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      expect(screen.getByText(/⚡ WebAssembly v1.2.3/i)).toBeInTheDocument();
+      expect(screen.getByText(/WASM v1.2.3/i)).toBeInTheDocument();
     });
 
     it('should show loading badge when wasm is not ready', () => {
@@ -439,7 +444,7 @@ describe('LDAnalysisPanel', () => {
 
       render(<LDAnalysisPanel />);
 
-      expect(screen.getByText(/loading\.\.\./i)).toBeInTheDocument();
+      expect(screen.getByText(/Engine Not Available/i)).toBeInTheDocument();
     });
 
     it('should hide server mode switch in production builds', () => {

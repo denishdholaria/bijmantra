@@ -1,0 +1,62 @@
+ARG RUST_VERSION=1.91.1
+ARG DEBIAN_VERSION=bookworm
+
+FROM docker.io/library/rust:${RUST_VERSION}-${DEBIAN_VERSION} AS planner
+WORKDIR /app
+
+COPY Cargo.toml Cargo.lock ./
+COPY crates/bijmantra-core/Cargo.toml crates/bijmantra-core/Cargo.toml
+COPY crates/bijmantra-runtime/Cargo.toml crates/bijmantra-runtime/Cargo.toml
+COPY crates/bijmantra-server/Cargo.toml crates/bijmantra-server/Cargo.toml
+COPY crates/bijmantra-cli/Cargo.toml crates/bijmantra-cli/Cargo.toml
+
+RUN mkdir -p \
+      crates/bijmantra-core/src \
+      crates/bijmantra-runtime/src \
+      crates/bijmantra-server/src \
+      crates/bijmantra-cli/src \
+    && printf "" > crates/bijmantra-core/src/lib.rs \
+    && printf "" > crates/bijmantra-runtime/src/lib.rs \
+    && printf "" > crates/bijmantra-server/src/lib.rs \
+    && printf "fn main() {}\n" > crates/bijmantra-server/src/main.rs \
+    && printf "fn main() {}\n" > crates/bijmantra-cli/src/main.rs \
+    && cargo fetch --locked
+
+FROM planner AS builder
+
+COPY crates ./crates
+
+RUN cargo build --release --locked -p bijmantra-cli
+
+FROM docker.io/library/debian:${DEBIAN_VERSION}-slim AS runtime
+
+LABEL org.opencontainers.image.title="BijMantra Rust API"
+LABEL org.opencontainers.image.description="Production Rust runtime image for BijMantra."
+LABEL org.opencontainers.image.source="https://github.com/denishdholaria/bijmantra"
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && groupadd --system bijmantra \
+    && useradd --system --gid bijmantra --home-dir /app --shell /usr/sbin/nologin --no-log-init bijmantra \
+    && mkdir -p /app \
+    && chown bijmantra:bijmantra /app \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=builder /app/target/release/bij /usr/local/bin/bij
+COPY --chown=bijmantra:bijmantra metrics.json ./metrics.json
+
+ENV BIJMANTRA_HOST=0.0.0.0
+ENV BIJMANTRA_PORT=8000
+ENV BIJMANTRA_WORKSPACE=/app
+ENV HOME=/app
+ENV RUST_LOG=info
+
+EXPOSE 8000
+
+USER bijmantra:bijmantra
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["bij", "status", "--api", "http://127.0.0.1:8000"]
+
+CMD ["bij", "serve"]

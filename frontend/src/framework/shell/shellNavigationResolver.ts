@@ -1,6 +1,6 @@
 import type { Division, DivisionNavItem, DivisionSection } from '@/framework/registry/types';
 
-export const SHELL_DESKTOP_ROUTES = new Set(['/', '/gateway', '/dashboard']);
+export const SHELL_DESKTOP_ROUTES = new Set(['/', '/gateway']);
 
 export function resolveShellNavPath(
   divisionRoute: string,

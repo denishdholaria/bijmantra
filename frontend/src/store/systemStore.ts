@@ -45,7 +45,7 @@ export const useSystemStore = create<SystemState>()(
       setStrataOpen: (open) => set({ isStrataOpen: open }),
 
       desktopToolSurface: null,
-      lastDesktopToolSurface: 'editor',
+      lastDesktopToolSurface: null,
       openDesktopTool: (surface) => set({ desktopToolSurface: surface, lastDesktopToolSurface: surface }),
       closeDesktopTool: () => set({ desktopToolSurface: null }),
     }),

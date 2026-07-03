@@ -65,6 +65,7 @@ export interface GeneratedRouteMetadata {
   label: string;
   divisionId?: string;
   requiredPermissions?: string[];
+  requiredDataScopes?: string[];
 }
 
 // ============================================================================
@@ -102,6 +103,7 @@ export function generateRoutesFromNavigation(
         label: node.label,
         divisionId: node.divisionId,
         requiredPermissions: node.requiredPermissions,
+        requiredDataScopes: node.requiredDataScopes,
       });
 
       // Recursively process children

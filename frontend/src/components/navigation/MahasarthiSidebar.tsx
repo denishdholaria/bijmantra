@@ -269,14 +269,14 @@ export function MahasarthiSidebar({
             effectiveCollapsed ? "justify-center" : "justify-between"
           )}>
             {!effectiveCollapsed ? (
-              <Link to="/dashboard" className="flex items-center gap-2 group">
+              <Link to="/gateway" className="flex items-center gap-2 group">
                 <img src="/icons/icon-72x72.png" alt="Bijmantra" className="w-7 h-7 rounded transition-transform duration-200 group-hover:scale-110" />
                 <span className="text-base font-semibold text-white tracking-tight">
                   Bijmantra
                 </span>
               </Link>
             ) : (
-              <Link to="/dashboard" className="flex items-center justify-center">
+              <Link to="/gateway" className="flex items-center justify-center">
                 <img src="/icons/icon-72x72.png" alt="Bijmantra" className="w-6 h-6 rounded transition-transform duration-200 hover:scale-110" />
               </Link>
             )}

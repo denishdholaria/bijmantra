@@ -18,16 +18,10 @@
  * For complex filtering needs, see api-helpers.ts QueryBuilder (v1.1 adoption).
  */
 
-import {
-  ApiError,
-  ApiErrorType,
-  createApiErrorFromResponse,
-  createApiErrorFromNetworkError,
-} from "./api-errors";
-import { logger } from "./logger";
 import { ApiClientCore } from "./api/core/client";
 import { AuthService } from "./api/core/auth";
 import { GlobalSearchService } from "./api/search/global-search";
+import { KnowledgeGraphService, ResearchAssetService } from "./api/knowledge";
 import { LicensingService } from "./api/legal/licensing";
 import {
   ProgramService,
@@ -91,6 +85,7 @@ import {
   BackupService,
   WorkflowService,
   LanguageService,
+  PlatformCapabilityService,
 } from "./api/system";
 import {
   DataValidationService,
@@ -174,9 +169,9 @@ import {
 } from "./api/operations";
 import { MarsService, LunarService, ResearchService } from "./api/space";
 export * from "./api/core/types";
+export * from "./api/knowledge";
 export type { Field, Plot } from "./api/phenotyping/field-map";
 export type { HarvestRecord } from "./api/phenotyping/harvest";
-import { BrAPIResponse, BrAPIListResponse } from "./api/core/types";
 
 // Re-export types for backward compatibility and ease of use
 export * from "./api/phenotyping/field-layout";
@@ -249,6 +244,11 @@ class APIClient extends ApiClientCore {
   private _backupService?: BackupService;
   private _workflowService?: WorkflowService;
   private _languageService?: LanguageService;
+  private _platformCapabilityService?: PlatformCapabilityService;
+
+  // Knowledge
+  private _knowledgeGraphService?: KnowledgeGraphService;
+  private _researchAssetService?: ResearchAssetService;
 
   // AI
   private _visionService?: VisionService;
@@ -427,6 +427,11 @@ class APIClient extends ApiClientCore {
   get backupService() { return (this._backupService ??= new BackupService(this)); }
   get workflowService() { return (this._workflowService ??= new WorkflowService(this)); }
   get languageService() { return (this._languageService ??= new LanguageService(this)); }
+  get platformCapabilityService() { return (this._platformCapabilityService ??= new PlatformCapabilityService(this)); }
+
+  // Knowledge
+  get knowledgeGraphService() { return (this._knowledgeGraphService ??= new KnowledgeGraphService(this)); }
+  get researchAssetService() { return (this._researchAssetService ??= new ResearchAssetService(this)); }
 
   // AI
   get visionService() { return (this._visionService ??= new VisionService(this)); }
@@ -577,3 +582,4 @@ export * from "./api/breeding/molecular";
 // ============ Type Exports ============
 export * from "./api/breeding/types";
 export * from "./api/seed-bank/types";
+export * from "./api/seed-bank/inventory";

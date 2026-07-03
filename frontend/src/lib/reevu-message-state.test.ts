@@ -9,6 +9,7 @@ import {
   patchReevuAssistantChunk,
   patchReevuAssistantEvidence,
   patchReevuAssistantProposal,
+  patchReevuAssistantRunEvent,
   patchReevuAssistantSafeFailure,
 } from './reevu-message-state'
 import { DEFAULT_REEVU_BYOK_MODEL } from './ai-model-catalog'
@@ -128,6 +129,59 @@ describe('REEVU assistant patch helpers', () => {
         missing: ['grounded evidence'],
         next_steps: ['Narrow the query'],
       },
+    })
+  })
+
+  it('appends REEVU run events without dropping prior fields', () => {
+    const withRunEvent = patchReevuAssistantRunEvent(base, {
+      assistantMessageId: 'a1',
+      provider: 'Groq',
+      model: 'llama',
+      runEvent: {
+        type: 'reevu_run',
+        run_id: 'run-1',
+        event: 'tool.completed',
+        status: 'completed',
+        title: 'Domain tool completed',
+        tool_name: 'get_trial_results',
+        evidence_count: 2,
+      },
+    })
+
+    const withSecondRunEvent = patchReevuAssistantRunEvent(withRunEvent, {
+      assistantMessageId: 'a1',
+      provider: 'Groq',
+      model: 'llama',
+      runEvent: {
+        type: 'reevu_run',
+        run_id: 'run-1',
+        event: 'run.completed',
+        status: 'completed',
+        title: 'REEVU run completed',
+      },
+    })
+
+    expect(withSecondRunEvent[0].metadata).toMatchObject({
+      provider: 'Groq',
+      model: 'llama',
+      run_events: [
+        {
+          type: 'reevu_run',
+          run_id: 'run-1',
+          event: 'tool.completed',
+          status: 'completed',
+          title: 'Domain tool completed',
+          tool_name: 'get_trial_results',
+          evidence_count: 2,
+        },
+        {
+          type: 'reevu_run',
+          run_id: 'run-1',
+          event: 'run.completed',
+          status: 'completed',
+          title: 'REEVU run completed',
+        },
+      ],
     })
   })
 

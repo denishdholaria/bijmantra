@@ -1,6 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { CapabilityProtectedRoute } from '@/components/CapabilityProtectedRoute';
 // import { Layout } from '@/components/Layout'; // Removed to avoid circular dependency
 
 // Core Pages
@@ -93,11 +94,20 @@ const SelectionDecision = lazy(() => import('@/pages/SelectionDecision').then(m 
 const SeasonPlanning = lazy(() => import('@/pages/SeasonPlanning').then(m => ({ default: m.SeasonPlanning })));
 const HarvestManagement = lazy(() => import('@/pages/HarvestManagement').then(m => ({ default: m.HarvestManagement })));
 const Events = lazy(() => import('@/pages/Events').then(m => ({ default: m.Events })));
+const KnowledgeGraphApp = lazy(() =>
+  import('@/features/knowledge/CapabilityApps').then(m => ({ default: m.KnowledgeGraphApp }))
+);
+const ResearchAssetsApp = lazy(() =>
+  import('@/features/knowledge/CapabilityApps').then(m => ({ default: m.ResearchAssetsApp }))
+);
+const FederatedAssetsApp = lazy(() =>
+  import('@/features/knowledge/CapabilityApps').then(m => ({ default: m.FederatedAssetsApp }))
+);
 
 // Helper
 const Layout = lazy(() => import('@/components/Layout').then(m => ({ default: m.Layout })));
 
-const wrap = (Component: React.LazyExoticComponent<any> | React.ComponentType) => (
+const wrap = (Component: LazyExoticComponent<ComponentType> | ComponentType) => (
   <ProtectedRoute>
     <Suspense fallback={null}>
       <Layout>
@@ -109,11 +119,40 @@ const wrap = (Component: React.LazyExoticComponent<any> | React.ComponentType) =
   </ProtectedRoute>
 );
 
+const wrapCapability = (
+  Component: LazyExoticComponent<ComponentType> | ComponentType,
+  options: {
+    capabilityId: string;
+    requiredPermission: string;
+    requiredDataScopes?: string[];
+  },
+) => (
+  <ProtectedRoute>
+    <CapabilityProtectedRoute
+      capabilityId={options.capabilityId}
+      requiredPermission={options.requiredPermission}
+      requiredDataScopes={options.requiredDataScopes}
+    >
+      <Suspense fallback={null}>
+        <Layout>
+          <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+            <Component />
+          </Suspense>
+        </Layout>
+      </Suspense>
+    </CapabilityProtectedRoute>
+  </ProtectedRoute>
+);
+
+function GatewayShellHome() {
+  return null;
+}
+
 export const coreRoutes: RouteObject[] = [
   // Public
-  { path: '/', element: <ProtectedRoute><Navigate to="/dashboard" replace /></ProtectedRoute> },
+  { path: '/', element: <ProtectedRoute><Navigate to="/gateway" replace /></ProtectedRoute> },
   { path: '/login', element: <Login /> },
-  { path: '/gateway', element: <ProtectedRoute><Navigate to="/dashboard" replace /></ProtectedRoute> },
+  { path: '/gateway', element: <ProtectedRoute><GatewayShellHome /></ProtectedRoute> },
   
   // Dashboard & Profile
   { path: '/dashboard', element: wrap(Dashboard) },
@@ -159,6 +198,30 @@ export const coreRoutes: RouteObject[] = [
   { path: '/feedback', element: wrap(Feedback) },
   { path: '/tips', element: wrap(Tips) },
   { path: '/bioinformatics', element: wrap(Bioinformatics) },
+  {
+    path: '/knowledge-graph',
+    element: wrapCapability(KnowledgeGraphApp, {
+      capabilityId: 'intelligence_fabric.knowledge_graph',
+      requiredPermission: 'intelligence.knowledge_graph.read',
+      requiredDataScopes: ['organization', 'asset', 'evidence'],
+    }),
+  },
+  {
+    path: '/knowledge/research-assets',
+    element: wrapCapability(ResearchAssetsApp, {
+      capabilityId: 'scientific_publishing_fair_exchange.research_asset_core',
+      requiredPermission: 'research_assets.read',
+      requiredDataScopes: ['organization'],
+    }),
+  },
+  {
+    path: '/data/federated-assets',
+    element: wrapCapability(FederatedAssetsApp, {
+      capabilityId: 'scientific_publishing_fair_exchange.research_asset_core',
+      requiredPermission: 'research_assets.read',
+      requiredDataScopes: ['organization'],
+    }),
+  },
   { path: '/knowledge/training', element: wrap(TrainingHub) },
   { path: '/knowledge/forums', element: wrap(CollaborationHub) },
   { path: '/changelog', element: wrap(Changelog) },

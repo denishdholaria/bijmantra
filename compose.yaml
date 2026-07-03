@@ -47,6 +47,34 @@ services:
     networks:
       - bijmantra-network
 
+  # -- Rust API beta container ------------------------------------------------
+  rust-api:
+    profiles: [rust-api]
+    build:
+      context: .
+      dockerfile: Dockerfile.rust
+    image: bijmantra-rust-api:dev
+    container_name: bijmantra-rust-api
+    environment:
+      BIJMANTRA_HOST: 0.0.0.0
+      BIJMANTRA_PORT: "8000"
+      BIJMANTRA_WORKSPACE: /app
+      BIJMANTRA_DATABASE_URL: ${BIJMANTRA_DATABASE_URL:-postgresql://bijmantra_user:${POSTGRES_PASSWORD:-changeme_in_production}@postgres:5432/${POSTGRES_DB:-bijmantra_db}}
+      SECRET_KEY: ${SECRET_KEY:-}
+      RUST_LOG: ${RUST_LOG:-info}
+    ports:
+      - "${RUST_API_PORT:-8001}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bij", "status", "--api", "http://127.0.0.1:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bijmantra-network
+
   # ── Redis ──────────────────────────────────────────────────────────
   redis:
     profiles: [infra]

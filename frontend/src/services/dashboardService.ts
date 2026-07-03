@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Twin-Engine Data Service Hook
- * Provides a standardized way to switch between Mock Data (offline/development) 
- * and Real Data (production/API), conforming to the BijMantra PWA standards.
+ * Dashboard Data Service Hook
+ * Loads caller-provided API data and surfaces failures without substituting mock data.
  */
-export function useDashboardService<T>(
-    fetchRealData: () => Promise<T>,
-    fetchMockData: () => Promise<T>,
-    dependencies: any[] = []
-) {
+export function useDashboardService<T>(fetchData: () => Promise<T>) {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -22,29 +17,14 @@ export function useDashboardService<T>(
             setError(null);
 
             try {
-                // Here we could check a global offline flag, 
-                // network status, or local storage configuration.
-                const isOffline = !navigator.onLine;
-
-                let result: T;
-                if (isOffline) {
-                    console.log('[useDashboardService] Offline mode: loading mock data');
-                    result = await fetchMockData();
-                } else {
-                    try {
-                        result = await fetchRealData();
-                    } catch (e) {
-                        console.warn('[useDashboardService] Real API failed, falling back to mock data', e);
-                        result = await fetchMockData();
-                    }
-                }
+                const result = await fetchData();
 
                 if (mounted) {
                     setData(result);
                 }
-            } catch (e: any) {
+            } catch (e) {
                 if (mounted) {
-                    setError(e);
+                    setError(e instanceof Error ? e : new Error(String(e)));
                 }
             } finally {
                 if (mounted) {
@@ -58,7 +38,7 @@ export function useDashboardService<T>(
         return () => {
             mounted = false;
         };
-    }, dependencies);
+    }, [fetchData]);
 
     return { data, loading, error };
 }

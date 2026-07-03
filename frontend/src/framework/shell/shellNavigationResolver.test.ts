@@ -66,7 +66,8 @@ describe('shellNavigationResolver', () => {
   });
 
   it('detects desktop shell routes', () => {
-    expect(isDesktopShellRoute('/dashboard')).toBe(true);
+    expect(isDesktopShellRoute('/gateway')).toBe(true);
+    expect(isDesktopShellRoute('/dashboard')).toBe(false);
     expect(isDesktopShellRoute('/settings')).toBe(false);
   });
 

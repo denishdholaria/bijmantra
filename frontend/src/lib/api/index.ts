@@ -11,3 +11,4 @@ export * as breeding from "./breeding";
 export * as genotyping from "./genotyping";
 export * as phenotyping from "./phenotyping";
 export * as collaboration from "./collaboration";
+export * as knowledge from "./knowledge";

@@ -240,8 +240,8 @@ export function About() {
             <Link to="/vision">
               <Button size="lg" className="h-14 px-10 text-lg rounded-full">Read the 100-Year Vision</Button>
             </Link>
-            <Link to="/dashboard">
-              <Button size="lg" variant="secondary" className="h-14 px-10 text-lg rounded-full border-2">Enter Dashboard</Button>
+            <Link to="/gateway">
+              <Button size="lg" variant="secondary" className="h-14 px-10 text-lg rounded-full border-2">Open Gateway</Button>
             </Link>
           </div>
           <div className="mt-16 flex flex-col items-center gap-2">

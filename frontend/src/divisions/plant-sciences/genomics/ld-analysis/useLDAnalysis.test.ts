@@ -3,8 +3,8 @@
  * Tests state management and orchestration logic
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
 import { useLDAnalysis } from './useLDAnalysis';
 import { LDAnalysisService } from './ldAnalysisService';
 import * as wasmHooks from '@/wasm/hooks';
@@ -14,9 +14,9 @@ vi.mock('./ldAnalysisService');
 vi.mock('@/wasm/hooks');
 
 describe('useLDAnalysis', () => {
-  const mockWasm = {
+  const mockWasm: { calculate_ld_pair: ReturnType<typeof vi.fn> } = {
     calculate_ld_pair: vi.fn(),
-  } as any;
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,17 +27,14 @@ describe('useLDAnalysis', () => {
       isReady: true,
       error: null,
       version: '1.0.0',
-      wasm: mockWasm,
+      wasm: mockWasm as unknown as ReturnType<typeof wasmHooks.useWasm>['wasm'],
     });
 
-    // Mock import.meta.env
-    vi.stubGlobal('import', {
-      meta: {
-        env: {
-          DEV: true,
-        },
-      },
-    });
+    vi.stubEnv('DEV', true);
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe('Initial State', () => {
@@ -268,21 +265,30 @@ describe('useLDAnalysis', () => {
     });
 
     it('should set isProcessing during analysis', async () => {
+      let resolveCalculation!: (value: typeof mockLDResult) => void;
+      vi.mocked(LDAnalysisService.calculateLD).mockReturnValue(
+        new Promise((resolve) => {
+          resolveCalculation = resolve;
+        }),
+      );
+
       const { result } = renderHook(() => useLDAnalysis());
 
       act(() => {
         result.current.update({ serverVariantSetId: 'VS123' });
       });
 
-      // Start analysis
-      const analysisPromise = result.current.runAnalysis();
-
-      // Wait for state to update
-      await waitFor(() => {
-        expect(result.current.isProcessing).toBe(true);
-      });
+      let analysisPromise!: Promise<void>;
 
       await act(async () => {
+        analysisPromise = result.current.runAnalysis();
+        await Promise.resolve();
+      });
+
+      expect(result.current.isProcessing).toBe(true);
+
+      await act(async () => {
+        resolveCalculation(mockLDResult);
         await analysisPromise;
       });
 
@@ -335,13 +341,7 @@ describe('useLDAnalysis', () => {
     });
 
     it('should validate synthetic preview availability', async () => {
-      vi.stubGlobal('import', {
-        meta: {
-          env: {
-            DEV: false, // Production mode
-          },
-        },
-      });
+      vi.stubEnv('DEV', false);
 
       const { result } = renderHook(() => useLDAnalysis());
 

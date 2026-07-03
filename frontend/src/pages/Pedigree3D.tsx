@@ -82,7 +82,7 @@ export function Pedigree3D() {
     queryKey: ['germplasm-list'],
     queryFn: async () => {
       const response = await apiClient.germplasmService.getGermplasm(0, 50)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       return (response?.result?.data || []) as GermplasmListItem[]
     },
   })

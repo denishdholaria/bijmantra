@@ -62,6 +62,54 @@ describe('parseReevuStreamEvent', () => {
 
   it('parses stage and error events with safe-failure payloads', () => {
     expect(parseReevuStreamEvent({
+      type: 'reevu_run',
+      request_id: 'req-1',
+      run_id: 'run-1',
+      event: 'tool.completed',
+      status: 'completed',
+      title: 'Domain tool completed',
+      detail: 'Tool output is available for evidence synthesis and validation.',
+      tool_name: 'get_trial_results',
+      tool_display_name: 'trial.rank',
+      connector_id: 'get_trial_results',
+      authority_level: 'canonical_reevu_trusted_surface',
+      trust_state: 'trusted',
+      domains_involved: ['trials'],
+      plan_is_compound: true,
+      duration_ms: 42.7,
+      records_touched: 3,
+      approval_required: false,
+      artifact_ids: ['comparison-table'],
+      case_id: 'req-1',
+      evidence_count: 3,
+      calculation_count: 1,
+      ts: '2026-07-03T10:00:00Z',
+    })).toEqual({
+      type: 'reevu_run',
+      request_id: 'req-1',
+      run_id: 'run-1',
+      event: 'tool.completed',
+      status: 'completed',
+      title: 'Domain tool completed',
+      detail: 'Tool output is available for evidence synthesis and validation.',
+      tool_name: 'get_trial_results',
+      tool_display_name: 'trial.rank',
+      connector_id: 'get_trial_results',
+      authority_level: 'canonical_reevu_trusted_surface',
+      trust_state: 'trusted',
+      domains_involved: ['trials'],
+      plan_is_compound: true,
+      duration_ms: 42.7,
+      records_touched: 3,
+      approval_required: false,
+      artifact_ids: ['comparison-table'],
+      case_id: 'req-1',
+      evidence_count: 3,
+      calculation_count: 1,
+      ts: '2026-07-03T10:00:00Z',
+    })
+
+    expect(parseReevuStreamEvent({
       type: 'stage',
       stage: 'policy_validation',
       status: 'completed',
@@ -211,6 +259,7 @@ describe('readReevuStreamEvents', () => {
   it('decodes recognized SSE events across chunk boundaries', async () => {
     const stream = createStream([
       'data: {"type":"start","provider":"Groq","model":"llama"}\n\n',
+      'data: {"type":"reevu_run","request_id":"req-1","run_id":"req-1","event_id":"evt-1","event":"run.started","status":"started","title":"REEVU run started","trust_state":"model_synthesis","authority_level":"orchestration_surface","case_id":"req-1"}\n\n',
       'data: {"type":"chunk","content":"Hello"}\n\n',
       'data: {"type":"proposal_created","data":{"id":1,"title":"T","status":"draft","description":"D"}}\n',
       '\n',
@@ -226,6 +275,18 @@ describe('readReevuStreamEvents', () => {
 
     expect(events).toEqual([
       { type: 'start', provider: 'Groq', model: 'llama' },
+      {
+        type: 'reevu_run',
+        request_id: 'req-1',
+        run_id: 'req-1',
+        event_id: 'evt-1',
+        event: 'run.started',
+        status: 'started',
+        title: 'REEVU run started',
+        authority_level: 'orchestration_surface',
+        trust_state: 'model_synthesis',
+        case_id: 'req-1',
+      },
       { type: 'chunk', content: 'Hello' },
       { type: 'proposal_created', data: { id: 1, title: 'T', status: 'draft', description: 'D' } },
       {

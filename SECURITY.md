@@ -14,7 +14,6 @@ Bijmantra implements the AshtaStambha security framework — Pillars of Protecti
 - Comprehensive audit logging
 - OWASP-compliant security headers
 - JWT-based authentication with RBAC
-- Keycloak integration
 
 ## Supported Versions
 
