@@ -1,1 +1,0 @@
-# Collaboration domain package

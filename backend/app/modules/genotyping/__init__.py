@@ -1,1 +1,0 @@
-# Genotyping Module

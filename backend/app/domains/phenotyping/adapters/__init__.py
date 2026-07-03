@@ -1,1 +1,0 @@
-"""Phenotyping infrastructure adapters."""

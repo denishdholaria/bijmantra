@@ -1,1 +1,0 @@
-"""Germplasm infrastructure adapters."""
